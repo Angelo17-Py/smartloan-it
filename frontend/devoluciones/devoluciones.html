@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retorno de Equipos | Ultra Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #00f2ff;
+            --bg: #030712;
+            --sidebar-bg: #09090b;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #22c55e;
+            --border: rgba(255, 255, 255, 0.12);
+            --sidebar-w: 320px; /* Más ancho para mayor legibilidad */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* FONDO DINÁMICO MEJORADO */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0, 242, 255, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        /* SIDEBAR POTENCIADO */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 50px 30px;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 20px 24px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            border-radius: 18px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.2rem; /* Texto más grande */
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .sidebar button .icon {
+            font-size: 1.8rem; /* Icono mucho más grande */
+        }
+
+        .sidebar button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transform: translateX(5px);
+            border-color: var(--border);
+        }
+
+        /* CONTENIDO CENTRALIZADO */
+        .content {
+            margin-left: var(--sidebar-w);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 60px 40px;
+        }
+
+        .return-card {
+            width: 100%;
+            max-width: 650px; /* Tarjeta más ancha */
+            background: var(--card-bg);
+            backdrop-filter: blur(30px);
+            padding: 60px;
+            border-radius: 45px; /* Bordes más suaves */
+            border: 1px solid var(--border);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 3rem; /* Título gigante */
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 50px;
+            font-size: 1.2rem; /* Subtítulo más legible */
+            line-height: 1.6;
+        }
+
+        /* FORMULARIO AMPLIADO */
+        .input-group {
+            margin-bottom: 35px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 22px 28px; /* Padding mucho mayor */
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            color: white;
+            font-size: 1.25rem; /* Letra de input más grande */
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.15);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 25px center;
+            background-size: 20px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 24px;
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* MENSAJE DE ÉXITO GRANDE */
+        #success-msg {
+            display: none;
+            margin-top: 35px;
+            padding: 25px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 20px;
+            color: #4ade80;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* RESPONSIVE MEJORADO */
+        @media (max-width: 900px) {
+            .sidebar { width: 100px; padding: 40px 15px; align-items: center; }
+            .sidebar span:not(.icon) { display: none; }
+            .sidebar button { justify-content: center; padding: 20px; }
+            .content { margin-left: 100px; padding: 30px; }
+            h2 { font-size: 2.2rem; }
+            .return-card { padding: 40px 30px; }
+        }
+
+        @media (max-width: 500px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: relative; 
+                flex-direction: row; 
+                padding: 15px; 
+                justify-content: space-around;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .content { margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<aside class="sidebar">
+    <button onclick="ir('home')">
+        <span class="icon">🏠</span> <span>Inicio</span>
+    </button>
+</aside>
+
+<main class="content">
+    <div class="return-card">
+        <h2>Devolución</h2>
+        <p class="subtitle">Registra el reingreso de equipos al inventario con el estado actual del dispositivo.</p>
+
+        <div class="input-group">
+            <label>ID del Préstamo</label>
+            <input id="prestamo" type="text" placeholder="Ej: PR-1024" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>Estado del Equipo</label>
+            <select id="estado">
+                <option value="Excelente">✨ Excelente</option>
+                <option value="Buen estado">👍 Buen estado</option>
+                <option value="Desgastado">⚖️ Desgastado</option>
+                <option value="Requiere mantenimiento">🛠️ Requiere mantenimiento</option>
+                <option value="Dañado">⚠️ Dañado</option>
+            </select>
+        </div>
+
+        <button class="btn-submit" onclick="devolver()">Confirmar Reingreso</button>
+
+        <div id="success-msg">
+            ✅ Devolución procesada y registrada correctamente
+        </div>
+    </div>
+</main>
+
+<script>
+function ir(r) { 
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => window.location.href = "/home/dashboard.html", 300); 
+}
+
+async function devolver() {
+    const p = document.getElementById('prestamo');
+    const e = document.getElementById('estado');
+    const success = document.getElementById('success-msg');
+    const btn = document.querySelector('.btn-submit');
+
+    if(!p.value) {
+        p.style.borderColor = "#ef4444";
+        setTimeout(() => p.style.borderColor = "var(--border)", 2000);
+        return;
+    }
+
+    // Efecto de carga
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "Procesando...";
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+
+    try {
+        // Simulamos latencia de red para feedback visual
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // En un entorno real, descomentar esto:
+        /*
+        await fetch('/devoluciones', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id_prestamo: p.value,
+                estado_equipo: e.value
+            })
+        });
+        */
+
+        // Mostrar éxito
+        success.style.display = 'block';
+        p.value = '';
+        
+        // Ocultar mensaje después de unos segundos
+        setTimeout(() => {
+            success.style.opacity = '0';
+            setTimeout(() => {
+                success.style.display = 'none';
+                success.style.opacity = '1';
+            }, 400);
+        }, 4000);
+
+    } catch (err) {
+        console.error("Error:", err);
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        btn.style.opacity = "1";
+    }
+}
+</script>
+
+</body>
+</html>

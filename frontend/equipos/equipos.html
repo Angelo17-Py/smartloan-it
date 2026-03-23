@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Equipos | Premium Plus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #00f2ff;
+            --bg: #030712;
+            --sidebar-bg: #09090b;
+            --card-bg: rgba(30, 41, 59, 0.4);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border: rgba(255, 255, 255, 0.08);
+            --sidebar-w: 320px; /* Aumentado de 280px */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            font-size: 16px; /* Base más grande */
+        }
+
+        /* FONDO DINÁMICO */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 50px 30px;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 18px 24px; /* Más padding */
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            border-radius: 16px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem; /* Texto de menú más grande */
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .sidebar button .icon {
+            font-size: 1.5rem; /* Icono más grande */
+        }
+
+        .sidebar button:hover {
+            background: var(--card-bg);
+            color: white;
+            border-color: var(--border);
+            transform: translateX(5px);
+        }
+
+        /* CONTENIDO */
+        .content {
+            margin-left: var(--sidebar-w);
+            padding: 80px 100px; /* Más aire lateral */
+            width: 100%;
+            max-width: 1600px;
+        }
+
+        h2 {
+            font-size: 3.5rem; /* Título gigante */
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 50px;
+            background: linear-gradient(to right, #fff, var(--text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* FORMULARIO DE AGREGAR */
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 25px;
+            align-items: flex-end;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px; /* Inputs más grandes */
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            color: white;
+            font-size: 1.05rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 40px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            height: 58px; /* Altura alineada con inputs */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* TABLA DE EQUIPOS */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 32px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 2.5px;
+        }
+
+        th {
+            padding: 25px 35px;
+            font-weight: 800;
+        }
+
+        td {
+            padding: 30px 35px; /* Filas mucho más altas */
+            border-bottom: 1px solid var(--border);
+            font-size: 1.1rem; /* Texto de tabla más grande */
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .badge-disponible { background: rgba(34, 197, 94, 0.15); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-prestado { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 45px; /* Botón de acción más grande */
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* INFO TEXTS */
+        .equip-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .equip-meta {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+        }
+
+        /* MENSAJE DE TABLA VACÍA */
+        .empty-state {
+            padding: 60px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 1.2rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .content { padding: 40px; }
+            .sidebar { width: 100px; padding: 40px 15px; }
+            .sidebar button span:not(.icon) { display: none; }
+            .sidebar button { justify-content: center; padding: 20px; }
+            .content { margin-left: 100px; }
+            h2 { font-size: 2.8rem; }
+        }
+
+        @media (max-width: 800px) {
+            .form-card { flex-direction: column; align-items: stretch; }
+            .btn-add { height: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<aside class="sidebar">
+    <button onclick="ir('home')">
+        <span class="icon">🏠</span> 
+        <span>Inicio</span>
+    </button>
+</aside>
+
+<main class="content">
+    <h2>Gestión de Equipos</h2>
+
+    <!-- Formulario para agregar -->
+    <div class="form-card">
+        <div class="input-group">
+            <label>Nombre del Equipo</label>
+            <input id="nombre" placeholder="Ej: MacBook Pro M2">
+        </div>
+        <div class="input-group">
+            <label>Categoría / Tipo</label>
+            <input id="tipo" placeholder="Ej: Laptop">
+        </div>
+        <div class="input-group">
+            <label>Marca</label>
+            <input id="marca" placeholder="Ej: Apple">
+        </div>
+        <button class="btn-add" onclick="crear()">
+            Agregar Equipo
+        </button>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre y Detalles</th>
+                    <th>Estado</th>
+                    <th style="text-align: center;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="tabla">
+                <!-- Los datos se cargan aquí -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+// Simulación de navegación
+function ir(r) { 
+    document.body.style.opacity = '0.5';
+    document.body.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+        // En un entorno real esto cambiaría la URL
+        console.log("Navegando a dashboard...");
+        document.body.style.opacity = '1';
+        document.body.style.transform = 'scale(1)';
+    }, 200);
+}
+
+function ir(r) { 
+    document.body.style.opacity = '0';
+    setTimeout(() => {
+        window.location.href = "/home/dashboard.html"; 
+    }, 200);
+}
+
+// Datos de ejemplo para que la tabla no se vea vacía inicialmente si no hay backend
+let equiposMock = [
+    { id_equipo: 101, nombre: 'MacBook Pro M2', tipo: 'Laptop', marca: 'Apple', estado: 'Disponible' },
+    { id_equipo: 102, nombre: 'Dell XPS 15', tipo: 'Laptop', marca: 'Dell', estado: 'Prestado' }
+];
+
+async function cargar() {
+    try {
+        // Intentamos fetch real, si falla usamos mock
+        let data;
+        try {
+            const res = await fetch('/equipos');
+            if (res.ok) {
+                data = await res.json();
+            } else {
+                data = equiposMock;
+            }
+        } catch(e) {
+            data = equiposMock;
+        }
+
+        const tabla = document.getElementById('tabla');
+        
+        if(data.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="4" class="empty-state">No hay equipos registrados</td></tr>`;
+            return;
+        }
+
+        tabla.innerHTML = data.map(e => {
+            const estadoClass = e.estado.toLowerCase() === 'disponible' ? 'badge-disponible' : 'badge-prestado';
+            return `
+                <tr>
+                    <td style="color: var(--primary); font-weight: 800; font-family: monospace; font-size: 1.2rem;">
+                        #${e.id_equipo}
+                    </td>
+                    <td>
+                        <div class="equip-name">${e.nombre}</div>
+                        <div class="equip-meta">${e.tipo} • <span style="color: white">${e.marca}</span></div>
+                    </td>
+                    <td>
+                        <span class="badge ${estadoClass}">${e.estado}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="btn-delete" title="Eliminar" onclick="eliminar(${e.id_equipo})">
+                            &times;
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error("Error cargando equipos:", error);
+    }
+}
+
+async function crear() {
+    const n = document.getElementById('nombre');
+    const t = document.getElementById('tipo');
+    const m = document.getElementById('marca');
+
+    if(!n.value) {
+        n.style.borderColor = 'var(--danger)';
+        setTimeout(() => n.style.borderColor = '', 2000);
+        return;
+    }
+
+    const nuevoEquipo = {
+        nombre: n.value,
+        tipo: t.value || 'N/A',
+        marca: m.value || 'Generico'
+    };
+
+    try {
+        await fetch('/equipos', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(nuevoEquipo)
+        });
+    } catch(e) {
+        // Fallback local para demo
+        equiposMock.push({
+            id_equipo: Math.floor(Math.random() * 900) + 100,
+            ...nuevoEquipo,
+            estado: 'Disponible'
+        });
+    }
+
+    // Limpiar campos y refrescar
+    n.value = ''; t.value = ''; m.value = '';
+    cargar();
+}
+
+async function eliminar(id) {
+    const customConfirm = confirm("¿Estás seguro de eliminar este equipo de forma permanente?");
+    if(!customConfirm) return;
+    
+    try {
+        await fetch(`/equipos/${id}`, { method: 'DELETE' });
+    } catch(e) {
+        // Fallback local
+        equiposMock = equiposMock.filter(e => e.id_equipo !== id);
+    }
+    cargar();
+}
+
+// Carga inicial
+window.onload = cargar;
+</script>
+
+</body>
+</html>

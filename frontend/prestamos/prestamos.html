@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Préstamos | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #00f2ff;
+            --bg: #030712;
+            --sidebar-bg: #09090b;
+            --card-bg: rgba(30, 41, 59, 0.4);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --warning: #f59e0b;
+            --border: rgba(255, 255, 255, 0.08);
+            --sidebar-w: 300px; /* Un poco más ancho para iconos grandes */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* FONDO DINÁMICO */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 10% 10%, rgba(0, 242, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 40px 20px;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 20px 24px; /* Más grande */
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            border-radius: 16px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.2rem; /* Texto más grande */
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .sidebar button .icon {
+            font-size: 1.8rem; /* Icono mucho más grande */
+        }
+
+        .sidebar button:hover {
+            background: var(--card-bg);
+            color: white;
+            border-color: var(--border);
+        }
+
+        /* CONTENIDO */
+        .content {
+            margin-left: var(--sidebar-w);
+            padding: 60px 80px;
+            width: 100%;
+        }
+
+        h2 {
+            font-size: 3.5rem; /* Título mucho más grande */
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 50px;
+        }
+
+        /* FORMULARIO */
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px; /* Más espacio */
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 25px;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-size: 0.9rem; /* Etiqueta más legible */
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px; /* Input más grande */
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: white;
+            font-size: 1.1rem; /* Texto de entrada más grande */
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(0, 242, 255, 0.1);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1.1rem; /* Texto botón más grande */
+            cursor: pointer;
+            transition: var(--transition);
+            height: 58px; /* Botón más alto */
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* TABLA */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+        }
+
+        th { padding: 25px 30px; }
+        td { 
+            padding: 25px 30px; 
+            border-bottom: 1px solid var(--border); 
+            font-size: 1.1rem; /* Texto de tabla más grande */
+        }
+
+        .badge-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .form-card { grid-template-columns: 1fr 1fr; }
+            .content { padding: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<aside class="sidebar">
+    <button onclick="ir('home')">
+        <span class="icon">🏠</span> Inicio
+    </button>
+</aside>
+
+<main class="content">
+    <h2>Registro de Préstamos</h2>
+
+    <div class="form-card">
+        <div class="input-group">
+            <label>ID Usuario</label>
+            <input id="usuario" placeholder="Cédula del solicitante">
+        </div>
+        <div class="input-group">
+            <label>ID Equipo</label>
+            <input id="equipo" placeholder="Código del equipo">
+        </div>
+        <div class="input-group">
+            <label>Fecha Estimada</label>
+            <input type="date" id="fecha">
+        </div>
+        <button class="btn-action" onclick="prestar()">Registrar Salida</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Préstamo</th>
+                    <th>Equipo Asignado</th>
+                    <th>Estado</th>
+                    <th>Vencimiento</th>
+                </tr>
+            </thead>
+            <tbody id="tabla">
+                <!-- Data via JS -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+function ir(r) { 
+    document.body.style.opacity = '0';
+    setTimeout(() => window.location.href = "/home/dashboard.html", 200); 
+}
+
+async function cargar() {
+    try {
+        const res = await fetch('/prestamos');
+        const data = await res.json();
+        const tabla = document.getElementById('tabla');
+
+        tabla.innerHTML = data.map(p => `
+            <tr>
+                <td style="font-weight: 700; color: var(--accent); font-size: 1.2rem;">#PR-${p.id_prestamo}</td>
+                <td>
+                    <div style="font-weight: 700; font-size: 1.2rem;">${p.equipo}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 4px;">Asignado a: ${p.usuario || 'N/A'}</div>
+                </td>
+                <td><span class="badge-status">${p.estado}</span></td>
+                <td style="font-family: monospace; font-size: 1.1rem; font-weight: 600;">
+                    ${p.fecha_devolucion_estimada || '-- / -- / --'}
+                </td>
+            </tr>
+        `).join('');
+    } catch (e) { console.error(e); }
+}
+
+async function prestar() {
+    const u = document.getElementById('usuario');
+    const e = document.getElementById('equipo');
+    const f = document.getElementById('fecha');
+
+    if(!u.value || !e.value) return;
+
+    await fetch('/prestamos', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            id_usuario: u.value,
+            id_equipo: e.value,
+            fecha_devolucion_estimada: f.value
+        })
+    });
+
+    u.value = ''; e.value = ''; f.value = '';
+    cargar();
+}
+
+cargar();
+</script>
+
+</body>
+</html>
