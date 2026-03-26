@@ -347,24 +347,27 @@ function ir(r) {
 
 async function devolver() {
     const p = document.getElementById('prestamo');
+    const estado = document.getElementById('estado').value;
     const success = document.getElementById('success-msg');
     const btn = document.querySelector('.btn-submit');
 
-    if(!p.value) {
-        p.style.borderColor = "var(--danger)";
-        setTimeout(() => p.style.borderColor = "var(--border)", 2000);
-        return;
-    }
+    if(!p.value) return;
 
     btn.innerHTML = "PROCESANDO...";
     btn.disabled = true;
 
-    // Simulación de proceso
-    await new Promise(r => setTimeout(r, 1000));
+    await fetch('/devoluciones', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            id_prestamo: p.value,
+            estado_equipo: estado
+        })
+    });
 
     success.style.display = 'block';
     p.value = '';
-    
+
     setTimeout(() => {
         success.style.display = 'none';
     }, 3000);

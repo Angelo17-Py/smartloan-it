@@ -251,6 +251,41 @@
             width: 100%;
             border-collapse: collapse;
         }
+        select {
+    width: 100%;
+    padding: 18px 22px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    color: white;
+    font-size: 1.05rem;
+    outline: none;
+    transition: var(--transition);
+
+    /* 🔥 Esto arregla el diseño */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Flechita personalizada */
+select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+/* Opciones */
+select option {
+    background-color: #0f172a;
+    color: white;
+}
+
+/* Focus igual que inputs */
+select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.15);
+}
 
         th {
             padding: 25px 35px;
@@ -329,16 +364,29 @@
 
     <div class="form-card">
         <div class="input-group">
-            <label>Nombre del Equipo</label>
-            <input id="nombre" placeholder="Ej: MacBook Pro M2">
+            <label>Modelo del equipo</label>
+            <input id="nombre" placeholder="Ej: Model 15 ef****">
         </div>
         <div class="input-group">
-            <label>Categoría / Tipo</label>
-            <input id="tipo" placeholder="Ej: Laptop">
+            <label>Tipo</label>
+            <select id="tipo">
+                <option value="">Seleccionar</option>
+                <option value="PC">PC</option>
+                <option value="Laptop">Laptop</option>
+            </select>
         </div>
         <div class="input-group">
             <label>Marca</label>
-            <input id="marca" placeholder="Ej: Apple">
+            <select id="marca">
+                <option value="">Seleccionar</option>
+                <option value="Lenovo">Lenovo</option>
+                <option value="ASUS">ASUS</option>
+                <option value="HP">HP</option>
+                <option value="Dell">Dell</option>
+                <option value="Apple">Apple</option>
+                <option value="MSI">MSI</option>
+                <option value="Acer">Acer</option>
+            </select>
         </div>
         <button class="btn-add" onclick="crear()">
             Agregar Equipo
@@ -370,7 +418,6 @@ function toggleNav() {
     panel.classList.toggle('active');
 }
 
-// Cerrar menú al hacer clic fuera
 document.addEventListener('click', (e) => {
     const container = document.querySelector('.nav-container');
     const panel = document.getElementById('navPanel');
@@ -387,65 +434,69 @@ function ir(r) {
     }, 300);
 }
 
-let equiposMock = [
-    { id_equipo: 101, nombre: 'MacBook Pro M2', tipo: 'Laptop', marca: 'Apple', estado: 'Disponible' },
-    { id_equipo: 102, nombre: 'Dell XPS 15', tipo: 'Laptop', marca: 'Dell', estado: 'Prestado' }
-];
-
+// 🔥 CARGAR DESDE MYSQL
 async function cargar() {
     const tabla = document.getElementById('tabla');
-    let data = equiposMock;
 
-    try {
-        const res = await fetch('/equipos');
-        if (res.ok) data = await res.json();
-    } catch(e) {}
+    const res = await fetch('/equipos');
+    const data = await res.json();
 
     if(data.length === 0) {
-        tabla.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:50px; color:var(--text-dim)">No hay equipos</td></tr>`;
+        tabla.innerHTML = `<tr><td colspan="4">No hay equipos</td></tr>`;
         return;
     }
 
     tabla.innerHTML = data.map(e => `
         <tr>
-            <td style="color:var(--primary); font-weight:800; font-family:monospace;">#${e.id_equipo}</td>
+            <td>#${e.id_equipo}</td>
             <td>
-                <div style="font-weight:700; color:white;">${e.nombre}</div>
-                <div style="font-size:0.9rem; color:var(--text-dim)">${e.tipo} • ${e.marca}</div>
+                <b>${e.nombre}</b><br>
+                ${e.tipo} • ${e.marca}
             </td>
+            <td>${e.estado || 'Disponible'}</td>
             <td>
-                <span class="badge ${e.estado.toLowerCase() === 'disponible' ? 'badge-disponible' : 'badge-prestado'}">
-                    ${e.estado}
-                </span>
-            </td>
-            <td style="text-align: center;">
                 <button class="btn-delete" onclick="eliminar(${e.id_equipo})">&times;</button>
             </td>
         </tr>
     `).join('');
 }
 
+// 🔥 CREAR EN MYSQL
 async function crear() {
     const n = document.getElementById('nombre');
     const t = document.getElementById('tipo');
     const m = document.getElementById('marca');
 
-    if(!n.value) {
-        n.style.borderColor = 'var(--danger)';
-        setTimeout(() => n.style.borderColor = '', 2000);
-        return;
+    if(!n.value || !t.value || !m.value) {
+    alert("Completa todos los campos");
+    return;
     }
 
-    const nuevo = { id_equipo: Math.floor(Math.random()*900)+100, nombre: n.value, tipo: t.value || 'N/A', marca: m.value || 'Genérico', estado: 'Disponible' };
-    equiposMock.push(nuevo);
-    
-    n.value = ''; t.value = ''; m.value = '';
+    await fetch('/equipos', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            nombre: n.value,
+            tipo: t.value,
+            marca: m.value
+        })
+    });
+
+    n.value = '';
+    t.value = '';
+    m.value = '';
+
     cargar();
 }
 
+// 🔥 ELIMINAR EN MYSQL
 async function eliminar(id) {
     if(!confirm("¿Eliminar equipo?")) return;
-    equiposMock = equiposMock.filter(e => e.id_equipo !== id);
+
+    await fetch(`/equipos/${id}`, {
+        method: 'DELETE'
+    });
+
     cargar();
 }
 

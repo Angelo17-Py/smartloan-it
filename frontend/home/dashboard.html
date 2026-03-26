@@ -323,7 +323,7 @@
         <a href="javascript:void(0)" onclick="ir('equipos')" class="action-card card-full">
             <div class="a-icon">🏢</div>
             <div>
-                <h2>Inventario de Activos</h2>
+                <h2>Gestión de Equipos</h2>
                 <p>Control centralizado de hardware, especificaciones técnicas y trazabilidad de ubicaciones físicas.</p>
             </div>
         </a>
@@ -397,6 +397,33 @@ function logout() {
         window.location.href = "/";
     }
 }
+
+async function cargarMetricas() {
+    try {
+        const [equiposRes, prestamosRes] = await Promise.all([
+            fetch('/equipos'),
+            fetch('/prestamos')
+        ]);
+
+        const equipos = await equiposRes.json();
+        const prestamos = await prestamosRes.json();
+
+        const total = equipos.length;
+        const enPrestamo = prestamos.length;
+        const disponibles = total - enPrestamo;
+
+        document.getElementById('count-total').innerText = total;
+        document.getElementById('count-loan').innerText = enPrestamo;
+        document.getElementById('count-avail').innerText = disponibles;
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+window.onload = () => {
+    cargarMetricas();
+};
 </script>
 </body>
 </html>

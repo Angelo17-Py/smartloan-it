@@ -62,6 +62,42 @@
             transition: var(--transition);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        
+        /* 🔥 SELECT IGUAL QUE INPUT */
+select {
+    width: 100%;
+    padding: 18px 22px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    color: white;
+    font-size: 1.1rem;
+    outline: none;
+    transition: var(--transition);
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Flecha personalizada */
+select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+/* Opciones */
+select option {
+    background-color: #0f172a;
+    color: white;
+}
+
+/* Focus igual a tus inputs */
+select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
 
         .nav-trigger:hover {
             background: rgba(255, 255, 255, 0.08);
@@ -292,7 +328,9 @@
         </div>
         <div class="input-group">
             <label>ID Equipo</label>
-            <input id="equipo" placeholder="Código del equipo" autocomplete="off">
+            <select id="equipo">
+                <option value="">Seleccionar equipo</option>
+            </select>
         </div>
         <div class="input-group">
             <label>Fecha Estimada</label>
@@ -333,6 +371,27 @@ document.addEventListener('click', (e) => {
         toggleNav();
     }
 });
+
+async function cargarEquipos() {
+    const select = document.getElementById('equipo');
+
+    try {
+        const res = await fetch('/equipos');
+        const data = await res.json();
+
+        select.innerHTML = '<option value="">Seleccionar equipo</option>';
+
+        data.forEach(e => {
+            const option = document.createElement('option');
+            option.value = e.id_equipo;
+            option.textContent = `${e.nombre} (${e.marca})`;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error('Error cargando equipos', err);
+    }
+}
 
 function ir(vista) {
     toggleNav();
@@ -405,7 +464,10 @@ async function prestar() {
     cargar();
 }
 
-window.onload = cargar;
+window.onload = () => {
+    cargar();
+    cargarEquipos();
+};
 </script>
 
 </body>
