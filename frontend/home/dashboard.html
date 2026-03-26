@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Premium | Elite Dashboard</title>
-    <!-- Fuente con pesos más variados para mejor jerarquía -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>SmartLoan IT | Panel de Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.6);
+            --primary-glow: rgba(99, 102, 241, 0.4);
             --accent: #00f2ff;
-            --bg: #030712;
-            --card-bg: rgba(30, 41, 59, 0.4);
-            --sidebar-bg: #09090b;
-            --text: #f8fafc;
+            --accent-glow: rgba(0, 242, 255, 0.3);
+            --bg: #020617;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --text: #ffffff;
             --text-dim: #94a3b8;
-            --sidebar-w: 320px; /* Sidebar más ancha */
-            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --border: rgba(255, 255, 255, 0.1);
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * {
@@ -30,427 +29,374 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            display: flex;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: opacity 0.5s ease;
+            position: relative;
         }
 
-        /* FONDO DINÁMICO MEJORADO */
-        .bg-glow {
+        /* FONDO DINÁMICO REUTILIZADO */
+        #canvas-particles {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 80% 10%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 10% 90%, rgba(0, 242, 255, 0.15) 0%, transparent 50%);
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
         }
 
-        /* SIDEBAR ROBUSTA */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--sidebar-bg);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            padding: 50px 30px;
+        .bg-glow {
             position: fixed;
-            height: 100vh;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
+            z-index: -1;
+            filter: blur(80px);
+        }
+
+        /* BARRA SUPERIOR */
+        .top-nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
             z-index: 100;
         }
 
-        .sidebar-brand {
-            margin-bottom: 60px;
-            padding-left: 10px;
-        }
-
-        .sidebar-brand h2 {
-            font-size: 1.6rem; /* Más grande */
+        .brand {
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: -0.8px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-box {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            width: 42px; /* Más grande */
-            height: 42px;
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
-            color: white;
-            font-size: 1.4rem;
-            box-shadow: 0 0 25px var(--primary-glow);
-        }
-
-        .nav-label {
-            font-size: 0.8rem; /* Un poco más grande */
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: var(--text-dim);
-            margin-bottom: 25px;
-            font-weight: 700;
-            opacity: 0.6;
-        }
-
-        .sidebar nav button {
-            width: 100%;
-            padding: 16px 20px; /* Más padding */
-            margin-bottom: 12px;
-            border: 1px solid transparent;
-            background: transparent;
-            color: var(--text-dim);
-            border-radius: 16px;
-            cursor: pointer;
-            text-align: left;
-            font-size: 1.1rem; /* Texto más grande */
-            font-weight: 600;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .sidebar nav button .icon {
-            font-size: 1.4rem; /* Icono más grande */
-        }
-
-        .sidebar nav button:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            transform: translateX(5px);
-        }
-
-        .sidebar nav button.active {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--accent);
-            border-color: rgba(0, 242, 255, 0.3);
-        }
-
-        .btn-exit {
-            margin-top: auto;
-            color: #f87171 !important;
-            padding: 16px 20px !important;
-            font-size: 1.1rem !important;
-            font-weight: 700 !important;
-            border-radius: 16px !important;
-            border: 1px solid rgba(239, 68, 68, 0.1) !important;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            cursor: pointer;
-            background: transparent;
-            transition: var(--transition);
-        }
-
-        .btn-exit:hover {
-            background: rgba(239, 68, 68, 0.1) !important;
-            transform: scale(0.97);
-        }
-
-        /* CONTENIDO PRINCIPAL ESPACIADO */
-        .content {
-            margin-left: var(--sidebar-w);
-            padding: 80px 100px; /* Más aire en los bordes */
-            width: 100%;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 80px;
-        }
-
-        .header-title p {
-            color: var(--accent);
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .header-title h1 {
-            font-size: 4rem; /* Título gigante e impactante */
-            font-weight: 800;
-            letter-spacing: -2.5px;
-            line-height: 1;
-        }
-
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 25px;
-            border-radius: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .user-pill span {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        /* GRID DE TARJETAS GIGANTES */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 40px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 50px; /* Mucho más padding */
-            border-radius: 40px; /* Bordes más redondeados */
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(15px);
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 380px;
-        }
-
-        .card:hover {
-            transform: translateY(-20px) scale(1.03);
-            border-color: rgba(99, 102, 241, 0.4);
-            background: rgba(30, 41, 59, 0.6);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-        }
-
-        .icon-wrapper {
-            width: 85px; /* Icono mucho más grande */
-            height: 85px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 24px;
-            display: grid;
-            place-items: center;
-            font-size: 3rem; /* Tamaño de emoji aumentado */
-            margin-bottom: 35px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: var(--transition);
-        }
-
-        .card:hover .icon-wrapper {
-            background: white;
-            transform: rotate(-8deg) scale(1.15);
-            box-shadow: 0 15px 30px var(--primary-glow);
-        }
-
-        .card h3 {
-            font-size: 2.2rem; /* Título de tarjeta más grande */
-            font-weight: 800;
-            margin-bottom: 15px;
-            color: white;
-            letter-spacing: -0.5px;
-        }
-
-        .card p {
-            color: var(--text-dim);
-            line-height: 1.7;
-            font-size: 1.15rem; /* Texto descriptivo más legible */
-            margin-bottom: 30px;
-        }
-
-        .card-arrow {
             display: flex;
             align-items: center;
             gap: 12px;
-            color: var(--accent);
-            font-weight: 800;
-            font-size: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .btn-logout {
+            color: #fb7185;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.5;
+            letter-spacing: 1px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(251, 113, 133, 0.2);
             transition: var(--transition);
         }
 
-        .card:hover .card-arrow {
-            opacity: 1;
+        .btn-logout:hover {
+            background: rgba(251, 113, 133, 0.1);
+            border-color: #fb7185;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SECCIÓN DE MÉTRICAS (LO QUE TE GUSTA) */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
             gap: 20px;
-            transform: translateX(5px);
+            transition: var(--transition);
         }
 
-        /* EFECTO DE LUZ AL PASAR EL MOUSE POR LA CARD */
-        .card::after {
-            content: "";
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px -10px var(--primary-glow);
+        }
+
+        .m-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .m-data h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .m-data p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ACCIONES */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             opacity: 0;
-            transition: 0.5s;
-            pointer-events: none;
+            transition: 0.4s;
+            z-index: -1;
         }
 
-        .card:hover::after {
-            opacity: 1;
+        .action-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: transparent;
+            box-shadow: 0 20px 40px -15px var(--primary-glow);
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1400px) {
-            .content { padding: 60px; }
-            .header-title h1 { font-size: 3.2rem; }
+        .action-card:hover::before { opacity: 0.08; }
+
+        .card-full {
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            gap: 40px;
         }
 
-        @media (max-width: 1024px) {
-            --sidebar-w: 100px;
-            .sidebar-brand span, .nav-label, .sidebar nav button span:not(.icon), .btn-exit span:not(.icon) {
-                display: none;
-            }
-            .sidebar { padding: 40px 20px; align-items: center; }
-            .content { margin-left: 100px; padding: 40px; }
-            .sidebar nav button { justify-content: center; padding: 20px; }
+        .a-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 22px;
+            display: grid;
+            place-items: center;
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            transition: 0.3s;
         }
 
-        @media (max-width: 768px) {
-            .content { padding: 30px 20px; }
-            .header { flex-direction: column; align-items: flex-start; gap: 30px; }
-            .header-title h1 { font-size: 2.8rem; }
-            .cards { grid-template-columns: 1fr; }
+        .action-card:hover .a-icon {
+            background: white;
+            color: var(--bg);
+            transform: rotate(-5deg);
+        }
+
+        .action-card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .action-card p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+            .metrics-grid { grid-template-columns: 1fr; }
+            .actions-grid { grid-template-columns: 1fr; }
+            .card-full { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
 <body>
 
+<canvas id="canvas-particles"></canvas>
 <div class="bg-glow"></div>
 
-<aside class="sidebar">
-    <div class="sidebar-brand">
-        <h2><div class="logo-box">⚡</div> <span>Gestión</span></h2>
+<nav class="top-nav">
+    <div class="brand">
+        <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+        </div>
+        SmartLoan IT
     </div>
-    
-    <div class="nav-label">Plataforma</div>
-    <nav>
-        <button class="active" onclick="ir('dashboard')">
-            <span class="icon">🏠</span> <span>Dashboard</span>
-        </button>
-        <button onclick="ir('equipos')">
-            <span class="icon">💻</span> <span>Equipos</span>
-        </button>
-        <button onclick="ir('prestamos')">
-            <span class="icon">📤</span> <span>Préstamos</span>
-        </button>
-        <button onclick="ir('devoluciones')">
-            <span class="icon">📥</span> <span>Devoluciones</span>
-        </button>
-    </nav>
-    
-    <button class="btn-exit" onclick="logout()">
-        <span class="icon">🚪</span> <span>Salir del Sistema</span>
-    </button>
-</aside>
-
-<main class="content">
-    <header class="header">
-        <div class="header-title">
-            <p>Bienvenido de nuevo</p>
-            <h1>Panel de Control</h1>
+    <div class="nav-right">
+        <div class="user-info">
+            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: grid; place-items: center; color: white; font-size: 0.8rem;">A</div>
+            <span id="u-name">Angelo C.</span>
         </div>
-        <div id="usuario" class="user-pill">
-            <!-- Cargado por JS -->
-        </div>
-    </header>
-
-    <div class="cards">
-        <!-- CARD EQUIPOS -->
-        <div class="card" onclick="ir('equipos')">
-            <div class="icon-wrapper">🖥️</div>
-            <div>
-                <h3>Inventario Global</h3>
-                <p>Explora y administra el catálogo completo de hardware. Monitorea especificaciones técnicas y disponibilidad en tiempo real.</p>
-            </div>
-            <div class="card-arrow">Explorar Catálogo →</div>
-        </div>
-
-        <!-- CARD PRESTAMOS -->
-        <div class="card" onclick="ir('prestamos')">
-            <div class="icon-wrapper">🚀</div>
-            <div>
-                <h3>Gestión de Salidas</h3>
-                <p>Registra nuevas asignaciones, visualiza fechas críticas de entrega y mantén el control sobre quién tiene cada equipo.</p>
-            </div>
-            <div class="card-arrow">Ver Préstamos →</div>
-        </div>
-
-        <!-- CARD DEVOLUCIONES -->
-        <div class="card" onclick="ir('devoluciones')">
-            <div class="icon-wrapper">✅</div>
-            <div>
-                <h3>Recepción Técnica</h3>
-                <p>Procesa las devoluciones de manera eficiente, verifica el estado físico de los activos y cierra los ciclos de préstamo.</p>
-            </div>
-            <div class="card-arrow">Historial de Retornos →</div>
-        </div>
+        <a href="javascript:void(0)" onclick="logout()" class="btn-logout">Salir</a>
     </div>
+</nav>
+
+<main class="container">
+    
+    <!-- MÉTRICAS -->
+    <section class="metrics-grid">
+        <div class="metric-card">
+            <div class="m-icon">🖥️</div>
+            <div class="m-data">
+                <h3 id="count-total">1,250</h3>
+                <p>Equipos Totales</p>
+            </div>
+        </div>
+        <div class="metric-card" style="border-bottom: 2px solid var(--primary);">
+            <div class="m-icon" style="color: var(--primary);">📤</div>
+            <div class="m-data">
+                <h3 id="count-loan">42</h3>
+                <p>En Préstamo</p>
+            </div>
+        </div>
+        <div class="metric-card" style="border-bottom: 2px solid var(--accent);">
+            <div class="m-icon" style="color: var(--accent);">✅</div>
+            <div class="m-data">
+                <h3 id="count-avail">1,208</h3>
+                <p>Disponibles</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACCIONES -->
+    <section class="actions-grid">
+        <a href="javascript:void(0)" onclick="ir('equipos')" class="action-card card-full">
+            <div class="a-icon">🏢</div>
+            <div>
+                <h2>Inventario de Activos</h2>
+                <p>Control centralizado de hardware, especificaciones técnicas y trazabilidad de ubicaciones físicas.</p>
+            </div>
+        </a>
+
+        <a href="javascript:void(0)" onclick="ir('prestamos')" class="action-card">
+            <div class="a-icon">📋</div>
+            <h2>Registrar Préstamo</h2>
+            <p>Asigna equipos a colaboradores con un flujo de trabajo optimizado.</p>
+        </a>
+
+        <a href="javascript:void(0)" onclick="ir('devoluciones')" class="action-card">
+            <div class="a-icon">📥</div>
+            <h2>Recibir Devolución</h2>
+            <p>Registra el retorno y verifica el estado de salud de los activos.</p>
+        </a>
+    </section>
+
 </main>
 
 <script>
-    // Recuperar usuario
-    const user = JSON.parse(localStorage.getItem('usuario'));
+// --- EFECTO DE PARTÍCULAS (Misma lógica que login para coherencia) ---
+const canvas = document.getElementById('canvas-particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-    // Renderizado de usuario con estilo premium
-    const renderUser = (u) => {
-        document.getElementById('usuario').innerHTML = `
-            <div class="avatar">${u.nombre.charAt(0).toUpperCase()}</div>
-            <div>
-                <span style="display:block">${u.nombre}</span>
-                <small style="color:var(--accent); font-weight:700; font-size:0.75rem; text-transform:uppercase">${u.rol}</small>
-            </div>
-        `;
-    };
-
-    if (!user) {
-        // Mock para vista previa si no existe localStorage
-        renderUser({ nombre: "Administrador", rol: "Superusuario" });
-    } else {
-        renderUser(user);
+function initParticles() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    particles = [];
+    for(let i = 0; i < 50; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 1,
+            speedX: (Math.random() - 0.5) * 0.4,
+            speedY: (Math.random() - 0.5) * 0.4,
+            opacity: Math.random() * 0.3
+        });
     }
+}
 
-    // Funciones de navegación con efecto suave y ajuste de rutas.
-    function ir(ruta) {
-        console.log("Navegando a:", ruta);
-        document.body.style.opacity = '0';
-        setTimeout(() => {
-            // Ajusta estas rutas según tu estructura real de archivos
-            window.location.href = ruta === 'dashboard' ? '#' : `/${ruta}/${ruta}.html`;
-            if(ruta === 'dashboard') document.body.style.opacity = '1';
-        }, 400);
-    }
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        p.x += p.speedX; p.y += p.speedY;
+        if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+    });
+    requestAnimationFrame(animateParticles);
+}
 
-    function logout() {
-        if(confirm("¿Estás seguro de que deseas cerrar sesión?")) {
-            localStorage.removeItem('usuario');
-            window.location.href = "/";
-        }
+window.addEventListener('resize', initParticles);
+initParticles();
+animateParticles();
+
+// Lógica de navegación
+function ir(ruta) {
+    document.body.style.transition = '0.5s';
+    document.body.style.opacity = '0';
+    document.body.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+        window.location.href = `/${ruta}/${ruta}.html`;
+    }, 400);
+}
+
+function logout() {
+    if(confirm("¿Cerrar sesión de SmartLoan IT?")) {
+        localStorage.removeItem('usuario');
+        window.location.href = "/";
     }
+}
 </script>
-
 </body>
 </html>

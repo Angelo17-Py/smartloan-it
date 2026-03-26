@@ -10,14 +10,13 @@
             --primary: #6366f1;
             --accent: #00f2ff;
             --bg: #030712;
-            --sidebar-bg: #09090b;
+            --sidebar-bg: rgba(9, 9, 11, 0.95);
             --card-bg: rgba(30, 41, 59, 0.4);
             --text: #f8fafc;
             --text-dim: #94a3b8;
             --warning: #f59e0b;
             --border: rgba(255, 255, 255, 0.08);
-            --sidebar-w: 300px; /* Un poco más ancho para iconos grandes */
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * {
@@ -30,140 +29,190 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* FONDO DINÁMICO */
         .bg-glow {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 10% 10%, rgba(0, 242, 255, 0.05) 0%, transparent 50%);
+            background: radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
             z-index: -1;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border);
-            padding: 40px 20px;
+        .nav-container {
             position: fixed;
-            height: 100vh;
+            top: 30px;
+            left: 30px;
+            z-index: 2000;
+        }
+
+        .nav-trigger {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 22px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .sidebar button {
-            width: 100%;
-            padding: 20px 24px; /* Más grande */
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-dim);
-            border-radius: 16px;
-            cursor: pointer;
-            text-align: left;
-            font-weight: 600;
-            font-size: 1.2rem; /* Texto más grande */
+        .nav-trigger:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .burger-line {
+            width: 28px;
+            height: 2px;
+            background: white;
+            margin: 3.5px 0;
             transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .nav-trigger.active .line-1 { transform: translateY(9px) rotate(45deg); }
+        .nav-trigger.active .line-2 { opacity: 0; transform: translateX(-20px); }
+        .nav-trigger.active .line-3 { transform: translateY(-9px) rotate(-45deg); }
+
+        .nav-panel {
+            position: absolute;
+            top: 85px;
+            left: 0;
+            width: 300px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 25px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px) scale(0.95);
+            transition: var(--transition);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+        }
+
+        .nav-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
+            padding: 18px 22px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 18px;
+            transition: var(--transition);
+            margin-bottom: 8px;
+            cursor: pointer;
         }
 
-        .sidebar button .icon {
-            font-size: 1.8rem; /* Icono mucho más grande */
-        }
-
-        .sidebar button:hover {
-            background: var(--card-bg);
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.15);
             color: white;
-            border-color: var(--border);
+            transform: translateX(10px);
         }
 
-        /* CONTENIDO */
+        .nav-link span { font-size: 1.5rem; }
+
         .content {
-            margin-left: var(--sidebar-w);
-            padding: 60px 80px;
-            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 40px 60px;
         }
 
         h2 {
-            font-size: 3.5rem; /* Título mucho más grande */
+            font-size: 3.8rem;
             font-weight: 800;
-            letter-spacing: -1.5px;
+            letter-spacing: -2px;
             margin-bottom: 50px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* FORMULARIO */
         .form-card {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
-            padding: 40px; /* Más espacio */
-            border-radius: 28px;
+            padding: 45px;
+            border-radius: 32px;
             border: 1px solid var(--border);
             display: grid;
             grid-template-columns: 1fr 1fr 1fr auto;
             gap: 25px;
             align-items: flex-end;
             margin-bottom: 60px;
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.5);
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .input-group label {
-            font-size: 0.9rem; /* Etiqueta más legible */
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.5px;
             color: var(--accent);
-            font-weight: 700;
+            font-weight: 800;
         }
 
         input {
             width: 100%;
-            padding: 16px 20px; /* Input más grande */
+            padding: 18px 22px;
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+            border: 2px solid var(--border);
+            border-radius: 18px;
             color: white;
-            font-size: 1.1rem; /* Texto de entrada más grande */
+            font-size: 1.1rem;
             outline: none;
             transition: var(--transition);
         }
 
         input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(0, 242, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
         }
 
         .btn-action {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
+            background: white;
+            color: black;
             border: none;
-            padding: 0 35px;
-            border-radius: 14px;
+            padding: 0 40px;
+            border-radius: 18px;
             font-weight: 800;
-            font-size: 1.1rem; /* Texto botón más grande */
+            font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition);
-            height: 58px; /* Botón más alto */
+            height: 60px;
         }
 
         .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
         }
 
-        /* TABLA */
         .table-container {
             background: var(--card-bg);
-            border-radius: 28px;
+            border-radius: 32px;
             border: 1px solid var(--border);
             overflow: hidden;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
         }
 
         table {
@@ -173,34 +222,45 @@
         }
 
         thead {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
             color: var(--text-dim);
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 2px;
         }
 
-        th { padding: 25px 30px; }
+        th { padding: 30px; }
         td { 
-            padding: 25px 30px; 
+            padding: 30px; 
             border-bottom: 1px solid var(--border); 
-            font-size: 1.1rem; /* Texto de tabla más grande */
+            font-size: 1.1rem;
         }
 
         .badge-status {
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 0.85rem;
             font-weight: 700;
-            background: rgba(245, 158, 11, 0.15);
+            background: rgba(245, 158, 11, 0.1);
             color: var(--warning);
             border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1200px) {
+        .empty-state {
+            padding: 80px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 1100px) {
             .form-card { grid-template-columns: 1fr 1fr; }
-            .content { padding: 40px; }
+            h2 { font-size: 2.8rem; }
+        }
+
+        @media (max-width: 600px) {
+            .form-card { grid-template-columns: 1fr; padding: 30px; }
+            .content { padding: 120px 20px 40px; }
         }
     </style>
 </head>
@@ -208,11 +268,19 @@
 
 <div class="bg-glow"></div>
 
-<aside class="sidebar">
-    <button onclick="ir('home')">
-        <span class="icon">🏠</span> Inicio
-    </button>
-</aside>
+<div class="nav-container">
+    <div class="nav-trigger" onclick="toggleNav()">
+        <div class="burger-line line-1"></div>
+        <div class="burger-line line-2"></div>
+        <div class="burger-line line-3"></div>
+    </div>
+
+    <div class="nav-panel" id="navPanel">
+        <a class="nav-link" onclick="ir('home')">
+            <span>🏠</span> Inicio
+        </a>
+    </div>
+</div>
 
 <main class="content">
     <h2>Registro de Préstamos</h2>
@@ -220,11 +288,11 @@
     <div class="form-card">
         <div class="input-group">
             <label>ID Usuario</label>
-            <input id="usuario" placeholder="Cédula del solicitante">
+            <input id="usuario" placeholder="Cédula del solicitante" autocomplete="off">
         </div>
         <div class="input-group">
             <label>ID Equipo</label>
-            <input id="equipo" placeholder="Código del equipo">
+            <input id="equipo" placeholder="Código del equipo" autocomplete="off">
         </div>
         <div class="input-group">
             <label>Fecha Estimada</label>
@@ -243,63 +311,101 @@
                     <th>Vencimiento</th>
                 </tr>
             </thead>
-            <tbody id="tabla">
-                <!-- Data via JS -->
-            </tbody>
+            <tbody id="tabla"></tbody>
         </table>
     </div>
 </main>
 
 <script>
-function ir(r) { 
-    document.body.style.opacity = '0';
-    setTimeout(() => window.location.href = "/home/dashboard.html", 200); 
+let prestamosData = [];
+
+function toggleNav() {
+    const trigger = document.querySelector('.nav-trigger');
+    const panel = document.getElementById('navPanel');
+    trigger.classList.toggle('active');
+    panel.classList.toggle('active');
 }
 
-async function cargar() {
-    try {
-        const res = await fetch('/prestamos');
-        const data = await res.json();
-        const tabla = document.getElementById('tabla');
+document.addEventListener('click', (e) => {
+    const container = document.querySelector('.nav-container');
+    const panel = document.getElementById('navPanel');
+    if (!container.contains(e.target) && panel.classList.contains('active')) {
+        toggleNav();
+    }
+});
 
-        tabla.innerHTML = data.map(p => `
-            <tr>
-                <td style="font-weight: 700; color: var(--accent); font-size: 1.2rem;">#PR-${p.id_prestamo}</td>
-                <td>
-                    <div style="font-weight: 700; font-size: 1.2rem;">${p.equipo}</div>
-                    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 4px;">Asignado a: ${p.usuario || 'N/A'}</div>
-                </td>
-                <td><span class="badge-status">${p.estado}</span></td>
-                <td style="font-family: monospace; font-size: 1.1rem; font-weight: 600;">
-                    ${p.fecha_devolucion_estimada || '-- / -- / --'}
-                </td>
-            </tr>
-        `).join('');
-    } catch (e) { console.error(e); }
+function ir(vista) {
+    toggleNav();
+    document.body.style.opacity = '0.5';
+    setTimeout(() => {
+        if (vista === 'home') {
+            window.location.href = '../home/dashboard.html';
+        }
+    }, 300);
+}
+
+function cargar() {
+    const tabla = document.getElementById('tabla');
+    
+    if (prestamosData.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="4" class="empty-state">No hay registros de préstamos activos.</td></tr>`;
+        return;
+    }
+
+    tabla.innerHTML = prestamosData.map(p => `
+        <tr>
+            <td style="font-weight: 800; color: var(--accent); font-size: 1.2rem;">#PR-${p.id_prestamo}</td>
+            <td>
+                <div style="font-weight: 700; font-size: 1.2rem; color: white;">${p.equipo}</div>
+                <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 4px;">Asignado a: ${p.usuario || 'N/A'}</div>
+            </td>
+            <td><span class="badge-status">${p.estado}</span></td>
+            <td style="font-family: monospace; font-size: 1.1rem; font-weight: 600; color: var(--text-dim);">
+                ${p.vencimiento || '-- / -- / --'}
+            </td>
+        </tr>
+    `).join('');
 }
 
 async function prestar() {
     const u = document.getElementById('usuario');
     const e = document.getElementById('equipo');
     const f = document.getElementById('fecha');
+    const btn = document.querySelector('.btn-action');
 
-    if(!u.value || !e.value) return;
+    if(!u.value || !e.value) {
+        if(!u.value) u.style.borderColor = "var(--warning)";
+        if(!e.value) e.style.borderColor = "var(--warning)";
+        setTimeout(() => {
+            u.style.borderColor = "var(--border)";
+            e.style.borderColor = "var(--border)";
+        }, 2000);
+        return;
+    }
 
-    await fetch('/prestamos', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            id_usuario: u.value,
-            id_equipo: e.value,
-            fecha_devolucion_estimada: f.value
-        })
-    });
+    btn.innerHTML = "PROCESANDO...";
+    btn.disabled = true;
 
+    await new Promise(r => setTimeout(r, 800));
+
+    const nuevo = {
+        id_prestamo: Math.floor(Math.random() * 9000) + 1000,
+        equipo: e.value,
+        usuario: u.value,
+        estado: "En Uso",
+        vencimiento: f.value
+    };
+
+    prestamosData.unshift(nuevo);
+    
     u.value = ''; e.value = ''; f.value = '';
+    btn.innerHTML = "Registrar Salida";
+    btn.disabled = false;
+    
     cargar();
 }
 
-cargar();
+window.onload = cargar;
 </script>
 
 </body>

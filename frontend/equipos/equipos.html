@@ -10,15 +10,14 @@
             --primary: #6366f1;
             --accent: #00f2ff;
             --bg: #030712;
-            --sidebar-bg: #09090b;
+            --sidebar-bg: rgba(9, 9, 11, 0.95);
             --card-bg: rgba(30, 41, 59, 0.4);
             --text: #f8fafc;
             --text-dim: #94a3b8;
             --danger: #ef4444;
             --success: #22c55e;
             --border: rgba(255, 255, 255, 0.08);
-            --sidebar-w: 320px; /* Aumentado de 280px */
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * {
@@ -31,69 +30,139 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            display: flex;
             min-height: 100vh;
-            font-size: 16px; /* Base más grande */
+            display: flex;
+            overflow-x: hidden;
         }
 
         /* FONDO DINÁMICO */
         .bg-glow {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
             z-index: -1;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border);
-            padding: 50px 30px;
+        /* --- NUEVO MENÚ ORBITAL FLOTANTE --- */
+        .nav-container {
             position: fixed;
-            height: 100vh;
+            top: 30px;
+            left: 30px;
+            z-index: 2000;
+        }
+
+        .nav-trigger {
+            width: 65px;
+            height: 65px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 22px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .sidebar button {
-            width: 100%;
-            padding: 18px 24px; /* Más padding */
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-dim);
-            border-radius: 16px;
-            cursor: pointer;
-            text-align: left;
-            font-weight: 600;
-            font-size: 1.1rem; /* Texto de menú más grande */
+        .nav-trigger:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .burger-line {
+            width: 24px;
+            height: 2px;
+            background: white;
+            margin: 3px 0;
             transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .nav-trigger.active .line-1 { transform: translateY(8px) rotate(45deg); }
+        .nav-trigger.active .line-2 { opacity: 0; transform: translateX(-20px); }
+        .nav-trigger.active .line-3 { transform: translateY(-8px) rotate(-45deg); }
+
+        .nav-panel {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            width: 280px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 25px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px) scale(0.95);
+            transition: var(--transition);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+        }
+
+        .nav-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 15px;
+            padding: 15px 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 16px;
+            transition: var(--transition);
+            margin-bottom: 5px;
         }
 
-        .sidebar button .icon {
-            font-size: 1.5rem; /* Icono más grande */
-        }
-
-        .sidebar button:hover {
-            background: var(--card-bg);
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.1);
             color: white;
-            border-color: var(--border);
-            transform: translateX(5px);
+            transform: translateX(8px);
         }
 
-        /* CONTENIDO */
+        .logout-wrapper {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            color: var(--danger);
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 16px;
+            background: rgba(239, 68, 68, 0.05);
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* --- CONTENIDO AJUSTADO (SIN MARGEN SIDEBAR) --- */
         .content {
-            margin-left: var(--sidebar-w);
-            padding: 80px 100px; /* Más aire lateral */
             width: 100%;
-            max-width: 1600px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 40px 60px;
+            transition: var(--transition);
         }
 
         h2 {
-            font-size: 3.5rem; /* Título gigante */
+            font-size: 3.5rem;
             font-weight: 800;
             letter-spacing: -2px;
             margin-bottom: 50px;
@@ -102,7 +171,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* FORMULARIO DE AGREGAR */
         .form-card {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -135,10 +203,10 @@
 
         input {
             width: 100%;
-            padding: 16px 20px; /* Inputs más grandes */
+            padding: 18px 22px;
             background: rgba(0, 0, 0, 0.3);
             border: 2px solid var(--border);
-            border-radius: 14px;
+            border-radius: 16px;
             color: white;
             font-size: 1.05rem;
             outline: none;
@@ -147,8 +215,7 @@
 
         input:focus {
             border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.15);
         }
 
         .btn-add {
@@ -156,24 +223,22 @@
             color: white;
             border: none;
             padding: 0 40px;
-            border-radius: 14px;
+            border-radius: 16px;
             font-weight: 700;
             font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition);
-            height: 58px; /* Altura alineada con inputs */
+            height: 62px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .btn-add:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
-            filter: brightness(1.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
         }
 
-        /* TABLA DE EQUIPOS */
         .table-container {
             background: var(--card-bg);
             border-radius: 32px;
@@ -185,99 +250,57 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
-        }
-
-        thead {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-dim);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 2.5px;
         }
 
         th {
             padding: 25px 35px;
-            font-weight: 800;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-align: left;
         }
 
         td {
-            padding: 30px 35px; /* Filas mucho más altas */
+            padding: 25px 35px;
             border-bottom: 1px solid var(--border);
-            font-size: 1.1rem; /* Texto de tabla más grande */
-        }
-
-        tr:last-child td { border-bottom: none; }
-
-        tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
+            font-size: 1.1rem;
         }
 
         .badge {
             padding: 8px 16px;
             border-radius: 10px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 800;
             text-transform: uppercase;
-            display: inline-block;
         }
 
-        .badge-disponible { background: rgba(34, 197, 94, 0.15); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
-        .badge-prestado { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .badge-disponible { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-prestado { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
 
         .btn-delete {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
             border: 1px solid rgba(239, 68, 68, 0.2);
-            width: 45px; /* Botón de acción más grande */
-            height: 45px;
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 1.5rem;
-            line-height: 1;
+            font-size: 1.2rem;
         }
 
         .btn-delete:hover {
             background: var(--danger);
             color: white;
-            transform: rotate(90deg) scale(1.1);
+            transform: rotate(90deg);
         }
 
-        /* INFO TEXTS */
-        .equip-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 4px;
-        }
-
-        .equip-meta {
-            font-size: 0.95rem;
-            color: var(--text-dim);
-        }
-
-        /* MENSAJE DE TABLA VACÍA */
-        .empty-state {
-            padding: 60px;
-            text-align: center;
-            color: var(--text-dim);
-            font-size: 1.2rem;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1200px) {
-            .content { padding: 40px; }
-            .sidebar { width: 100px; padding: 40px 15px; }
-            .sidebar button span:not(.icon) { display: none; }
-            .sidebar button { justify-content: center; padding: 20px; }
-            .content { margin-left: 100px; }
-            h2 { font-size: 2.8rem; }
-        }
-
-        @media (max-width: 800px) {
+        @media (max-width: 900px) {
             .form-card { flex-direction: column; align-items: stretch; }
-            .btn-add { height: 60px; }
+            h2 { font-size: 2.5rem; }
+            .content { padding: 100px 20px; }
         }
     </style>
 </head>
@@ -285,17 +308,25 @@
 
 <div class="bg-glow"></div>
 
-<aside class="sidebar">
-    <button onclick="ir('home')">
-        <span class="icon">🏠</span> 
-        <span>Inicio</span>
-    </button>
-</aside>
+<!-- NAVEGACIÓN ORBITAL FLOTANTE -->
+<div class="nav-container">
+    <div class="nav-trigger" onclick="toggleNav()">
+        <div class="burger-line line-1"></div>
+        <div class="burger-line line-2"></div>
+        <div class="burger-line line-3"></div>
+    </div>
+
+    <div class="nav-panel" id="navPanel">
+        <a href="#" class="nav-link" onclick="ir('home')">
+            <span style="font-size: 1.2rem;">🏠</span> Inicio
+        </a>
+       
+    </div>
+</div>
 
 <main class="content">
     <h2>Gestión de Equipos</h2>
 
-    <!-- Formulario para agregar -->
     <div class="form-card">
         <div class="input-group">
             <label>Nombre del Equipo</label>
@@ -314,7 +345,6 @@
         </button>
     </div>
 
-    <!-- Tabla de resultados -->
     <div class="table-container">
         <table>
             <thead>
@@ -326,85 +356,73 @@
                 </tr>
             </thead>
             <tbody id="tabla">
-                <!-- Los datos se cargan aquí -->
+                <!-- Se cargará mediante JS -->
             </tbody>
         </table>
     </div>
 </main>
 
 <script>
-// Simulación de navegación
-function ir(r) { 
-    document.body.style.opacity = '0.5';
-    document.body.style.transform = 'scale(0.98)';
-    setTimeout(() => {
-        // En un entorno real esto cambiaría la URL
-        console.log("Navegando a dashboard...");
-        document.body.style.opacity = '1';
-        document.body.style.transform = 'scale(1)';
-    }, 200);
+function toggleNav() {
+    const trigger = document.querySelector('.nav-trigger');
+    const panel = document.getElementById('navPanel');
+    trigger.classList.toggle('active');
+    panel.classList.toggle('active');
 }
 
+// Cerrar menú al hacer clic fuera
+document.addEventListener('click', (e) => {
+    const container = document.querySelector('.nav-container');
+    const panel = document.getElementById('navPanel');
+    if (!container.contains(e.target) && panel.classList.contains('active')) {
+        toggleNav();
+    }
+});
+
 function ir(r) { 
+    toggleNav();
     document.body.style.opacity = '0';
     setTimeout(() => {
         window.location.href = "/home/dashboard.html"; 
-    }, 200);
+    }, 300);
 }
 
-// Datos de ejemplo para que la tabla no se vea vacía inicialmente si no hay backend
 let equiposMock = [
     { id_equipo: 101, nombre: 'MacBook Pro M2', tipo: 'Laptop', marca: 'Apple', estado: 'Disponible' },
     { id_equipo: 102, nombre: 'Dell XPS 15', tipo: 'Laptop', marca: 'Dell', estado: 'Prestado' }
 ];
 
 async function cargar() {
+    const tabla = document.getElementById('tabla');
+    let data = equiposMock;
+
     try {
-        // Intentamos fetch real, si falla usamos mock
-        let data;
-        try {
-            const res = await fetch('/equipos');
-            if (res.ok) {
-                data = await res.json();
-            } else {
-                data = equiposMock;
-            }
-        } catch(e) {
-            data = equiposMock;
-        }
+        const res = await fetch('/equipos');
+        if (res.ok) data = await res.json();
+    } catch(e) {}
 
-        const tabla = document.getElementById('tabla');
-        
-        if(data.length === 0) {
-            tabla.innerHTML = `<tr><td colspan="4" class="empty-state">No hay equipos registrados</td></tr>`;
-            return;
-        }
-
-        tabla.innerHTML = data.map(e => {
-            const estadoClass = e.estado.toLowerCase() === 'disponible' ? 'badge-disponible' : 'badge-prestado';
-            return `
-                <tr>
-                    <td style="color: var(--primary); font-weight: 800; font-family: monospace; font-size: 1.2rem;">
-                        #${e.id_equipo}
-                    </td>
-                    <td>
-                        <div class="equip-name">${e.nombre}</div>
-                        <div class="equip-meta">${e.tipo} • <span style="color: white">${e.marca}</span></div>
-                    </td>
-                    <td>
-                        <span class="badge ${estadoClass}">${e.estado}</span>
-                    </td>
-                    <td style="text-align: center;">
-                        <button class="btn-delete" title="Eliminar" onclick="eliminar(${e.id_equipo})">
-                            &times;
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    } catch (error) {
-        console.error("Error cargando equipos:", error);
+    if(data.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:50px; color:var(--text-dim)">No hay equipos</td></tr>`;
+        return;
     }
+
+    tabla.innerHTML = data.map(e => `
+        <tr>
+            <td style="color:var(--primary); font-weight:800; font-family:monospace;">#${e.id_equipo}</td>
+            <td>
+                <div style="font-weight:700; color:white;">${e.nombre}</div>
+                <div style="font-size:0.9rem; color:var(--text-dim)">${e.tipo} • ${e.marca}</div>
+            </td>
+            <td>
+                <span class="badge ${e.estado.toLowerCase() === 'disponible' ? 'badge-disponible' : 'badge-prestado'}">
+                    ${e.estado}
+                </span>
+            </td>
+            <td style="text-align: center;">
+                <button class="btn-delete" onclick="eliminar(${e.id_equipo})">&times;</button>
+            </td>
+        </tr>
+    `).join('');
 }
 
 async function crear() {
@@ -418,46 +436,19 @@ async function crear() {
         return;
     }
 
-    const nuevoEquipo = {
-        nombre: n.value,
-        tipo: t.value || 'N/A',
-        marca: m.value || 'Generico'
-    };
-
-    try {
-        await fetch('/equipos', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(nuevoEquipo)
-        });
-    } catch(e) {
-        // Fallback local para demo
-        equiposMock.push({
-            id_equipo: Math.floor(Math.random() * 900) + 100,
-            ...nuevoEquipo,
-            estado: 'Disponible'
-        });
-    }
-
-    // Limpiar campos y refrescar
+    const nuevo = { id_equipo: Math.floor(Math.random()*900)+100, nombre: n.value, tipo: t.value || 'N/A', marca: m.value || 'Genérico', estado: 'Disponible' };
+    equiposMock.push(nuevo);
+    
     n.value = ''; t.value = ''; m.value = '';
     cargar();
 }
 
 async function eliminar(id) {
-    const customConfirm = confirm("¿Estás seguro de eliminar este equipo de forma permanente?");
-    if(!customConfirm) return;
-    
-    try {
-        await fetch(`/equipos/${id}`, { method: 'DELETE' });
-    } catch(e) {
-        // Fallback local
-        equiposMock = equiposMock.filter(e => e.id_equipo !== id);
-    }
+    if(!confirm("¿Eliminar equipo?")) return;
+    equiposMock = equiposMock.filter(e => e.id_equipo !== id);
     cargar();
 }
 
-// Carga inicial
 window.onload = cargar;
 </script>
 
