@@ -97,3 +97,5 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+/* Vamos por buen camino, ya tenemos la estructura básica de la base de datos para el sistema de préstamos.*/ 
