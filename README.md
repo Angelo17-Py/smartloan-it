@@ -1,4 +1,4 @@
-# 📦 SmartLoan IT
+#  SmartLoan IT
 ### Sistema de Gestión de Préstamos de Recursos Tecnológicos
 > Proyecto Académico — Ingeniería en Informática · Universidad Integración de las Américas
 
@@ -9,13 +9,13 @@
 
 ---
 
-## 📋 Descripción
+## Descripción
 
 **SmartLoan IT** es un sistema web para la gestión de préstamos de activos tecnológicos en instituciones educativas. Permite al encargado registrar equipos, alumnos, préstamos y devoluciones, con control automático de multas por retraso y registro de daños.
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 | Módulo | Descripción |
 |--------|-------------|
@@ -29,7 +29,7 @@
 
 ---
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 **Backend**
 - Node.js + Express 5
@@ -42,7 +42,7 @@
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 SistemaPrestamos/
@@ -75,7 +75,7 @@ SistemaPrestamos/
 
 ---
 
-## 🚀 Instalación y Uso
+##  Instalación y Uso
 
 ### 1. Requisitos previos
 - [Node.js](https://nodejs.org/) v18 o superior
@@ -112,18 +112,18 @@ Abrí tu navegador en: **http://localhost:3000**
 
 ---
 
-## 🔐 Credenciales por defecto
+## Credenciales por defecto
 
 | Campo | Valor |
 |-------|-------|
 | Código | `1234` |
 | Contraseña | `CREDENCIALES_BORRADAS` |
 
-> ⚠️ Se recomienda cambiar las credenciales antes de usar en producción.
+>  Se recomienda cambiar las credenciales antes de usar en producción.
 
 ---
 
-## 🗄️ Base de Datos
+##  Base de Datos
 
 El sistema utiliza **5 tablas principales**:
 
@@ -142,7 +142,7 @@ devoluciones → Registro de retorno con multas y daños
 
 ---
 
-## 💰 Lógica de Multas
+## Lógica de Multas
 
 | Concepto | Valor |
 |----------|-------|
@@ -152,13 +152,13 @@ devoluciones → Registro de retorno con multas y daños
 
 ---
 
-## 📸 Capturas
+## Capturas
 
 > _Dashboard, Gestión de Equipos, Registro de Préstamos, Devolución con multa automática_
 
 ---
 
-## 👨‍💻 Autor
+##  Autor
 
 **Angelo Caballero**
 Proyecto de Grado — Ingeniería en Informática
@@ -166,6 +166,6 @@ Universidad Integración de las Américas · 2026
 
 ---
 
-## 📄 Licencia
+##  Licencia
 
 Este proyecto fue desarrollado con fines académicos.
