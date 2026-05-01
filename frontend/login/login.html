@@ -3,394 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al Sistema | Premium Experience</title>
+    <title>SmartLoan IT | Acceso</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.5);
-            --accent: #00f2ff;
-            --accent-glow: rgba(0, 242, 255, 0.5);
-            --bg: #020617;
-            --card-bg: rgba(15, 23, 42, 0.7);
-            --text: #ffffff;
-            --text-dim: #94a3b8;
-            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --primary:#6366f1; --primary-glow:rgba(99,102,241,0.5);
+            --accent:#00f2ff;  --accent-glow:rgba(0,242,255,0.5);
+            --bg:#020617; --card-bg:rgba(15,23,42,0.7);
+            --text:#ffffff; --text-dim:#94a3b8;
+            --transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
         }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
+        body { background:var(--bg); color:var(--text); height:100vh; display:grid; place-items:center; overflow:hidden; }
+        #canvas-particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
+        .bg-glow { position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 80% 20%, rgba(99,102,241,0.2) 0%, transparent 40%),radial-gradient(circle at 20% 80%, rgba(0,242,255,0.15) 0%, transparent 40%); z-index:-1; filter:blur(80px); }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        .login-container { width:90%; max-width:450px; padding:55px 46px; background:var(--card-bg); backdrop-filter:blur(25px); border-radius:40px; border:1px solid rgba(255,255,255,0.12); box-shadow:0 30px 60px -12px rgba(0,0,0,0.7); text-align:center; animation:slideUp 0.8s ease-out; }
+        @keyframes slideUp { from{opacity:0;transform:translateY(40px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            display: grid;
-            place-items: center;
-            overflow: hidden;
-            position: relative;
-        }
+        .logo-box { background:linear-gradient(135deg,var(--primary),var(--accent)); width:74px; height:74px; border-radius:22px; display:grid; place-items:center; margin:0 auto 20px; box-shadow:0 15px 35px var(--primary-glow); animation:pulse-glow 3s infinite; }
+        @keyframes pulse-glow { 0%{box-shadow:0 0 20px var(--primary-glow);transform:scale(1)} 50%{box-shadow:0 0 40px var(--accent-glow);transform:scale(1.05)} 100%{box-shadow:0 0 20px var(--primary-glow);transform:scale(1)} }
 
-        /* FONDO DINÁMICO CON PARTÍCULAS */
-        #canvas-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
+        h2 { font-size:2.2rem; font-weight:800; letter-spacing:-1.5px; margin-bottom:5px; background:linear-gradient(to bottom,#fff,#94a3b8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .subtitle { color:var(--text-dim); font-size:0.88rem; margin-bottom:8px; }
+        .univ-badge { display:inline-block; background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.2); border-radius:100px; padding:5px 14px; font-size:0.74rem; color:var(--primary); font-weight:700; margin-bottom:28px; }
 
-        .bg-glow {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 40%),
-                radial-gradient(circle at 20% 80%, rgba(0, 242, 255, 0.15) 0%, transparent 40%);
-            z-index: -1;
-            filter: blur(80px);
-        }
+        .input-wrap { margin-bottom:14px; text-align:left; }
+        .input-wrap label { display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; margin-bottom:8px; }
+        .input-wrap input { width:100%; padding:17px 20px; background:rgba(15,23,42,0.5); border:2px solid rgba(255,255,255,0.06); border-radius:15px; color:white; font-size:1.05rem; outline:none; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; }
+        .input-wrap input:focus { border-color:var(--primary); background:rgba(15,23,42,0.9); box-shadow:0 0 0 4px rgba(99,102,241,0.15); }
+        .input-wrap input::placeholder { color:#475569; }
 
-        /* CONTENEDOR LOGIN REDISEÑADO */
-        .login-container {
-            width: 90%;
-            max-width: 500px; /* Más ancho */
-            padding: 60px 50px; /* Más padding */
-            background: var(--card-bg);
-            backdrop-filter: blur(25px) saturate(180%);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 
-                0 0 0 1px rgba(255, 255, 255, 0.05),
-                0 30px 60px -12px rgba(0, 0, 0, 0.7);
-            text-align: center;
-            animation: slideUp 1s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
+        /* Wrapper para campo con ojo */
+        .pass-wrap { position:relative; }
+        .pass-wrap input { padding-right:50px; }
+        .eye-btn { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-dim); font-size:1rem; transition:0.2s; padding:4px; }
+        .eye-btn:hover { color:white; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        .btn-login { width:100%; padding:18px; background:linear-gradient(135deg,var(--primary),#4f46e5); border:none; border-radius:15px; color:white; font-size:1.05rem; font-weight:800; cursor:pointer; transition:var(--transition); text-transform:uppercase; letter-spacing:1px; font-family:'Plus Jakarta Sans',sans-serif; margin-top:8px; }
+        .btn-login:hover { transform:translateY(-3px); box-shadow:0 20px 40px -10px rgba(99,102,241,0.7); }
+        .btn-login:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
-        .logo-area {
-            margin-bottom: 45px;
-        }
+        #error-msg { margin-top:14px; font-size:0.87rem; font-weight:600; color:#fb7185; min-height:20px; opacity:0; transition:0.3s; display:flex; align-items:center; justify-content:center; gap:7px; }
 
-        .logo-box {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            width: 80px; /* Más grande */
-            height: 80px; /* Más grande */
-            border-radius: 24px;
-            display: grid;
-            place-items: center;
-            margin: 0 auto 25px;
-            font-size: 40px; /* Icono más grande */
-            box-shadow: 0 15px 35px var(--primary-glow);
-            animation: pulse-glow 3s infinite;
-            position: relative;
-        }
+        .footer-text { margin-top:26px; font-size:0.72rem; color:var(--text-dim); opacity:0.4; line-height:1.6; }
 
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 20px var(--primary-glow); transform: scale(1); }
-            50% { box-shadow: 0 0 40px var(--accent-glow); transform: scale(1.05); }
-            100% { box-shadow: 0 0 20px var(--primary-glow); transform: scale(1); }
-        }
-
-        h2 {
-            font-size: 2.8rem; /* Título gigante */
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 12px;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: var(--text-dim);
-            font-size: 1.1rem; /* Subtítulo más grande */
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-
-        /* INPUTS MODERNIZADOS */
-        .input-group {
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        input {
-            width: 100%;
-            padding: 22px 28px; /* Input muy espacioso */
-            background: rgba(15, 23, 42, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            color: white;
-            font-size: 1.2rem; /* Letra de input más grande */
-            outline: none;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            background: rgba(15, 23, 42, 0.8);
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
-            transform: translateY(-2px);
-        }
-
-        input::placeholder {
-            color: #475569;
-            opacity: 0.7;
-        }
-
-        /* BOTÓN IMPRESIONANTE */
-        button {
-            width: 100%;
-            padding: 22px;
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            border: none;
-            border-radius: 20px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.5);
-            overflow: hidden;
-            position: relative;
-        }
-
-        button::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg);
-            transition: 0.8s;
-        }
-
-        button:hover::after {
-            left: 100%;
-        }
-
-        button:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.7);
-            filter: brightness(1.2);
-        }
-
-        button:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* ERROR ESTILIZADO */
-        #error-msg {
-            margin-top: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fb7185;
-            min-height: 24px;
-            opacity: 0;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        /* DECORACIÓN FOOTER */
-        .footer-text {
-            margin-top: 40px;
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-            opacity: 0.5;
-        }
-
-        /* ANIMACIÓN DE ERROR SHAKE */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-10px); }
-            40% { transform: translateX(10px); }
-            60% { transform: translateX(-10px); }
-            80% { transform: translateX(10px); }
-        }
-
-        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-
+        @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
+        .shake { animation:shake 0.45s both; }
     </style>
 </head>
 <body>
-
 <canvas id="canvas-particles"></canvas>
 <div class="bg-glow"></div>
 
-<div class="login-container">
-    <div class="logo-area">
-        <div class="logo-box">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-        </div>
-        <h2>SmartLoan IT</h2>
-        <p class="subtitle"></p>
+<div class="login-container" id="loginBox">
+    <div class="logo-box">
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+    </div>
+    <h2>SmartLoan IT</h2>
+    <p class="subtitle">Sistema de Gestión de Recursos Tecnológicos</p>
+    <div class="univ-badge">🎓 Universidad Integración de las Américas</div>
+
+    <div class="input-wrap">
+        <label>Código (máx. 4 dígitos)</label>
+        <input type="text" id="codigo" placeholder="Ej: 1234" autocomplete="off"
+               maxlength="4" inputmode="numeric" pattern="[0-9]*">
     </div>
 
-    <div class="input-group">
-        <input type="text" id="cedula" placeholder="Número de Identidad" autocomplete="off" maxlength="15">
+    <div class="input-wrap">
+        <label>Contraseña</label>
+        <div class="pass-wrap">
+            <input type="password" id="password" placeholder="••••••••" autocomplete="off">
+            <button class="eye-btn" type="button" onclick="togglePass()" id="eyeBtn">👁</button>
+        </div>
     </div>
-    
-    <button id="loginBtn" onclick="login()">
-        <span>Acceder Ahora</span>
-    </button>
+
+    <button class="btn-login" id="loginBtn" onclick="login()">Acceder al Sistema</button>
 
     <div id="error-msg">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span id="error-text">Usuario no encontrado</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="error-text"></span>
     </div>
 
-    <p class="footer-text">© 2026 Angelo Caballero. Todos los derechos reservados.
-Este sistema fue desarrollado como parte del proyecto académico de la carrera de Ingeniería en Informática.</p>
+    <p class="footer-text">© 2026 Angelo Caballero — Proyecto de Grado · Ing. en Informática</p>
 </div>
 
 <script>
-// --- EFECTO DE PARTÍCULAS ---
-const canvas = document.getElementById('canvas-particles');
-const ctx = canvas.getContext('2d');
-let particles = [];
+// Partículas
+const canvas=document.getElementById('canvas-particles'),ctx=canvas.getContext('2d');let particles=[];
+function initParticles(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;particles=[];for(let i=0;i<60;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2+1,speedX:(Math.random()-0.5)*0.5,speedY:(Math.random()-0.5)*0.5,opacity:Math.random()*0.5});}
+function animateParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.x+=p.speedX;p.y+=p.speedY;if(p.x<0||p.x>canvas.width)p.speedX*=-1;if(p.y<0||p.y>canvas.height)p.speedY*=-1;ctx.fillStyle=`rgba(99,102,241,${p.opacity})`;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();});requestAnimationFrame(animateParticles);}
+window.addEventListener('resize',initParticles);initParticles();animateParticles();
 
-function initParticles() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    particles = [];
-    for(let i = 0; i < 60; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 1,
-            speedX: (Math.random() - 0.5) * 0.5,
-            speedY: (Math.random() - 0.5) * 0.5,
-            opacity: Math.random() * 0.5
-        });
-    }
+// Solo permitir números en el campo código
+document.getElementById('codigo').addEventListener('input', function(){
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+function togglePass() {
+    const inp = document.getElementById('password');
+    const btn = document.getElementById('eyeBtn');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
-function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-        
-        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-    });
-    requestAnimationFrame(animateParticles);
-}
-
-window.addEventListener('resize', initParticles);
-initParticles();
-animateParticles();
-
-// --- LÓGICA DE LOGIN ---
 async function login() {
-    const cedulaInput = document.getElementById('cedula');
-    const btn = document.getElementById('loginBtn');
+    const codigo   = document.getElementById('codigo').value.trim();
+    const password = document.getElementById('password').value;
+    const btn      = document.getElementById('loginBtn');
     const errorMsg = document.getElementById('error-msg');
-    const errorText = document.getElementById('error-text');
 
-    if (!cedulaInput.value) {
-        showError("Ingrese su credencial");
-        return;
-    }
+    if(!codigo)    { showError('Ingresá tu código'); return; }
+    if(!password)  { showError('Ingresá tu contraseña'); return; }
 
-    // Efecto visual de carga premium
-    btn.disabled = true;
-    btn.style.filter = "grayscale(0.5)";
-    btn.innerHTML = `<span>Procesando...</span>`;
-    errorMsg.style.opacity = "0";
+    btn.disabled = true; btn.textContent = 'Verificando...'; errorMsg.style.opacity = '0';
 
     try {
-        // Simulamos una latencia para que se vea el efecto "wow" del procesamiento
-        await new Promise(r => setTimeout(r, 1200));
-
-        const res = await fetch('/usuarios/login', {
+        await new Promise(r => setTimeout(r, 600));
+        const res = await fetch('/encargados/login', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ cedula: cedulaInput.value })
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ codigo, password })
         });
-
         const data = await res.json();
 
-        if (data.id_usuario) {
-            localStorage.setItem('usuario', JSON.stringify(data));
-            
-            // Transición de éxito expansiva
-            const container = document.querySelector('.login-container');
-            container.style.transition = "all 0.8s cubic-bezier(0.7, 0, 0.3, 1)";
-            container.style.opacity = "0";
-            container.style.transform = "scale(1.2) translateY(-20px)";
-            container.style.filter = "blur(20px)";
-            
-            setTimeout(() => {
-                window.location.href = "/home/dashboard.html";
-            }, 600);
+        if(res.ok && data.id_encargado) {
+            localStorage.setItem('encargado', JSON.stringify(data));
+            const box = document.getElementById('loginBox');
+            box.style.transition = '0.7s';
+            box.style.opacity = '0';
+            box.style.transform = 'scale(1.08) translateY(-20px)';
+            setTimeout(() => window.location.href = '/home/dashboard.html', 580);
         } else {
-            showError("Identidad no reconocida");
+            showError(data.mensaje || 'Código o contraseña incorrectos');
         }
-    } catch (err) {
-        showError("Fallo de conexión encriptada");
-    } finally {
-        if (!errorMsg.style.opacity || errorMsg.style.opacity == "0") {
-            btn.innerHTML = "<span>Acceder Ahora</span>";
-            btn.disabled = false;
-            btn.style.filter = "none";
-        }
+    } catch(err) {
+        showError('Error de conexión con el servidor');
     }
 }
 
 function showError(msg) {
-    const errorMsg = document.getElementById('error-msg');
-    const errorText = document.getElementById('error-text');
-    const container = document.querySelector('.login-container');
+    document.getElementById('error-text').textContent = msg;
+    document.getElementById('error-msg').style.opacity = '1';
     const btn = document.getElementById('loginBtn');
-
-    errorText.innerText = msg;
-    errorMsg.style.opacity = "1";
-    
-    // Reset botón
-    btn.innerHTML = "<span>Reintentar</span>";
-    btn.disabled = false;
-    btn.style.filter = "none";
-
-    // Vibración visual
-    container.classList.remove('shake');
-    void container.offsetWidth; // trigger reflow
-    container.classList.add('shake');
+    btn.textContent = 'Reintentar'; btn.disabled = false;
+    const box = document.getElementById('loginBox');
+    box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
 }
 
-// Enter Key
-document.getElementById('cedula').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') login();
-});
+document.getElementById('codigo').addEventListener('keypress',  e => { if(e.key==='Enter') document.getElementById('password').focus(); });
+document.getElementById('password').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
 </script>
-
 </body>
 </html>
