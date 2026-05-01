@@ -1,607 +1,383 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLoan IT | Devoluciones</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary:#6366f1; --accent:#00f2ff; --warn:#f59e0b; --success:#22c55e; --danger:#ef4444; --bg:#020617; --card-bg:rgba(15,23,42,0.6); --text:#f8fafc; --text-dim:#94a3b8; --border:rgba(255,255,255,0.08); --transition:all 0.4s cubic-bezier(0.23,1,0.32,1); }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; }
-        .bg-glow { position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 70% 20%, rgba(99,102,241,0.08) 0%, transparent 40%); z-index:-1; }
-
-        /* NAV */
-        .top-nav { padding:18px 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(2,6,23,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
-        .brand { font-size:1.3rem; font-weight:800; display:flex; align-items:center; gap:10px; }
-        .brand-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); width:32px; height:32px; border-radius:9px; display:grid; place-items:center; }
-        .btn-back { display:flex; align-items:center; gap:8px; color:var(--text-dim); text-decoration:none; font-weight:700; font-size:0.9rem; padding:10px 18px; border-radius:12px; border:1px solid var(--border); transition:var(--transition); }
-        .btn-back:hover { background:rgba(255,255,255,0.05); color:white; }
-
-        .content { max-width:820px; margin:0 auto; padding:50px 24px; }
-        .page-header { text-align:center; margin-bottom:35px; }
-        .page-header h1 { font-size:3rem; font-weight:800; letter-spacing:-2px; background:linear-gradient(to bottom,#fff,#94a3b8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .page-header p { color:var(--text-dim); margin-top:8px; }
-
-        /* STEP INDICATOR */
-        .steps { display:flex; justify-content:center; align-items:center; gap:0; margin-bottom:35px; }
-        .step { display:flex; align-items:center; gap:8px; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); }
-        .step.active { color:white; }
-        .step.done { color:var(--success); }
-        .step-num { width:28px; height:28px; border-radius:50%; border:2px solid var(--border); display:grid; place-items:center; font-size:0.8rem; font-weight:800; transition:0.3s; }
-        .step.active .step-num { background:var(--primary); border-color:var(--primary); }
-        .step.done .step-num { background:var(--success); border-color:var(--success); }
-        .step-line { width:40px; height:2px; background:var(--border); margin:0 8px; }
-        .step-line.done { background:var(--success); }
-
-        /* CARDS */
-        .card { background:var(--card-bg); backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:24px; padding:28px; margin-bottom:20px; }
-        .section-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:2.5px; color:var(--primary); font-weight:800; margin-bottom:16px; }
-
-        /* PRÉSTAMOS ACTIVOS */
-        .prestamo-item { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:rgba(0,0,0,0.25); border:2px solid var(--border); border-radius:14px; margin-bottom:10px; cursor:pointer; transition:var(--transition); }
-        .prestamo-item:hover { border-color:var(--primary); background:rgba(99,102,241,0.06); transform:translateX(4px); }
-        .prestamo-item.selected { border-color:var(--primary); background:rgba(99,102,241,0.1); }
-        .prestamo-item:last-child { margin-bottom:0; }
-        .pres-left h4 { font-weight:800; font-size:1rem; margin-bottom:4px; }
-        .pres-left p { font-size:0.82rem; color:var(--text-dim); }
-        .pres-badge { font-weight:800; font-size:0.78rem; padding:6px 14px; border-radius:10px; white-space:nowrap; }
-        .pres-badge.ok   { background:rgba(34,197,94,0.1);  color:var(--success); border:1px solid rgba(34,197,94,0.2); }
-        .pres-badge.late { background:rgba(239,68,68,0.1);  color:var(--danger);  border:1px solid rgba(239,68,68,0.2); }
-        .empty-msg { text-align:center; color:var(--text-dim); padding:20px; font-size:0.95rem; }
-
-        /* BÚSQUEDA */
-        .search-row { display:flex; gap:12px; }
-        .search-row input { flex:1; padding:15px 18px; background:rgba(0,0,0,0.3); border:2px solid var(--border); border-radius:13px; color:white; font-size:1rem; outline:none; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; }
-        .search-row input:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,0.15); }
-        .btn-search { background:var(--primary); color:white; border:none; padding:0 22px; border-radius:13px; font-weight:800; font-size:0.95rem; cursor:pointer; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; }
-        .btn-search:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(99,102,241,0.35); }
-
-        /* INFO PRÉSTAMO SELECCIONADO */
-        #prestamoSeleccionado { display:none; }
-        #prestamoSeleccionado.show { display:block; }
-        .info-banner { background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.25); border-radius:18px; padding:22px 24px; margin-bottom:20px; }
-        .info-banner-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-        .info-banner-header h3 { font-size:1.1rem; font-weight:800; }
-        .btn-cambiar { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:7px 14px; font-size:0.78rem; font-weight:700; color:var(--text-dim); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:var(--transition); }
-        .btn-cambiar:hover { background:rgba(255,255,255,0.1); color:white; }
-        .info-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; }
-        .info-field span { display:block; font-size:0.68rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:3px; font-weight:700; }
-        .info-field strong { font-size:0.92rem; font-weight:700; }
-        .retraso-alert { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); border-radius:12px; padding:13px 18px; margin-top:14px; display:flex; align-items:center; gap:10px; }
-        .retraso-alert strong { color:var(--danger); font-size:0.9rem; }
-
-        /* FORMULARIO */
-        #formDevolucion { display:none; }
-        #formDevolucion.show { display:block; }
-        .section-sep { border:none; border-top:1px solid var(--border); margin:22px 0; }
-        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-        .grid-1 { margin-bottom:16px; }
-        .input-group label { display:block; font-size:0.74rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-weight:700; margin-bottom:8px; }
-        input[type=text], input[type=number], select, textarea {
-            width:100%; padding:14px 18px; background:rgba(0,0,0,0.3);
-            border:2px solid var(--border); border-radius:13px; color:white;
-            font-size:0.95rem; outline:none; transition:var(--transition);
-            font-family:'Plus Jakarta Sans',sans-serif; appearance:none; -webkit-appearance:none;
-        }
-        select { background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-color:rgba(0,0,0,0.3); }
-        select option { background:#0f172a; color:white; }
-        textarea { resize:vertical; min-height:75px; }
-        input[type=text]:focus, input[type=number]:focus, select:focus, textarea:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,0.12); }
-
-        /* ACCESORIOS */
-        .accesorios-check { background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.2); border-radius:14px; padding:18px 20px; margin-bottom:16px; }
-        .accesorios-check h4 { font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--warn); margin-bottom:12px; }
-        .acc-entregados { font-size:0.9rem; color:var(--text-dim); margin-bottom:12px; }
-        .acc-entregados strong { color:white; }
-        .checkbox-row { display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:8px; }
-        .checkbox-row input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:var(--primary); appearance:auto; -webkit-appearance:auto; padding:0; flex-shrink:0; }
-        .checkbox-row span { font-size:0.9rem; font-weight:600; }
-
-        /* DAÑOS */
-        .dano-toggle { display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:14px; }
-        .dano-toggle input[type=checkbox] { width:20px; height:20px; cursor:pointer; accent-color:var(--danger); appearance:auto; -webkit-appearance:auto; padding:0; flex-shrink:0; }
-        .dano-toggle span { font-weight:700; font-size:0.95rem; }
-        .dano-section { display:none; background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.2); border-radius:14px; padding:20px; margin-bottom:16px; }
-        .dano-section.show { display:block; }
-
-        /* RESUMEN */
-        .resumen-card { background:rgba(0,0,0,0.35); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:20px; display:none; }
-        .resumen-card.show { display:block; }
-        .resumen-card h4 { font-size:0.75rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-dim); margin-bottom:14px; font-weight:800; }
-        .resumen-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:0.92rem; }
-        .resumen-row:last-child { border-bottom:none; font-weight:800; font-size:1rem; padding-top:14px; margin-top:4px; }
-        .resumen-total { border-top:2px solid var(--border) !important; color:var(--warn); }
-
-        /* CONFORMIDAD */
-        .conformidad-box { background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2); border-radius:14px; padding:18px 20px; margin-bottom:20px; }
-        .conformidad-box h4 { font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--success); margin-bottom:12px; }
-
-        .btn-submit { width:100%; padding:20px; background:var(--primary); color:white; border:none; border-radius:16px; font-size:1.05rem; font-weight:800; cursor:pointer; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; }
-        .btn-submit:hover { transform:translateY(-3px); box-shadow:0 15px 30px rgba(99,102,241,0.4); }
-        .btn-submit:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-
-        /* RESULTADO */
-        #resultadoCard { display:none; }
-        #resultadoCard.show { display:block; }
-        .resultado-inner { background:rgba(34,197,94,0.07); border:1px solid rgba(34,197,94,0.25); border-radius:24px; padding:40px; text-align:center; }
-        .big-icon { font-size:4rem; margin-bottom:16px; }
-        .resultado-inner h3 { font-size:1.8rem; font-weight:800; margin-bottom:8px; }
-        .resultado-inner p { color:var(--text-dim); margin-bottom:24px; }
-        .resultado-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
-        .res-item { background:rgba(255,255,255,0.04); border-radius:14px; padding:16px; }
-        .res-item span { display:block; font-size:0.68rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-        .res-item strong { font-size:1.05rem; font-weight:800; }
-        .btn-row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-        .btn-nuevo { padding:13px 30px; background:var(--primary); color:white; border:none; border-radius:13px; font-weight:800; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.95rem; transition:var(--transition); }
-        .btn-nuevo:hover { transform:translateY(-2px); }
-        .btn-imprimir { padding:13px 30px; background:rgba(255,255,255,0.06); color:white; border:1px solid var(--border); border-radius:13px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.95rem; transition:var(--transition); }
-        .btn-imprimir:hover { background:rgba(255,255,255,0.1); }
-
-        /* TOAST */
-        .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); padding:13px 26px; border-radius:100px; font-weight:700; z-index:9999; display:none; white-space:nowrap; }
-        .toast.show { display:block; animation:toastIn 0.4s ease; }
-        .toast.error { background:var(--danger); color:white; }
-        .toast.success { background:var(--success); color:white; }
-        @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-        /* PRINT */
-        @media print {
-            body { background:white; color:black; }
-            .top-nav, .bg-glow, #paso1, #paso2, .btn-row { display:none !important; }
-            #resultadoCard { display:block !important; }
-            .resultado-inner { background:white; border:1px solid #ccc; color:black; }
-            .res-item { background:#f5f5f5; }
-        }
-
-        @media(max-width:600px) { .grid-2{grid-template-columns:1fr} .resultado-grid{grid-template-columns:1fr} }
+        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#020617;--card:rgba(15,23,42,0.6);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+        body{background:var(--bg);color:var(--text);min-height:100vh;}
+        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 70% 20%,rgba(99,102,241,0.08) 0%,transparent 40%);z-index:-1;}
+        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+        .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
+        .bi{background:linear-gradient(135deg,var(--primary),var(--accent));width:32px;height:32px;border-radius:9px;display:grid;place-items:center;}
+        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.9rem;padding:10px 18px;border-radius:12px;border:1px solid var(--border);transition:0.3s;}
+        .back:hover{background:rgba(255,255,255,0.05);color:white;}
+        main{max-width:820px;margin:0 auto;padding:50px 24px;}
+        .ph{text-align:center;margin-bottom:32px;}
+        .ph h1{font-size:3rem;font-weight:800;letter-spacing:-2px;background:linear-gradient(to bottom,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .ph p{color:var(--dim);margin-top:8px;}
+        .steps{display:flex;justify-content:center;align-items:center;margin-bottom:32px;}
+        .step{display:flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
+        .step.active{color:white;}.step.done{color:var(--success);}
+        .sn{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:0.8rem;font-weight:800;transition:0.3s;}
+        .step.active .sn{background:var(--primary);border-color:var(--primary);}
+        .step.done .sn{background:var(--success);border-color:var(--success);}
+        .sl2{width:40px;height:2px;background:var(--border);margin:0 8px;}
+        .sl2.done{background:var(--success);}
+        .card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:26px;margin-bottom:18px;}
+        .lbl{font-size:0.7rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--primary);font-weight:800;margin-bottom:14px;}
+        .pi{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(0,0,0,0.25);border:2px solid var(--border);border-radius:13px;margin-bottom:10px;cursor:pointer;transition:0.3s;}
+        .pi:hover{border-color:var(--primary);background:rgba(99,102,241,0.06);transform:translateX(4px);}
+        .pi.sel{border-color:var(--primary);background:rgba(99,102,241,0.1);}
+        .pi:last-child{margin-bottom:0;}
+        .pil h4{font-weight:800;font-size:0.95rem;margin-bottom:3px;}
+        .pil p{font-size:0.8rem;color:var(--dim);}
+        .pb{font-weight:800;font-size:0.76rem;padding:5px 12px;border-radius:9px;white-space:nowrap;}
+        .pb.ok{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
+        .pb.late{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
+        .em{text-align:center;color:var(--dim);padding:18px;font-size:0.92rem;}
+        .sr{display:flex;gap:11px;}
+        .si{flex:1;padding:14px 17px;background:rgba(0,0,0,0.3);border:2px solid var(--border);border-radius:12px;color:white;font-size:0.95rem;outline:none;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .si:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);}
+        .bs{background:var(--primary);color:white;border:none;padding:0 20px;border-radius:12px;font-weight:800;font-size:0.92rem;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .bs:hover{transform:translateY(-2px);}
+        #ps{display:none;}#ps.show{display:block;}
+        .ib{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:17px;padding:20px 22px;margin-bottom:18px;}
+        .ibh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+        .ibh h3{font-size:1.05rem;font-weight:800;}
+        .bc{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:9px;padding:6px 13px;font-size:0.76rem;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
+        .bc:hover{background:rgba(255,255,255,0.1);color:white;}
+        .ig2{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
+        .if span{display:block;font-size:0.67rem;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:3px;font-weight:700;}
+        .if strong{font-size:0.9rem;font-weight:700;}
+        .ra{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:11px;padding:12px 16px;margin-top:13px;display:flex;align-items:center;gap:9px;}
+        .ra strong{color:var(--danger);font-size:0.88rem;}
+        #fd{display:none;}#fd.show{display:block;}
+        .sep{border:none;border-top:1px solid var(--border);margin:20px 0;}
+        .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+        .ig3 label{display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);font-weight:700;margin-bottom:8px;}
+        input[type=text],input[type=number],select,textarea{width:100%;padding:13px 17px;background:rgba(0,0,0,0.3);border:2px solid var(--border);border-radius:12px;color:white;font-size:0.92rem;outline:none;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
+        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
+        select option{background:#0f172a;color:white;}
+        textarea{resize:vertical;min-height:72px;}
+        input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.12);}
+        .ab{background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:13px;padding:16px 18px;margin-bottom:14px;}
+        .ab h4{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--warn);margin-bottom:10px;}
+        .cr{display:flex;align-items:center;gap:11px;cursor:pointer;margin-bottom:8px;}
+        .cr input[type=checkbox]{width:17px;height:17px;cursor:pointer;accent-color:var(--primary);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;}
+        .cr span{font-size:0.88rem;font-weight:600;}
+        .dt{display:flex;align-items:center;gap:11px;cursor:pointer;margin-bottom:13px;}
+        .dt input[type=checkbox]{width:19px;height:19px;cursor:pointer;accent-color:var(--danger);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;}
+        .dt span{font-weight:700;font-size:0.92rem;}
+        .ds{display:none;background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.2);border-radius:13px;padding:18px;margin-bottom:14px;}
+        .ds.show{display:block;}
+        .rc{background:rgba(0,0,0,0.35);border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:18px;display:none;}
+        .rc.show{display:block;}
+        .rc h4{font-size:0.73rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:12px;font-weight:800;}
+        .rr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.9rem;}
+        .rr:last-child{border-bottom:none;font-weight:800;font-size:0.98rem;border-top:2px solid var(--border);padding-top:12px;margin-top:4px;color:var(--warn);}
+        .cb2{background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:13px;padding:16px 18px;margin-bottom:18px;}
+        .cb2 h4{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--success);margin-bottom:10px;}
+        .btn{width:100%;padding:19px;background:var(--primary);color:white;border:none;border-radius:15px;font-size:1.02rem;font-weight:800;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .btn:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(99,102,241,0.4);}
+        .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+        #rc2{display:none;}#rc2.show{display:block;}
+        .ri{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.25);border-radius:22px;padding:38px;text-align:center;}
+        .ri .big{font-size:4rem;margin-bottom:14px;}
+        .ri h3{font-size:1.7rem;font-weight:800;margin-bottom:8px;}
+        .ri p{color:var(--dim);margin-bottom:22px;}
+        .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:22px;}
+        .ri2{background:rgba(255,255,255,0.04);border-radius:13px;padding:14px;}
+        .ri2 span{display:block;font-size:0.67rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+        .ri2 strong{font-size:1rem;font-weight:800;}
+        .br{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;}
+        .bn{padding:12px 28px;background:var(--primary);color:white;border:none;border-radius:12px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;transition:0.3s;}
+        .bn:hover{transform:translateY(-2px);}
+        .bim{padding:12px 28px;background:rgba(255,255,255,0.06);color:white;border:1px solid var(--border);border-radius:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;transition:0.3s;}
+        .bim:hover{background:rgba(255,255,255,0.1);}
+        .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);padding:13px 26px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;}
+        .toast.show{display:block;animation:ti 0.4s ease;}
+        .ts{background:var(--success);color:white;}.te{background:var(--danger);color:white;}
+        @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        @media print{body{background:white;color:black;}.back,nav,.glow,#p1,.card.search,#ps .ib,#fd,.toast{display:none!important;}#rc2{display:block!important;}.ri{background:white;border:1px solid #ccc;color:black;}.ri2{background:#f5f5f5;}}
+        @media(max-width:600px){.g2{grid-template-columns:1fr}.rg{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
-<div class="bg-glow"></div>
-<nav class="top-nav">
-    <div class="brand">
-        <div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        SmartLoan IT
-    </div>
-    <a href="/home/dashboard.html" class="btn-back">← Volver al Dashboard</a>
+<div class="glow"></div>
+<nav>
+    <div class="brand"><div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
+    <a href="/home/dashboard.html" class="back">← Dashboard</a>
 </nav>
-
-<main class="content">
-    <div class="page-header">
-        <h1>Devolución de Equipos</h1>
-        <p>Seleccioná un préstamo activo o buscá por código</p>
-    </div>
-
-    <!-- STEPS -->
+<main>
+    <div class="ph"><h1>Devolución de Equipos</h1><p>Seleccioná un préstamo activo o buscá por código</p></div>
     <div class="steps">
-        <div class="step active" id="step1"><div class="step-num">1</div><span>Seleccionar</span></div>
-        <div class="step-line" id="line12"></div>
-        <div class="step" id="step2"><div class="step-num">2</div><span>Registrar</span></div>
-        <div class="step-line" id="line23"></div>
-        <div class="step" id="step3"><div class="step-num">3</div><span>Completado</span></div>
+        <div class="step active" id="s1"><div class="sn">1</div><span>Seleccionar</span></div>
+        <div class="sl2" id="l12"></div>
+        <div class="step" id="s2"><div class="sn">2</div><span>Registrar</span></div>
+        <div class="sl2" id="l23"></div>
+        <div class="step" id="s3"><div class="sn">3</div><span>Completado</span></div>
     </div>
 
-    <!-- PASO 1: SELECCIONAR PRÉSTAMO -->
-    <div id="paso1">
-        <!-- Lista activos -->
+    <!-- PASO 1 -->
+    <div id="p1">
         <div class="card">
-            <div class="section-label">📋 Préstamos Activos — hacé clic para seleccionar</div>
-            <div id="listaActivos"><p class="empty-msg">Cargando...</p></div>
+            <div class="lbl">📋 Préstamos Activos — hacé clic para seleccionar</div>
+            <div id="lista"><p class="em">Cargando...</p></div>
         </div>
-
-        <!-- Búsqueda manual -->
-        <div class="card">
-            <div class="section-label">🔍 O ingresá el código de préstamo</div>
-            <div class="search-row">
-                <input type="number" id="idPrestamo" placeholder="Ej: 1, 5, 12..." min="1">
-                <button class="btn-search" onclick="buscarPorId()">Buscar</button>
-            </div>
+        <div class="card search">
+            <div class="lbl">🔍 O ingresá el código de préstamo</div>
+            <div class="sr"><input type="number" class="si" id="idp" placeholder="Ej: 1, 5, 12..." min="1"><button class="bs" onclick="buscar()">Buscar</button></div>
         </div>
     </div>
 
-    <!-- PASO 2: INFO + FORMULARIO -->
-    <div id="prestamoSeleccionado">
-
-        <!-- Info del préstamo -->
-        <div class="info-banner">
-            <div class="info-banner-header">
-                <h3>📦 Préstamo Seleccionado</h3>
-                <button class="btn-cambiar" onclick="volver()">← Cambiar</button>
-            </div>
-            <div class="info-grid" id="infoGrid"></div>
-            <div class="retraso-alert" id="retrasoAlert" style="display:none">
-                <span style="font-size:1.2rem">⚠️</span>
-                <strong id="retrasoTexto"></strong>
-            </div>
+    <!-- PASO 2 -->
+    <div id="ps">
+        <div class="ib">
+            <div class="ibh"><h3>📦 Préstamo Seleccionado</h3><button class="bc" onclick="volver()">← Cambiar</button></div>
+            <div class="ig2" id="ig"></div>
+            <div class="ra" id="ra" style="display:none"><span style="font-size:1.1rem">⚠️</span><strong id="rat"></strong></div>
         </div>
-
-        <!-- FORMULARIO DEVOLUCIÓN -->
-        <div id="formDevolucion">
-
-            <!-- ESTADO DEL EQUIPO -->
+        <div id="fd">
             <div class="card">
-                <div class="section-label">📦 Estado del Equipo al Retorno</div>
-                <div class="grid-2">
-                    <div class="input-group">
-                        <label>Estado del equipo</label>
-                        <select id="estado_equipo" onchange="onEstadoChange()">
-                            <option value="Excelente">✅ Excelente</option>
-                            <option value="Bueno">👍 Bueno</option>
-                            <option value="Dañado">⚠️ Dañado</option>
-                        </select>
+                <div class="lbl">📦 Estado del Equipo al Retorno</div>
+                <div class="g2">
+                    <div class="ig3"><label>Estado del equipo</label>
+                        <select id="estado" onchange="onEstado()"><option value="Excelente">✅ Excelente</option><option value="Bueno">👍 Bueno</option><option value="Dañado">⚠️ Dañado</option></select>
                     </div>
-                    <div class="input-group">
-                        <label>Observación general</label>
-                        <input type="text" id="observacion" placeholder="Notas sobre la devolución...">
-                    </div>
+                    <div class="ig3"><label>Observación general</label><input type="text" id="obs" placeholder="Notas sobre la devolución..."></div>
                 </div>
-
-                <!-- ACCESORIOS -->
-                <div class="accesorios-check" id="accesoriosBox" style="display:none">
+                <div class="ab" id="accb" style="display:none">
                     <h4>🎒 Verificación de Accesorios</h4>
-                    <div class="acc-entregados" id="accEntregados"></div>
-                    <label class="checkbox-row">
-                        <input type="checkbox" id="accesorios_ok">
-                        <span>Confirmo que todos los accesorios fueron devueltos correctamente</span>
-                    </label>
+                    <div id="acct" style="font-size:0.88rem;color:var(--dim);margin-bottom:10px;"></div>
+                    <label class="cr"><input type="checkbox" id="acc_ok"><span>Confirmo que todos los accesorios fueron devueltos correctamente</span></label>
                 </div>
             </div>
-
-            <!-- DAÑOS -->
             <div class="card">
-                <div class="section-label">🔴 Registro de Daños</div>
-                <label class="dano-toggle">
-                    <input type="checkbox" id="tiene_dano" onchange="toggleDano()">
-                    <span>El equipo presenta daños al momento de la devolución</span>
-                </label>
-                <div class="dano-section" id="danoSection">
-                    <div class="grid-2">
-                        <div class="input-group">
-                            <label>Tipo de daño</label>
-                            <input type="text" id="tipo_dano" placeholder="Ej: Pantalla rota, teclado...">
-                        </div>
-                        <div class="input-group">
-                            <label>Monto de reparación (Gs.)</label>
-                            <input type="number" id="monto_dano" placeholder="Ej: 150000" min="0" oninput="actualizarResumen()">
-                        </div>
+                <div class="lbl">🔴 Registro de Daños</div>
+                <label class="dt"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños</span></label>
+                <div class="ds" id="ds">
+                    <div class="g2">
+                        <div class="ig3"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="Ej: Pantalla rota..."></div>
+                        <div class="ig3"><label>Monto reparación (Gs.)</label><input type="number" id="mdano" placeholder="Ej: 150000" min="0" oninput="updRes()"></div>
                     </div>
-                    <div class="input-group grid-1">
-                        <label>Descripción del daño</label>
-                        <textarea id="observacion_dano" placeholder="Descripción detallada del daño..."></textarea>
-                    </div>
+                    <div class="ig3"><label>Descripción del daño</label><textarea id="odano" placeholder="Descripción detallada..."></textarea></div>
                 </div>
             </div>
-
-            <!-- RESUMEN DE COBROS -->
-            <div class="resumen-card" id="resumenCard">
+            <div class="rc" id="resc">
                 <h4>💳 Resumen de Cobros</h4>
-                <div class="resumen-row"><span>Días de retraso</span><strong id="res-dias" style="color:var(--warn)">0 días</strong></div>
-                <div class="resumen-row"><span>Multa por retraso (Gs. 10.000/día)</span><strong id="res-multa" style="color:var(--warn)">Gs. 0</strong></div>
-                <div class="resumen-row"><span>Costo por daños</span><strong id="res-dano" style="color:var(--danger)">Gs. 0</strong></div>
-                <div class="resumen-row resumen-total"><span>TOTAL A COBRAR</span><strong id="res-total">Gs. 0</strong></div>
+                <div class="rr"><span>Días de retraso</span><strong id="rd" style="color:var(--warn)">0 días</strong></div>
+                <div class="rr"><span>Multa (Gs. 10.000/día)</span><strong id="rm" style="color:var(--warn)">Gs. 0</strong></div>
+                <div class="rr"><span>Costo por daños</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
+                <div class="rr"><span>TOTAL A COBRAR</span><strong id="rt">Gs. 0</strong></div>
             </div>
-
-            <!-- CONFORMIDAD -->
-            <div class="conformidad-box">
-                <h4>✅ Conformidad del Encargado</h4>
-                <label class="checkbox-row">
-                    <input type="checkbox" id="conformidad">
-                    <span>Confirmo que la información ingresada es correcta y el equipo fue recibido según las condiciones indicadas</span>
-                </label>
+            <div class="cb2"><h4>✅ Conformidad del Encargado</h4>
+                <label class="cr"><input type="checkbox" id="conf"><span>Confirmo que la información es correcta y el equipo fue recibido según las condiciones indicadas</span></label>
             </div>
-
-            <button class="btn-submit" id="btnSubmit" onclick="registrarDevolucion()">
-                PROCESAR DEVOLUCIÓN
-            </button>
+            <button class="btn" id="btn" onclick="procesar()">PROCESAR DEVOLUCIÓN</button>
         </div>
     </div>
 
-    <!-- PASO 3: RESULTADO -->
-    <div id="resultadoCard">
-        <div class="resultado-inner">
-            <div class="big-icon">✅</div>
+    <!-- PASO 3 -->
+    <div id="rc2">
+        <div class="ri">
+            <div class="big">✅</div>
             <h3>Devolución Registrada</h3>
-            <p id="res-descripcion">El equipo fue procesado correctamente.</p>
-            <div class="resultado-grid">
-                <div class="res-item"><span>Alumno</span><strong id="r-alumno">—</strong></div>
-                <div class="res-item"><span>Equipo</span><strong id="r-equipo">—</strong></div>
-                <div class="res-item"><span>Estado</span><strong id="r-estado">—</strong></div>
-                <div class="res-item"><span>Días retraso</span><strong id="r-dias" style="color:var(--warn)">0</strong></div>
-                <div class="res-item"><span>Multa</span><strong id="r-multa" style="color:var(--warn)">Gs. 0</strong></div>
-                <div class="res-item"><span>Total cobrado</span><strong id="r-total" style="color:var(--danger)">Gs. 0</strong></div>
+            <p id="rdesc">El equipo fue procesado correctamente.</p>
+            <div class="rg">
+                <div class="ri2"><span>Alumno</span><strong id="r-alu">—</strong></div>
+                <div class="ri2"><span>Equipo</span><strong id="r-eq">—</strong></div>
+                <div class="ri2"><span>Estado</span><strong id="r-est">—</strong></div>
+                <div class="ri2"><span>Días retraso</span><strong id="r-dias" style="color:var(--warn)">0</strong></div>
+                <div class="ri2"><span>Multa</span><strong id="r-mul" style="color:var(--warn)">Gs. 0</strong></div>
+                <div class="ri2"><span>Total cobrado</span><strong id="r-tot" style="color:var(--danger)">Gs. 0</strong></div>
             </div>
-            <div class="btn-row">
-                <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir Comprobante</button>
-                <button class="btn-nuevo" onclick="nueva()">Registrar Otra Devolución</button>
+            <div class="br">
+                <button class="bim" onclick="window.print()">🖨️ Imprimir</button>
+                <button class="bn" onclick="nueva()">Nueva Devolución</button>
             </div>
         </div>
     </div>
 </main>
-
 <div class="toast" id="toast"></div>
-
 <script>
-let prestamoActual = null;
-const MULTA_DIA = 10000;
+const API='http://localhost:3000';
+const MULTA=10000;
+let pActual=null;
 
-// ─── CARGAR PRÉSTAMOS ACTIVOS ───────────────────────────────
-async function cargarActivos() {
-    const lista = document.getElementById('listaActivos');
-    try {
-        const res    = await fetch('http://localhost:3000/prestamos');
-        const todos  = await res.json();
-        const activos = todos.filter(p => p.estado === 'ACTIVO');
+const ff=(d)=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
+const fn=(n)=>Number(n).toLocaleString('es-PY');
+function st(msg,t='te'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3500);}
 
-        if (!activos.length) {
-            lista.innerHTML = '<p class="empty-msg">✅ No hay préstamos activos pendientes de devolución</p>';
-            return;
-        }
-
-        const ahora = new Date();
-        lista.innerHTML = activos.map(p => {
-            const venc    = new Date(p.fecha_devolucion_estimada);
-            const vencido = ahora > venc;
-            const dias    = vencido ? Math.ceil((ahora - venc) / (1000 * 60 * 60 * 24)) : 0;
-            return `
-            <div class="prestamo-item" id="item-${p.id_prestamo}" onclick="seleccionar(${p.id_prestamo})">
-                <div class="pres-left">
-                    <h4>#${p.id_prestamo} — ${p.alumno_nombre} ${p.alumno_apellido}
-                        <span style="font-size:0.78rem;color:var(--text-dim);font-weight:600">(${p.codigo_alumno})</span>
-                    </h4>
-                    <p>📦 ${p.equipo} · ${p.tipo} · Vence: ${fmtFecha(p.fecha_devolucion_estimada)}</p>
+// ── CARGAR ACTIVOS ──────────────────────────────────────────
+async function cargarActivos(){
+    const lista=document.getElementById('lista');
+    try{
+        const r=await fetch(`${API}/prestamos`);
+        if(!r.ok){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';return;}
+        const todos=await r.json();
+        const activos=todos.filter(p=>p.estado==='ACTIVO');
+        if(!activos.length){lista.innerHTML='<p class="em">✅ Sin préstamos activos pendientes</p>';return;}
+        const ahora=new Date();
+        lista.innerHTML=activos.map(p=>{
+            const v=new Date(p.fecha_devolucion_estimada);
+            const tard=ahora>v;
+            const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
+            return `<div class="pi" id="item-${p.id_prestamo}" onclick="selec(${p.id_prestamo})">
+                <div class="pil">
+                    <h4>#${p.id_prestamo} — ${p.alumno_nombre} ${p.alumno_apellido} <span style="font-size:0.76rem;color:var(--dim)">(${p.codigo_alumno})</span></h4>
+                    <p>📦 ${p.equipo} · ${p.tipo} · Vence: ${ff(p.fecha_devolucion_estimada)}</p>
                 </div>
-                <span class="pres-badge ${vencido ? 'late' : 'ok'}">
-                    ${vencido ? `⚠️ ${dias}d retraso` : '✅ Al día'}
-                </span>
+                <span class="pb ${tard?'late':'ok'}">${tard?`⚠️ ${dias}d retraso`:'✅ Al día'}</span>
             </div>`;
         }).join('');
-    } catch(err) {
-        lista.innerHTML = '<p class="empty-msg">Error al cargar préstamos</p>';
-    }
+    }catch(e){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';console.error(e);}
 }
 
-// ─── SELECCIONAR DESDE LA LISTA ─────────────────────────────
-async function seleccionar(id) {
-    // Marcar visualmente
-    document.querySelectorAll('.prestamo-item').forEach(el => el.classList.remove('selected'));
-    const item = document.getElementById(`item-${id}`);
-    if (item) item.classList.add('selected');
-
-    await cargarPrestamo(id);
+// ── SELECCIONAR ─────────────────────────────────────────────
+async function selec(id){
+    document.querySelectorAll('.pi').forEach(el=>el.classList.remove('sel'));
+    const it=document.getElementById(`item-${id}`);
+    if(it)it.classList.add('sel');
+    await cargarPres(id);
 }
 
-// ─── BUSCAR POR ID MANUAL ───────────────────────────────────
-async function buscarPorId() {
-    const id = document.getElementById('idPrestamo').value.trim();
-    if (!id) { showToast('Ingresá un código de préstamo', 'error'); return; }
-    await cargarPrestamo(id);
+async function buscar(){
+    const id=document.getElementById('idp').value.trim();
+    if(!id){st('Ingresá un código');return;}
+    await cargarPres(id);
 }
 
-// ─── CARGAR DATOS DEL PRÉSTAMO ──────────────────────────────
-async function cargarPrestamo(id) {
-    try {
-        const res = await fetch(`/prestamos/${id}`);
-        if (!res.ok) {
-            showToast('Préstamo no encontrado o ya fue devuelto', 'error');
-            return;
-        }
-        prestamoActual = await res.json();
-        mostrarPrestamo();
-    } catch(err) {
-        showToast('Error de conexión', 'error');
-    }
+async function cargarPres(id){
+    try{
+        const r=await fetch(`${API}/prestamos/${id}`);
+        if(!r.ok){st('Préstamo no encontrado o ya devuelto');return;}
+        pActual=await r.json();
+        mostrar();
+    }catch(e){st('Error de conexión');}
 }
 
-// ─── MOSTRAR INFO + FORMULARIO ───────────────────────────────
-function mostrarPrestamo() {
-    const p       = prestamoActual;
-    const ahora   = new Date();
-    const venc    = new Date(p.fecha_devolucion_estimada);
-    const retraso = ahora > venc ? Math.ceil((ahora - venc) / (1000 * 60 * 60 * 24)) : 0;
-
-    // Info grid
-    document.getElementById('infoGrid').innerHTML = `
-        <div class="info-field"><span>Préstamo</span><strong>#${p.id_prestamo}</strong></div>
-        <div class="info-field"><span>Alumno</span><strong>${p.alumno_nombre} ${p.alumno_apellido}</strong></div>
-        <div class="info-field"><span>Código</span><strong>${p.codigo_alumno}</strong></div>
-        <div class="info-field"><span>Carrera</span><strong>${p.carrera || '—'}</strong></div>
-        <div class="info-field"><span>Equipo</span><strong>${p.equipo}</strong></div>
-        <div class="info-field"><span>Tipo · Marca</span><strong>${p.tipo} · ${p.marca}</strong></div>
-        <div class="info-field"><span>Fecha préstamo</span><strong>${fmtFecha(p.fecha_prestamo)}</strong></div>
-        <div class="info-field"><span>Vencimiento</span><strong style="${retraso > 0 ? 'color:var(--danger)' : ''}">${fmtFecha(p.fecha_devolucion_estimada)}</strong></div>
-        <div class="info-field"><span>Estado inicial</span><strong>${p.estado_inicial_equipo || '—'}</strong></div>
-    `;
-
-    // Alerta retraso
-    const alertEl = document.getElementById('retrasoAlert');
-    if (retraso > 0) {
-        document.getElementById('retrasoTexto').textContent =
-            `Retraso de ${retraso} día(s) — Multa estimada: Gs. ${fmtNum(retraso * MULTA_DIA)}`;
-        alertEl.style.display = 'flex';
-    } else {
-        alertEl.style.display = 'none';
-    }
-
-    // Accesorios
-    const accBox = document.getElementById('accesoriosBox');
-    if (p.accesorios && p.accesorios.trim()) {
-        document.getElementById('accEntregados').innerHTML =
-            `Accesorios entregados al prestar: <strong>${p.accesorios}</strong>`;
-        accBox.style.display = 'block';
-    } else {
-        accBox.style.display = 'none';
-    }
-
-    // Mostrar secciones
-    document.getElementById('paso1').style.display = 'none';
-    document.getElementById('prestamoSeleccionado').classList.add('show');
-    document.getElementById('formDevolucion').classList.add('show');
-
-    // Steps
-    setStep(2);
-    actualizarResumen();
+// ── MOSTRAR INFO ────────────────────────────────────────────
+function mostrar(){
+    const p=pActual;
+    const ahora=new Date();
+    const v=new Date(p.fecha_devolucion_estimada);
+    const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
+    document.getElementById('ig').innerHTML=`
+        <div class="if"><span>Préstamo</span><strong>#${p.id_prestamo}</strong></div>
+        <div class="if"><span>Alumno</span><strong>${p.alumno_nombre} ${p.alumno_apellido}</strong></div>
+        <div class="if"><span>Código</span><strong>${p.codigo_alumno}</strong></div>
+        <div class="if"><span>Carrera</span><strong>${p.carrera||'—'}</strong></div>
+        <div class="if"><span>Equipo</span><strong>${p.equipo}</strong></div>
+        <div class="if"><span>Tipo · Marca</span><strong>${p.tipo} · ${p.marca}</strong></div>
+        <div class="if"><span>Fecha préstamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
+        <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
+        <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>`;
+    const ra=document.getElementById('ra');
+    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} día(s) — Multa: Gs. ${fn(ret*MULTA)}`;ra.style.display='flex';}
+    else ra.style.display='none';
+    const ab=document.getElementById('accb');
+    if(p.accesorios&&p.accesorios.trim()){document.getElementById('acct').innerHTML=`Accesorios entregados: <strong>${p.accesorios}</strong>`;ab.style.display='block';}
+    else ab.style.display='none';
+    document.getElementById('p1').style.display='none';
+    document.getElementById('ps').classList.add('show');
+    document.getElementById('fd').classList.add('show');
+    setStep(2);updRes();
 }
 
-// ─── VOLVER AL PASO 1 ────────────────────────────────────────
-function volver() {
-    prestamoActual = null;
-    document.getElementById('paso1').style.display = 'block';
-    document.getElementById('prestamoSeleccionado').classList.remove('show');
-    document.getElementById('formDevolucion').classList.remove('show');
-    document.getElementById('idPrestamo').value = '';
-    document.querySelectorAll('.prestamo-item').forEach(el => el.classList.remove('selected'));
-    setStep(1);
-    resetForm();
+function volver(){
+    pActual=null;
+    document.getElementById('p1').style.display='block';
+    document.getElementById('ps').classList.remove('show');
+    document.getElementById('fd').classList.remove('show');
+    document.getElementById('idp').value='';
+    document.querySelectorAll('.pi').forEach(el=>el.classList.remove('sel'));
+    setStep(1);resetForm();
 }
 
-// ─── ESTADO DEL EQUIPO CAMBIÓ ────────────────────────────────
-function onEstadoChange() {
-    if (document.getElementById('estado_equipo').value === 'Dañado') {
-        document.getElementById('tiene_dano').checked = true;
-        document.getElementById('danoSection').classList.add('show');
-    }
-    actualizarResumen();
+function onEstado(){
+    if(document.getElementById('estado').value==='Dañado'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
+    updRes();
+}
+function togDano(){const c=document.getElementById('dano').checked;document.getElementById('ds').classList.toggle('show',c);if(!c)document.getElementById('mdano').value='';updRes();}
+
+function updRes(){
+    if(!pActual)return;
+    const v=new Date(pActual.fecha_devolucion_estimada);const ahora=new Date();
+    const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
+    const mul=ret*MULTA;
+    const dan=document.getElementById('dano').checked?(parseFloat(document.getElementById('mdano').value)||0):0;
+    const tot=mul+dan;
+    document.getElementById('rd').textContent=`${ret} día(s)`;
+    document.getElementById('rm').textContent=`Gs. ${fn(mul)}`;
+    document.getElementById('rda').textContent=`Gs. ${fn(dan)}`;
+    document.getElementById('rt').textContent=`Gs. ${fn(tot)}`;
+    document.getElementById('resc').classList.toggle('show',ret>0||dan>0);
 }
 
-function toggleDano() {
-    const checked = document.getElementById('tiene_dano').checked;
-    document.getElementById('danoSection').classList.toggle('show', checked);
-    if (!checked) document.getElementById('monto_dano').value = '';
-    actualizarResumen();
-}
-
-// ─── ACTUALIZAR RESUMEN ──────────────────────────────────────
-function actualizarResumen() {
-    if (!prestamoActual) return;
-    const venc    = new Date(prestamoActual.fecha_devolucion_estimada);
-    const ahora   = new Date();
-    const retraso = ahora > venc ? Math.ceil((ahora - venc) / (1000 * 60 * 60 * 24)) : 0;
-    const multa   = retraso * MULTA_DIA;
-    const dano    = document.getElementById('tiene_dano').checked
-                    ? (parseFloat(document.getElementById('monto_dano').value) || 0) : 0;
-    const total   = multa + dano;
-
-    document.getElementById('res-dias').textContent  = `${retraso} día(s)`;
-    document.getElementById('res-multa').textContent = `Gs. ${fmtNum(multa)}`;
-    document.getElementById('res-dano').textContent  = `Gs. ${fmtNum(dano)}`;
-    document.getElementById('res-total').textContent = `Gs. ${fmtNum(total)}`;
-
-    document.getElementById('resumenCard').classList.toggle('show', retraso > 0 || dano > 0);
-}
-
-// ─── REGISTRAR DEVOLUCIÓN ────────────────────────────────────
-async function registrarDevolucion() {
-    if (!prestamoActual) return;
-
-    const estado_equipo    = document.getElementById('estado_equipo').value;
-    const tiene_dano       = document.getElementById('tiene_dano').checked;
-    const tipo_dano        = document.getElementById('tipo_dano').value.trim();
-    const observacion_dano = document.getElementById('observacion_dano').value.trim();
-    const monto_dano       = parseFloat(document.getElementById('monto_dano').value) || 0;
-    const observacion      = document.getElementById('observacion').value.trim();
-    const conformidad      = document.getElementById('conformidad').checked;
-
-    // Validaciones
-    if (tiene_dano && !tipo_dano) { showToast('Describí el tipo de daño', 'error'); return; }
-    if (!conformidad) { showToast('Debés confirmar la conformidad antes de procesar', 'error'); return; }
-
-    const btn = document.getElementById('btnSubmit');
-    btn.disabled = true; btn.textContent = 'Procesando...';
-
-    try {
-        const res = await fetch('/devoluciones', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                id_prestamo:     prestamoActual.id_prestamo,
-                estado_equipo, tiene_dano, tipo_dano,
-                observacion_dano, monto_dano, observacion
-            })
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-            // Mostrar resultado
-            document.getElementById('r-alumno').textContent  = `${prestamoActual.alumno_nombre} ${prestamoActual.alumno_apellido}`;
-            document.getElementById('r-equipo').textContent  = prestamoActual.equipo;
-            document.getElementById('r-estado').textContent  = estado_equipo;
-            document.getElementById('r-dias').textContent    = data.dias_retraso;
-            document.getElementById('r-multa').textContent   = `Gs. ${fmtNum(data.monto_multa)}`;
-            document.getElementById('r-total').textContent   = `Gs. ${fmtNum(data.total_cobro)}`;
-
-            const desc = tiene_dano
-                ? `⚠️ Equipo con daños — pasa a mantenimiento. Total cobrado: Gs. ${fmtNum(data.total_cobro)}`
-                : data.dias_retraso > 0
-                    ? `⏰ Devuelto con ${data.dias_retraso} día(s) de retraso. Multa: Gs. ${fmtNum(data.monto_multa)}`
-                    : '✅ Equipo devuelto en tiempo y forma.';
-            document.getElementById('res-descripcion').textContent = desc;
-
-            // Ocultar pasos y mostrar resultado
-            document.getElementById('prestamoSeleccionado').classList.remove('show');
-            document.getElementById('formDevolucion').classList.remove('show');
-            document.getElementById('resultadoCard').classList.add('show');
+async function procesar(){
+    if(!pActual)return;
+    const estado=document.getElementById('estado').value;
+    const dano=document.getElementById('dano').checked;
+    const tdano=document.getElementById('tdano').value.trim();
+    const odano=document.getElementById('odano').value.trim();
+    const mdano=parseFloat(document.getElementById('mdano').value)||0;
+    const obs=document.getElementById('obs').value.trim();
+    const conf=document.getElementById('conf').checked;
+    if(dano&&!tdano){st('Describí el tipo de daño');return;}
+    if(!conf){st('Debés confirmar la conformidad');return;}
+    const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
+    try{
+        const r=await fetch(`${API}/devoluciones`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:estado,tiene_dano:dano,tipo_dano:tdano,observacion_dano:odano,monto_dano:mdano,observacion:obs})});
+        const d=await r.json();
+        if(r.ok){
+            document.getElementById('r-alu').textContent=`${pActual.alumno_nombre} ${pActual.alumno_apellido}`;
+            document.getElementById('r-eq').textContent=pActual.equipo;
+            document.getElementById('r-est').textContent=estado;
+            document.getElementById('r-dias').textContent=d.dias_retraso;
+            document.getElementById('r-mul').textContent=`Gs. ${fn(d.monto_multa)}`;
+            document.getElementById('r-tot').textContent=`Gs. ${fn(d.total_cobro)}`;
+            document.getElementById('rdesc').textContent=dano?`⚠️ Con daños — pasa a mantenimiento. Total: Gs. ${fn(d.total_cobro)}`:d.dias_retraso>0?`⏰ ${d.dias_retraso} día(s) retraso. Multa: Gs. ${fn(d.monto_multa)}`:'✅ Devuelto en tiempo y forma.';
+            document.getElementById('ps').classList.remove('show');
+            document.getElementById('fd').classList.remove('show');
+            document.getElementById('rc2').classList.add('show');
             setStep(3);
-        } else {
-            showToast(data.mensaje || 'Error al registrar', 'error');
-            btn.disabled = false; btn.textContent = 'PROCESAR DEVOLUCIÓN';
-        }
-    } catch(err) {
-        showToast('Error de conexión', 'error');
-        btn.disabled = false; btn.textContent = 'PROCESAR DEVOLUCIÓN';
-    }
+        }else{st(d.mensaje||'Error al registrar');btn.disabled=false;btn.textContent='PROCESAR DEVOLUCIÓN';}
+    }catch(e){st('Error de conexión');btn.disabled=false;btn.textContent='PROCESAR DEVOLUCIÓN';}
 }
 
-// ─── NUEVA DEVOLUCIÓN ────────────────────────────────────────
-function nueva() {
-    prestamoActual = null;
-    document.getElementById('resultadoCard').classList.remove('show');
-    document.getElementById('paso1').style.display = 'block';
-    document.getElementById('idPrestamo').value = '';
-    setStep(1);
-    resetForm();
-    cargarActivos();
+function nueva(){
+    pActual=null;
+    document.getElementById('rc2').classList.remove('show');
+    document.getElementById('p1').style.display='block';
+    document.getElementById('idp').value='';
+    setStep(1);resetForm();cargarActivos();
 }
 
-function resetForm() {
-    document.getElementById('estado_equipo').value = 'Excelente';
-    document.getElementById('observacion').value   = '';
-    document.getElementById('tiene_dano').checked  = false;
-    document.getElementById('danoSection').classList.remove('show');
-    document.getElementById('monto_dano').value    = '';
-    document.getElementById('tipo_dano').value     = '';
-    document.getElementById('observacion_dano').value = '';
-    document.getElementById('conformidad').checked = false;
-    document.getElementById('resumenCard').classList.remove('show');
-    document.getElementById('btnSubmit').disabled  = false;
-    document.getElementById('btnSubmit').textContent = 'PROCESAR DEVOLUCIÓN';
+function resetForm(){
+    document.getElementById('estado').value='Excelente';
+    document.getElementById('obs').value='';
+    document.getElementById('dano').checked=false;
+    document.getElementById('ds').classList.remove('show');
+    document.getElementById('mdano').value='';
+    document.getElementById('tdano').value='';
+    document.getElementById('odano').value='';
+    document.getElementById('conf').checked=false;
+    document.getElementById('resc').classList.remove('show');
+    document.getElementById('btn').disabled=false;
+    document.getElementById('btn').textContent='PROCESAR DEVOLUCIÓN';
 }
 
-// ─── STEPS ───────────────────────────────────────────────────
-function setStep(n) {
-    for (let i = 1; i <= 3; i++) {
-        const s = document.getElementById(`step${i}`);
-        s.classList.remove('active', 'done');
-        if (i < n) s.classList.add('done');
-        else if (i === n) s.classList.add('active');
-    }
-    if (document.getElementById('line12'))
-        document.getElementById('line12').classList.toggle('done', n > 1);
-    if (document.getElementById('line23'))
-        document.getElementById('line23').classList.toggle('done', n > 2);
+function setStep(n){
+    for(let i=1;i<=3;i++){const s=document.getElementById(`s${i}`);s.classList.remove('active','done');if(i<n)s.classList.add('done');else if(i===n)s.classList.add('active');}
+    document.getElementById('l12').classList.toggle('done',n>1);
+    document.getElementById('l23').classList.toggle('done',n>2);
 }
 
-// ─── UTILS ───────────────────────────────────────────────────
-function fmtFecha(d) { if(!d) return '—'; return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
-function fmtNum(n)   { return Number(n).toLocaleString('es-PY'); }
-function showToast(msg, type='error') {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.className = `toast ${type} show`;
-    setTimeout(() => t.className = 'toast', 3500);
-}
-
-document.getElementById('idPrestamo').addEventListener('keypress', e => { if(e.key==='Enter') buscarPorId(); });
-window.onload = cargarActivos;
+document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
+window.onload=cargarActivos;
 </script>
 </body>
 </html>

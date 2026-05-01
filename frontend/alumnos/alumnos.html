@@ -1,260 +1,192 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLoan IT | Alumnos</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary:#6366f1; --accent:#00f2ff; --warn:#f59e0b; --success:#22c55e; --danger:#ef4444; --bg:#030712; --card-bg:rgba(30,41,59,0.4); --text:#f8fafc; --text-dim:#94a3b8; --border:rgba(255,255,255,0.08); --transition:all 0.4s cubic-bezier(0.23,1,0.32,1); }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; }
-        .bg-glow { position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 30% 0%, rgba(99,102,241,0.1) 0%, transparent 50%); z-index:-1; }
-        .top-nav { padding:18px 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(3,7,18,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
-        .brand { font-size:1.3rem; font-weight:800; display:flex; align-items:center; gap:10px; }
-        .brand-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); width:32px; height:32px; border-radius:9px; display:grid; place-items:center; }
-        .btn-back { display:flex; align-items:center; gap:8px; color:var(--text-dim); text-decoration:none; font-weight:700; font-size:0.9rem; padding:10px 18px; border-radius:12px; border:1px solid var(--border); transition:var(--transition); }
-        .btn-back:hover { background:rgba(255,255,255,0.05); color:white; }
-        .content { max-width:1300px; margin:0 auto; padding:40px 24px; }
-        .page-header { margin-bottom:35px; }
-        .page-header h1 { font-size:2.8rem; font-weight:800; letter-spacing:-1.5px; background:linear-gradient(to right,#fff,var(--text-dim)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .page-header p { color:var(--text-dim); margin-top:6px; }
-
-        /* FORM */
-        .form-card { background:var(--card-bg); backdrop-filter:blur(20px); padding:35px; border-radius:28px; border:1px solid var(--border); display:flex; gap:16px; align-items:flex-end; margin-bottom:40px; flex-wrap:wrap; }
-        .input-group { display:flex; flex-direction:column; gap:10px; flex:1; min-width:160px; }
-        .input-group label { font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--primary); font-weight:800; }
-        input, select { width:100%; padding:15px 18px; background:rgba(0,0,0,0.3); border:2px solid var(--border); border-radius:13px; color:white; font-size:0.95rem; outline:none; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; appearance:none; -webkit-appearance:none; }
-        select { background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-color:rgba(0,0,0,0.3); }
-        select option { background:#0f172a; color:white; }
-        input:focus, select:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,0.15); }
-        .btn-add { background:var(--primary); color:white; border:none; padding:0 28px; border-radius:13px; font-weight:800; font-size:0.95rem; cursor:pointer; transition:var(--transition); height:52px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; }
-        .btn-add:hover { transform:translateY(-2px); box-shadow:0 12px 25px rgba(99,102,241,0.35); }
-
-        /* SEARCH */
-        .search-row { display:flex; gap:14px; margin-bottom:24px; }
-        .search-input { flex:1; padding:14px 20px; background:var(--card-bg); border:1px solid var(--border); border-radius:14px; color:white; font-size:0.95rem; outline:none; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; }
-        .search-input:focus { border-color:var(--primary); }
-
-        /* TABLE */
-        .table-wrap { background:var(--card-bg); border-radius:24px; border:1px solid var(--border); overflow:hidden; }
-        table { width:100%; border-collapse:collapse; }
-        th { padding:18px 22px; background:rgba(255,255,255,0.02); color:var(--text-dim); text-transform:uppercase; font-size:0.72rem; letter-spacing:2px; text-align:left; }
-        td { padding:16px 22px; border-bottom:1px solid var(--border); font-size:0.92rem; }
-        tr:last-child td { border-bottom:none; }
-        tr:hover td { background:rgba(255,255,255,0.02); }
-        .code-chip { background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:8px; padding:4px 10px; font-weight:800; font-size:0.88rem; font-family:monospace; }
-        .actions-cell { display:flex; gap:8px; justify-content:center; }
-        .btn-icon { width:36px; height:36px; border-radius:9px; border:none; cursor:pointer; display:grid; place-items:center; font-size:1rem; transition:var(--transition); }
-        .btn-delete { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid rgba(239,68,68,0.2); }
-        .btn-delete:hover { background:var(--danger); color:white; transform:rotate(90deg); }
-        .btn-history { background:rgba(99,102,241,0.1); color:var(--primary); border:1px solid rgba(99,102,241,0.2); }
-        .btn-history:hover { background:var(--primary); color:white; }
-
-        /* MODAL */
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:1000; display:none; place-items:center; padding:20px; }
-        .modal-overlay.show { display:grid; }
-        .modal { background:#0f172a; border:1px solid var(--border); border-radius:28px; padding:40px; width:100%; max-width:820px; max-height:85vh; overflow-y:auto; animation:fadeIn 0.3s ease; }
-        @keyframes fadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
-        .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
-        .modal-header h3 { font-size:1.5rem; font-weight:800; }
-        .btn-close { background:none; border:none; color:var(--text-dim); font-size:1.5rem; cursor:pointer; }
-        .btn-close:hover { color:white; }
-        .hist-item { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:12px; }
-        .hist-item h4 { font-weight:700; margin-bottom:10px; color:var(--text-dim); font-size:0.82rem; text-transform:uppercase; letter-spacing:1px; }
-        .hist-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
-        .hist-field span { display:block; font-size:0.68rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
-        .hist-field strong { font-size:0.9rem; font-weight:700; }
-
-        /* TOAST */
-        .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); padding:14px 28px; border-radius:100px; font-weight:700; z-index:9999; display:none; }
-        .toast.show { display:block; animation:toastIn 0.4s ease; }
-        .toast.success { background:var(--success); color:white; }
-        .toast.error { background:var(--danger); color:white; }
-        @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-        @media(max-width:900px) { .form-card{flex-direction:column} .content{padding:20px 16px} }
+        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#030712;--card:rgba(30,41,59,0.4);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+        body{background:var(--bg);color:var(--text);min-height:100vh;}
+        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 30% 0%,rgba(99,102,241,0.1) 0%,transparent 50%);z-index:-1;}
+        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(3,7,18,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+        .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
+        .bi{background:linear-gradient(135deg,var(--primary),var(--accent));width:32px;height:32px;border-radius:9px;display:grid;place-items:center;}
+        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.9rem;padding:10px 18px;border-radius:12px;border:1px solid var(--border);transition:0.3s;}
+        .back:hover{background:rgba(255,255,255,0.05);color:white;}
+        main{max-width:1200px;margin:0 auto;padding:40px 24px;}
+        h1{font-size:2.8rem;font-weight:800;letter-spacing:-1.5px;background:linear-gradient(to right,#fff,var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+        .sub{color:var(--dim);margin-bottom:35px;}
+        .fc{background:var(--card);backdrop-filter:blur(20px);padding:32px;border-radius:28px;border:1px solid var(--border);display:flex;gap:16px;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;}
+        .ig{display:flex;flex-direction:column;gap:9px;flex:1;min-width:160px;}
+        .ig label{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);font-weight:800;}
+        input,select{width:100%;padding:14px 18px;background:rgba(0,0,0,0.3);border:2px solid var(--border);border-radius:13px;color:white;font-size:0.95rem;outline:none;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
+        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
+        select option{background:#0f172a;color:white;}
+        input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);}
+        .badd{background:var(--primary);color:white;border:none;padding:0 26px;border-radius:13px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:0.3s;height:50px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
+        .badd:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(99,102,241,0.35);}
+        .sr{display:flex;gap:12px;margin-bottom:22px;}
+        .si{flex:1;padding:13px 18px;background:var(--card);border:1px solid var(--border);border-radius:13px;color:white;font-size:0.95rem;outline:none;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .si:focus{border-color:var(--primary);}
+        .tw{background:var(--card);border-radius:24px;border:1px solid var(--border);overflow:hidden;}
+        table{width:100%;border-collapse:collapse;}
+        th{padding:16px 20px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.7rem;letter-spacing:2px;text-align:left;}
+        td{padding:15px 20px;border-bottom:1px solid var(--border);}
+        tr:last-child td{border-bottom:none;}
+        tr:hover td{background:rgba(255,255,255,0.02);}
+        .code{background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-weight:800;font-size:0.88rem;font-family:monospace;}
+        .num{color:var(--dim);font-weight:800;font-size:0.9rem;}
+        .ac{display:flex;gap:8px;justify-content:center;}
+        .bh{width:34px;height:34px;border-radius:9px;border:1px solid rgba(99,102,241,0.2);cursor:pointer;display:grid;place-items:center;font-size:0.95rem;transition:0.3s;background:rgba(99,102,241,0.1);color:var(--primary);}
+        .bh:hover{background:var(--primary);color:white;}
+        .bx{width:34px;height:34px;border-radius:9px;border:1px solid rgba(239,68,68,0.2);cursor:pointer;display:grid;place-items:center;font-size:1.1rem;font-weight:800;transition:0.3s;background:rgba(239,68,68,0.1);color:var(--danger);}
+        .bx:hover{background:var(--danger);color:white;transform:rotate(90deg);}
+        .mo{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:1000;display:none;place-items:center;padding:20px;}
+        .mo.show{display:grid;}
+        .md{background:#0f172a;border:1px solid var(--border);border-radius:28px;padding:40px;width:100%;max-width:820px;max-height:85vh;overflow-y:auto;animation:fi 0.3s ease;}
+        @keyframes fi{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+        .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}
+        .mh h3{font-size:1.5rem;font-weight:800;}
+        .mc{background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;}
+        .mc:hover{color:white;}
+        .hi{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;}
+        .hi h4{font-weight:700;margin-bottom:10px;color:var(--dim);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;}
+        .hr{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+        .hf span{display:block;font-size:0.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .hf strong{font-size:0.9rem;font-weight:700;}
+        .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);padding:13px 26px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;}
+        .toast.show{display:block;animation:ti 0.4s ease;}
+        .ts{background:var(--success);color:white;}.te{background:var(--danger);color:white;}
+        @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        @media(max-width:900px){.fc{flex-direction:column}main{padding:20px 16px}}
     </style>
 </head>
 <body>
-<div class="bg-glow"></div>
-<nav class="top-nav">
-    <div class="brand">
-        <div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        SmartLoan IT
-    </div>
-    <a href="/home/dashboard.html" class="btn-back">← Volver al Dashboard</a>
+<div class="glow"></div>
+<nav>
+    <div class="brand"><div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
+    <a href="/home/dashboard.html" class="back">← Dashboard</a>
 </nav>
-
-<main class="content">
-    <div class="page-header">
-        <h1>🎓 Gestión de Alumnos</h1>
-        <p>Registro de alumnos habilitados para solicitar equipos en préstamo</p>
-    </div>
-
-    <div class="form-card">
-        <div class="input-group"><label>Nombre</label><input id="nombre" placeholder="Ej: María"></div>
-        <div class="input-group"><label>Apellido</label><input id="apellido" placeholder="Ej: López"></div>
-        <div class="input-group"><label>Carrera</label>
+<main>
+    <h1>🎓 Gestión de Alumnos</h1>
+    <p class="sub">Registro de alumnos habilitados para solicitar equipos</p>
+    <div class="fc">
+        <div class="ig"><label>Nombre</label><input id="nombre" placeholder="Ej: María"></div>
+        <div class="ig"><label>Apellido</label><input id="apellido" placeholder="Ej: López"></div>
+        <div class="ig"><label>Carrera</label>
             <select id="carrera">
                 <option value="">Seleccionar</option>
-                <option>Ingeniería en Informática</option>
-                <option>Ingeniería Industrial</option>
-                <option>Ingeniería Civil</option>
-                <option>Administración de Empresas</option>
-                <option>Contabilidad</option>
-                <option>Derecho</option>
-                <option>Medicina</option>
-                <option>Arquitectura</option>
-                <option>Otra</option>
+                <option>Ingeniería en Informática</option><option>Ingeniería Industrial</option>
+                <option>Ingeniería Civil</option><option>Administración de Empresas</option>
+                <option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option>
             </select>
         </div>
-        <div class="input-group"><label>Curso / Año</label>
+        <div class="ig"><label>Curso / Año</label>
             <select id="curso">
                 <option value="">Seleccionar</option>
-                <option>1er año</option><option>2do año</option><option>3er año</option>
-                <option>4to año</option><option>5to año</option>
+                <option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option>
             </select>
         </div>
-        <div class="input-group"><label>Cédula</label><input id="cedula" placeholder="Ej: 4567890" maxlength="15"></div>
-        <button class="btn-add" onclick="crear()">+ Registrar</button>
+        <button class="badd" onclick="crear()">+ Registrar</button>
     </div>
-
-    <div class="search-row">
-        <input class="search-input" id="busqueda" placeholder="🔍  Buscar por nombre, apellido, código o cédula..." oninput="filtrar()">
+    <div class="sr">
+        <input class="si" id="busq" placeholder="🔍  Buscar por nombre, apellido o código..." oninput="filtrar()">
     </div>
-
-    <div class="table-wrap">
+    <div class="tw">
         <table>
-            <thead>
-                <tr><th>Código</th><th>Alumno</th><th>Carrera · Curso</th><th>Cédula</th><th style="text-align:center">Acciones</th></tr>
-            </thead>
-            <tbody id="tabla"></tbody>
+            <thead><tr><th>#</th><th>Código</th><th>Alumno</th><th>Carrera · Curso</th><th style="text-align:center">Acciones</th></tr></thead>
+            <tbody id="tb"></tbody>
         </table>
     </div>
 </main>
-
-<!-- MODAL HISTORIAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 id="modalTitle">Historial de Préstamos</h3>
-            <button class="btn-close" onclick="cerrarModal()">×</button>
-        </div>
-        <div id="modalContent"></div>
-    </div>
+<div class="mo" id="mo" onclick="cmo(event)">
+    <div class="md"><div class="mh"><h3 id="mt">Historial</h3><button class="mc" onclick="cmo2()">×</button></div><div id="mc2"></div></div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-let todosAlumnos = [];
+const API='http://localhost:3000';
+let todos=[];
+const ff=(d)=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
+const fn=(n)=>Number(n).toLocaleString('es-PY');
+function st(msg,t='ts'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3500);}
 
-async function cargar() {
-    const res = await fetch('/alumnos');
-    todosAlumnos = await res.json();
-    renderTabla(todosAlumnos);
+async function cargar(){
+    const r=await fetch(`${API}/alumnos`);
+    todos=await r.json();render(todos);
 }
 
-function renderTabla(data) {
-    const t = document.getElementById('tabla');
-    if(!data.length){t.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:40px">Sin alumnos registrados</td></tr>';return;}
-    t.innerHTML = data.map(a => `
+function render(data){
+    const tb=document.getElementById('tb');
+    if(!data.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--dim);padding:40px">Sin alumnos registrados</td></tr>';return;}
+    // Número correlativo visual (1, 2, 3...) independiente del ID de BD
+    tb.innerHTML=data.map((a,i)=>`
         <tr>
-            <td><span class="code-chip">${a.codigo_alumno}</span></td>
-            <td>
-                <strong>${a.nombre} ${a.apellido}</strong>
-                <br><span style="font-size:0.78rem;color:var(--text-dim)">Registrado: ${fmtFecha(a.fecha_registro)}</span>
-            </td>
-            <td>
-                <span style="font-weight:600">${a.carrera||'—'}</span>
-                <br><span style="font-size:0.8rem;color:var(--text-dim)">${a.curso||'—'}</span>
-            </td>
-            <td style="font-family:monospace">${a.cedula||'—'}</td>
-            <td>
-                <div class="actions-cell">
-                    <button class="btn-icon btn-history" onclick="verHistorial(${a.id_alumno},'${a.nombre} ${a.apellido}')" title="Historial de préstamos">📋</button>
-                    <button class="btn-icon btn-delete" onclick="eliminar(${a.id_alumno})" title="Eliminar">×</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+            <td><span class="num">${i+1}</span></td>
+            <td><span class="code">${a.codigo_alumno}</span></td>
+            <td><strong>${a.nombre} ${a.apellido}</strong></td>
+            <td><span style="font-weight:600">${a.carrera||'—'}</span> · <span style="color:var(--dim)">${a.curso||'—'}</span></td>
+            <td><div class="ac">
+                <button class="bh" onclick="hist(${a.id_alumno},'${a.nombre} ${a.apellido}')">📋</button>
+                <button class="bx" onclick="eliminar(${a.id_alumno})">×</button>
+            </div></td>
+        </tr>`).join('');
 }
 
-function filtrar() {
-    const q = document.getElementById('busqueda').value.toLowerCase();
-    if(!q){ renderTabla(todosAlumnos); return; }
-    const filtrados = todosAlumnos.filter(a =>
-        a.nombre.toLowerCase().includes(q) ||
-        a.apellido.toLowerCase().includes(q) ||
-        a.codigo_alumno.toLowerCase().includes(q) ||
-        (a.cedula && a.cedula.includes(q))
-    );
-    renderTabla(filtrados);
+function filtrar(){
+    const q=document.getElementById('busq').value.toLowerCase();
+    if(!q){render(todos);return;}
+    render(todos.filter(a=>a.nombre.toLowerCase().includes(q)||a.apellido.toLowerCase().includes(q)||a.codigo_alumno.toLowerCase().includes(q)));
 }
 
-async function crear() {
-    const n = document.getElementById('nombre').value.trim();
-    const a = document.getElementById('apellido').value.trim();
-    const c = document.getElementById('carrera').value;
-    const cu= document.getElementById('curso').value;
-    const ci= document.getElementById('cedula').value.trim();
-    if(!n||!a){showToast('Ingresá nombre y apellido','error');return;}
-    const res = await fetch('/alumnos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:n,apellido:a,carrera:c,curso:cu,cedula:ci})});
-    const data = await res.json();
-    document.getElementById('nombre').value='';
-    document.getElementById('apellido').value='';
-    document.getElementById('carrera').value='';
-    document.getElementById('curso').value='';
-    document.getElementById('cedula').value='';
-    showToast(`✅ Alumno registrado: ${data.codigo_alumno}`,'success');
-    cargar();
+async function crear(){
+    const n=document.getElementById('nombre').value.trim();
+    const ap=document.getElementById('apellido').value.trim();
+    const c=document.getElementById('carrera').value;
+    const cu=document.getElementById('curso').value;
+    if(!n||!ap){st('Ingresá nombre y apellido','te');return;}
+    const r=await fetch(`${API}/alumnos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:n,apellido:ap,carrera:c,curso:cu})});
+    const d=await r.json();
+    document.getElementById('nombre').value='';document.getElementById('apellido').value='';
+    document.getElementById('carrera').value='';document.getElementById('curso').value='';
+    st(`✅ Alumno registrado: ${d.codigo_alumno}`);cargar();
 }
 
-async function eliminar(id) {
-    if(!confirm('¿Eliminar este alumno del sistema?')) return;
-    await fetch(`/alumnos/${id}`,{method:'DELETE'});
-    showToast('Alumno eliminado','success');
-    cargar();
+async function eliminar(id){
+    if(!confirm('¿Eliminar este alumno?'))return;
+    await fetch(`${API}/alumnos/${id}`,{method:'DELETE'});
+    st('Alumno eliminado');cargar();
 }
 
-async function verHistorial(id, nombre) {
-    document.getElementById('modalTitle').textContent = `Historial: ${nombre}`;
-    document.getElementById('modalContent').innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:20px">Cargando...</p>';
-    document.getElementById('modalOverlay').classList.add('show');
-    const res = await fetch(`/alumnos/${id}/historial`);
-    const data = await res.json();
-    const c = document.getElementById('modalContent');
-    if(!data.length){c.innerHTML='<p style="text-align:center;color:var(--text-dim);padding:30px">Sin préstamos registrados para este alumno</p>';return;}
-    c.innerHTML = data.map(h => `
-        <div class="hist-item">
-            <h4>Préstamo #${h.id_prestamo} · ${h.estado_prestamo === 'DEVUELTO' ? '✅ Devuelto' : '🔴 Activo'}</h4>
-            <div class="hist-row">
-                <div class="hist-field"><span>Equipo</span><strong>${h.equipo} (${h.tipo})</strong></div>
-                <div class="hist-field"><span>Fecha préstamo</span><strong>${fmtFecha(h.fecha_prestamo)}</strong></div>
-                <div class="hist-field"><span>Vencimiento</span><strong>${fmtFecha(h.fecha_devolucion_estimada)}</strong></div>
-                <div class="hist-field"><span>Estado inicial</span><strong>${h.estado_inicial_equipo||'—'}</strong></div>
-                <div class="hist-field"><span>Motivo</span><strong>${h.motivo||'—'}</strong></div>
-                <div class="hist-field"><span>Encargado</span><strong>${h.encargado_nombre} ${h.encargado_apellido}</strong></div>
-                ${h.fecha_devolucion ? `
-                <div class="hist-field"><span>Devuelto</span><strong>${fmtFecha(h.fecha_devolucion)}</strong></div>
-                <div class="hist-field"><span>Estado final</span><strong>${h.estado_devolucion}</strong></div>
-                <div class="hist-field"><span>Días retraso</span><strong ${h.dias_retraso>0?'style="color:var(--warn)"':''}>${h.dias_retraso||0}</strong></div>
-                <div class="hist-field"><span>Multa</span><strong ${h.monto_multa>0?'style="color:var(--warn)"':''}>Gs. ${fmtNum(h.monto_multa||0)}</strong></div>
-                <div class="hist-field"><span>Total cobrado</span><strong ${h.total_cobro>0?'style="color:var(--danger)"':''}>Gs. ${fmtNum(h.total_cobro||0)}</strong></div>
-                ` : '<div class="hist-field"><span>Devolución</span><strong style="color:var(--primary)">Pendiente</strong></div>'}
+async function hist(id,nombre){
+    document.getElementById('mt').textContent=`Historial: ${nombre}`;
+    document.getElementById('mc2').innerHTML='<p style="color:var(--dim);text-align:center;padding:20px">Cargando...</p>';
+    document.getElementById('mo').classList.add('show');
+    const r=await fetch(`${API}/alumnos/${id}/historial`);
+    const d=await r.json();
+    const c=document.getElementById('mc2');
+    if(!d.length){c.innerHTML='<p style="text-align:center;color:var(--dim);padding:30px">Sin préstamos registrados</p>';return;}
+    c.innerHTML=d.map(h=>`
+        <div class="hi">
+            <h4>Préstamo #${h.id_prestamo} · ${h.estado_prestamo==='DEVUELTO'?'✅ Devuelto':'🔴 Activo'}</h4>
+            <div class="hr">
+                <div class="hf"><span>Equipo</span><strong>${h.equipo} (${h.tipo})</strong></div>
+                <div class="hf"><span>Fecha préstamo</span><strong>${ff(h.fecha_prestamo)}</strong></div>
+                <div class="hf"><span>Vencimiento</span><strong>${ff(h.fecha_devolucion_estimada)}</strong></div>
+                <div class="hf"><span>Motivo</span><strong>${h.motivo||'—'}</strong></div>
+                <div class="hf"><span>Encargado</span><strong>${h.encargado_nombre} ${h.encargado_apellido}</strong></div>
+                ${h.fecha_devolucion?`
+                <div class="hf"><span>Devuelto</span><strong>${ff(h.fecha_devolucion)}</strong></div>
+                <div class="hf"><span>Estado final</span><strong>${h.estado_devolucion}</strong></div>
+                <div class="hf"><span>Multa</span><strong ${h.monto_multa>0?'style="color:var(--warn)"':''}>Gs. ${fn(h.monto_multa||0)}</strong></div>
+                <div class="hf"><span>Total</span><strong ${h.total_cobro>0?'style="color:var(--danger)"':''}>Gs. ${fn(h.total_cobro||0)}</strong></div>
+                `:'<div class="hf"><span>Devolución</span><strong style="color:var(--primary)">Pendiente</strong></div>'}
             </div>
-        </div>
-    `).join('');
+        </div>`).join('');
 }
-
-function cerrarModal(){document.getElementById('modalOverlay').classList.remove('show');}
-function closeModal(e){if(e.target===document.getElementById('modalOverlay'))cerrarModal();}
-function fmtFecha(d){if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
-function fmtNum(n){return Number(n).toLocaleString('es-PY');}
-function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.className='toast',3500);}
-
-window.onload = cargar;
+function cmo2(){document.getElementById('mo').classList.remove('show');}
+function cmo(e){if(e.target===document.getElementById('mo'))cmo2();}
+window.onload=cargar;
 </script>
 </body>
 </html>

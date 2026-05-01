@@ -1,18 +1,14 @@
 -- ============================================================
 -- SISTEMA DE GESTIÓN DE PRÉSTAMOS DE RECURSOS TECNOLÓGICOS
--- SmartLoan IT - Base de Datos v4.0
--- Universidad Integración de las Américas
+-- SmartLoan IT v4.0 - Universidad Integración de las Américas
 -- ============================================================
 
 CREATE DATABASE IF NOT EXISTS prestamos_db;
 USE prestamos_db;
 
--- ============================================================
--- TABLA: ENCARGADOS
--- ============================================================
 CREATE TABLE encargados (
     id_encargado   INT AUTO_INCREMENT PRIMARY KEY,
-    codigo         VARCHAR(4) UNIQUE NOT NULL,   -- Máx 4 dígitos: 1234, 157, 879...
+    codigo         VARCHAR(4) UNIQUE NOT NULL,
     password       VARCHAR(100) NOT NULL,
     nombre         VARCHAR(100) NOT NULL,
     apellido       VARCHAR(100) NOT NULL,
@@ -21,9 +17,6 @@ CREATE TABLE encargados (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TABLA: ALUMNOS
--- ============================================================
 CREATE TABLE alumnos (
     id_alumno      INT AUTO_INCREMENT PRIMARY KEY,
     codigo_alumno  VARCHAR(20) UNIQUE NOT NULL,
@@ -36,22 +29,16 @@ CREATE TABLE alumnos (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TABLA: EQUIPOS
--- ============================================================
 CREATE TABLE equipos (
     id_equipo      INT AUTO_INCREMENT PRIMARY KEY,
     nombre         VARCHAR(100) NOT NULL,
     tipo           VARCHAR(50)  NOT NULL,
     marca          VARCHAR(50)  NOT NULL,
-    estado         ENUM('Disponible', 'Prestado', 'En mantenimiento') DEFAULT 'Disponible',
+    estado         ENUM('Disponible','Prestado','En mantenimiento') DEFAULT 'Disponible',
     descripcion    VARCHAR(200),
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TABLA: PRÉSTAMOS
--- ============================================================
 CREATE TABLE prestamos (
     id_prestamo               INT AUTO_INCREMENT PRIMARY KEY,
     id_alumno                 INT NOT NULL,
@@ -59,26 +46,22 @@ CREATE TABLE prestamos (
     id_encargado              INT NOT NULL,
     fecha_prestamo            DATETIME NOT NULL,
     fecha_devolucion_estimada DATETIME NOT NULL,
-    estado_inicial_equipo     ENUM('Excelente', 'Bueno', 'Dañado') DEFAULT 'Excelente',
+    estado_inicial_equipo     ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente',
     accesorios                VARCHAR(300),
     motivo                    VARCHAR(300),
     observaciones             VARCHAR(300),
     acepto_contrato           BOOLEAN DEFAULT FALSE,
-    estado                    ENUM('ACTIVO', 'DEVUELTO') DEFAULT 'ACTIVO',
-
+    estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
     FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
     FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
     FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
 );
 
--- ============================================================
--- TABLA: DEVOLUCIONES
--- ============================================================
 CREATE TABLE devoluciones (
     id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
     id_prestamo      INT NOT NULL,
     fecha_devolucion DATETIME NOT NULL,
-    estado_equipo    ENUM('Excelente', 'Bueno', 'Dañado') NOT NULL,
+    estado_equipo    ENUM('Excelente','Bueno','Dañado') NOT NULL,
     tiene_dano       BOOLEAN DEFAULT FALSE,
     tipo_dano        VARCHAR(200),
     observacion_dano VARCHAR(300),
@@ -87,13 +70,8 @@ CREATE TABLE devoluciones (
     monto_multa      DECIMAL(12,2) DEFAULT 0,
     total_cobro      DECIMAL(12,2) DEFAULT 0,
     observacion      VARCHAR(300),
-
     FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo)
 );
-
--- ============================================================
--- TRIGGERS
--- ============================================================
 
 DELIMITER $$
 
@@ -132,8 +110,6 @@ END$$
 
 DELIMITER ;
 
--- ============================================================
--- DATOS
--- ============================================================
+-- Encargado: código 1234, contraseña CREDENCIALES_BORRADAS
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
-('1234', '1234', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos');
+('1234', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos');

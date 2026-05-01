@@ -1,297 +1,191 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLoan IT | Equipos</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary:#6366f1; --accent:#00f2ff; --warn:#f59e0b; --success:#22c55e; --danger:#ef4444; --bg:#030712; --card-bg:rgba(30,41,59,0.4); --text:#f8fafc; --text-dim:#94a3b8; --border:rgba(255,255,255,0.08); --transition:all 0.4s cubic-bezier(0.23,1,0.32,1); }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
-        .bg-glow { position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 50%); z-index:-1; }
-
-        .top-nav { padding:18px 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(3,7,18,0.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
-        .brand { font-size:1.3rem; font-weight:800; display:flex; align-items:center; gap:10px; }
-        .brand-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); width:32px; height:32px; border-radius:9px; display:grid; place-items:center; }
-        .btn-back { display:flex; align-items:center; gap:8px; color:var(--text-dim); text-decoration:none; font-weight:700; font-size:0.9rem; padding:10px 18px; border-radius:12px; border:1px solid var(--border); transition:var(--transition); }
-        .btn-back:hover { background:rgba(255,255,255,0.05); color:white; }
-
-        .content { max-width:1300px; margin:0 auto; padding:40px 24px; }
-        .page-header { margin-bottom:35px; }
-        .page-header h1 { font-size:2.8rem; font-weight:800; letter-spacing:-1.5px; background:linear-gradient(to right,#fff,var(--text-dim)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .page-header p { color:var(--text-dim); margin-top:6px; }
-
-        .form-card { background:var(--card-bg); backdrop-filter:blur(20px); padding:35px; border-radius:28px; border:1px solid var(--border); display:flex; gap:20px; align-items:flex-end; margin-bottom:40px; flex-wrap:wrap; }
-        .input-group { display:flex; flex-direction:column; gap:10px; flex:1; min-width:200px; }
-        .input-group label { font-size:0.78rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--primary); font-weight:800; }
-        input, select { width:100%; padding:16px 20px; background:rgba(0,0,0,0.3); border:2px solid var(--border); border-radius:14px; color:white; font-size:1rem; outline:none; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; appearance:none; -webkit-appearance:none; }
-        select { background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-color:rgba(0,0,0,0.3); }
-        select option { background:#0f172a; color:white; }
-        input:focus, select:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,0.15); }
-        .btn-add { background:var(--primary); color:white; border:none; padding:0 32px; border-radius:14px; font-weight:800; font-size:1rem; cursor:pointer; transition:var(--transition); height:56px; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Plus Jakarta Sans',sans-serif; }
-        .btn-add:hover { transform:translateY(-2px); box-shadow:0 12px 25px rgba(99,102,241,0.35); }
-
-        .table-wrap { background:var(--card-bg); border-radius:28px; border:1px solid var(--border); overflow:hidden; }
-        table { width:100%; border-collapse:collapse; }
-        th { padding:20px 24px; background:rgba(255,255,255,0.02); color:var(--text-dim); text-transform:uppercase; font-size:0.75rem; letter-spacing:2px; text-align:left; white-space:nowrap; }
-        td { padding:18px 24px; border-bottom:1px solid var(--border); font-size:0.92rem; vertical-align:middle; }
-        tr:last-child td { border-bottom:none; }
-        tr:hover td { background:rgba(255,255,255,0.02); }
-
-        .badge { padding:6px 14px; border-radius:8px; font-size:0.75rem; font-weight:800; text-transform:uppercase; display:inline-block; }
-        .badge-disponible    { background:rgba(34,197,94,0.1);  color:var(--success); border:1px solid rgba(34,197,94,0.2); }
-        .badge-prestado      { background:rgba(239,68,68,0.1);  color:var(--danger);  border:1px solid rgba(239,68,68,0.2); }
-        .badge-mantenimiento { background:rgba(245,158,11,0.1); color:var(--warn);    border:1px solid rgba(245,158,11,0.2); }
-
-        /* BOTONES DE ACCIÓN */
-        .actions-cell { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-
-        .btn-icon { width:36px; height:36px; border-radius:9px; border:none; cursor:pointer; display:grid; place-items:center; font-size:1rem; transition:var(--transition); flex-shrink:0; }
-        .btn-history { background:rgba(99,102,241,0.1); color:var(--primary); border:1px solid rgba(99,102,241,0.2); }
-        .btn-history:hover { background:var(--primary); color:white; }
-        .btn-delete { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid rgba(239,68,68,0.2); font-size:1.1rem; font-weight:800; }
-        .btn-delete:hover { background:var(--danger); color:white; transform:rotate(90deg); }
-
-        .btn-estado { height:34px; padding:0 14px; border-radius:9px; border:none; cursor:pointer; font-size:0.78rem; font-weight:800; transition:var(--transition); font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap; }
-        .btn-disponible { background:rgba(34,197,94,0.1); color:var(--success); border:1px solid rgba(34,197,94,0.25); }
-        .btn-disponible:hover { background:var(--success); color:white; }
-        .btn-mantto { background:rgba(245,158,11,0.1); color:var(--warn); border:1px solid rgba(245,158,11,0.25); }
-        .btn-mantto:hover { background:var(--warn); color:white; }
-
-        .en-uso-label { font-size:0.78rem; color:var(--text-dim); font-weight:700; padding:6px 12px; background:rgba(255,255,255,0.04); border-radius:8px; border:1px solid var(--border); }
-
-        /* MODAL */
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:1000; display:none; place-items:center; padding:20px; }
-        .modal-overlay.show { display:grid; }
-        .modal { background:#0f172a; border:1px solid var(--border); border-radius:28px; padding:40px; width:100%; max-width:820px; max-height:85vh; overflow-y:auto; animation:fadeIn 0.3s ease; }
-        @keyframes fadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
-        .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
-        .modal-header h3 { font-size:1.5rem; font-weight:800; }
-        .btn-close { background:none; border:none; color:var(--text-dim); font-size:1.5rem; cursor:pointer; }
-        .btn-close:hover { color:white; }
-        .hist-item { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:12px; }
-        .hist-item h4 { font-weight:700; margin-bottom:12px; color:var(--text-dim); font-size:0.82rem; text-transform:uppercase; letter-spacing:1px; }
-        .hist-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px; }
-        .hist-field span { display:block; font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
-        .hist-field strong { font-size:0.92rem; font-weight:700; }
-
-        .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); padding:14px 28px; border-radius:100px; font-weight:700; z-index:9999; display:none; white-space:nowrap; }
-        .toast.show { display:block; animation:toastIn 0.4s ease; }
-        .toast.success { background:var(--success); color:white; }
-        .toast.error { background:var(--danger); color:white; }
-        @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-        @media(max-width:900px) { .form-card{flex-direction:column} .content{padding:20px 16px} }
+        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#030712;--card:rgba(30,41,59,0.4);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+        body{background:var(--bg);color:var(--text);min-height:100vh;}
+        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 0%,rgba(99,102,241,0.12) 0%,transparent 50%);z-index:-1;}
+        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(3,7,18,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+        .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
+        .bi{background:linear-gradient(135deg,var(--primary),var(--accent));width:32px;height:32px;border-radius:9px;display:grid;place-items:center;}
+        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.9rem;padding:10px 18px;border-radius:12px;border:1px solid var(--border);transition:0.3s;}
+        .back:hover{background:rgba(255,255,255,0.05);color:white;}
+        main{max-width:1300px;margin:0 auto;padding:40px 24px;}
+        h1{font-size:2.8rem;font-weight:800;letter-spacing:-1.5px;background:linear-gradient(to right,#fff,var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+        .sub{color:var(--dim);margin-bottom:35px;}
+        .fc{background:var(--card);backdrop-filter:blur(20px);padding:32px;border-radius:28px;border:1px solid var(--border);display:flex;gap:18px;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;}
+        .ig{display:flex;flex-direction:column;gap:9px;flex:1;min-width:190px;}
+        .ig label{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);font-weight:800;}
+        input,select{width:100%;padding:15px 18px;background:rgba(0,0,0,0.3);border:2px solid var(--border);border-radius:13px;color:white;font-size:0.95rem;outline:none;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
+        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
+        select option{background:#0f172a;color:white;}
+        input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);}
+        .badd{background:var(--primary);color:white;border:none;padding:0 28px;border-radius:13px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:0.3s;height:52px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
+        .badd:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(99,102,241,0.35);}
+        .tw{background:var(--card);border-radius:28px;border:1px solid var(--border);overflow:hidden;}
+        table{width:100%;border-collapse:collapse;}
+        th{padding:18px 22px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.72rem;letter-spacing:2px;text-align:left;}
+        td{padding:16px 22px;border-bottom:1px solid var(--border);font-size:0.92rem;vertical-align:middle;}
+        tr:last-child td{border-bottom:none;}
+        tr:hover td{background:rgba(255,255,255,0.02);}
+        .badge{padding:5px 12px;border-radius:8px;font-size:0.72rem;font-weight:800;text-transform:uppercase;display:inline-block;}
+        .bd{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
+        .bp{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
+        .bm{background:rgba(245,158,11,0.1);color:var(--warn);border:1px solid rgba(245,158,11,0.2);}
+        .num{color:var(--dim);font-weight:800;}
+        .ac{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;}
+        .bico{width:34px;height:34px;border-radius:9px;border:none;cursor:pointer;display:grid;place-items:center;font-size:0.95rem;transition:0.3s;flex-shrink:0;}
+        .bh{background:rgba(99,102,241,0.1);color:var(--primary);border:1px solid rgba(99,102,241,0.2);}
+        .bh:hover{background:var(--primary);color:white;}
+        .bx{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);font-size:1.1rem;font-weight:800;}
+        .bx:hover{background:var(--danger);color:white;transform:rotate(90deg);}
+        .be{height:32px;padding:0 12px;border-radius:9px;border:none;cursor:pointer;font-size:0.75rem;font-weight:800;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
+        .bev{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.25);}
+        .bev:hover{background:var(--success);color:white;}
+        .bem{background:rgba(245,158,11,0.1);color:var(--warn);border:1px solid rgba(245,158,11,0.25);}
+        .bem:hover{background:var(--warn);color:white;}
+        .uso{font-size:0.75rem;color:var(--dim);font-weight:700;padding:5px 10px;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid var(--border);}
+        .mo{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:1000;display:none;place-items:center;padding:20px;}
+        .mo.show{display:grid;}
+        .md{background:#0f172a;border:1px solid var(--border);border-radius:28px;padding:40px;width:100%;max-width:820px;max-height:85vh;overflow-y:auto;animation:fi 0.3s ease;}
+        @keyframes fi{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+        .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}
+        .mh h3{font-size:1.5rem;font-weight:800;}
+        .mc{background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;}
+        .mc:hover{color:white;}
+        .hi{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;}
+        .hi h4{font-weight:700;margin-bottom:10px;color:var(--dim);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;}
+        .hr{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;}
+        .hf span{display:block;font-size:0.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .hf strong{font-size:0.9rem;font-weight:700;}
+        .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);padding:13px 26px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;}
+        .toast.show{display:block;animation:ti 0.4s ease;}
+        .ts{background:var(--success);color:white;}.te{background:var(--danger);color:white;}
+        @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        @media(max-width:900px){.fc{flex-direction:column}main{padding:20px 16px}}
     </style>
 </head>
 <body>
-<div class="bg-glow"></div>
-<nav class="top-nav">
-    <div class="brand">
-        <div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        SmartLoan IT
-    </div>
-    <a href="/home/dashboard.html" class="btn-back">← Volver al Dashboard</a>
+<div class="glow"></div>
+<nav>
+    <div class="brand"><div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
+    <a href="/home/dashboard.html" class="back">← Dashboard</a>
 </nav>
-
-<main class="content">
-    <div class="page-header">
-        <h1>Gestión de Equipos</h1>
-        <p>Registro, control de estado e historial de activos tecnológicos</p>
-    </div>
-
-    <div class="form-card">
-        <div class="input-group"><label>Modelo / Nombre</label><input id="nombre" placeholder="Ej: ThinkPad X1 Carbon"></div>
-        <div class="input-group">
-            <label>Tipo</label>
-            <select id="tipo">
-                <option value="">Seleccionar</option>
-                <option>Laptop</option><option>PC</option><option>Proyector</option>
-                <option>Tablet</option><option>Monitor</option>
-            </select>
+<main>
+    <h1>Gestión de Equipos</h1>
+    <p class="sub">Registro, control de estado e historial de activos tecnológicos</p>
+    <div class="fc">
+        <div class="ig"><label>Modelo / Nombre</label><input id="nombre" placeholder="Ej: ThinkPad X1 Carbon"></div>
+        <div class="ig"><label>Tipo</label>
+            <select id="tipo"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
         </div>
-        <div class="input-group">
-            <label>Marca</label>
-            <select id="marca">
-                <option value="">Seleccionar</option>
-                <option>Lenovo</option><option>HP</option><option>Dell</option>
-                <option>ASUS</option><option>Apple</option><option>MSI</option><option>Acer</option>
-            </select>
+        <div class="ig"><label>Marca</label>
+            <select id="marca"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
         </div>
-        <div class="input-group"><label>Descripción (opcional)</label><input id="descripcion" placeholder="Ej: 16GB RAM, SSD 512GB"></div>
-        <button class="btn-add" onclick="crear()">+ Agregar</button>
+        <div class="ig"><label>Descripción </label><input id="desc" placeholder="Ej: 16GB RAM, SSD 512GB"></div>
+        <button class="badd" onclick="crear()">+ Agregar</button>
     </div>
-
-    <div class="table-wrap">
+    <div class="tw">
         <table>
-            <thead>
-                <tr>
-                    <th>ID</th><th>Equipo</th><th>Tipo · Marca</th>
-                    <th>Estado</th><th style="text-align:center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tabla"></tbody>
+            <thead><tr><th>#</th><th>Equipo</th><th>Tipo · Marca</th><th>Estado</th><th style="text-align:center">Acciones</th></tr></thead>
+            <tbody id="tb"></tbody>
         </table>
     </div>
 </main>
-
-<!-- MODAL HISTORIAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 id="modalTitle">Historial del Equipo</h3>
-            <button class="btn-close" onclick="cerrarModal()">×</button>
-        </div>
-        <div id="modalContent"></div>
-    </div>
+<div class="mo" id="mo" onclick="cmo(event)">
+    <div class="md"><div class="mh"><h3 id="mt">Historial</h3><button class="mc" onclick="cmo2()">×</button></div><div id="mc2"></div></div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-function badgeEstado(e) {
-    const map = {'Disponible':'disponible','Prestado':'prestado','En mantenimiento':'mantenimiento'};
-    return `<span class="badge badge-${map[e]||'disponible'}">${e}</span>`;
-}
+const API='http://localhost:3000';
+const bE=(e)=>{const m={'Disponible':'bd','Prestado':'bp','En mantenimiento':'bm'};return`<span class="badge ${m[e]||'bd'}">${e}</span>`;};
+const ff=(d)=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
+const fn=(n)=>Number(n).toLocaleString('es-PY');
+function st(msg,t='ts'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3500);}
 
-function botonesAccion(e) {
-    let btnEstado = '';
-
-    if (e.estado === 'Disponible') {
-        // Puede ir a mantenimiento o eliminarse
-        btnEstado = `<button class="btn-estado btn-mantto" onclick="cambiarEstado(${e.id_equipo},'En mantenimiento')">🔧 Mantenimiento</button>`;
-    } else if (e.estado === 'En mantenimiento') {
-        // Puede volver a disponible o eliminarse
-        btnEstado = `<button class="btn-estado btn-disponible" onclick="cambiarEstado(${e.id_equipo},'Disponible')">✅ Marcar disponible</button>`;
-    } else {
-        // Prestado — no se puede cambiar estado ni eliminar
-        btnEstado = `<span class="en-uso-label">🔴 En préstamo</span>`;
-    }
-
-    const btnDelete = e.estado !== 'Prestado'
-        ? `<button class="btn-icon btn-delete" onclick="eliminar(${e.id_equipo})" title="Eliminar equipo">×</button>`
-        : '';
-
-    return `
-        <div class="actions-cell" style="justify-content:center">
-            <button class="btn-icon btn-history" onclick="verHistorial(${e.id_equipo},'${e.nombre.replace(/'/g,"\\'")}')">📊</button>
-            ${btnEstado}
-            ${btnDelete}
-        </div>`;
-}
-
-async function cargar() {
-    const res  = await fetch('/equipos');
-    const data = await res.json();
-    const t    = document.getElementById('tabla');
-    if (!data.length) {
-        t.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:40px">Sin equipos registrados</td></tr>';
-        return;
-    }
-    t.innerHTML = data.map(e => `
-        <tr>
-            <td><strong style="color:var(--text-dim)">#${e.id_equipo}</strong></td>
-            <td>
-                <strong>${e.nombre}</strong>
-                ${e.descripcion ? `<br><span style="font-size:0.82rem;color:var(--text-dim)">${e.descripcion}</span>` : ''}
-            </td>
+async function cargar(){
+    const r=await fetch(`${API}/equipos`);
+    const d=await r.json();
+    const tb=document.getElementById('tb');
+    if(!d.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--dim);padding:40px">Sin equipos registrados</td></tr>';return;}
+    tb.innerHTML=d.map((e,i)=>{
+        let btn='';
+        if(e.estado==='Disponible') btn=`<button class="be bem" onclick="cambiar(${e.id_equipo},'En mantenimiento')">🔧 Mantenimiento</button>`;
+        else if(e.estado==='En mantenimiento') btn=`<button class="be bev" onclick="cambiar(${e.id_equipo},'Disponible')">✅ Disponible</button>`;
+        else btn=`<span class="uso">🔴 En préstamo</span>`;
+        const bx=e.estado!=='Prestado'?`<button class="bico bx" onclick="eliminar(${e.id_equipo})">×</button>`:'';
+        return `<tr>
+            <td><span class="num">${i+1}</span></td>
+            <td><strong>${e.nombre}</strong>${e.descripcion?`<br><span style="font-size:0.8rem;color:var(--dim)">${e.descripcion}</span>`:''}</td>
             <td>${e.tipo} · ${e.marca}</td>
-            <td>${badgeEstado(e.estado)}</td>
-            <td>${botonesAccion(e)}</td>
-        </tr>
-    `).join('');
+            <td>${bE(e.estado)}</td>
+            <td><div class="ac">
+                <button class="bico bh" onclick="hist(${e.id_equipo},'${e.nombre.replace(/'/g,"\\'")}')">📊</button>
+                ${btn}${bx}
+            </div></td>
+        </tr>`;
+    }).join('');
 }
 
-async function crear() {
-    const n = document.getElementById('nombre').value.trim();
-    const t = document.getElementById('tipo').value;
-    const m = document.getElementById('marca').value;
-    const d = document.getElementById('descripcion').value.trim();
-    if (!n || !t || !m) { showToast('Completá nombre, tipo y marca', 'error'); return; }
-    await fetch('/equipos', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({nombre:n,tipo:t,marca:m,descripcion:d})});
-    document.getElementById('nombre').value = '';
-    document.getElementById('descripcion').value = '';
-    document.getElementById('tipo').value = '';
-    document.getElementById('marca').value = '';
-    showToast('✅ Equipo agregado', 'success');
+async function crear(){
+    const n=document.getElementById('nombre').value.trim();
+    const t=document.getElementById('tipo').value;
+    const m=document.getElementById('marca').value;
+    const d=document.getElementById('desc').value.trim();
+    if(!n||!t||!m){st('Completá nombre, tipo y marca','te');return;}
+    await fetch(`${API}/equipos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:n,tipo:t,marca:m,descripcion:d})});
+    document.getElementById('nombre').value='';document.getElementById('desc').value='';
+    document.getElementById('tipo').value='';document.getElementById('marca').value='';
+    st('✅ Equipo agregado');cargar();
+}
+
+async function eliminar(id){
+    if(!confirm('¿Eliminar este equipo?'))return;
+    const r=await fetch(`${API}/equipos/${id}`,{method:'DELETE'});
+    if(r.ok){st('Equipo eliminado');}
+    else{const d=await r.json();st(d.mensaje||'No se puede eliminar','te');}
     cargar();
 }
 
-async function eliminar(id) {
-    if (!confirm('¿Eliminar este equipo?')) return;
-    try {
-        const res = await fetch(`/equipos/${id}`, {method:'DELETE'});
-        if (res.ok) {
-            showToast('Equipo eliminado', 'success');
-        } else {
-            const data = await res.json();
-            showToast(data.mensaje || 'No se puede eliminar este equipo', 'error');
-        }
-    } catch(err) {
-        showToast('Error de conexión', 'error');
-    }
-    cargar();
+async function cambiar(id,estado){
+    await fetch(`${API}/equipos/${id}/estado`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({estado})});
+    st(`Estado → ${estado}`);cargar();
 }
 
-async function cambiarEstado(id, estado) {
-    try {
-        await fetch(`/equipos/${id}/estado`, {
-            method: 'PATCH',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({estado})
-        });
-        showToast(`Estado actualizado a: ${estado}`, 'success');
-    } catch(err) {
-        showToast('Error al cambiar estado', 'error');
-    }
-    cargar();
-}
-
-async function verHistorial(id, nombre) {
-    document.getElementById('modalTitle').textContent = `Historial: ${nombre}`;
-    document.getElementById('modalContent').innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:20px">Cargando...</p>';
-    document.getElementById('modalOverlay').classList.add('show');
-    try {
-        const res  = await fetch(`/equipos/${id}/historial`);
-        const data = await res.json();
-        const c    = document.getElementById('modalContent');
-        if (!data.length) {
-            c.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:30px">Sin movimientos registrados para este equipo</p>';
-            return;
-        }
-        c.innerHTML = data.map(h => `
-            <div class="hist-item">
-                <h4>Préstamo #${h.id_prestamo} · ${h.estado_prestamo==='DEVUELTO'?'✅ Devuelto':'🔴 Activo'}</h4>
-                <div class="hist-row">
-                    <div class="hist-field"><span>Alumno</span><strong>${h.codigo_alumno} — ${h.alumno_nombre} ${h.alumno_apellido}</strong></div>
-                    <div class="hist-field"><span>Carrera</span><strong>${h.carrera||'—'}</strong></div>
-                    <div class="hist-field"><span>Fecha préstamo</span><strong>${fmtFecha(h.fecha_prestamo)}</strong></div>
-                    <div class="hist-field"><span>Vencimiento</span><strong>${fmtFecha(h.fecha_devolucion_estimada)}</strong></div>
-                    <div class="hist-field"><span>Estado inicial</span><strong>${h.estado_inicial_equipo||'—'}</strong></div>
-                    <div class="hist-field"><span>Motivo</span><strong>${h.motivo||'—'}</strong></div>
-                    ${h.fecha_devolucion ? `
-                    <div class="hist-field"><span>Fecha devolución</span><strong>${fmtFecha(h.fecha_devolucion)}</strong></div>
-                    <div class="hist-field"><span>Estado devuelto</span><strong>${h.estado_devolucion}</strong></div>
-                    <div class="hist-field"><span>Días retraso</span><strong ${h.dias_retraso>0?'style="color:var(--warn)"':''}>${h.dias_retraso||0}</strong></div>
-                    <div class="hist-field"><span>Multa</span><strong>Gs. ${fmtNum(h.monto_multa||0)}</strong></div>
-                    <div class="hist-field"><span>Total cobro</span><strong style="color:var(--warn)">Gs. ${fmtNum(h.total_cobro||0)}</strong></div>
-                    ` : '<div class="hist-field"><span>Devolución</span><strong style="color:var(--primary)">Pendiente</strong></div>'}
-                </div>
+async function hist(id,nombre){
+    document.getElementById('mt').textContent=`Historial: ${nombre}`;
+    document.getElementById('mc2').innerHTML='<p style="color:var(--dim);text-align:center;padding:20px">Cargando...</p>';
+    document.getElementById('mo').classList.add('show');
+    const r=await fetch(`${API}/equipos/${id}/historial`);
+    const d=await r.json();
+    const c=document.getElementById('mc2');
+    if(!d.length){c.innerHTML='<p style="text-align:center;color:var(--dim);padding:30px">Sin movimientos registrados</p>';return;}
+    c.innerHTML=d.map(h=>`
+        <div class="hi">
+            <h4>Préstamo #${h.id_prestamo} · ${h.estado_prestamo==='DEVUELTO'?'✅ Devuelto':'🔴 Activo'}</h4>
+            <div class="hr">
+                <div class="hf"><span>Alumno</span><strong>${h.codigo_alumno} — ${h.alumno_nombre} ${h.alumno_apellido}</strong></div>
+                <div class="hf"><span>Carrera</span><strong>${h.carrera||'—'}</strong></div>
+                <div class="hf"><span>Fecha préstamo</span><strong>${ff(h.fecha_prestamo)}</strong></div>
+                <div class="hf"><span>Vencimiento</span><strong>${ff(h.fecha_devolucion_estimada)}</strong></div>
+                <div class="hf"><span>Estado inicial</span><strong>${h.estado_inicial_equipo||'—'}</strong></div>
+                <div class="hf"><span>Motivo</span><strong>${h.motivo||'—'}</strong></div>
+                ${h.fecha_devolucion?`
+                <div class="hf"><span>Devuelto</span><strong>${ff(h.fecha_devolucion)}</strong></div>
+                <div class="hf"><span>Estado final</span><strong>${h.estado_devolucion}</strong></div>
+                <div class="hf"><span>Días retraso</span><strong ${h.dias_retraso>0?'style="color:var(--warn)"':''}>${h.dias_retraso||0}</strong></div>
+                <div class="hf"><span>Total cobro</span><strong style="color:var(--warn)">Gs. ${fn(h.total_cobro||0)}</strong></div>
+                `:'<div class="hf"><span>Devolución</span><strong style="color:var(--primary)">Pendiente</strong></div>'}
             </div>
-        `).join('');
-    } catch(err) {
-        document.getElementById('modalContent').innerHTML = '<p style="text-align:center;color:var(--danger);padding:30px">Error al cargar historial</p>';
-    }
+        </div>`).join('');
 }
-
-function cerrarModal() { document.getElementById('modalOverlay').classList.remove('show'); }
-function closeModal(e) { if(e.target===document.getElementById('modalOverlay')) cerrarModal(); }
-function fmtFecha(d) { if(!d) return '—'; return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
-function fmtNum(n)   { return Number(n).toLocaleString('es-PY'); }
-function showToast(msg, type='success') { const t=document.getElementById('toast'); t.textContent=msg; t.className=`toast ${type} show`; setTimeout(()=>t.className='toast',3500); }
-
-window.onload = cargar;
+function cmo2(){document.getElementById('mo').classList.remove('show');}
+function cmo(e){if(e.target===document.getElementById('mo'))cmo2();}
+window.onload=cargar;
 </script>
 </body>
 </html>
