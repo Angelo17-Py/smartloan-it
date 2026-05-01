@@ -63,6 +63,9 @@
         select option{background:#0f172a;color:white;}
         textarea{resize:vertical;min-height:72px;}
         input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.12);}
+        input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shadow:0 0 0 4px rgba(239,68,68,0.12)!important;}
+        .ferr{font-size:0.75rem;color:var(--danger);margin-top:4px;display:none;}
+        .ferr.show{display:block;}
         .ab{background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:13px;padding:16px 18px;margin-bottom:14px;}
         .ab h4{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--warn);margin-bottom:10px;}
         .cr{display:flex;align-items:center;gap:11px;cursor:pointer;margin-bottom:8px;}
@@ -101,7 +104,7 @@
         .toast.show{display:block;animation:ti 0.4s ease;}
         .ts{background:var(--success);color:white;}.te{background:var(--danger);color:white;}
         @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        @media print{body{background:white;color:black;}.back,nav,.glow,#p1,.card.search,#ps .ib,#fd,.toast{display:none!important;}#rc2{display:block!important;}.ri{background:white;border:1px solid #ccc;color:black;}.ri2{background:#f5f5f5;}}
+        @media print{body{background:white;color:black;}.back,nav,.glow,#p1,.card,.toast{display:none!important;}#rc2{display:block!important;}.ri{background:white;border:1px solid #ccc;color:black;}.ri2{background:#f5f5f5;}}
         @media(max-width:600px){.g2{grid-template-columns:1fr}.rg{grid-template-columns:1fr}}
     </style>
 </head>
@@ -120,20 +123,16 @@
         <div class="sl2" id="l23"></div>
         <div class="step" id="s3"><div class="sn">3</div><span>Completado</span></div>
     </div>
-
-    <!-- PASO 1 -->
     <div id="p1">
         <div class="card">
-            <div class="lbl">📋 Préstamos Activos — hacé clic para seleccionar</div>
+            <div class="lbl">Préstamos Activos — hacé clic para seleccionar</div>
             <div id="lista"><p class="em">Cargando...</p></div>
         </div>
-        <div class="card search">
+        <div class="card">
             <div class="lbl">🔍 O ingresá el código de préstamo</div>
             <div class="sr"><input type="number" class="si" id="idp" placeholder="Ej: 1, 5, 12..." min="1"><button class="bs" onclick="buscar()">Buscar</button></div>
         </div>
     </div>
-
-    <!-- PASO 2 -->
     <div id="ps">
         <div class="ib">
             <div class="ibh"><h3>📦 Préstamo Seleccionado</h3><button class="bc" onclick="volver()">← Cambiar</button></div>
@@ -144,8 +143,13 @@
             <div class="card">
                 <div class="lbl">📦 Estado del Equipo al Retorno</div>
                 <div class="g2">
-                    <div class="ig3"><label>Estado del equipo</label>
-                        <select id="estado" onchange="onEstado()"><option value="Excelente">✅ Excelente</option><option value="Bueno">👍 Bueno</option><option value="Dañado">⚠️ Dañado</option></select>
+                    <div class="ig3">
+                        <label>Estado del equipo *</label>
+                        <select id="estado" onchange="onEstado()">
+                            <option value="Excelente">✅ Excelente</option>
+                            <option value="Bueno">👍 Bueno</option>
+                            <option value="Dañado">⚠️ Dañado</option>
+                        </select>
                     </div>
                     <div class="ig3"><label>Observación general</label><input type="text" id="obs" placeholder="Notas sobre la devolución..."></div>
                 </div>
@@ -153,17 +157,30 @@
                     <h4>🎒 Verificación de Accesorios</h4>
                     <div id="acct" style="font-size:0.88rem;color:var(--dim);margin-bottom:10px;"></div>
                     <label class="cr"><input type="checkbox" id="acc_ok"><span>Confirmo que todos los accesorios fueron devueltos correctamente</span></label>
+                    <div class="ferr" id="ferr-accesorios">Confirmá la devolución de accesorios</div>
                 </div>
             </div>
             <div class="card">
                 <div class="lbl">🔴 Registro de Daños</div>
-                <label class="dt"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños</span></label>
+                <label class="dt"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños al momento de la devolución</span></label>
                 <div class="ds" id="ds">
                     <div class="g2">
-                        <div class="ig3"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="Ej: Pantalla rota..."></div>
-                        <div class="ig3"><label>Monto reparación (Gs.)</label><input type="number" id="mdano" placeholder="Ej: 150000" min="0" oninput="updRes()"></div>
+                        <div class="ig3">
+                            <label>Tipo de daño *</label>
+                            <input type="text" id="tdano" placeholder="Ej: Pantalla rota, teclado..." oninput="clearFD('tdano')">
+                            <div class="ferr" id="ferr-tdano">Describí el tipo de daño</div>
+                        </div>
+                        <div class="ig3">
+                            <label>Monto reparación (Gs.) *</label>
+                            <input type="number" id="mdano" placeholder="Ej: 150000" min="0" oninput="updRes();clearFD('mdano')">
+                            <div class="ferr" id="ferr-mdano">Ingresá el monto de reparación</div>
+                        </div>
                     </div>
-                    <div class="ig3"><label>Descripción del daño</label><textarea id="odano" placeholder="Descripción detallada..."></textarea></div>
+                    <div class="ig3">
+                        <label>Descripción del daño *</label>
+                        <textarea id="odano" placeholder="Descripción detallada del daño..." oninput="clearFD('odano')"></textarea>
+                        <div class="ferr" id="ferr-odano">Describí el daño en detalle</div>
+                    </div>
                 </div>
             </div>
             <div class="rc" id="resc">
@@ -173,14 +190,14 @@
                 <div class="rr"><span>Costo por daños</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
                 <div class="rr"><span>TOTAL A COBRAR</span><strong id="rt">Gs. 0</strong></div>
             </div>
-            <div class="cb2"><h4>✅ Conformidad del Encargado</h4>
-                <label class="cr"><input type="checkbox" id="conf"><span>Confirmo que la información es correcta y el equipo fue recibido según las condiciones indicadas</span></label>
+            <div class="cb2">
+                <h4>✅ Conformidad del Encargado</h4>
+                <label class="cr"><input type="checkbox" id="conf" onchange="clearFD('conf')"><span>Confirmo que la información es correcta y el equipo fue recibido según las condiciones indicadas</span></label>
+                <div class="ferr" id="ferr-conf">Debés confirmar la conformidad para procesar</div>
             </div>
             <button class="btn" id="btn" onclick="procesar()">PROCESAR DEVOLUCIÓN</button>
         </div>
     </div>
-
-    <!-- PASO 3 -->
     <div id="rc2">
         <div class="ri">
             <div class="big">✅</div>
@@ -204,14 +221,14 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href='/';
 const MULTA=10000;
 let pActual=null;
-
 const ff=(d)=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
 const fn=(n)=>Number(n).toLocaleString('es-PY');
 function st(msg,t='te'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3500);}
+function clearFD(f){const el=document.getElementById(f);if(el)el.classList.remove('err');const fe=document.getElementById('ferr-'+f);if(fe)fe.classList.remove('show');}
 
-// ── CARGAR ACTIVOS ──────────────────────────────────────────
 async function cargarActivos(){
     const lista=document.getElementById('lista');
     try{
@@ -219,7 +236,7 @@ async function cargarActivos(){
         if(!r.ok){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';return;}
         const todos=await r.json();
         const activos=todos.filter(p=>p.estado==='ACTIVO');
-        if(!activos.length){lista.innerHTML='<p class="em">✅ Sin préstamos activos pendientes</p>';return;}
+        if(!activos.length){lista.innerHTML='<p class="em">✅ Sin préstamos activos pendientes de devolución</p>';return;}
         const ahora=new Date();
         lista.innerHTML=activos.map(p=>{
             const v=new Date(p.fecha_devolucion_estimada);
@@ -233,10 +250,9 @@ async function cargarActivos(){
                 <span class="pb ${tard?'late':'ok'}">${tard?`⚠️ ${dias}d retraso`:'✅ Al día'}</span>
             </div>`;
         }).join('');
-    }catch(e){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';console.error(e);}
+    }catch(e){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';}
 }
 
-// ── SELECCIONAR ─────────────────────────────────────────────
 async function selec(id){
     document.querySelectorAll('.pi').forEach(el=>el.classList.remove('sel'));
     const it=document.getElementById(`item-${id}`);
@@ -246,20 +262,19 @@ async function selec(id){
 
 async function buscar(){
     const id=document.getElementById('idp').value.trim();
-    if(!id){st('Ingresá un código');return;}
+    if(!id){st('Ingresá un código de préstamo');return;}
     await cargarPres(id);
 }
 
 async function cargarPres(id){
     try{
         const r=await fetch(`${API}/prestamos/${id}`);
-        if(!r.ok){st('Préstamo no encontrado o ya devuelto');return;}
+        if(!r.ok){st('Préstamo no encontrado o ya fue devuelto');return;}
         pActual=await r.json();
         mostrar();
     }catch(e){st('Error de conexión');}
 }
 
-// ── MOSTRAR INFO ────────────────────────────────────────────
 function mostrar(){
     const p=pActual;
     const ahora=new Date();
@@ -276,7 +291,7 @@ function mostrar(){
         <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
         <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>`;
     const ra=document.getElementById('ra');
-    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} día(s) — Multa: Gs. ${fn(ret*MULTA)}`;ra.style.display='flex';}
+    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} día(s) — Multa estimada: Gs. ${fn(ret*MULTA)}`;ra.style.display='flex';}
     else ra.style.display='none';
     const ab=document.getElementById('accb');
     if(p.accesorios&&p.accesorios.trim()){document.getElementById('acct').innerHTML=`Accesorios entregados: <strong>${p.accesorios}</strong>`;ab.style.display='block';}
@@ -298,10 +313,23 @@ function volver(){
 }
 
 function onEstado(){
-    if(document.getElementById('estado').value==='Dañado'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
+    if(document.getElementById('estado').value==='Dañado'){
+        document.getElementById('dano').checked=true;
+        document.getElementById('ds').classList.add('show');
+    }
     updRes();
 }
-function togDano(){const c=document.getElementById('dano').checked;document.getElementById('ds').classList.toggle('show',c);if(!c)document.getElementById('mdano').value='';updRes();}
+
+function togDano(){
+    const c=document.getElementById('dano').checked;
+    document.getElementById('ds').classList.toggle('show',c);
+    if(!c){
+        document.getElementById('mdano').value='';
+        document.getElementById('tdano').value='';
+        document.getElementById('odano').value='';
+    }
+    updRes();
+}
 
 function updRes(){
     if(!pActual)return;
@@ -317,17 +345,46 @@ function updRes(){
     document.getElementById('resc').classList.toggle('show',ret>0||dan>0);
 }
 
+function validarDevolucion(){
+    let ok=true;
+    const dano=document.getElementById('dano').checked;
+    if(dano){
+        const campos=[
+            {id:'tdano',msg:'Describí el tipo de daño'},
+            {id:'mdano',msg:'Ingresá el monto de reparación'},
+            {id:'odano',msg:'Describí el daño en detalle'}
+        ];
+        campos.forEach(c=>{
+            const el=document.getElementById(c.id);
+            if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
+        });
+        if(parseFloat(document.getElementById('mdano').value)<=0||isNaN(parseFloat(document.getElementById('mdano').value))){
+            document.getElementById('mdano').classList.add('err');
+            document.getElementById('ferr-mdano').classList.add('show');
+            ok=false;
+        }
+    }
+    const accb=document.getElementById('accb');
+    if(accb.style.display!=='none'&&!document.getElementById('acc_ok').checked){
+        document.getElementById('ferr-accesorios').classList.add('show');ok=false;
+    }
+    if(!document.getElementById('conf').checked){
+        document.getElementById('conf').classList.add('err');
+        document.getElementById('ferr-conf').classList.add('show');
+        ok=false;
+    }
+    return ok;
+}
+
 async function procesar(){
     if(!pActual)return;
+    if(!validarDevolucion()) return;
     const estado=document.getElementById('estado').value;
     const dano=document.getElementById('dano').checked;
     const tdano=document.getElementById('tdano').value.trim();
     const odano=document.getElementById('odano').value.trim();
     const mdano=parseFloat(document.getElementById('mdano').value)||0;
     const obs=document.getElementById('obs').value.trim();
-    const conf=document.getElementById('conf').checked;
-    if(dano&&!tdano){st('Describí el tipo de daño');return;}
-    if(!conf){st('Debés confirmar la conformidad');return;}
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
     try{
         const r=await fetch(`${API}/devoluciones`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:estado,tiene_dano:dano,tipo_dano:tdano,observacion_dano:odano,monto_dano:mdano,observacion:obs})});
@@ -361,13 +418,11 @@ function resetForm(){
     document.getElementById('obs').value='';
     document.getElementById('dano').checked=false;
     document.getElementById('ds').classList.remove('show');
-    document.getElementById('mdano').value='';
-    document.getElementById('tdano').value='';
-    document.getElementById('odano').value='';
+    document.getElementById('mdano').value='';document.getElementById('tdano').value='';document.getElementById('odano').value='';
     document.getElementById('conf').checked=false;
     document.getElementById('resc').classList.remove('show');
-    document.getElementById('btn').disabled=false;
-    document.getElementById('btn').textContent='PROCESAR DEVOLUCIÓN';
+    document.getElementById('btn').disabled=false;document.getElementById('btn').textContent='PROCESAR DEVOLUCIÓN';
+    ['tdano','mdano','odano','conf'].forEach(f=>{clearFD(f);});
 }
 
 function setStep(n){
@@ -375,7 +430,6 @@ function setStep(n){
     document.getElementById('l12').classList.toggle('done',n>1);
     document.getElementById('l23').classList.toggle('done',n>2);
 }
-
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
 window.onload=cargarActivos;
 </script>

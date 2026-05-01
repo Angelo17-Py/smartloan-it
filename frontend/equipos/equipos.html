@@ -17,15 +17,20 @@
         main{max-width:1300px;margin:0 auto;padding:40px 24px;}
         h1{font-size:2.8rem;font-weight:800;letter-spacing:-1.5px;background:linear-gradient(to right,#fff,var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
         .sub{color:var(--dim);margin-bottom:35px;}
-        .fc{background:var(--card);backdrop-filter:blur(20px);padding:32px;border-radius:28px;border:1px solid var(--border);display:flex;gap:18px;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;}
-        .ig{display:flex;flex-direction:column;gap:9px;flex:1;min-width:190px;}
+        .fc{background:var(--card);backdrop-filter:blur(20px);padding:32px;border-radius:28px;border:1px solid var(--border);display:flex;gap:18px;align-items:flex-start;margin-bottom:36px;flex-wrap:wrap;}
+        .ig{display:flex;flex-direction:column;gap:6px;flex:1;min-width:190px;}
         .ig label{font-size:0.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);font-weight:800;}
         input,select{width:100%;padding:15px 18px;background:rgba(0,0,0,0.3);border:2px solid var(--border);border-radius:13px;color:white;font-size:0.95rem;outline:none;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
         select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
         select option{background:#0f172a;color:white;}
         input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);}
+        input.err,select.err{border-color:var(--danger)!important;box-shadow:0 0 0 4px rgba(239,68,68,0.15)!important;}
+        .ferr{font-size:0.75rem;color:var(--danger);margin-top:4px;display:none;}
+        .ferr.show{display:block;}
+        .btn-add-wrap{display:flex;align-items:flex-start;padding-top:28px;}
         .badd{background:var(--primary);color:white;border:none;padding:0 28px;border-radius:13px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:0.3s;height:52px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
         .badd:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(99,102,241,0.35);}
+        .badd:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
         .tw{background:var(--card);border-radius:28px;border:1px solid var(--border);overflow:hidden;}
         table{width:100%;border-collapse:collapse;}
         th{padding:18px 22px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.72rem;letter-spacing:2px;text-align:left;}
@@ -79,21 +84,39 @@
     <h1>Gestión de Equipos</h1>
     <p class="sub">Registro, control de estado e historial de activos tecnológicos</p>
     <div class="fc">
-        <div class="ig"><label>Modelo / Nombre</label><input id="nombre" placeholder="Ej: ThinkPad X1 Carbon"></div>
-        <div class="ig"><label>Tipo</label>
-            <select id="tipo"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
+        <div class="ig">
+            <label>Modelo / Nombre *</label>
+            <input id="nombre" placeholder="Ej: ThinkPad X1 Carbon" oninput="clearF('nombre')">
+            <div class="ferr" id="ferr-nombre">Ingresá el nombre del equipo</div>
         </div>
-        <div class="ig"><label>Marca</label>
-            <select id="marca"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
+        <div class="ig">
+            <label>Tipo *</label>
+            <select id="tipo" onchange="clearF('tipo')">
+                <option value="">Seleccionar</option>
+                <option>Laptop</option><option>PC</option>
+            </select>
+            <div class="ferr" id="ferr-tipo">Seleccioná el tipo</div>
         </div>
-        <div class="ig"><label>Descripción </label><input id="desc" placeholder="Ej: 16GB RAM, SSD 512GB"></div>
-        <button class="badd" onclick="crear()">+ Agregar</button>
+        <div class="ig">
+            <label>Marca *</label>
+            <select id="marca" onchange="clearF('marca')">
+                <option value="">Seleccionar</option>
+                <option>Acer</option><option>Apple</option><option>ASUS</option>
+                <option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option>
+            </select>
+            <div class="ferr" id="ferr-marca">Seleccioná la marca</div>
+        </div>
+        <div class="ig">
+            <label>Descripción</label>
+            <input id="desc" placeholder="Ej: 16GB RAM, SSD 512GB">
+        </div>
+        <div class="btn-add-wrap">
+            <button class="badd" id="btnAdd" onclick="crear()">+ Agregar</button>
+        </div>
     </div>
     <div class="tw">
-        <table>
-            <thead><tr><th>#</th><th>Equipo</th><th>Tipo · Marca</th><th>Estado</th><th style="text-align:center">Acciones</th></tr></thead>
-            <tbody id="tb"></tbody>
-        </table>
+        <table><thead><tr><th>#</th><th>Equipo</th><th>Tipo · Marca</th><th>Estado</th><th style="text-align:center">Acciones</th></tr></thead>
+        <tbody id="tb"></tbody></table>
     </div>
 </main>
 <div class="mo" id="mo" onclick="cmo(event)">
@@ -102,22 +125,37 @@
 <div class="toast" id="toast"></div>
 <script>
 const API='http://localhost:3000';
+
+// Verificar sesión
+if(!localStorage.getItem('encargado')) window.location.href='/';
+
 const bE=(e)=>{const m={'Disponible':'bd','Prestado':'bp','En mantenimiento':'bm'};return`<span class="badge ${m[e]||'bd'}">${e}</span>`;};
 const ff=(d)=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
 const fn=(n)=>Number(n).toLocaleString('es-PY');
 function st(msg,t='ts'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3500);}
+function clearF(f){document.getElementById(f).classList.remove('err');document.getElementById('ferr-'+f).classList.remove('show');}
+
+function validarForm(){
+    let ok=true;
+    const campos=[{id:'nombre',msg:'Ingresá el nombre del equipo'},{id:'tipo',msg:'Seleccioná el tipo'},{id:'marca',msg:'Seleccioná la marca'}];
+    campos.forEach(c=>{
+        const el=document.getElementById(c.id);
+        if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
+    });
+    return ok;
+}
 
 async function cargar(){
     const r=await fetch(`${API}/equipos`);
     const d=await r.json();
     const tb=document.getElementById('tb');
-    if(!d.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--dim);padding:40px">Sin equipos registrados</td></tr>';return;}
+    if(!d.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--dim);padding:40px">Sin equipos registrados. Agregá el primero arriba.</td></tr>';return;}
     tb.innerHTML=d.map((e,i)=>{
         let btn='';
-        if(e.estado==='Disponible') btn=`<button class="be bem" onclick="cambiar(${e.id_equipo},'En mantenimiento')">🔧 Mantenimiento</button>`;
-        else if(e.estado==='En mantenimiento') btn=`<button class="be bev" onclick="cambiar(${e.id_equipo},'Disponible')">✅ Disponible</button>`;
-        else btn=`<span class="uso">🔴 En préstamo</span>`;
-        const bx=e.estado!=='Prestado'?`<button class="bico bx" onclick="eliminar(${e.id_equipo})">×</button>`:'';
+        if(e.estado==='Disponible') btn=`<button class="be bem" onclick="cambiar(${e.id_equipo},'En mantenimiento')">Mantenimiento</button>`;
+        else if(e.estado==='En mantenimiento') btn=`<button class="be bev" onclick="cambiar(${e.id_equipo},'Disponible')">Disponible</button>`;
+        else btn=`<span class="uso">En préstamo</span>`;
+        const bx=e.estado!=='Prestado'?`<button class="bico bx" onclick="eliminar(${e.id_equipo},'${e.nombre.replace(/'/g,"\\'")}')">×</button>`:'';
         return `<tr>
             <td><span class="num">${i+1}</span></td>
             <td><strong>${e.nombre}</strong>${e.descripcion?`<br><span style="font-size:0.8rem;color:var(--dim)">${e.descripcion}</span>`:''}</td>
@@ -132,19 +170,22 @@ async function cargar(){
 }
 
 async function crear(){
+    if(!validarForm()) return;
+    const btn=document.getElementById('btnAdd');
+    btn.disabled=true; btn.textContent='Agregando...';
     const n=document.getElementById('nombre').value.trim();
     const t=document.getElementById('tipo').value;
     const m=document.getElementById('marca').value;
     const d=document.getElementById('desc').value.trim();
-    if(!n||!t||!m){st('Completá nombre, tipo y marca','te');return;}
     await fetch(`${API}/equipos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:n,tipo:t,marca:m,descripcion:d})});
     document.getElementById('nombre').value='';document.getElementById('desc').value='';
     document.getElementById('tipo').value='';document.getElementById('marca').value='';
-    st('✅ Equipo agregado');cargar();
+    btn.disabled=false; btn.textContent='+ Agregar';
+    st('Equipo agregado');cargar();
 }
 
-async function eliminar(id){
-    if(!confirm('¿Eliminar este equipo?'))return;
+async function eliminar(id, nombre){
+    if(!confirm(`¿Eliminar el equipo "${nombre}"?\n\nEsta acción eliminará también todo su historial de préstamos y no se puede deshacer.`)) return;
     const r=await fetch(`${API}/equipos/${id}`,{method:'DELETE'});
     if(r.ok){st('Equipo eliminado');}
     else{const d=await r.json();st(d.mensaje||'No se puede eliminar','te');}
@@ -152,8 +193,12 @@ async function eliminar(id){
 }
 
 async function cambiar(id,estado){
+    const confirmar = estado==='En mantenimiento'
+        ? confirm('¿Enviar este equipo a mantenimiento?\nNo estará disponible para préstamos hasta que lo marques como disponible.')
+        : confirm('¿Marcar este equipo como Disponible?');
+    if(!confirmar) return;
     await fetch(`${API}/equipos/${id}/estado`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({estado})});
-    st(`Estado → ${estado}`);cargar();
+    st(`Estado actualizado → ${estado}`);cargar();
 }
 
 async function hist(id,nombre){
@@ -163,10 +208,10 @@ async function hist(id,nombre){
     const r=await fetch(`${API}/equipos/${id}/historial`);
     const d=await r.json();
     const c=document.getElementById('mc2');
-    if(!d.length){c.innerHTML='<p style="text-align:center;color:var(--dim);padding:30px">Sin movimientos registrados</p>';return;}
+    if(!d.length){c.innerHTML='<p style="text-align:center;color:var(--dim);padding:30px">Sin movimientos registrados para este equipo</p>';return;}
     c.innerHTML=d.map(h=>`
         <div class="hi">
-            <h4>Préstamo #${h.id_prestamo} · ${h.estado_prestamo==='DEVUELTO'?'✅ Devuelto':'🔴 Activo'}</h4>
+            <h4>Préstamo #${h.id_prestamo} · ${h.estado_prestamo==='DEVUELTO'?'Devuelto':' Activo'}</h4>
             <div class="hr">
                 <div class="hf"><span>Alumno</span><strong>${h.codigo_alumno} — ${h.alumno_nombre} ${h.alumno_apellido}</strong></div>
                 <div class="hf"><span>Carrera</span><strong>${h.carrera||'—'}</strong></div>

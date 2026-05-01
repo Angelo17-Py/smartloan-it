@@ -28,16 +28,27 @@
         select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-color:rgba(0,0,0,0.3);}
         select option{background:#0f172a;color:white;}
         input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(99,102,241,0.15);}
+        input.err,select.err{border-color:var(--danger)!important;box-shadow:0 0 0 4px rgba(239,68,68,0.15)!important;}
+        .ferr{font-size:0.75rem;color:var(--danger);margin-top:5px;display:none;}
+        .ferr.show{display:block;}
         .ai{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:13px;padding:14px 18px;margin-top:10px;display:none;}
         .ai.show{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
         .ac2{font-weight:800;font-size:0.82rem;background:var(--primary);color:white;padding:4px 12px;border-radius:8px;}
         .enci{background:rgba(0,242,255,0.04);border:1px solid rgba(0,242,255,0.15);border-radius:13px;padding:13px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
         .eb{font-weight:800;font-size:0.8rem;background:rgba(0,242,255,0.15);color:var(--accent);padding:4px 12px;border-radius:8px;}
+        /* RESUMEN CONFIRMACIÓN */
+        .resumen{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:16px;padding:20px;margin-bottom:20px;display:none;}
+        .resumen.show{display:block;}
+        .resumen h4{font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;color:var(--primary);font-weight:800;margin-bottom:14px;}
+        .res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
+        .res-field span{display:block;font-size:0.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .res-field strong{font-size:0.9rem;font-weight:700;}
         .cb{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:13px;padding:18px;max-height:150px;overflow-y:auto;font-size:0.82rem;color:var(--dim);line-height:1.7;margin-bottom:14px;}
         .cb h4{color:white;font-weight:700;margin-bottom:7px;font-size:0.87rem;}
         .cr{display:flex;align-items:center;gap:12px;cursor:pointer;}
         .cr input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--primary);appearance:auto;-webkit-appearance:auto;padding:0;}
         .cr span{font-size:0.9rem;font-weight:600;color:var(--dim);}
+        .cr input.err{box-shadow:0 0 0 4px rgba(239,68,68,0.2);}
         .btn{width:100%;padding:20px;background:var(--primary);color:white;border:none;border-radius:16px;font-size:1.05rem;font-weight:800;cursor:pointer;transition:0.3s;margin-top:24px;font-family:'Plus Jakarta Sans',sans-serif;}
         .btn:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(99,102,241,0.4);}
         .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
@@ -57,36 +68,64 @@
 <main>
     <div class="ph"><h1>Registrar Préstamo</h1><p>Registro de salida de equipos tecnológicos a alumnos</p></div>
     <div class="fc">
-        <div class="sl">🔑 Encargado que registra</div>
-        <div class="enci"><span>👤</span><span id="enc-nombre" style="font-weight:700">Cargando...</span><span class="eb" id="enc-codigo"></span></div>
+        <div class="sl">Encargado que registra</div>
+        <div class="enci"><span></span><span id="enc-nombre" style="font-weight:700">Cargando...</span><span class="eb" id="enc-codigo"></span></div>
         <hr class="sep">
-        <div class="sl">🎓 Datos del Préstamo</div>
+        <div class="sl">Datos del Préstamo</div>
         <div class="g2">
-            <div class="ig"><label>Alumno</label>
-                <select id="alumno" onchange="onAlumno()"><option value="">Seleccionar alumno...</option></select>
+            <div class="ig">
+                <label>Alumno *</label>
+                <select id="alumno" onchange="onAlumno()">
+                    <option value="">Seleccionar alumno...</option>
+                </select>
+                <div class="ferr" id="ferr-alumno">Seleccioná un alumno</div>
             </div>
-            <div class="ig"><label>Equipo disponible</label>
-                <select id="equipo"><option value="">Seleccionar equipo...</option></select>
+            <div class="ig">
+                <label>Equipo *</label>
+                <select id="equipo" onchange="clearF('equipo')">
+                    <option value="">Seleccionar equipo...</option>
+                </select>
+                <div class="ferr" id="ferr-equipo">Seleccioná un equipo</div>
             </div>
         </div>
         <div id="ai" class="ai"><span class="ac2" id="alu-code"></span><span id="alu-detail" style="font-size:0.85rem;color:var(--dim)"></span></div>
         <hr class="sep">
-        <div class="sl">📅 Fechas y Condición</div>
+        <div class="sl">Fechas y Condición</div>
         <div class="g2">
-            <div class="ig"><label>Fecha de devolución estimada</label><input type="datetime-local" id="fecha_dev"></div>
-            <div class="ig"><label>Estado inicial del equipo</label>
-                <select id="estado_ini"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Dañado">Dañado</option></select>
+            <div class="ig">
+                <label>Fecha de devolución estimada *</label>
+                <input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev')">
+                <div class="ferr" id="ferr-fecha_dev">Seleccioná la fecha de devolución</div>
+            </div>
+            <div class="ig">
+                <label>Estado inicial del equipo</label>
+                <select id="estado_ini">
+                    <option value="Excelente">Excelente</option>
+                    <option value="Bueno">Bueno</option>
+                    <option value="Dañado">Dañado</option>
+                </select>
             </div>
         </div>
         <hr class="sep">
-        <div class="sl">📝 Detalles</div>
-        <div class="g1 ig"><label>Motivo del préstamo</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentación..."></div>
+        <div class="sl">Detalles</div>
+        <div class="g1 ig">
+            <label>Motivo del préstamo *</label>
+            <input id="motivo" placeholder="Ej: Trabajo de grado, Presentación, Tarea..." oninput="clearF('motivo')">
+            <div class="ferr" id="ferr-motivo">Ingresá el motivo del préstamo</div>
+        </div>
         <div class="g2">
             <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..."></div>
             <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..."></div>
         </div>
+
+        <!-- RESUMEN DE CONFIRMACIÓN -->
+        <div class="resumen" id="resumen">
+            <h4>Resumen del Préstamo</h4>
+            <div class="res-grid" id="resumen-grid"></div>
+        </div>
+
         <hr class="sep">
-        <div class="sl">📄 Contrato de Uso</div>
+        <div class="sl">Contrato de Uso</div>
         <div class="cb">
             <h4>Términos y Condiciones de Uso de Equipo Tecnológico</h4>
             El alumno solicitante se compromete a:<br><br>
@@ -98,36 +137,108 @@
             6. Estar sujeto a una multa de Gs. 10.000 por cada día de retraso.<br>
             7. El incumplimiento puede resultar en suspensión del acceso al sistema.
         </div>
-        <label class="cr"><input type="checkbox" id="contrato"><span>El alumno acepta los términos y condiciones del contrato de uso</span></label>
+        <label class="cr">
+            <input type="checkbox" id="contrato" onchange="clearF('contrato')">
+            <span>El alumno acepta los términos y condiciones del contrato de uso</span>
+        </label>
+        <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
         <button class="btn" id="btn" onclick="registrar()">REGISTRAR PRÉSTAMO</button>
     </div>
 </main>
 <div class="toast" id="toast"></div>
 <script>
 const API='http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href='/';
 let alumnos=[],equipos=[],enc=null;
+
 function st(msg,t='ts'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3500);}
+function clearF(f){
+    const el=document.getElementById(f);
+    if(el) el.classList.remove('err');
+    const ferr=document.getElementById('ferr-'+f);
+    if(ferr) ferr.classList.remove('show');
+    if(f==='alumno'||f==='equipo'||f==='fecha_dev'||f==='motivo') actualizarResumen();
+}
 
 async function cargar(){
     enc=JSON.parse(localStorage.getItem('encargado')||'{}');
-    if(enc.id_encargado){document.getElementById('enc-nombre').textContent=`${enc.nombre} ${enc.apellido}`;document.getElementById('enc-codigo').textContent=enc.codigo;}
-    const [ar,er]=await Promise.all([fetch(`${API}/alumnos`),fetch(`${API}/equipos`)]);
-    alumnos=await ar.json();equipos=await er.json();
+    if(enc.id_encargado){
+        document.getElementById('enc-nombre').textContent=`${enc.nombre} ${enc.apellido}`;
+        document.getElementById('enc-codigo').textContent=enc.codigo;
+    }
+    const [ar,er]=await Promise.all([fetch(`${API}/alumnos/disponibles`),fetch(`${API}/equipos`)]);
+    alumnos=await ar.json();
+    equipos=await er.json();
     const as=document.getElementById('alumno');
-    alumnos.forEach(a=>{const o=document.createElement('option');o.value=a.id_alumno;o.textContent=`${a.codigo_alumno} — ${a.nombre} ${a.apellido}`;as.appendChild(o);});
+    if(!alumnos.length){
+        const o=document.createElement('option');o.value='';o.textContent='— Sin alumnos disponibles —';o.disabled=true;as.appendChild(o);
+    } else {
+        alumnos.forEach(a=>{const o=document.createElement('option');o.value=a.id_alumno;o.textContent=`${a.codigo_alumno} — ${a.nombre} ${a.apellido}`;as.appendChild(o);});
+    }
     const es=document.getElementById('equipo');
-    equipos.filter(e=>e.estado==='Disponible').forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+    const disp=equipos.filter(e=>e.estado==='Disponible');
+    if(!disp.length){
+        const o=document.createElement('option');o.value='';o.textContent='— Sin equipos disponibles —';o.disabled=true;es.appendChild(o);
+    } else {
+        disp.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+    }
 }
 
 function onAlumno(){
+    clearF('alumno');
     const id=parseInt(document.getElementById('alumno').value);
     const ai=document.getElementById('ai');
     if(!id){ai.classList.remove('show');return;}
     const a=alumnos.find(x=>x.id_alumno===id);
-    if(a){document.getElementById('alu-code').textContent=a.codigo_alumno;document.getElementById('alu-detail').textContent=`${a.carrera||'Sin carrera'} · ${a.curso||'—'}`;ai.classList.add('show');}
+    if(a){
+        document.getElementById('alu-code').textContent=a.codigo_alumno;
+        document.getElementById('alu-detail').textContent=`${a.carrera||'Sin carrera'} · ${a.curso||'—'}`;
+        ai.classList.add('show');
+    }
+    actualizarResumen();
+}
+
+function actualizarResumen(){
+    const id_alumno=document.getElementById('alumno').value;
+    const id_equipo=document.getElementById('equipo').value;
+    const fecha=document.getElementById('fecha_dev').value;
+    const motivo=document.getElementById('motivo').value.trim();
+    if(!id_alumno||!id_equipo||!fecha) { document.getElementById('resumen').classList.remove('show'); return; }
+    const alu=alumnos.find(a=>a.id_alumno==id_alumno);
+    const eq=equipos.find(e=>e.id_equipo==id_equipo);
+    if(!alu||!eq) return;
+    const ff=(d)=>new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('resumen-grid').innerHTML=`
+        <div class="res-field"><span>Alumno</span><strong>${alu.codigo_alumno} — ${alu.nombre} ${alu.apellido}</strong></div>
+        <div class="res-field"><span>Equipo</span><strong>${eq.nombre} · ${eq.tipo}</strong></div>
+        <div class="res-field"><span>Vencimiento</span><strong>${ff(fecha)}</strong></div>
+        ${motivo?`<div class="res-field"><span>Motivo</span><strong>${motivo}</strong></div>`:''}`;
+    document.getElementById('resumen').classList.add('show');
+}
+
+function validar(){
+    let ok=true;
+    const campos=[
+        {id:'alumno',msg:'Seleccioná un alumno'},
+        {id:'equipo',msg:'Seleccioná un equipo'},
+        {id:'fecha_dev',msg:'Seleccioná la fecha de devolución'},
+        {id:'motivo',msg:'Ingresá el motivo del préstamo'}
+    ];
+    campos.forEach(c=>{
+        const el=document.getElementById(c.id);
+        if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
+    });
+    const contrato=document.getElementById('contrato');
+    if(!contrato.checked){
+        contrato.classList.add('err');
+        document.getElementById('ferr-contrato').classList.add('show');
+        ok=false;
+    }
+    return ok;
 }
 
 async function registrar(){
+    if(!validar()) return;
     const id_alumno=document.getElementById('alumno').value;
     const id_equipo=document.getElementById('equipo').value;
     const fecha_dev=document.getElementById('fecha_dev').value;
@@ -135,21 +246,26 @@ async function registrar(){
     const motivo=document.getElementById('motivo').value.trim();
     const accesorios=document.getElementById('accesorios').value.trim();
     const obs=document.getElementById('obs').value.trim();
-    const contrato=document.getElementById('contrato').checked;
-    if(!id_alumno||!id_equipo||!fecha_dev){st('Seleccioná alumno, equipo y fecha','te');return;}
-    if(!contrato){st('El alumno debe aceptar el contrato','te');return;}
     if(!enc?.id_encargado){st('Sesión no encontrada, volvé a iniciar sesión','te');return;}
+    const alu=alumnos.find(a=>a.id_alumno==id_alumno);
+    const eq=equipos.find(e=>e.id_equipo==id_equipo);
+    const ff=(d)=>new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    if(!confirm(`¿Confirmar préstamo?\n\nAlumno: ${alu.nombre} ${alu.apellido}\nEquipo: ${eq.nombre}\nVencimiento: ${ff(fecha_dev)}\nMotivo: ${motivo}`)) return;
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Registrando...';
     try{
-        const r=await fetch(`${API}/prestamos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno,id_equipo,id_encargado:enc.id_encargado,fecha_devolucion_estimada:new Date(fecha_dev).toISOString(),estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
+        const r=await fetch(`${API}/prestamos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno,id_equipo,id_encargado:enc.id_encargado,fecha_devolucion_estimada:fecha_dev,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
         const d=await r.json();
-        if(r.ok){st('✅ Préstamo registrado correctamente');setTimeout(()=>window.location.href='/home/dashboard.html',2000);}
+        if(r.ok){st('Préstamo registrado correctamente');setTimeout(()=>window.location.href='/home/dashboard.html',2000);}
         else{st(d.mensaje||'Error al registrar','te');btn.disabled=false;btn.textContent='REGISTRAR PRÉSTAMO';}
     }catch(e){st('Error de conexión','te');btn.disabled=false;btn.textContent='REGISTRAR PRÉSTAMO';}
 }
 
-const now=new Date();now.setDate(now.getDate()+1);
-document.getElementById('fecha_dev').min=now.toISOString().slice(0,16);
+// Fecha mínima = hoy (permite mismo día)
+const now=new Date();
+const pad=n=>String(n).padStart(2,'0');
+const minFecha=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
+document.getElementById('fecha_dev').min=minFecha;
+
 window.onload=cargar;
 </script>
 </body>

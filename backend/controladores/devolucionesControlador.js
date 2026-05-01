@@ -16,7 +16,7 @@ exports.crear = (req, res) => {
     const multa = dias * MULTA;
     const dano  = tiene_dano ? (parseFloat(monto_dano)||0) : 0;
     const total = multa + dano;
-    const fmt   = (d) => new Date(d).toISOString().slice(0,19).replace('T',' ');
+    const fmt   = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T',' ').slice(0,19);
 
     db.query(
       `INSERT INTO devoluciones (id_prestamo,fecha_devolucion,estado_equipo,tiene_dano,

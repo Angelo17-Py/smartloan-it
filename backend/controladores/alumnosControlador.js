@@ -7,6 +7,21 @@ exports.listar = (req, res) => {
   });
 };
 
+// Solo alumnos sin prestamo activo
+exports.disponibles = (req, res) => {
+  db.query(`
+    SELECT * FROM alumnos
+    WHERE estado = 1
+    AND id_alumno NOT IN (
+      SELECT id_alumno FROM prestamos WHERE estado = 'ACTIVO'
+    )
+    ORDER BY codigo_alumno
+  `, (err, r) => {
+    if (err) return res.status(500).json(err);
+    res.json(r);
+  });
+};
+
 exports.crear = (req, res) => {
   const { nombre, apellido, carrera, curso } = req.body;
   if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Nombre y apellido requeridos' });
@@ -30,20 +45,22 @@ exports.crear = (req, res) => {
 exports.eliminar = (req, res) => {
   const id = req.params.id;
 
-  // Borrado en cascada: devoluciones → prestamos → alumno
-  db.query(`
-    DELETE dv FROM devoluciones dv
-    JOIN prestamos p ON dv.id_prestamo = p.id_prestamo
-    WHERE p.id_alumno = ?
-  `, [id], (err) => {
+  // Verificar si tiene prestamo activo
+  db.query('SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1', [id], (err, r) => {
     if (err) return res.status(500).json(err);
+    if (r.length > 0) {
+      return res.status(400).json({ mensaje: 'No se puede eliminar: el alumno tiene un préstamo activo' });
+    }
 
-    db.query('DELETE FROM prestamos WHERE id_alumno = ?', [id], (err) => {
+    // Sin prestamo activo borrar en cascada del historial
+    db.query(`DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?`, [id], (err) => {
       if (err) return res.status(500).json(err);
-
-      db.query('DELETE FROM alumnos WHERE id_alumno = ?', [id], (err) => {
+      db.query('DELETE FROM prestamos WHERE id_alumno = ?', [id], (err) => {
         if (err) return res.status(500).json(err);
-        res.json({ mensaje: 'Alumno eliminado correctamente' });
+        db.query('DELETE FROM alumnos WHERE id_alumno = ?', [id], (err) => {
+          if (err) return res.status(500).json(err);
+          res.json({ mensaje: 'Alumno eliminado correctamente' });
+        });
       });
     });
   });

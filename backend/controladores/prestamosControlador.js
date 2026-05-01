@@ -1,5 +1,16 @@
 const db = require('../db');
-const fmt = (d) => new Date(d).toISOString().slice(0,19).replace('T',' ');
+
+// Formato MySQL respetando zona horaria 
+const fmt = (d) => {
+  if (!d) return null;
+
+  // String directo del input datetime-local 
+  if (typeof d === 'string') return d.replace('T', ' ').slice(0, 19);
+
+  // Date object usar toLocaleString
+  const str = new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' });
+  return str.replace('T', ' ').slice(0, 19);
+};
 
 exports.crear = (req, res) => {
   const { id_alumno, id_equipo, id_encargado, fecha_devolucion_estimada,
