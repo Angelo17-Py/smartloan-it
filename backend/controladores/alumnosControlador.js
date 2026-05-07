@@ -85,3 +85,16 @@ exports.historial = (req, res) => {
     res.json(r);
   });
 };
+
+exports.editar = (req, res) => {
+  const { nombre, apellido, carrera, curso } = req.body;
+  if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Datos incompletos' });
+  db.query(
+    'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=? WHERE id_alumno=?',
+    [nombre, apellido, carrera||'', curso||'', req.params.id],
+    (err) => {
+      if (err) return res.status(500).json(err);
+      res.json({ mensaje: 'Alumno actualizado' });
+    }
+  );
+};

@@ -4,6 +4,7 @@ const c       = require('../controladores/equiposControlador');
 router.get('/',              c.listar);
 router.post('/',             c.crear);
 router.delete('/:id',        c.eliminar);
+router.put('/:id',           c.editar);
 router.patch('/:id/estado',  c.cambiarEstado);
 router.get('/:id/historial', c.historial);
 module.exports = router;

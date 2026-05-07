@@ -15,14 +15,10 @@
         .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.85rem;padding:9px 16px;border-radius:10px;border:1px solid var(--border);transition:0.3s;}
         .back:hover{background:rgba(255,255,255,0.05);color:white;}
         main{max-width:1300px;margin:0 auto;padding:40px 28px;}
-
-        /* PAGE HEADER */
         .page-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border);}
         .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);display:grid;place-items:center;color:var(--primary);flex-shrink:0;}
         .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
         .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
-
-        /* FORM */
         .form-card{background:var(--card);backdrop-filter:blur(20px);padding:28px;border-radius:22px;border:1px solid var(--border);margin-bottom:28px;}
         .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--primary);font-weight:800;margin-bottom:18px;}
         .form-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
@@ -39,8 +35,6 @@
         .btn-add{background:var(--primary);color:white;border:none;padding:0 24px;border-radius:11px;font-weight:800;font-size:0.9rem;cursor:pointer;transition:0.3s;height:48px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
         .btn-add:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(99,102,241,0.35);}
         .btn-add:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-
-        /* TABLE */
         .table-wrap{background:var(--card);backdrop-filter:blur(20px);border-radius:22px;border:1px solid var(--border);overflow:hidden;}
         .table-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);font-weight:700;}
@@ -51,19 +45,14 @@
         tr:last-child td{border-bottom:none;}
         tr:hover td{background:rgba(255,255,255,0.02);}
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
-        .eq-name{font-weight:700;font-size:0.95rem;}
-        .eq-desc{font-size:0.78rem;color:var(--dim);margin-top:2px;}
-        .eq-type{font-size:0.85rem;color:var(--dim);}
-
-        /* BADGES */
-        .badge{padding:4px 11px;border-radius:20px;font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;}
+        .badge{padding:4px 11px;border-radius:20px;font-size:0.7rem;font-weight:800;text-transform:uppercase;display:inline-block;}
         .badge-disp{background:rgba(34,197,94,0.12);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
         .badge-pres{background:rgba(239,68,68,0.12);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
         .badge-mant{background:rgba(245,158,11,0.12);color:var(--warn);border:1px solid rgba(245,158,11,0.2);}
-
-        /* ACTIONS */
-        .ac{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
-        .btn-sm{height:32px;padding:0 12px;border-radius:8px;border:none;cursor:pointer;font-size:0.73rem;font-weight:700;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+        .ac{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:center;}
+        .btn-sm{height:32px;padding:0 12px;border-radius:8px;border:none;cursor:pointer;font-size:0.73rem;font-weight:700;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
+        .btn-edit{background:rgba(99,102,241,0.1);color:var(--primary);border:1px solid rgba(99,102,241,0.2);}
+        .btn-edit:hover{background:var(--primary);color:white;}
         .btn-mant{background:rgba(245,158,11,0.12);color:var(--warn);border:1px solid rgba(245,158,11,0.2);}
         .btn-mant:hover{background:var(--warn);color:white;}
         .btn-avail{background:rgba(34,197,94,0.12);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
@@ -71,49 +60,39 @@
         .btn-del{width:32px;height:32px;border-radius:8px;border:1px solid rgba(239,68,68,0.2);cursor:pointer;display:grid;place-items:center;font-size:1rem;transition:0.25s;background:rgba(239,68,68,0.08);color:var(--danger);}
         .btn-del:hover{background:var(--danger);color:white;transform:rotate(90deg);}
         .uso-label{font-size:0.72rem;color:var(--dim);padding:4px 10px;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid var(--border);}
-        .empty-row td{text-align:center;color:var(--dim);padding:50px!important;font-size:0.92rem;}
-
+        .empty-row td{text-align:center;color:var(--dim);padding:50px!important;}
         /* MODAL */
         .mo{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);z-index:1000;display:none;place-items:center;padding:20px;}
         .mo.show{display:grid;}
-        .md{background:#0d1526;border:1px solid var(--border);border-radius:24px;padding:36px;width:100%;max-width:800px;max-height:85vh;overflow-y:auto;animation:fi 0.3s ease;}
+        .md{background:#0d1526;border:1px solid var(--border);border-radius:24px;padding:36px;width:100%;max-width:520px;animation:fi 0.3s ease;}
         @keyframes fi{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
         .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
         .mh h3{font-size:1.3rem;font-weight:800;}
         .mc{background:none;border:none;color:var(--dim);font-size:1.4rem;cursor:pointer;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;transition:0.2s;}
         .mc:hover{background:rgba(255,255,255,0.08);color:white;}
-        .hi{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:10px;}
-        .hi-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-        .hi-badge{padding:3px 8px;border-radius:6px;font-size:0.65rem;}
-        .hi-dev{background:rgba(34,197,94,0.1);color:var(--success);}
-        .hi-act{background:rgba(239,68,68,0.1);color:var(--danger);}
-        .hi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
-        .hf span{display:block;font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;font-weight:700;}
-        .hf strong{font-size:0.88rem;font-weight:700;}
-
+        .mform{display:flex;flex-direction:column;gap:16px;}
+        .g2m{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+        .btn-save{width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:11px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;margin-top:4px;}
+        .btn-save:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(99,102,241,0.3);}
+        .btn-save:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
         .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;font-size:0.88rem;}
         .toast.show{display:block;animation:ti 0.35s ease;}
-        .t-ok{background:var(--success);color:white;}
-        .t-err{background:var(--danger);color:white;}
+        .t-ok{background:var(--success);color:white;}.t-err{background:var(--danger);color:white;}
         @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        @media(max-width:900px){.form-row{flex-direction:column}main{padding:24px 16px}}
+        @media(max-width:900px){.form-row{flex-direction:column}.g2m{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
 <body>
 <div class="glow"></div>
 <nav>
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
-    <a href="/home/dashboard.html" class="back">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        Dashboard
-    </a>
+    <a href="/home/dashboard.html" class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
 </nav>
 <main>
     <div class="page-header">
         <div class="page-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
         <div><h1>Gestion de Equipos</h1><p>Registro y control de estado de los activos tecnologicos</p></div>
     </div>
-
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo equipo</div>
         <div class="form-row">
@@ -130,85 +109,258 @@
             <div class="btn-wrap"><button class="btn-add" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
         </div>
     </div>
-
     <div class="table-wrap">
-        <div class="table-header">
-            <span>Lista de equipos</span>
-            <span class="table-count" id="count">0 equipos</span>
-        </div>
+        <div class="table-header"><span>Lista de equipos</span><span class="table-count" id="count">0 equipos</span></div>
         <table><thead><tr><th>#</th><th>Equipo</th><th>Tipo / Marca</th><th>Estado</th><th style="text-align:center">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
     </div>
 </main>
 
+<!-- MODAL EDICION -->
+<div class="mo" id="mo-edit">
+    <div class="md">
+        <div class="mh"><h3>Editar equipo</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
+        <div class="mform">
+            <div class="ig">
+                <label>Nombre / Modelo *</label>
+                <input id="edit-nombre" placeholder="Ej: ThinkPad X1 Carbon" oninput="clearFE('nombre')">
+                <div class="ferr" id="ferr-edit-nombre">Ingresa el nombre del equipo</div>
+            </div>
+            <div class="g2m">
+                <div class="ig">
+                    <label>Tipo *</label>
+                    <select id="edit-tipo" onchange="clearFE('tipo')"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
+                    <div class="ferr" id="ferr-edit-tipo">Selecciona el tipo</div>
+                </div>
+                <div class="ig">
+                    <label>Marca *</label>
+                    <select id="edit-marca" onchange="clearFE('marca')"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
+                    <div class="ferr" id="ferr-edit-marca">Selecciona la marca</div>
+                </div>
+            </div>
+            <div class="ig"><label>Descripcion</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB"></div>
+            <button class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
+
 <script>
-const API='http://localhost:3000';
-if(!localStorage.getItem('encargado')) window.location.href='/';
+const API = 'http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href = '/';
 
-const bE=e=>{const m={'Disponible':'badge-disp','Prestado':'badge-pres','En mantenimiento':'badge-mant'};return`<span class="badge ${m[e]||'badge-disp'}">${e}</span>`;};
-const ff=d=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
-const fn=n=>Number(n).toLocaleString('es-PY');
-function st(msg,t='t-ok'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3200);}
-function clearF(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
+// ID del equipo que se está editando
+let equipoEditandoId = null;
 
-function validar(){
-    let ok=true;
-    [{id:'nombre'},{id:'tipo'},{id:'marca'}].forEach(c=>{
-        const el=document.getElementById(c.id);
-        if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
+const bE = e => {
+    const m = {'Disponible':'badge-disp','Prestado':'badge-pres','En mantenimiento':'badge-mant'};
+    return `<span class="badge ${m[e]||'badge-disp'}">${e}</span>`;
+};
+const fn = n => Number(n).toLocaleString('es-PY');
+
+function st(msg, t='t-ok'){
+    const e = document.getElementById('toast');
+    e.textContent = msg;
+    e.className = `toast show ${t}`;
+    setTimeout(()=>e.className='toast', 3200);
+}
+function clearF(f){
+    document.getElementById(f)?.classList.remove('err');
+    document.getElementById('ferr-'+f)?.classList.remove('show');
+}
+function clearFE(f){
+    document.getElementById('edit-'+f)?.classList.remove('err');
+    document.getElementById('ferr-edit-'+f)?.classList.remove('show');
+}
+
+function validarNuevo(){
+    let ok = true;
+    ['nombre','tipo','marca'].forEach(f => {
+        const el = document.getElementById(f);
+        if(!el.value.trim()){
+            el.classList.add('err');
+            document.getElementById('ferr-'+f).classList.add('show');
+            ok = false;
+        }
     });
     return ok;
 }
 
+// Guardar los equipos en memoria para editar sin pasar parámetros por HTML
+let listaEquipos = [];
+
 async function cargar(){
-    const r=await fetch(`${API}/equipos`);
-    const d=await r.json();
-    document.getElementById('count').textContent=`${d.length} equipo${d.length!==1?'s':''}`;
-    const tb=document.getElementById('tb');
-    if(!d.length){tb.innerHTML='<tr class="empty-row"><td colspan="5">No hay equipos registrados. Agrega el primero usando el formulario.</td></tr>';return;}
-    tb.innerHTML=d.map((e,i)=>{
-        let btn='';
-        if(e.estado==='Disponible') btn=`<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'En mantenimiento')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Mantenimiento</button>`;
-        else if(e.estado==='En mantenimiento') btn=`<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'Disponible')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Disponible</button>`;
-        else btn=`<span class="uso-label">En prestamo</span>`;
-        const bx=e.estado!=='Prestado'?`<button class="btn-del" onclick="eliminar(${e.id_equipo},'${e.nombre.replace(/'/g,"\\'")}')">&#215;</button>`:'';
-        return `<tr>
-            <td><span class="num">${i+1}</span></td>
-            <td><div class="eq-name">${e.nombre}</div>${e.descripcion?`<div class="eq-desc">${e.descripcion}</div>`:''}</td>
-            <td><span class="eq-type">${e.tipo} &middot; ${e.marca}</span></td>
-            <td>${bE(e.estado)}</td>
-            <td><div class="ac" style="justify-content:center">${btn}${bx}</div></td>
-        </tr>`;
-    }).join('');
+    try {
+        const r = await fetch(`${API}/equipos`);
+        listaEquipos = await r.json();
+        document.getElementById('count').textContent = `${listaEquipos.length} equipo${listaEquipos.length!==1?'s':''}`;
+        const tb = document.getElementById('tb');
+        if(!listaEquipos.length){
+            tb.innerHTML = '<tr class="empty-row"><td colspan="5">No hay equipos registrados. Agrega el primero usando el formulario.</td></tr>';
+            return;
+        }
+        tb.innerHTML = listaEquipos.map((e,i) => {
+            let btn = '';
+            if(e.estado === 'Disponible')
+                btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'En mantenimiento')">Mantenimiento</button>`;
+            else if(e.estado === 'En mantenimiento')
+                btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'Disponible')">Disponible</button>`;
+            else
+                btn = `<span class="uso-label">En prestamo</span>`;
+            const bx = e.estado !== 'Prestado'
+                ? `<button class="btn-del" onclick="confirmarEliminar(${e.id_equipo})">&#215;</button>`
+                : '';
+            return `<tr>
+                <td><span class="num">${i+1}</span></td>
+                <td><strong>${e.nombre}</strong>${e.descripcion?`<br><span style="font-size:0.78rem;color:var(--dim)">${e.descripcion}</span>`:''}</td>
+                <td style="color:var(--dim);font-size:0.88rem">${e.tipo} &middot; ${e.marca}</td>
+                <td>${bE(e.estado)}</td>
+                <td><div class="ac">
+                    <button class="btn-sm btn-edit" onclick="abrirEditar(${e.id_equipo})">Editar</button>
+                    ${btn}${bx}
+                </div></td>
+            </tr>`;
+        }).join('');
+    } catch(e){
+        console.error('Error al cargar equipos:', e);
+    }
 }
 
 async function crear(){
-    if(!validar())return;
-    const btn=document.getElementById('btnAdd');btn.disabled=true;btn.textContent='Agregando...';
-    const n=document.getElementById('nombre').value.trim(),t=document.getElementById('tipo').value,m=document.getElementById('marca').value,d=document.getElementById('desc').value.trim();
-    await fetch(`${API}/equipos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:n,tipo:t,marca:m,descripcion:d})});
-    document.getElementById('nombre').value='';document.getElementById('desc').value='';document.getElementById('tipo').value='';document.getElementById('marca').value='';
-    btn.disabled=false;btn.textContent='+ Agregar equipo';
-    st('Equipo registrado correctamente');cargar();
+    if(!validarNuevo()) return;
+    const btn = document.getElementById('btnAdd');
+    btn.disabled = true; btn.textContent = 'Agregando...';
+    try {
+        const r = await fetch(`${API}/equipos`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+                nombre: document.getElementById('nombre').value.trim(),
+                tipo:   document.getElementById('tipo').value,
+                marca:  document.getElementById('marca').value,
+                descripcion: document.getElementById('desc').value.trim()
+            })
+        });
+        if(r.ok){
+            document.getElementById('nombre').value = '';
+            document.getElementById('desc').value = '';
+            document.getElementById('tipo').value = '';
+            document.getElementById('marca').value = '';
+            st('Equipo registrado correctamente');
+            cargar();
+        } else {
+            st('Error al registrar el equipo','t-err');
+        }
+    } catch(e){
+        st('Error de conexion con el servidor','t-err');
+    }
+    btn.disabled = false; btn.textContent = '+ Agregar equipo';
 }
 
-async function eliminar(id,nombre){
-    if(!confirm(`Eliminar el equipo "${nombre}"?\n\nSe eliminara tambien todo su historial. Esta accion no se puede deshacer.`))return;
-    const r=await fetch(`${API}/equipos/${id}`,{method:'DELETE'});
-    const d=await r.json();
-    r.ok?st('Equipo eliminado'):st(d.mensaje||'No se puede eliminar','t-err');
-    cargar();
+function confirmarEliminar(id){
+    const eq = listaEquipos.find(e => e.id_equipo === id);
+    if(!eq) return;
+    if(!confirm(`Eliminar el equipo "${eq.nombre}"?\n\nSe eliminara tambien todo su historial de prestamos. Esta accion no se puede deshacer.`)) return;
+    eliminar(id);
 }
 
-async function cambiar(id,estado){
-    const msg=estado==='En mantenimiento'?`Enviar a mantenimiento?\nNo estara disponible hasta que lo marques como disponible.`:`Marcar como Disponible?`;
-    if(!confirm(msg))return;
-    await fetch(`${API}/equipos/${id}/estado`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({estado})});
-    st(`Estado actualizado: ${estado}`);cargar();
+async function eliminar(id){
+    try {
+        const r = await fetch(`${API}/equipos/${id}`, {method:'DELETE'});
+        const d = await r.json();
+        r.ok ? st('Equipo eliminado') : st(d.mensaje||'No se puede eliminar','t-err');
+        cargar();
+    } catch(e){
+        st('Error de conexion','t-err');
+    }
 }
 
-window.onload=cargar;
+async function cambiar(id, estado){
+    const eq = listaEquipos.find(e => e.id_equipo === id);
+    const nombre = eq ? eq.nombre : 'este equipo';
+    const msg = estado === 'En mantenimiento'
+        ? `Enviar "${nombre}" a mantenimiento?\nNo estara disponible para prestamos hasta marcarlo como disponible.`
+        : `Marcar "${nombre}" como Disponible?`;
+    if(!confirm(msg)) return;
+    try {
+        await fetch(`${API}/equipos/${id}/estado`, {
+            method: 'PATCH',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({estado})
+        });
+        st(`Estado actualizado: ${estado}`);
+        cargar();
+    } catch(e){
+        st('Error de conexion','t-err');
+    }
+}
+
+// EDICION — usa variable global en vez de parámetros inline en HTML
+function abrirEditar(id){
+    const eq = listaEquipos.find(e => e.id_equipo === id);
+    if(!eq) return;
+    equipoEditandoId = id;
+    document.getElementById('edit-nombre').value = eq.nombre;
+    document.getElementById('edit-tipo').value = eq.tipo;
+    document.getElementById('edit-marca').value = eq.marca;
+    document.getElementById('edit-desc').value = eq.descripcion || '';
+    // Limpiar errores previos
+    ['nombre','tipo','marca'].forEach(f => {
+        document.getElementById('edit-'+f).classList.remove('err');
+        document.getElementById('ferr-edit-'+f).classList.remove('show');
+    });
+    const btn = document.getElementById('btnGuardar');
+    btn.disabled = false;
+    btn.textContent = 'Guardar cambios';
+    document.getElementById('mo-edit').classList.add('show');
+}
+
+function cerrarEdit(){
+    document.getElementById('mo-edit').classList.remove('show');
+    equipoEditandoId = null;
+}
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('mo-edit').addEventListener('click', function(e){
+    if(e.target === this) cerrarEdit();
+});
+
+async function guardarEquipo(){
+    const n = document.getElementById('edit-nombre').value.trim();
+    const t = document.getElementById('edit-tipo').value;
+    const m = document.getElementById('edit-marca').value;
+    const d = document.getElementById('edit-desc').value.trim();
+    let ok = true;
+    if(!n){ document.getElementById('edit-nombre').classList.add('err'); document.getElementById('ferr-edit-nombre').classList.add('show'); ok=false; }
+    if(!t){ document.getElementById('edit-tipo').classList.add('err');   document.getElementById('ferr-edit-tipo').classList.add('show');   ok=false; }
+    if(!m){ document.getElementById('edit-marca').classList.add('err');  document.getElementById('ferr-edit-marca').classList.add('show');  ok=false; }
+    if(!ok) return;
+    if(!equipoEditandoId){ st('Error interno: ID no encontrado','t-err'); return; }
+    const btn = document.getElementById('btnGuardar');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    try {
+        const r = await fetch(`${API}/equipos/${equipoEditandoId}`, {
+            method: 'PUT',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({nombre:n, tipo:t, marca:m, descripcion:d})
+        });
+        if(r.ok){
+            st('Equipo actualizado correctamente');
+            cerrarEdit();
+            cargar();
+        } else {
+            const err = await r.json();
+            st(err.mensaje||'Error al actualizar','t-err');
+            btn.disabled = false; btn.textContent = 'Guardar cambios';
+        }
+    } catch(e){
+        st('Error de conexion con el servidor','t-err');
+        btn.disabled = false; btn.textContent = 'Guardar cambios';
+    }
+}
+
+window.onload = cargar;
 </script>
 </body>
 </html>

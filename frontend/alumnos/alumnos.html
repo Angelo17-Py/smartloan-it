@@ -35,7 +35,7 @@
         .btn-add{background:var(--accent);color:#020617;border:none;padding:0 24px;border-radius:11px;font-weight:800;font-size:0.9rem;cursor:pointer;transition:0.3s;height:48px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
         .btn-add:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,242,255,0.25);}
         .btn-add:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-        .search-wrap{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:12px;padding:12px 18px;margin-bottom:20px;}
+        .search-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:12px;padding:12px 18px;margin-bottom:20px;}
         .search-wrap svg{color:var(--dim);flex-shrink:0;}
         .search-wrap input{background:none;border:none;padding:0;font-size:0.92rem;box-shadow:none;}
         .search-wrap input:focus{border:none;box-shadow:none;}
@@ -50,15 +50,32 @@
         tr:hover td{background:rgba(255,255,255,0.02);}
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
         .code-chip{background:rgba(0,242,255,0.08);border:1px solid rgba(0,242,255,0.2);border-radius:8px;padding:3px 9px;font-weight:800;font-size:0.82rem;font-family:monospace;color:var(--accent);}
-        .empty-row td{text-align:center;color:var(--dim);padding:50px!important;font-size:0.92rem;}
+        .empty-row td{text-align:center;color:var(--dim);padding:50px!important;}
         .ac{display:flex;gap:7px;justify-content:center;}
+        .btn-sm{height:32px;padding:0 12px;border-radius:8px;border:none;cursor:pointer;font-size:0.73rem;font-weight:700;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:inline-flex;align-items:center;}
+        .btn-edit{background:rgba(0,242,255,0.08);color:var(--accent);border:1px solid rgba(0,242,255,0.2);}
+        .btn-edit:hover{background:var(--accent);color:#020617;}
         .btn-del{width:32px;height:32px;border-radius:8px;border:1px solid rgba(239,68,68,0.2);cursor:pointer;display:grid;place-items:center;font-size:1rem;transition:0.25s;background:rgba(239,68,68,0.08);color:var(--danger);}
         .btn-del:hover{background:var(--danger);color:white;transform:rotate(90deg);}
+        /* MODAL */
+        .mo{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);z-index:1000;display:none;place-items:center;padding:20px;}
+        .mo.show{display:grid;}
+        .md{background:#0d1526;border:1px solid var(--border);border-radius:24px;padding:36px;width:100%;max-width:520px;animation:fi 0.3s ease;}
+        @keyframes fi{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
+        .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+        .mh h3{font-size:1.3rem;font-weight:800;}
+        .mc{background:none;border:none;color:var(--dim);font-size:1.4rem;cursor:pointer;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;transition:0.2s;}
+        .mc:hover{background:rgba(255,255,255,0.08);color:white;}
+        .mform{display:flex;flex-direction:column;gap:16px;}
+        .g2m{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+        .btn-save{width:100%;padding:14px;background:var(--accent);color:#020617;border:none;border-radius:11px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;margin-top:4px;}
+        .btn-save:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,242,255,0.2);}
+        .btn-save:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
         .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;font-size:0.88rem;}
         .toast.show{display:block;animation:ti 0.35s ease;}
         .t-ok{background:var(--success);color:white;}.t-err{background:var(--danger);color:white;}
         @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        @media(max-width:900px){.form-row{flex-direction:column}main{padding:24px 16px}}
+        @media(max-width:900px){.form-row{flex-direction:column}.g2m{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
 <body>
@@ -98,60 +115,214 @@
         <tbody id="tb"></tbody></table>
     </div>
 </main>
+
+<!-- MODAL EDICION -->
+<div class="mo" id="mo-edit">
+    <div class="md">
+        <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
+        <div class="mform">
+            <div class="g2m">
+                <div class="ig"><label>Nombre *</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre')"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido *</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido')"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
+            </div>
+            <div class="ig"><label>Carrera *</label>
+                <select id="edit-carrera" onchange="clearFE('carrera')"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
+                <div class="ferr" id="ferr-edit-carrera">Selecciona la carrera</div>
+            </div>
+            <div class="ig"><label>Curso / Año *</label>
+                <select id="edit-curso" onchange="clearFE('curso')"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
+                <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
+            </div>
+            <button class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script>
-const API='http://localhost:3000';
-if(!localStorage.getItem('encargado')) window.location.href='/';
-let todos=[];
-function st(msg,t='t-ok'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3200);}
-function clearF(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
-function validar(){
-    let ok=true;
-    [{id:'nombre'},{id:'apellido'},{id:'carrera'},{id:'curso'}].forEach(c=>{
-        const el=document.getElementById(c.id);
-        if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
+const API = 'http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href = '/';
+
+let todos = [];
+let alumnoEditandoId = null;
+
+function st(msg, t='t-ok'){
+    const e = document.getElementById('toast');
+    e.textContent = msg;
+    e.className = `toast show ${t}`;
+    setTimeout(()=>e.className='toast', 3200);
+}
+function clearF(f){
+    document.getElementById(f)?.classList.remove('err');
+    document.getElementById('ferr-'+f)?.classList.remove('show');
+}
+function clearFE(f){
+    document.getElementById('edit-'+f)?.classList.remove('err');
+    document.getElementById('ferr-edit-'+f)?.classList.remove('show');
+}
+
+function validarNuevo(){
+    let ok = true;
+    ['nombre','apellido','carrera','curso'].forEach(f => {
+        const el = document.getElementById(f);
+        if(!el.value.trim()){
+            el.classList.add('err');
+            document.getElementById('ferr-'+f).classList.add('show');
+            ok = false;
+        }
     });
     return ok;
 }
+
 async function cargar(){
-    const r=await fetch(`${API}/alumnos`);todos=await r.json();render(todos);
+    try {
+        const r = await fetch(`${API}/alumnos`);
+        todos = await r.json();
+        render(todos);
+    } catch(e){ console.error(e); }
 }
+
 function render(data){
-    document.getElementById('count').textContent=`${data.length} alumno${data.length!==1?'s':''}`;
-    const tb=document.getElementById('tb');
-    if(!data.length){tb.innerHTML='<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';return;}
-    tb.innerHTML=data.map((a,i)=>`
+    document.getElementById('count').textContent = `${data.length} alumno${data.length!==1?'s':''}`;
+    const tb = document.getElementById('tb');
+    if(!data.length){
+        tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
+        return;
+    }
+    tb.innerHTML = data.map((a,i) => `
         <tr>
             <td><span class="num">${i+1}</span></td>
             <td><span class="code-chip">${a.codigo_alumno}</span></td>
             <td><strong>${a.nombre} ${a.apellido}</strong></td>
             <td style="color:var(--dim);font-size:0.88rem">${a.carrera||'—'}</td>
             <td style="color:var(--dim);font-size:0.88rem">${a.curso||'—'}</td>
-            <td><div class="ac"><button class="btn-del" onclick="eliminar(${a.id_alumno},'${a.nombre} ${a.apellido}')">&#215;</button></div></td>
+            <td><div class="ac">
+                <button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>
+                <button class="btn-del" onclick="confirmarEliminar(${a.id_alumno})">&#215;</button>
+            </div></td>
         </tr>`).join('');
 }
+
 function filtrar(){
-    const q=document.getElementById('busq').value.toLowerCase();
-    if(!q){render(todos);return;}
-    render(todos.filter(a=>a.nombre.toLowerCase().includes(q)||a.apellido.toLowerCase().includes(q)||a.codigo_alumno.toLowerCase().includes(q)));
+    const q = document.getElementById('busq').value.toLowerCase();
+    if(!q){ render(todos); return; }
+    render(todos.filter(a =>
+        a.nombre.toLowerCase().includes(q) ||
+        a.apellido.toLowerCase().includes(q) ||
+        a.codigo_alumno.toLowerCase().includes(q)
+    ));
 }
+
 async function crear(){
-    if(!validar())return;
-    const btn=document.getElementById('btnAdd');btn.disabled=true;btn.textContent='Registrando...';
-    const r=await fetch(`${API}/alumnos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:document.getElementById('nombre').value.trim(),apellido:document.getElementById('apellido').value.trim(),carrera:document.getElementById('carrera').value,curso:document.getElementById('curso').value})});
-    const d=await r.json();
-    document.getElementById('nombre').value='';document.getElementById('apellido').value='';document.getElementById('carrera').value='';document.getElementById('curso').value='';
-    btn.disabled=false;btn.textContent='+ Registrar alumno';
-    st(`Alumno registrado: ${d.codigo_alumno}`);cargar();
+    if(!validarNuevo()) return;
+    const btn = document.getElementById('btnAdd');
+    btn.disabled = true; btn.textContent = 'Registrando...';
+    try {
+        const r = await fetch(`${API}/alumnos`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+                nombre:   document.getElementById('nombre').value.trim(),
+                apellido: document.getElementById('apellido').value.trim(),
+                carrera:  document.getElementById('carrera').value,
+                curso:    document.getElementById('curso').value
+            })
+        });
+        const d = await r.json();
+        document.getElementById('nombre').value = '';
+        document.getElementById('apellido').value = '';
+        document.getElementById('carrera').value = '';
+        document.getElementById('curso').value = '';
+        st(`Alumno registrado: ${d.codigo_alumno}`);
+        cargar();
+    } catch(e){
+        st('Error de conexion con el servidor','t-err');
+    }
+    btn.disabled = false; btn.textContent = '+ Registrar alumno';
 }
-async function eliminar(id,nombre){
-    if(!confirm(`Eliminar al alumno "${nombre}"?\n\nSi tiene historial de prestamos tambien se eliminara. Esta accion no se puede deshacer.`))return;
-    const r=await fetch(`${API}/alumnos/${id}`,{method:'DELETE'});
-    const d=await r.json();
-    r.ok?st('Alumno eliminado'):st(d.mensaje||'No se puede eliminar','t-err');
-    cargar();
+
+function confirmarEliminar(id){
+    const a = todos.find(x => x.id_alumno === id);
+    if(!a) return;
+    if(!confirm(`Eliminar al alumno "${a.nombre} ${a.apellido}"?\n\nSi tiene historial de prestamos tambien se eliminara. Esta accion no se puede deshacer.`)) return;
+    eliminar(id);
 }
-window.onload=cargar;
+
+async function eliminar(id){
+    try {
+        const r = await fetch(`${API}/alumnos/${id}`, {method:'DELETE'});
+        const d = await r.json();
+        r.ok ? st('Alumno eliminado') : st(d.mensaje||'No se puede eliminar','t-err');
+        cargar();
+    } catch(e){
+        st('Error de conexion','t-err');
+    }
+}
+
+// EDICION
+function abrirEditar(id){
+    const a = todos.find(x => x.id_alumno === id);
+    if(!a) return;
+    alumnoEditandoId = id;
+    document.getElementById('edit-nombre').value = a.nombre;
+    document.getElementById('edit-apellido').value = a.apellido;
+    document.getElementById('edit-carrera').value = a.carrera || '';
+    document.getElementById('edit-curso').value = a.curso || '';
+    ['nombre','apellido','carrera','curso'].forEach(f => {
+        document.getElementById('edit-'+f).classList.remove('err');
+        document.getElementById('ferr-edit-'+f).classList.remove('show');
+    });
+    const btn = document.getElementById('btnGuardarAlu');
+    btn.disabled = false;
+    btn.textContent = 'Guardar cambios';
+    document.getElementById('mo-edit').classList.add('show');
+}
+
+function cerrarEdit(){
+    document.getElementById('mo-edit').classList.remove('show');
+    alumnoEditandoId = null;
+}
+
+document.getElementById('mo-edit').addEventListener('click', function(e){
+    if(e.target === this) cerrarEdit();
+});
+
+async function guardarAlumno(){
+    const n  = document.getElementById('edit-nombre').value.trim();
+    const ap = document.getElementById('edit-apellido').value.trim();
+    const ca = document.getElementById('edit-carrera').value;
+    const cu = document.getElementById('edit-curso').value;
+    let ok = true;
+    if(!n){ document.getElementById('edit-nombre').classList.add('err');    document.getElementById('ferr-edit-nombre').classList.add('show');    ok=false; }
+    if(!ap){ document.getElementById('edit-apellido').classList.add('err'); document.getElementById('ferr-edit-apellido').classList.add('show'); ok=false; }
+    if(!ca){ document.getElementById('edit-carrera').classList.add('err');  document.getElementById('ferr-edit-carrera').classList.add('show');  ok=false; }
+    if(!cu){ document.getElementById('edit-curso').classList.add('err');    document.getElementById('ferr-edit-curso').classList.add('show');    ok=false; }
+    if(!ok) return;
+    if(!alumnoEditandoId){ st('Error interno: ID no encontrado','t-err'); return; }
+    const btn = document.getElementById('btnGuardarAlu');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    try {
+        const r = await fetch(`${API}/alumnos/${alumnoEditandoId}`, {
+            method: 'PUT',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({nombre:n, apellido:ap, carrera:ca, curso:cu})
+        });
+        if(r.ok){
+            st('Alumno actualizado correctamente');
+            cerrarEdit();
+            cargar();
+        } else {
+            const err = await r.json();
+            st(err.mensaje||'Error al actualizar','t-err');
+            btn.disabled = false; btn.textContent = 'Guardar cambios';
+        }
+    } catch(e){
+        st('Error de conexion con el servidor','t-err');
+        btn.disabled = false; btn.textContent = 'Guardar cambios';
+    }
+}
+
+window.onload = cargar;
 </script>
 </body>
 </html>

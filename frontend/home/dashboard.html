@@ -276,6 +276,29 @@
             <p>Trazabilidad completa de todos los movimientos, prestamos y devoluciones.</p>
         </div>
     </section>
+
+    <!-- RESPALDO -->
+    <p class="section-title" style="margin-top:36px">Respaldo de informacion</p>
+    <div style="background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:24px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+        <div>
+            <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px">Exportar y respaldar datos</div>
+            <div style="font-size:0.82rem;color:var(--dim)">Descarga un backup completo en JSON o exporta los registros en formato CSV para Excel.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="http://localhost:3000/backup" style="display:flex;align-items:center;gap:7px;background:rgba(99,102,241,0.12);color:var(--primary);border:1px solid rgba(99,102,241,0.25);padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:0.3s" onmouseover="this.style.background='rgba(99,102,241,0.2)'" onmouseout="this.style.background='rgba(99,102,241,0.12)'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Backup JSON
+            </a>
+            <a href="http://localhost:3000/exportar/prestamos" style="display:flex;align-items:center;gap:7px;background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:0.3s" onmouseover="this.style.background='rgba(34,197,94,0.18)'" onmouseout="this.style.background='rgba(34,197,94,0.1)'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Prestamos CSV
+            </a>
+            <a href="http://localhost:3000/exportar/devoluciones" style="display:flex;align-items:center;gap:7px;background:rgba(245,158,11,0.1);color:var(--warn);border:1px solid rgba(245,158,11,0.2);padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:0.3s" onmouseover="this.style.background='rgba(245,158,11,0.18)'" onmouseout="this.style.background='rgba(245,158,11,0.1)'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Devoluciones CSV
+            </a>
+        </div>
+    </div>
 </main>
 
 <script>

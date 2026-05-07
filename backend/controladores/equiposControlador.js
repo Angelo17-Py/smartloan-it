@@ -67,3 +67,16 @@ exports.historial = (req, res) => {
     res.json(r);
   });
 };
+
+exports.editar = (req, res) => {
+  const { nombre, tipo, marca, descripcion } = req.body;
+  if (!nombre || !tipo || !marca) return res.status(400).json({ mensaje: 'Datos incompletos' });
+  db.query(
+    'UPDATE equipos SET nombre=?, tipo=?, marca=?, descripcion=? WHERE id_equipo=?',
+    [nombre, tipo, marca, descripcion||'', req.params.id],
+    (err) => {
+      if (err) return res.status(500).json(err);
+      res.json({ mensaje: 'Equipo actualizado' });
+    }
+  );
+};
