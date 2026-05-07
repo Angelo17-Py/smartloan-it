@@ -5,187 +5,164 @@
     <title>SmartLoan IT | Historial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#030712;--card:rgba(30,41,59,0.4);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
+        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#020617;--card:rgba(15,23,42,0.6);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
         body{background:var(--bg);color:var(--text);min-height:100vh;}
-        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 60% 10%,rgba(99,102,241,0.1) 0%,transparent 50%);z-index:-1;}
-        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(3,7,18,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 60% 10%,rgba(167,139,250,0.08) 0%,transparent 40%);z-index:-1;}
+        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
         .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
-        .bi{background:linear-gradient(135deg,var(--primary),var(--accent));width:32px;height:32px;border-radius:9px;display:grid;place-items:center;}
-        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.9rem;padding:10px 18px;border-radius:12px;border:1px solid var(--border);transition:0.3s;}
+        .brand-icon{background:linear-gradient(135deg,var(--primary),var(--accent));width:34px;height:34px;border-radius:10px;display:grid;place-items:center;}
+        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.85rem;padding:9px 16px;border-radius:10px;border:1px solid var(--border);transition:0.3s;}
         .back:hover{background:rgba(255,255,255,0.05);color:white;}
-        main{max-width:1400px;margin:0 auto;padding:40px 24px;}
-        .ph{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;}
-        .ph h1{font-size:2.6rem;font-weight:800;letter-spacing:-1.5px;background:linear-gradient(to right,#fff,var(--dim));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-        .ph p{color:var(--dim);margin-top:4px;}
-        .fs{display:flex;gap:10px;flex-wrap:wrap;}
-        .fb{padding:8px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:11px;color:var(--dim);font-weight:700;font-size:0.8rem;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
-        .fb.active{background:var(--primary);color:white;border-color:var(--primary);}
-        .fb:hover:not(.active){background:rgba(255,255,255,0.08);color:white;}
-        .tabs{display:flex;gap:4px;background:rgba(0,0,0,0.3);padding:5px;border-radius:13px;width:fit-content;margin-bottom:22px;}
-        .tab{padding:10px 24px;border-radius:10px;font-weight:700;font-size:0.87rem;cursor:pointer;transition:0.3s;color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;}
+        main{max-width:1400px;margin:0 auto;padding:40px 28px;}
+        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border);}
+        .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.2);display:grid;place-items:center;color:#a78bfa;flex-shrink:0;}
+        .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
+        .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
+
+        /* TOOLBAR */
+        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px;}
+        .tabs{display:flex;gap:3px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;}
+        .tab{padding:9px 22px;border-radius:9px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:0.25s;color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;}
         .tab.active{background:var(--primary);color:white;}
-        .tw{background:var(--card);border-radius:22px;border:1px solid var(--border);overflow-x:auto;}
-        table{width:100%;border-collapse:collapse;min-width:750px;}
-        th{padding:15px 18px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.7rem;letter-spacing:2px;text-align:left;white-space:nowrap;}
-        td{padding:13px 18px;border-bottom:1px solid var(--border);font-size:0.87rem;}
+        .filters{display:flex;gap:8px;flex-wrap:wrap;}
+        .fb{padding:7px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;color:var(--dim);font-weight:700;font-size:0.78rem;cursor:pointer;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .fb.active{background:var(--primary);color:white;border-color:var(--primary);}
+        .fb:hover:not(.active){background:rgba(255,255,255,0.07);color:white;}
+
+        /* TABLE */
+        .table-wrap{background:var(--card);backdrop-filter:blur(20px);border-radius:20px;border:1px solid var(--border);overflow-x:auto;}
+        .table-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+        .table-header span{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);font-weight:700;}
+        .table-count{background:rgba(167,139,250,0.12);color:#a78bfa;border-radius:20px;padding:3px 10px;font-size:0.73rem;font-weight:800;}
+        table{width:100%;border-collapse:collapse;min-width:700px;}
+        th{padding:13px 18px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.66rem;letter-spacing:2px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+        td{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.88rem;}
         tr:last-child td{border-bottom:none;}
         tr:hover td{background:rgba(255,255,255,0.02);}
-        .badge{padding:4px 10px;border-radius:7px;font-size:0.7rem;font-weight:800;text-transform:uppercase;display:inline-block;}
-        .ba{background:rgba(99,102,241,0.15);color:var(--primary);border:1px solid rgba(99,102,241,0.25);}
-        .bd{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
-        .bv{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
-        .code{background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:3px 8px;font-weight:800;font-size:0.82rem;font-family:monospace;}
-        .em{text-align:center;padding:50px;color:var(--dim);}
-        @media(max-width:900px){main{padding:20px 16px}}
+        .badge{padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;}
+        .ba{background:rgba(99,102,241,0.12);color:var(--primary);border:1px solid rgba(99,102,241,0.2);}
+        .bd{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.18);}
+        .bv{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.18);}
+        .code{background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:2px 8px;font-weight:800;font-size:0.8rem;font-family:monospace;}
+        .em{text-align:center;padding:50px;color:var(--dim);font-size:0.9rem;}
+        .sub-text{font-size:0.78rem;color:var(--dim);margin-top:2px;}
     </style>
 </head>
 <body>
 <div class="glow"></div>
 <nav>
-    <div class="brand">
-        <div class="bi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        SmartLoan IT
-    </div>
-    <a href="/home/dashboard.html" class="back">← Dashboard</a>
+    <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
+    <a href="/home/dashboard.html" class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
 </nav>
 <main>
-    <div class="ph">
+    <div class="page-header">
+        <div class="page-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <div><h1>Historial y Trazabilidad</h1><p>Registro completo de todos los movimientos del sistema</p></div>
-        <div class="fs" id="filtros">
+    </div>
+    <div class="toolbar">
+        <div class="tabs">
+            <button class="tab active" onclick="setTab('p',this)">Prestamos</button>
+            <button class="tab" onclick="setTab('d',this)">Devoluciones</button>
+        </div>
+        <div class="filters" id="filtros">
             <button class="fb active" onclick="setF('todos',this)">Todos</button>
-            <button class="fb" onclick="setF('activos',this)">🔴 Activos</button>
-            <button class="fb" onclick="setF('vencidos',this)">⚠️ Vencidos</button>
-            <button class="fb" onclick="setF('devueltos',this)">✅ Devueltos</button>
+            <button class="fb" onclick="setF('activos',this)">Activos</button>
+            <button class="fb" onclick="setF('vencidos',this)">Vencidos</button>
+            <button class="fb" onclick="setF('devueltos',this)">Devueltos</button>
         </div>
     </div>
-    <div class="tabs">
-        <button class="tab active" onclick="setTab('p',this)">Préstamos</button>
-        <button class="tab" onclick="setTab('d',this)">Devoluciones</button>
-    </div>
-    <div id="tp" class="tw"><div class="em">Cargando...</div></div>
-    <div id="td" class="tw" style="display:none"><div class="em">Cargando...</div></div>
+    <div id="tp" class="table-wrap"><div class="em">Cargando...</div></div>
+    <div id="td" class="table-wrap" style="display:none"><div class="em">Cargando...</div></div>
 </main>
 <script>
-var API = 'http://localhost:3000';
-var prestamos = [], devs = [];
-var tabAct = 'p', filtAct = 'todos';
+var API='http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href='/';
+var prestamos=[],devs=[];
+var tabAct='p',filtAct='todos';
+function ff(d){if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function fn(n){return Number(n).toLocaleString('es-PY');}
 
-function ff(d) {
-    if (!d) return '—';
-    return new Date(d).toLocaleString('es-PY', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-}
-function fn(n) { return Number(n).toLocaleString('es-PY'); }
-
-async function cargar() {
-    try {
-        var pr = await fetch(API + '/prestamos');
-        var dr = await fetch(API + '/devoluciones');
-        if (!pr.ok || !dr.ok) throw new Error('Error servidor');
-        prestamos = await pr.json();
-        devs = await dr.json();
-        renderP();
-        renderD();
-    } catch(e) {
-        console.error('Error historial:', e);
-        document.getElementById('tp').innerHTML = '<div class="em">Error al cargar datos. Verificá que el servidor esté corriendo.</div>';
+async function cargar(){
+    try{
+        var pr=await fetch(API+'/prestamos');
+        var dr=await fetch(API+'/devoluciones');
+        if(!pr.ok||!dr.ok)throw new Error('Error servidor');
+        prestamos=await pr.json();
+        devs=await dr.json();
+        renderP();renderD();
+    }catch(e){
+        document.getElementById('tp').innerHTML='<div class="em">Error al cargar datos. Verifica que el servidor este corriendo.</div>';
     }
 }
 
-function renderP() {
-    var ahora = new Date();
-    var d = prestamos.slice();
-    if (filtAct === 'activos')   d = d.filter(function(p){ return p.estado === 'ACTIVO' && new Date(p.fecha_devolucion_estimada) >= ahora; });
-    if (filtAct === 'vencidos')  d = d.filter(function(p){ return p.estado === 'ACTIVO' && new Date(p.fecha_devolucion_estimada) < ahora; });
-    if (filtAct === 'devueltos') d = d.filter(function(p){ return p.estado === 'DEVUELTO'; });
-
-    var w = document.getElementById('tp');
-    if (!d.length) { w.innerHTML = '<div class="em">Sin registros con este filtro</div>'; return; }
-
-    var html = '<table><thead><tr>';
-    html += '<th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha Préstamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th>';
-    html += '</tr></thead><tbody>';
-
-    d.forEach(function(p) {
-        var venc = p.estado === 'ACTIVO' && new Date(p.fecha_devolucion_estimada) < ahora;
-        var estadoBadge = venc
-            ? '<span class="badge bv">Vencido</span>'
-            : p.estado === 'DEVUELTO'
-                ? '<span class="badge bd">Devuelto</span>'
-                : '<span class="badge ba">Activo</span>';
-        var vencStyle = venc ? 'color:var(--danger);font-weight:700' : '';
-
-        html += '<tr>';
-        html += '<td><span class="code">#' + p.id_prestamo + '</span></td>';
-        html += '<td><strong>' + p.codigo_alumno + '</strong><br>';
-        html += '<span style="font-size:0.8rem;color:var(--dim)">' + p.alumno_nombre + ' ' + p.alumno_apellido + '</span><br>';
-        html += '<span style="font-size:0.75rem;color:var(--dim)">' + (p.carrera || '—') + '</span></td>';
-        html += '<td><strong>' + p.equipo + '</strong><br><span style="font-size:0.8rem;color:var(--dim)">' + p.tipo + ' · ' + p.marca + '</span></td>';
-        html += '<td>' + ff(p.fecha_prestamo) + '</td>';
-        html += '<td style="' + vencStyle + '">' + ff(p.fecha_devolucion_estimada) + '</td>';
-        html += '<td style="color:var(--dim);font-size:0.83rem">' + (p.motivo || '—') + '</td>';
-        html += '<td>' + estadoBadge + '</td>';
-        html += '</tr>';
+function renderP(){
+    var ahora=new Date();
+    var d=prestamos.slice();
+    if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)>=ahora;});
+    if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
+    if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
+    var w=document.getElementById('tp');
+    var header='<div class="table-header"><span>Registro de prestamos</span><span class="table-count">'+d.length+' registros</span></div>';
+    if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este filtro</div>';return;}
+    var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha prestamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th></tr></thead><tbody>';
+    d.forEach(function(p){
+        var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
+        var badge=venc?'<span class="badge bv">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge bd">Devuelto</span>':'<span class="badge ba">Activo</span>';
+        html+='<tr>';
+        html+='<td><span class="code">#'+p.id_prestamo+'</span></td>';
+        html+='<td><strong>'+p.codigo_alumno+'</strong><div class="sub-text">'+p.alumno_nombre+' '+p.alumno_apellido+'</div><div class="sub-text">'+( p.carrera||'—')+'</div></td>';
+        html+='<td><strong>'+p.equipo+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
+        html+='<td>'+ff(p.fecha_prestamo)+'</td>';
+        html+='<td style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
+        html+='<td style="color:var(--dim);font-size:0.83rem">'+(p.motivo||'—')+'</td>';
+        html+='<td>'+badge+'</td>';
+        html+='</tr>';
     });
-
-    html += '</tbody></table>';
-    w.innerHTML = html;
+    html+='</tbody></table>';
+    w.innerHTML=html;
 }
 
-function renderD() {
-    var w = document.getElementById('td');
-    if (!devs.length) { w.innerHTML = '<div class="em">Sin devoluciones registradas</div>'; return; }
-
-    var html = '<table><thead><tr>';
-    html += '<th>#Dev</th><th>#Prés</th><th>Alumno</th><th>Equipo</th>';
-    html += '<th>Fecha Dev.</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th>';
-    html += '</tr></thead><tbody>';
-
-    devs.forEach(function(d) {
-        var danoCell = d.tiene_dano
-            ? '<span style="color:var(--danger);font-weight:700">⚠️ ' + (d.tipo_dano || 'Sí') + '</span>'
-            : '<span style="color:var(--success)">✅ Sin daños</span>';
-        var multaCell = d.dias_retraso > 0
-            ? d.dias_retraso + 'd · Gs.' + fn(d.monto_multa)
-            : '—';
-        var multaStyle = d.monto_multa > 0 ? 'color:var(--warn);font-weight:700' : 'color:var(--dim)';
-        var totalStyle = d.total_cobro > 0 ? 'var(--warn)' : 'var(--dim)';
-
-        html += '<tr>';
-        html += '<td><span class="code">#' + d.id_devolucion + '</span></td>';
-        html += '<td><span class="code">#' + d.id_prestamo + '</span></td>';
-        html += '<td><strong>' + d.codigo_alumno + '</strong><br>';
-        html += '<span style="font-size:0.8rem;color:var(--dim)">' + d.alumno_nombre + ' ' + d.alumno_apellido + '</span></td>';
-        html += '<td><strong>' + d.equipo + '</strong><br><span style="font-size:0.8rem;color:var(--dim)">' + d.tipo + '</span></td>';
-        html += '<td>' + ff(d.fecha_devolucion) + '</td>';
-        html += '<td>' + d.estado_equipo + '</td>';
-        html += '<td>' + danoCell + '</td>';
-        html += '<td style="' + multaStyle + '">' + multaCell + '</td>';
-        html += '<td style="font-weight:800;color:' + totalStyle + '">Gs. ' + fn(d.total_cobro || 0) + '</td>';
-        html += '</tr>';
+function renderD(){
+    var w=document.getElementById('td');
+    var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+devs.length+' registros</span></div>';
+    if(!devs.length){w.innerHTML=header+'<div class="em">Sin devoluciones registradas</div>';return;}
+    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Dano</th><th>Multa</th><th>Total</th></tr></thead><tbody>';
+    devs.forEach(function(d){
+        var danoCell=d.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(d.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin danos</span>';
+        var multaStyle=d.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
+        var totalStyle=d.total_cobro>0?'var(--warn)':'var(--dim)';
+        html+='<tr>';
+        html+='<td><span class="code">#'+d.id_devolucion+'</span></td>';
+        html+='<td><span class="code">#'+d.id_prestamo+'</span></td>';
+        html+='<td><strong>'+d.codigo_alumno+'</strong><div class="sub-text">'+d.alumno_nombre+' '+d.alumno_apellido+'</div></td>';
+        html+='<td><strong>'+d.equipo+'</strong><div class="sub-text">'+d.tipo+'</div></td>';
+        html+='<td>'+ff(d.fecha_devolucion)+'</td>';
+        html+='<td>'+d.estado_equipo+'</td>';
+        html+='<td>'+danoCell+'</td>';
+        html+='<td style="'+multaStyle+'">'+(d.dias_retraso>0?d.dias_retraso+'d &middot; Gs.'+fn(d.monto_multa):'—')+'</td>';
+        html+='<td style="font-weight:800;color:'+totalStyle+'">Gs. '+fn(d.total_cobro||0)+'</td>';
+        html+='</tr>';
     });
-
-    html += '</tbody></table>';
-    w.innerHTML = html;
+    html+='</tbody></table>';
+    w.innerHTML=html;
 }
 
-function setTab(t, el) {
-    tabAct = t;
-    document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
+function setTab(t,el){
+    tabAct=t;
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
     el.classList.add('active');
-    document.getElementById('tp').style.display = t === 'p' ? 'block' : 'none';
-    document.getElementById('td').style.display  = t === 'd' ? 'block' : 'none';
-    document.getElementById('filtros').style.display = t === 'p' ? 'flex' : 'none';
+    document.getElementById('tp').style.display=t==='p'?'block':'none';
+    document.getElementById('td').style.display=t==='d'?'block':'none';
+    document.getElementById('filtros').style.display=t==='p'?'flex':'none';
 }
-
-function setF(f, el) {
-    filtAct = f;
-    document.querySelectorAll('.fb').forEach(function(b){ b.classList.remove('active'); });
+function setF(f,el){
+    filtAct=f;
+    document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
     el.classList.add('active');
     renderP();
 }
-
-window.onload = cargar;
+window.onload=cargar;
 </script>
 </body>
 </html>

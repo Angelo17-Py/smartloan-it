@@ -1,101 +1,339 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartLoan IT | Dashboard</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLoan IT | Panel de Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary:#6366f1; --accent:#00f2ff; --warn:#f59e0b; --success:#22c55e; --danger:#ef4444; --bg:#020617; --card:rgba(15,23,42,0.6); --text:#fff; --dim:#94a3b8; --border:rgba(255,255,255,0.1); }
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
-        body{background:var(--bg);color:var(--text);min-height:100vh;}
-        #cv{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
-        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 80% 20%,rgba(99,102,241,0.15) 0%,transparent 40%),radial-gradient(circle at 20% 80%,rgba(0,242,255,0.1) 0%,transparent 40%);z-index:-1;filter:blur(80px);}
-        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-        .brand{font-size:1.4rem;font-weight:800;display:flex;align-items:center;gap:12px;}
-        .bi{background:linear-gradient(135deg,var(--primary),var(--accent));width:34px;height:34px;border-radius:10px;display:grid;place-items:center;}
-        .nr{display:flex;align-items:center;gap:16px;}
-        .uc{display:flex;align-items:center;gap:10px;font-weight:700;font-size:0.9rem;color:var(--dim);}
-        .av{width:34px;height:34px;background:var(--primary);border-radius:50%;display:grid;place-items:center;color:white;font-size:0.85rem;font-weight:800;}
-        .eb{font-size:0.7rem;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:8px;padding:3px 10px;color:var(--primary);font-weight:700;}
-        .lb{color:#fb7185;font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;padding:8px 16px;border-radius:10px;border:1px solid rgba(251,113,133,0.2);background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
-        .lb:hover{background:rgba(251,113,133,0.1);}
-        main{max-width:1200px;margin:40px auto;padding:0 24px;animation:fi 0.7s ease-out;}
-        @keyframes fi{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .st{font-size:0.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--dim);font-weight:700;margin-bottom:20px;}
-        .mg{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:40px;}
-        .mc{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);padding:28px;border-radius:24px;display:flex;align-items:center;gap:18px;transition:0.3s;}
-        .mc:hover{transform:translateY(-4px);}
-        .mi{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:1.6rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);}
-        .md h3{font-size:2rem;font-weight:800;line-height:1;margin-bottom:4px;background:linear-gradient(to right,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-        .md p{font-size:0.8rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;}
-        .mc.blue{border-bottom:2px solid var(--primary);}
-        .mc.cyan{border-bottom:2px solid var(--accent);}
-        .mc.amber{border-bottom:2px solid var(--warn);}
-        .ag{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
-        .ac{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);padding:36px;border-radius:28px;color:inherit;transition:0.3s;position:relative;overflow:hidden;cursor:pointer;}
-        .ac::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary),var(--accent));opacity:0;transition:0.4s;z-index:-1;}
-        .ac:hover{transform:translateY(-6px) scale(1.01);border-color:transparent;box-shadow:0 20px 40px -15px rgba(99,102,241,0.4);}
-        .ac:hover::before{opacity:0.08;}
-        .full{grid-column:span 2;display:flex;align-items:center;gap:36px;}
-        .ai{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;font-size:2.2rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);transition:0.3s;flex-shrink:0;}
-        .ac:hover .ai{background:white;transform:rotate(-5deg);}
-        .ac h2{font-size:1.5rem;font-weight:800;margin-bottom:8px;}
-        .ac p{color:var(--dim);font-size:0.95rem;line-height:1.6;}
-        @media(max-width:900px){.mg{grid-template-columns:repeat(2,1fr)}.ag{grid-template-columns:1fr}.full{flex-direction:column;text-align:center}}
+        :root {
+            --primary:#6366f1; --accent:#00f2ff; --warn:#f59e0b;
+            --success:#22c55e; --danger:#ef4444;
+            --bg:#020617; --card:rgba(15,23,42,0.6);
+            --text:#fff; --dim:#94a3b8; --border:rgba(255,255,255,0.1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; }
+        #cv { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
+        .glow {
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            background:
+                radial-gradient(circle at 80% 20%, rgba(99,102,241,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(0,242,255,0.1) 0%, transparent 40%);
+            z-index:-1; filter:blur(80px);
+        }
+
+        /* NAV */
+        nav {
+            padding:18px 5%; display:flex; justify-content:space-between; align-items:center;
+            background:rgba(2,6,23,0.85); backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
+        }
+        .brand { font-size:1.4rem; font-weight:800; display:flex; align-items:center; gap:12px; letter-spacing:-0.5px; }
+        .brand-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); width:36px; height:36px; border-radius:10px; display:grid; place-items:center; }
+        .nav-right { display:flex; align-items:center; gap:16px; }
+        .user-info { display:flex; align-items:center; gap:10px; }
+        .user-avatar { width:38px; height:38px; background:linear-gradient(135deg,var(--primary),var(--accent)); border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:0.95rem; }
+        .user-name { font-weight:700; font-size:0.92rem; }
+        .user-role { font-size:0.72rem; color:var(--dim); margin-top:1px; }
+        .btn-logout { color:#fb7185; font-weight:700; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; padding:8px 16px; border-radius:10px; border:1px solid rgba(251,113,133,0.2); background:none; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:0.3s; }
+        .btn-logout:hover { background:rgba(251,113,133,0.1); }
+
+        /* MAIN */
+        main { max-width:1200px; margin:40px auto; padding:0 24px; animation:fi 0.7s ease-out; }
+        @keyframes fi { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+        /* BIENVENIDA */
+        .welcome {
+            background:linear-gradient(135deg, rgba(99,102,241,0.15), rgba(0,242,255,0.08));
+            border:1px solid rgba(99,102,241,0.25);
+            border-radius:24px; padding:28px 32px;
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:32px; flex-wrap:wrap; gap:16px;
+        }
+        .welcome h2 { font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+        .welcome p { color:var(--dim); font-size:0.92rem; }
+        .welcome-date { font-size:0.82rem; color:var(--dim); text-align:right; }
+        .welcome-date strong { display:block; font-size:1rem; color:white; font-weight:700; }
+
+        /* SECCION TITULO */
+        .section-title { font-size:0.72rem; text-transform:uppercase; letter-spacing:3px; color:var(--dim); font-weight:700; margin-bottom:16px; }
+
+        /* METRICAS */
+        .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:36px; }
+        .metric-card {
+            background:var(--card); backdrop-filter:blur(20px);
+            border:1px solid var(--border); border-radius:22px;
+            padding:24px; display:flex; align-items:center; gap:16px;
+            transition:0.3s; cursor:default;
+        }
+        .metric-card:hover { transform:translateY(-4px); }
+        .metric-icon {
+            width:52px; height:52px; border-radius:14px;
+            display:grid; place-items:center; flex-shrink:0;
+        }
+        .metric-icon.total   { background:rgba(99,102,241,0.15); color:var(--primary); border:1px solid rgba(99,102,241,0.25); }
+        .metric-icon.loan    { background:rgba(239,68,68,0.12); color:var(--danger); border:1px solid rgba(239,68,68,0.2); }
+        .metric-icon.avail   { background:rgba(34,197,94,0.12); color:var(--success); border:1px solid rgba(34,197,94,0.2); }
+        .metric-icon.maint   { background:rgba(245,158,11,0.12); color:var(--warn); border:1px solid rgba(245,158,11,0.2); }
+        .metric-card.c-loan  { border-bottom:2px solid var(--danger); }
+        .metric-card.c-avail { border-bottom:2px solid var(--success); }
+        .metric-card.c-maint { border-bottom:2px solid var(--warn); }
+        .metric-card.c-total { border-bottom:2px solid var(--primary); }
+        .metric-num { font-size:2.2rem; font-weight:800; line-height:1; margin-bottom:4px; background:linear-gradient(to right,#fff,#94a3b8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .metric-label { font-size:0.75rem; color:var(--dim); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+
+        /* ACCIONES */
+        .actions { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+        .action-card {
+            background:var(--card); backdrop-filter:blur(20px);
+            border:1px solid var(--border); border-radius:22px;
+            padding:28px; cursor:pointer; transition:0.35s;
+            position:relative; overflow:hidden;
+        }
+        .action-card::after {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg,var(--card-color,var(--primary)),transparent);
+            opacity:0; transition:0.35s;
+        }
+        .action-card:hover { transform:translateY(-6px); border-color:var(--card-color,var(--primary)); box-shadow:0 20px 40px -15px var(--card-shadow,rgba(99,102,241,0.3)); }
+        .action-card:hover::after { opacity:0.06; }
+        .action-card:hover .action-icon { transform:scale(1.1) rotate(-5deg); }
+
+        .action-icon {
+            width:52px; height:52px; border-radius:14px;
+            display:grid; place-items:center;
+            margin-bottom:18px; transition:0.3s;
+        }
+        .action-card h3 { font-size:1.05rem; font-weight:800; margin-bottom:6px; letter-spacing:-0.3px; }
+        .action-card p { font-size:0.82rem; color:var(--dim); line-height:1.5; }
+
+        /* Colores por tarjeta */
+        .card-equipos   { --card-color:var(--primary); --card-shadow:rgba(99,102,241,0.3); }
+        .card-equipos   .action-icon { background:rgba(99,102,241,0.15); color:var(--primary); border:1px solid rgba(99,102,241,0.25); }
+        .card-alumnos   { --card-color:var(--accent); --card-shadow:rgba(0,242,255,0.25); }
+        .card-alumnos   .action-icon { background:rgba(0,242,255,0.1); color:var(--accent); border:1px solid rgba(0,242,255,0.2); }
+        .card-prestamos { --card-color:var(--success); --card-shadow:rgba(34,197,94,0.25); }
+        .card-prestamos .action-icon { background:rgba(34,197,94,0.12); color:var(--success); border:1px solid rgba(34,197,94,0.2); }
+        .card-devol     { --card-color:var(--warn); --card-shadow:rgba(245,158,11,0.25); }
+        .card-devol     .action-icon { background:rgba(245,158,11,0.12); color:var(--warn); border:1px solid rgba(245,158,11,0.2); }
+        .card-historial { --card-color:#a78bfa; --card-shadow:rgba(167,139,250,0.25); }
+        .card-historial .action-icon { background:rgba(167,139,250,0.12); color:#a78bfa; border:1px solid rgba(167,139,250,0.2); }
+
+        @media(max-width:900px) {
+            .metrics { grid-template-columns:repeat(2,1fr); }
+            .actions { grid-template-columns:1fr 1fr; }
+            .welcome { flex-direction:column; }
+        }
+        @media(max-width:600px) {
+            .actions { grid-template-columns:1fr; }
+            .metrics { grid-template-columns:1fr 1fr; }
+        }
     </style>
 </head>
 <body>
 <canvas id="cv"></canvas>
 <div class="glow"></div>
+
 <nav>
-    <div class="brand"><div class="bi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
-    <div class="nr">
-        <div class="uc"><div class="av" id="av">A</div><div><div id="uname" style="font-size:0.9rem">Cargando...</div><span class="eb">Encargado</span></div></div>
-        <button class="lb" onclick="logout()">Salir</button>
+    <div class="brand">
+        <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        SmartLoan IT
+    </div>
+    <div class="nav-right">
+        <div class="user-info">
+            <div class="user-avatar" id="uav">A</div>
+            <div>
+                <div class="user-name" id="uname">Cargando...</div>
+                <div class="user-role" id="urole">Encargado</div>
+            </div>
+        </div>
+        <button class="btn-logout" onclick="logout()">Salir</button>
     </div>
 </nav>
+
 <main>
-    <p class="st">Panel de Control</p>
-    <section class="mg">
-        <div class="mc"><div class="mi">🖥️</div><div class="md"><h3 id="ct">—</h3><p>Equipos Totales</p></div></div>
-        <div class="mc blue"><div class="mi">📤</div><div class="md"><h3 id="cp">—</h3><p>En Préstamo</p></div></div>
-        <div class="mc cyan"><div class="mi">✅</div><div class="md"><h3 id="cd">—</h3><p>Disponibles</p></div></div>
-        <div class="mc amber"><div class="mi">🔧</div><div class="md"><h3 id="cm">—</h3><p>Mantenimiento</p></div></div>
+    <!-- BIENVENIDA -->
+    <div class="welcome">
+        <div>
+            <h2 id="welcome-msg">Bienvenido</h2>
+            <p>Panel de control del sistema de gestion de recursos tecnologicos</p>
+        </div>
+        <div class="welcome-date">
+            <strong id="fecha-hoy"></strong>
+            <span id="hora-ahora"></span>
+        </div>
+    </div>
+
+    <!-- METRICAS -->
+    <p class="section-title">Resumen del sistema</p>
+    <section class="metrics">
+        <div class="metric-card c-total">
+            <div class="metric-icon total">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <path d="M8 21h8M12 17v4"/>
+                </svg>
+            </div>
+            <div>
+                <div class="metric-num" id="ct">—</div>
+                <div class="metric-label">Equipos Totales</div>
+            </div>
+        </div>
+        <div class="metric-card c-loan">
+            <div class="metric-icon loan">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </div>
+            <div>
+                <div class="metric-num" id="cp">—</div>
+                <div class="metric-label">En Prestamo</div>
+            </div>
+        </div>
+        <div class="metric-card c-avail">
+            <div class="metric-icon avail">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M20 6L9 17l-5-5"/>
+                </svg>
+            </div>
+            <div>
+                <div class="metric-num" id="cd">—</div>
+                <div class="metric-label">Disponibles</div>
+            </div>
+        </div>
+        <div class="metric-card c-maint">
+            <div class="metric-icon maint">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="metric-num" id="cm">—</div>
+                <div class="metric-label">Mantenimiento</div>
+            </div>
+        </div>
     </section>
-    <p class="st">Acciones Rápidas</p>
-    <section class="ag">
-        <div class="ac full" onclick="ir('equipos')"><div class="ai">🏢</div><div><h2>Gestión de Equipos</h2><p>Registro, control de estado e historial de activos tecnológicos.</p></div></div>
-        <div class="ac" onclick="ir('alumnos')"><div class="ai">🎓</div><h2>Alumnos</h2><p>Registro de alumnos habilitados para solicitar equipos en préstamo.</p></div>
-        <div class="ac" onclick="ir('prestamos')"><div class="ai">📋</div><h2>Registrar Préstamo</h2><p>Registro completo de salida de equipos con contrato de uso.</p></div>
-        <div class="ac" onclick="ir('devoluciones')"><div class="ai">📥</div><h2>Recibir Devolución</h2><p>Registro de devolución con control de daños y multas automáticas.</p></div>
-        <div class="ac" onclick="ir('historial')"><div class="ai">📊</div><h2>Historial</h2><p>Registro completo de movimientos, préstamos y devoluciones.</p></div>
+
+    <!-- ACCIONES -->
+    <p class="section-title">Acciones rapidas</p>
+    <section class="actions">
+        <div class="action-card card-equipos" onclick="ir('equipos')">
+            <div class="action-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/>
+                    <path d="M8 21h8M12 17v4"/>
+                </svg>
+            </div>
+            <h3>Gestion de Equipos</h3>
+            <p>Registro y control de estado de los activos tecnologicos de la institucion.</p>
+        </div>
+        <div class="action-card card-alumnos" onclick="ir('alumnos')">
+            <div class="action-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+            </div>
+            <h3>Alumnos</h3>
+            <p>Registro de alumnos habilitados para solicitar equipos en prestamo.</p>
+        </div>
+        <div class="action-card card-prestamos" onclick="ir('prestamos')">
+            <div class="action-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+            </div>
+            <h3>Registrar Prestamo</h3>
+            <p>Registro de salida de equipos con contrato de uso y datos completos.</p>
+        </div>
+        <div class="action-card card-devol" onclick="ir('devoluciones')">
+            <div class="action-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <polyline points="1 4 1 10 7 10"/>
+                    <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+                </svg>
+            </div>
+            <h3>Recibir Devolucion</h3>
+            <p>Registro de retorno con control de danos y calculo automatico de multas.</p>
+        </div>
+        <div class="action-card card-historial" onclick="ir('historial')">
+            <div class="action-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+            </div>
+            <h3>Historial</h3>
+            <p>Trazabilidad completa de todos los movimientos, prestamos y devoluciones.</p>
+        </div>
     </section>
 </main>
+
 <script>
-const API='http://localhost:3000';
+const API = 'http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href = '/';
+
+// Partículas
 const cv=document.getElementById('cv'),cx=cv.getContext('2d');let pp=[];
-function ip(){cv.width=innerWidth;cv.height=innerHeight;pp=[];for(let i=0;i<50;i++)pp.push({x:Math.random()*cv.width,y:Math.random()*cv.height,s:Math.random()*2+1,sx:(Math.random()-.5)*.4,sy:(Math.random()-.5)*.4,o:Math.random()*.3});}
+function ip(){cv.width=innerWidth;cv.height=innerHeight;pp=[];for(let i=0;i<50;i++)pp.push({x:Math.random()*cv.width,y:Math.random()*cv.height,s:Math.random()*2+1,sx:(Math.random()-.5)*.4,sy:(Math.random()-.5)*.4,o:Math.random()*.25});}
 function ap(){cx.clearRect(0,0,cv.width,cv.height);pp.forEach(p=>{p.x+=p.sx;p.y+=p.sy;if(p.x<0||p.x>cv.width)p.sx*=-1;if(p.y<0||p.y>cv.height)p.sy*=-1;cx.fillStyle=`rgba(99,102,241,${p.o})`;cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);cx.fill();});requestAnimationFrame(ap);}
 window.addEventListener('resize',ip);ip();ap();
 
-function ir(r){document.body.style.transition='0.4s';document.body.style.opacity='0';document.body.style.transform='scale(0.98)';setTimeout(()=>window.location.href=`/${r}/${r}.html`,350);}
-function logout(){if(confirm('¿Cerrar sesión?')){localStorage.removeItem('encargado');window.location.href='/';}}
+function ir(r){
+    document.body.style.transition='0.4s';
+    document.body.style.opacity='0';
+    document.body.style.transform='scale(0.98)';
+    setTimeout(()=>window.location.href=`/${r}/${r}.html`,350);
+}
+
+function logout(){
+    if(confirm('Cerrar sesion del sistema?')){
+        localStorage.removeItem('encargado');
+        window.location.href='/';
+    }
+}
+
+// Fecha y hora en tiempo real
+function actualizarReloj(){
+    const ahora = new Date();
+    const dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    document.getElementById('fecha-hoy').textContent = `${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()}`;
+    const h = String(ahora.getHours()).padStart(2,'0');
+    const m = String(ahora.getMinutes()).padStart(2,'0');
+    document.getElementById('hora-ahora').textContent = `${h}:${m} hs`;
+}
+actualizarReloj();
+setInterval(actualizarReloj, 60000);
 
 async function cargarMetricas(){
     try{
-        const r=await fetch(`${API}/equipos`);
-        const eq=await r.json();
-        document.getElementById('ct').textContent=eq.length;
-        document.getElementById('cp').textContent=eq.filter(e=>e.estado==='Prestado').length;
-        document.getElementById('cd').textContent=eq.filter(e=>e.estado==='Disponible').length;
-        document.getElementById('cm').textContent=eq.filter(e=>e.estado==='En mantenimiento').length;
-    }catch(e){console.error(e);}
+        const r = await fetch(`${API}/equipos`);
+        const eq = await r.json();
+        document.getElementById('ct').textContent = eq.length;
+        document.getElementById('cp').textContent = eq.filter(e=>e.estado==='Prestado').length;
+        document.getElementById('cd').textContent = eq.filter(e=>e.estado==='Disponible').length;
+        document.getElementById('cm').textContent = eq.filter(e=>e.estado==='En mantenimiento').length;
+    }catch(e){ console.error(e); }
 }
 
-window.onload=()=>{
-    const enc=JSON.parse(localStorage.getItem('encargado')||'{}');
-    if(enc.nombre){document.getElementById('uname').textContent=`${enc.nombre} ${enc.apellido}`;document.getElementById('av').textContent=enc.nombre[0];}
+window.onload = () => {
+    const enc = JSON.parse(localStorage.getItem('encargado') || '{}');
+    if(enc.nombre){
+        document.getElementById('uname').textContent = `${enc.nombre} ${enc.apellido}`;
+        document.getElementById('uav').textContent = enc.nombre[0].toUpperCase();
+        document.getElementById('urole').textContent = enc.cargo || 'Encargado';
+        document.getElementById('welcome-msg').textContent = `Bienvenido, ${enc.nombre}`;
+    }
     cargarMetricas();
 };
 </script>

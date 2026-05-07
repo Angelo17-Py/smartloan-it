@@ -112,4 +112,4 @@ DELIMITER ;
 
 -- Encargado: código 1234, contraseña CREDENCIALES_BORRADAS
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
-('1234', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos');
+('1234', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos');

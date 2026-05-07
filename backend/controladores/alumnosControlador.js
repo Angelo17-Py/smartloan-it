@@ -7,7 +7,7 @@ exports.listar = (req, res) => {
   });
 };
 
-// Solo alumnos sin prestamo activo
+// Trae solo alumnos que no tienen prestamo activo en este momento
 exports.disponibles = (req, res) => {
   db.query(`
     SELECT * FROM alumnos
@@ -45,14 +45,14 @@ exports.crear = (req, res) => {
 exports.eliminar = (req, res) => {
   const id = req.params.id;
 
-  // Verificar si tiene prestamo activo
+  // Antes de borrar verifico que no tenga prestamo activo
   db.query('SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1', [id], (err, r) => {
     if (err) return res.status(500).json(err);
     if (r.length > 0) {
       return res.status(400).json({ mensaje: 'No se puede eliminar: el alumno tiene un préstamo activo' });
     }
 
-    // Sin prestamo activo borrar en cascada del historial
+    // Si no tiene prestamo activo borro en cascada
     db.query(`DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?`, [id], (err) => {
       if (err) return res.status(500).json(err);
       db.query('DELETE FROM prestamos WHERE id_alumno = ?', [id], (err) => {

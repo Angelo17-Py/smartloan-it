@@ -1,13 +1,10 @@
 const db = require('../db');
-
-// Formato MySQL respetando zona horaria 
+// Funcion para formatear fechas en formato MySQL usando la zona horaria local
 const fmt = (d) => {
   if (!d) return null;
-
-  // String directo del input datetime-local 
+  // Si viene como string del input solo cambio la T por espacio
   if (typeof d === 'string') return d.replace('T', ' ').slice(0, 19);
-
-  // Date object usar toLocaleString
+  // Si viene como objeto Date uso toLocaleString con la zona de Paraguay
   const str = new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' });
   return str.replace('T', ' ').slice(0, 19);
 };

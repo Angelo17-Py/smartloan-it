@@ -20,7 +20,7 @@ exports.crear = (req, res) => {
 exports.eliminar = (req, res) => {
   const id = req.params.id;
 
-  // Eliminar en cascada: devoluciones → prestamos → equipo
+  // Primero borro devoluciones, despues prestamos, y por ultimo el equipo
   db.query(`
     DELETE dv FROM devoluciones dv
     JOIN prestamos p ON dv.id_prestamo = p.id_prestamo

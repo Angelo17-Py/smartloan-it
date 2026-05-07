@@ -45,17 +45,17 @@
     <div class="logo"><svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
     <h2>SmartLoan IT</h2>
     <p class="sub">Sistema de Gestión de Recursos Tecnológicos</p>
-    <div class="badge">Universidad Integración de las Américas</div>
+    <div class="badge">Universidad Integracion de las Americas</div>
     <div class="field">
-        <label>Código</label>
-        <input type="text" id="codigo" placeholder="" maxlength="4" inputmode="numeric" autocomplete="off">
+        <label>Código (máx. 4 dígitos)</label>
+        <input type="text" id="codigo" placeholder="Ej: 1234" maxlength="4" inputmode="numeric" autocomplete="off">
         <div class="field-err" id="err-codigo">Ingresá tu código de encargado</div>
     </div>
     <div class="field">
         <label>Contraseña</label>
         <div class="pass-wrap">
-            <input type="password" id="password" placeholder="" autocomplete="off">
-            <button class="eye" type="button" onclick="togglePass()" id="eyeBtn">👁</button>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="off">
+            <button class="eye" type="button" onclick="togglePass()" id="eyeBtn">&#128065;</button>
         </div>
         <div class="field-err" id="err-pass">Ingresá tu contraseña</div>
     </div>
@@ -79,7 +79,7 @@ document.getElementById('codigo').addEventListener('input',function(){
 });
 document.getElementById('password').addEventListener('input',function(){ clearErr('pass'); });
 
-function togglePass(){const i=document.getElementById('password'),b=document.getElementById('eyeBtn');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'👁':'⊘';}
+function togglePass(){const i=document.getElementById('password'),b=document.getElementById('eyeBtn');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'&#128065;':'&#128584;';}
 
 function clearErr(field){
     document.getElementById('err-'+field).classList.remove('show');
