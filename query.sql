@@ -1,7 +1,6 @@
--- ============================================================
--- SISTEMA DE GESTIÓN DE PRÉSTAMOS DE RECURSOS TECNOLÓGICOS
--- SmartLoan IT v4.0 - Universidad Integración de las Américas
--- ============================================================
+-- Sistema de Gestion de Préstamos de Equipos TecnolOgicos
+-- SmartLoan IT - UNIDA
+
 
 CREATE DATABASE IF NOT EXISTS prestamos_db;
 USE prestamos_db;
@@ -110,6 +109,18 @@ END$$
 
 DELIMITER ;
 
--- Encargado: código 1234, contraseña CREDENCIALES_BORRADAS
+-- Encargado y contraseña
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
 ('1234', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos');
+
+-- Tabla de configuracion del sistema
+CREATE TABLE IF NOT EXISTS configuracion (
+    id_config  INT AUTO_INCREMENT PRIMARY KEY,
+    clave      VARCHAR(100) UNIQUE NOT NULL,
+    valor      VARCHAR(200) NOT NULL,
+    descripcion VARCHAR(300)
+);
+
+-- Multa por dia de retraso en guaranies
+INSERT INTO configuracion (clave, valor, descripcion) VALUES
+('multa_por_dia', '10000', 'Monto en guaranies que se cobra por cada dia de retraso en la devolucion');

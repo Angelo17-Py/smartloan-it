@@ -1,3 +1,5 @@
+/* Controlador para manejar las operaciones relacionadas con los alumnos */
+
 const db = require('../db');
 
 exports.listar = (req, res) => {

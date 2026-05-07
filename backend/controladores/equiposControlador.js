@@ -1,3 +1,7 @@
+/* Controlador para manejar las operaciones relacionadas con los equipos
+- Listar equipos
+- Crear nuevo equipo */ 
+
 const db = require('../db');
 
 exports.listar = (req, res) => {

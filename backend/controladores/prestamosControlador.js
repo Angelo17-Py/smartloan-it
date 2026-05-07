@@ -1,3 +1,5 @@
+/* Controlador para manejar las operaciones relacionadas con los prestamos*/ 
+
 const db = require('../db');
 // Funcion para formatear fechas en formato MySQL usando la zona horaria local
 const fmt = (d) => {

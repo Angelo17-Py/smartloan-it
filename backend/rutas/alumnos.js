@@ -1,3 +1,5 @@
+/* Rutas para alumnos*/ 
+
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/alumnosControlador');

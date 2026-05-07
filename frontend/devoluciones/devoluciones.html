@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Devoluciones</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -174,9 +175,9 @@
             <div id="lista"><p class="em">Cargando prestamos activos...</p></div>
         </div>
         <div class="card">
-            <div class="section-title">O busca por codigo de prestamo</div>
+            <div class="section-title">O busca por nombre del alumno</div>
             <div class="search-row">
-                <input type="number" class="si" id="idp" placeholder="Ej: 1, 5, 12..." min="1">
+                <input type="text" class="si" id="idp" placeholder="Nombre, apellido o codigo...">
                 <button class="btn-buscar" onclick="buscar()">Buscar</button>
             </div>
         </div>
@@ -196,7 +197,7 @@
             <div class="card">
                 <div class="section-title">Estado del equipo al retorno</div>
                 <div class="g2">
-                    <div class="ig"><label>Estado del equipo *</label>
+                    <div class="ig"><label>Estado del equipo</label>
                         <select id="estado" onchange="onEstado()"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Danado">Danado</option></select>
                     </div>
                     <div class="ig"><label>Observacion general</label><input type="text" id="obs" placeholder="Notas sobre la devolucion..."></div>
@@ -209,21 +210,21 @@
                 </div>
             </div>
             <div class="card">
-                <div class="section-title">Registro de danos</div>
-                <label class="dano-toggle"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta danos al momento de la devolucion</span></label>
+                <div class="section-title">Registro de daños</div>
+                <label class="dano-toggle"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños al momento de la devolucion</span></label>
                 <div class="dano-section" id="ds">
                     <div class="g2">
-                        <div class="ig"><label>Tipo de dano *</label><input type="text" id="tdano" placeholder="Ej: Pantalla rota, teclado..." oninput="clearFD('tdano')"><div class="ferr" id="ferr-tdano">Describe el tipo de dano</div></div>
-                        <div class="ig"><label>Monto reparacion (Gs.) *</label><input type="number" id="mdano" placeholder="Ej: 150000" min="0" oninput="updRes();clearFD('mdano')"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
+                        <div class="ig"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="" oninput="clearFD('tdano')"><div class="ferr" id="ferr-tdano">Describe el tipo de dano</div></div>
+                        <div class="ig"><label>Monto reparacion</label><input type="number" id="mdano" placeholder="" min="0" oninput="updRes();clearFD('mdano')"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
                     </div>
-                    <div class="ig"><label>Descripcion del dano *</label><textarea id="odano" placeholder="Descripcion detallada del dano..." oninput="clearFD('odano')"></textarea><div class="ferr" id="ferr-odano">Describe el dano en detalle</div></div>
+                    <div class="ig"><label>Descripcion del daño</label><textarea id="odano" placeholder="Descripcion detallada del daño..." oninput="clearFD('odano')"></textarea><div class="ferr" id="ferr-odano">Describe el dano en detalle</div></div>
                 </div>
             </div>
             <div class="cobros-card" id="cobros">
                 <div class="cobros-title">Resumen de cobros</div>
                 <div class="cobro-row"><span>Dias de retraso</span><strong id="rd" style="color:var(--warn)">0 dias</strong></div>
-                <div class="cobro-row"><span>Multa por retraso (Gs. 10.000 / dia)</span><strong id="rm" style="color:var(--warn)">Gs. 0</strong></div>
-                <div class="cobro-row"><span>Costo por danos</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
+                <div class="cobro-row"><span>Multa por retraso</span><strong id="rm" style="color:var(--warn)">Gs. 0</strong></div>
+                <div class="cobro-row"><span>Costo por daños</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
                 <div class="cobro-row"><span>Total a cobrar</span><strong id="rt">Gs. 0</strong></div>
             </div>
             <div class="conf-box">
@@ -260,9 +261,18 @@
 <script>
 const API='http://localhost:3000';
 if(!localStorage.getItem('encargado')) window.location.href='/';
-const MULTA=10000;
+var MULTA=10000; // se actualiza desde la configuracion del servidor
+
+async function cargarMulta(){
+    try{
+        var r=await fetch(API+'/configuracion');
+        var d=await r.json();
+        var cfg=d.find(function(x){return x.clave==='multa_por_dia';});
+        if(cfg) MULTA=parseInt(cfg.valor)||10000;
+    }catch(e){ MULTA=10000; }
+}
 let pActual=null;
-const ff=d=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});};
+const ff=d=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});};
 const fn=n=>Number(n).toLocaleString('es-PY');
 function st(msg,t='t-err'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3200);}
 function clearFD(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
@@ -295,9 +305,43 @@ async function selec(id){
     await cargarPres(id);
 }
 async function buscar(){
-    const id=document.getElementById('idp').value.trim();
-    if(!id){st('Ingresa un codigo de prestamo');return;}
-    await cargarPres(id);
+    const q=document.getElementById('idp').value.trim().toLowerCase();
+    if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
+
+    try{
+        const r=await fetch(API+'/prestamos');
+        if(!r.ok){st('Error al buscar');return;}
+        const todos=await r.json();
+        const activos=todos.filter(function(p){
+            var nombreCompleto = ((p.alumno_nombre||'') + ' ' + (p.alumno_apellido||'')).toLowerCase();
+            var nombreInverso  = ((p.alumno_apellido||'') + ' ' + (p.alumno_nombre||'')).toLowerCase();
+            return p.estado==='ACTIVO' && (
+                nombreCompleto.includes(q) ||
+                nombreInverso.includes(q) ||
+                (p.codigo_alumno && p.codigo_alumno.toLowerCase().includes(q))
+            );
+        });
+        if(!activos.length){st('No se encontro ningun prestamo activo para ese alumno');return;}
+        if(activos.length===1){
+            await cargarPres(activos[0].id_prestamo);
+        } else {
+            // Mostrar resultados multiples en la lista
+            const lista=document.getElementById('lista');
+            const ahora=new Date();
+            lista.innerHTML='<div style="font-size:0.78rem;color:var(--warn);font-weight:700;margin-bottom:10px">'+activos.length+' prestamos encontrados — selecciona uno:</div>'+
+            activos.map(function(p){
+                const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
+                const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
+                return '<div class="pres-item" id="item-'+p.id_prestamo+'" onclick="selec('+p.id_prestamo+')">'+
+                    '<div class="pi-left">'+
+                    '<h4>#'+p.id_prestamo+' &mdash; '+p.alumno_nombre+' '+p.alumno_apellido+' <span style="font-size:0.76rem;color:var(--dim)">('+p.codigo_alumno+')</span></h4>'+
+                    '<p>'+p.equipo+' &middot; '+p.tipo+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
+                    '</div>'+
+                    '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al dia')+'</span>'+
+                    '</div>';
+            }).join('');
+        }
+    }catch(e){st('Error de conexion');}
 }
 async function cargarPres(id){
     try{
@@ -425,7 +469,7 @@ function setStep(n){
     document.getElementById('l23').classList.toggle('done',n>2);
 }
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
-window.onload=cargarActivos;
+window.onload=function(){ cargarMulta(); cargarActivos(); };
 </script>
 </body>
 </html>

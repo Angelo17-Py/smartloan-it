@@ -1,3 +1,5 @@
+/* Rutas para encargados*/
+
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/encargadosControlador');

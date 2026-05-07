@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Historial</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -19,9 +20,7 @@
         .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.2);display:grid;place-items:center;color:#a78bfa;flex-shrink:0;}
         .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
         .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
-
-        /* TOOLBAR */
-        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px;}
+        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px;}
         .tabs{display:flex;gap:3px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;}
         .tab{padding:9px 22px;border-radius:9px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:0.25s;color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;}
         .tab.active{background:var(--primary);color:white;}
@@ -29,8 +28,12 @@
         .fb{padding:7px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;color:var(--dim);font-weight:700;font-size:0.78rem;cursor:pointer;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;}
         .fb.active{background:var(--primary);color:white;border-color:var(--primary);}
         .fb:hover:not(.active){background:rgba(255,255,255,0.07);color:white;}
-
-        /* TABLE */
+        /* BARRA DE BUSQUEDA */
+        .search-bar{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;}
+        .search-bar svg{color:var(--dim);flex-shrink:0;}
+        .search-bar input{background:none;border:none;color:white;font-size:0.92rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;}
+        .search-bar input::placeholder{color:var(--dim);}
+        .search-count{font-size:0.78rem;color:var(--dim);white-space:nowrap;font-weight:700;}
         .table-wrap{background:var(--card);backdrop-filter:blur(20px);border-radius:20px;border:1px solid var(--border);overflow-x:auto;}
         .table-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);font-weight:700;}
@@ -40,13 +43,14 @@
         td{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.88rem;}
         tr:last-child td{border-bottom:none;}
         tr:hover td{background:rgba(255,255,255,0.02);}
-        .badge{padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;}
+        .badge{padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;display:inline-block;}
         .ba{background:rgba(99,102,241,0.12);color:var(--primary);border:1px solid rgba(99,102,241,0.2);}
         .bd{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.18);}
         .bv{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.18);}
         .code{background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:2px 8px;font-weight:800;font-size:0.8rem;font-family:monospace;}
-        .em{text-align:center;padding:50px;color:var(--dim);font-size:0.9rem;}
         .sub-text{font-size:0.78rem;color:var(--dim);margin-top:2px;}
+        .em{text-align:center;padding:50px;color:var(--dim);font-size:0.9rem;}
+        .highlight{background:rgba(167,139,250,0.15);border-radius:3px;padding:0 2px;}
     </style>
 </head>
 <body>
@@ -72,6 +76,11 @@
             <button class="fb" onclick="setF('devueltos',this)">Devueltos</button>
         </div>
     </div>
+    <div class="search-bar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="busq" placeholder="Buscar por alumno, equipo, codigo, motivo..." oninput="buscar()">
+        <span class="search-count" id="search-count"></span>
+    </div>
     <div id="tp" class="table-wrap"><div class="em">Cargando...</div></div>
     <div id="td" class="table-wrap" style="display:none"><div class="em">Cargando...</div></div>
 </main>
@@ -80,14 +89,20 @@ var API='http://localhost:3000';
 if(!localStorage.getItem('encargado')) window.location.href='/';
 var prestamos=[],devs=[];
 var tabAct='p',filtAct='todos';
-function ff(d){if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+
+function ff(d){if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});}
 function fn(n){return Number(n).toLocaleString('es-PY');}
+
+function resaltar(texto,q){
+    if(!q||!texto) return texto||'—';
+    var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    return String(texto).replace(re,'<span class="highlight">$1</span>');
+}
 
 async function cargar(){
     try{
         var pr=await fetch(API+'/prestamos');
         var dr=await fetch(API+'/devoluciones');
-        if(!pr.ok||!dr.ok)throw new Error('Error servidor');
         prestamos=await pr.json();
         devs=await dr.json();
         renderP();renderD();
@@ -96,26 +111,60 @@ async function cargar(){
     }
 }
 
-function renderP(){
+function getPrestFiltrados(){
     var ahora=new Date();
     var d=prestamos.slice();
     if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)>=ahora;});
     if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
     if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
+    var q=document.getElementById('busq').value.trim().toLowerCase();
+    if(q){
+        d=d.filter(function(p){
+            return (p.alumno_nombre&&p.alumno_nombre.toLowerCase().includes(q))||
+                   (p.alumno_apellido&&p.alumno_apellido.toLowerCase().includes(q))||
+                   (p.codigo_alumno&&p.codigo_alumno.toLowerCase().includes(q))||
+                   (p.equipo&&p.equipo.toLowerCase().includes(q))||
+                   (p.marca&&p.marca.toLowerCase().includes(q))||
+                   (p.motivo&&p.motivo.toLowerCase().includes(q))||
+                   (String(p.id_prestamo)===q);
+        });
+    }
+    return d;
+}
+
+function getDevFiltrados(){
+    var q=document.getElementById('busq').value.trim().toLowerCase();
+    if(!q) return devs.slice();
+    return devs.filter(function(d){
+        return (d.alumno_nombre&&d.alumno_nombre.toLowerCase().includes(q))||
+               (d.alumno_apellido&&d.alumno_apellido.toLowerCase().includes(q))||
+               (d.codigo_alumno&&d.codigo_alumno.toLowerCase().includes(q))||
+               (d.equipo&&d.equipo.toLowerCase().includes(q))||
+               (d.tipo_dano&&d.tipo_dano.toLowerCase().includes(q))||
+               (String(d.id_prestamo)===q)||
+               (String(d.id_devolucion)===q);
+    });
+}
+
+function renderP(){
+    var ahora=new Date();
+    var d=getPrestFiltrados();
+    var q=document.getElementById('busq').value.trim();
     var w=document.getElementById('tp');
     var header='<div class="table-header"><span>Registro de prestamos</span><span class="table-count">'+d.length+' registros</span></div>';
-    if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este filtro</div>';return;}
+    if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
+    if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha prestamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th></tr></thead><tbody>';
     d.forEach(function(p){
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge bv">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge bd">Devuelto</span>':'<span class="badge ba">Activo</span>';
         html+='<tr>';
         html+='<td><span class="code">#'+p.id_prestamo+'</span></td>';
-        html+='<td><strong>'+p.codigo_alumno+'</strong><div class="sub-text">'+p.alumno_nombre+' '+p.alumno_apellido+'</div><div class="sub-text">'+( p.carrera||'—')+'</div></td>';
-        html+='<td><strong>'+p.equipo+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
+        html+='<td><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
+        html+='<td><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
         html+='<td>'+ff(p.fecha_prestamo)+'</td>';
         html+='<td style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
-        html+='<td style="color:var(--dim);font-size:0.83rem">'+(p.motivo||'—')+'</td>';
+        html+='<td style="color:var(--dim);font-size:0.83rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td>'+badge+'</td>';
         html+='</tr>';
     });
@@ -124,28 +173,35 @@ function renderP(){
 }
 
 function renderD(){
+    var d=getDevFiltrados();
+    var q=document.getElementById('busq').value.trim();
     var w=document.getElementById('td');
-    var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+devs.length+' registros</span></div>';
-    if(!devs.length){w.innerHTML=header+'<div class="em">Sin devoluciones registradas</div>';return;}
+    var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
+    if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
+    if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Dano</th><th>Multa</th><th>Total</th></tr></thead><tbody>';
-    devs.forEach(function(d){
-        var danoCell=d.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(d.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin danos</span>';
-        var multaStyle=d.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
-        var totalStyle=d.total_cobro>0?'var(--warn)':'var(--dim)';
+    d.forEach(function(dv){
+        var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
+        var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
         html+='<tr>';
-        html+='<td><span class="code">#'+d.id_devolucion+'</span></td>';
-        html+='<td><span class="code">#'+d.id_prestamo+'</span></td>';
-        html+='<td><strong>'+d.codigo_alumno+'</strong><div class="sub-text">'+d.alumno_nombre+' '+d.alumno_apellido+'</div></td>';
-        html+='<td><strong>'+d.equipo+'</strong><div class="sub-text">'+d.tipo+'</div></td>';
-        html+='<td>'+ff(d.fecha_devolucion)+'</td>';
-        html+='<td>'+d.estado_equipo+'</td>';
+        html+='<td><span class="code">#'+dv.id_devolucion+'</span></td>';
+        html+='<td><span class="code">#'+dv.id_prestamo+'</span></td>';
+        html+='<td><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
+        html+='<td><strong>'+resaltar(dv.equipo,q)+'</strong><div class="sub-text">'+dv.tipo+'</div></td>';
+        html+='<td>'+ff(dv.fecha_devolucion)+'</td>';
+        html+='<td>'+dv.estado_equipo+'</td>';
         html+='<td>'+danoCell+'</td>';
-        html+='<td style="'+multaStyle+'">'+(d.dias_retraso>0?d.dias_retraso+'d &middot; Gs.'+fn(d.monto_multa):'—')+'</td>';
-        html+='<td style="font-weight:800;color:'+totalStyle+'">Gs. '+fn(d.total_cobro||0)+'</td>';
+        html+='<td style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
+        html+='<td style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
     w.innerHTML=html;
+}
+
+function buscar(){
+    if(tabAct==='p') renderP();
+    else renderD();
 }
 
 function setTab(t,el){
@@ -155,13 +211,18 @@ function setTab(t,el){
     document.getElementById('tp').style.display=t==='p'?'block':'none';
     document.getElementById('td').style.display=t==='d'?'block':'none';
     document.getElementById('filtros').style.display=t==='p'?'flex':'none';
+    document.getElementById('busq').value='';
+    document.getElementById('search-count').textContent='';
+    if(t==='p') renderP(); else renderD();
 }
+
 function setF(f,el){
     filtAct=f;
     document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
     el.classList.add('active');
     renderP();
 }
+
 window.onload=cargar;
 </script>
 </body>

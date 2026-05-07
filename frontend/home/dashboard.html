@@ -2,132 +2,124 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Panel de Control</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary:#6366f1; --accent:#00f2ff; --warn:#f59e0b;
-            --success:#22c55e; --danger:#ef4444;
-            --bg:#020617; --card:rgba(15,23,42,0.6);
-            --text:#fff; --dim:#94a3b8; --border:rgba(255,255,255,0.1);
+        :root{
+            --primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;
+            --success:#22c55e;--danger:#ef4444;
+            --bg:#020617;--card:rgba(15,23,42,0.6);
+            --text:#fff;--dim:#94a3b8;--border:rgba(255,255,255,0.1);
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
-        body { background:var(--bg); color:var(--text); min-height:100vh; }
-        #cv { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
-        .glow {
-            position:fixed; top:0; left:0; width:100%; height:100%;
-            background:
-                radial-gradient(circle at 80% 20%, rgba(99,102,241,0.15) 0%, transparent 40%),
-                radial-gradient(circle at 20% 80%, rgba(0,242,255,0.1) 0%, transparent 40%);
-            z-index:-1; filter:blur(80px);
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+        body{background:var(--bg);color:var(--text);min-height:100vh;}
+        #cv{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 80% 20%,rgba(99,102,241,0.15) 0%,transparent 40%),radial-gradient(circle at 20% 80%,rgba(0,242,255,0.1) 0%,transparent 40%);z-index:-1;filter:blur(80px);}
 
         /* NAV */
-        nav {
-            padding:18px 5%; display:flex; justify-content:space-between; align-items:center;
-            background:rgba(2,6,23,0.85); backdrop-filter:blur(10px);
-            border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
-        }
-        .brand { font-size:1.4rem; font-weight:800; display:flex; align-items:center; gap:12px; letter-spacing:-0.5px; }
-        .brand-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); width:36px; height:36px; border-radius:10px; display:grid; place-items:center; }
-        .nav-right { display:flex; align-items:center; gap:16px; }
-        .user-info { display:flex; align-items:center; gap:10px; }
-        .user-avatar { width:38px; height:38px; background:linear-gradient(135deg,var(--primary),var(--accent)); border-radius:50%; display:grid; place-items:center; font-weight:800; font-size:0.95rem; }
-        .user-name { font-weight:700; font-size:0.92rem; }
-        .user-role { font-size:0.72rem; color:var(--dim); margin-top:1px; }
-        .btn-logout { color:#fb7185; font-weight:700; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; padding:8px 16px; border-radius:10px; border:1px solid rgba(251,113,133,0.2); background:none; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:0.3s; }
-        .btn-logout:hover { background:rgba(251,113,133,0.1); }
+        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+        .brand{font-size:1.4rem;font-weight:800;display:flex;align-items:center;gap:12px;letter-spacing:-0.5px;}
+        .brand-icon{background:linear-gradient(135deg,var(--primary),var(--accent));width:36px;height:36px;border-radius:10px;display:grid;place-items:center;}
+        .nav-right{display:flex;align-items:center;gap:16px;}
+        .user-info{display:flex;align-items:center;gap:10px;}
+        .user-avatar{width:38px;height:38px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:0.95rem;}
+        .user-name{font-weight:700;font-size:0.92rem;}
+        .user-role{font-size:0.72rem;color:var(--dim);margin-top:1px;}
+        .btn-logout{color:#fb7185;font-weight:700;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;padding:8px 16px;border-radius:10px;border:1px solid rgba(251,113,133,0.2);background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;}
+        .btn-logout:hover{background:rgba(251,113,133,0.1);}
 
         /* MAIN */
-        main { max-width:1200px; margin:40px auto; padding:0 24px; animation:fi 0.7s ease-out; }
-        @keyframes fi { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        main{max-width:1200px;margin:40px auto;padding:0 24px;animation:fi 0.7s ease-out;}
+        @keyframes fi{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
         /* BIENVENIDA */
-        .welcome {
-            background:linear-gradient(135deg, rgba(99,102,241,0.15), rgba(0,242,255,0.08));
-            border:1px solid rgba(99,102,241,0.25);
-            border-radius:24px; padding:28px 32px;
-            display:flex; justify-content:space-between; align-items:center;
-            margin-bottom:32px; flex-wrap:wrap; gap:16px;
-        }
-        .welcome h2 { font-size:1.6rem; font-weight:800; margin-bottom:4px; }
-        .welcome p { color:var(--dim); font-size:0.92rem; }
-        .welcome-date { font-size:0.82rem; color:var(--dim); text-align:right; }
-        .welcome-date strong { display:block; font-size:1rem; color:white; font-weight:700; }
+        .welcome{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(0,242,255,0.08));border:1px solid rgba(99,102,241,0.25);border-radius:24px;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:16px;}
+        .welcome h2{font-size:1.6rem;font-weight:800;margin-bottom:4px;}
+        .welcome p{color:var(--dim);font-size:0.92rem;}
+        .welcome-date{text-align:right;}
+        .welcome-date strong{display:block;font-size:1rem;color:white;font-weight:700;}
+        .welcome-date span{font-size:0.82rem;color:var(--dim);}
 
-        /* SECCION TITULO */
-        .section-title { font-size:0.72rem; text-transform:uppercase; letter-spacing:3px; color:var(--dim); font-weight:700; margin-bottom:16px; }
+        /* SECCION */
+        .section-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:3px;color:var(--dim);font-weight:700;margin-bottom:16px;}
 
         /* METRICAS */
-        .metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:36px; }
-        .metric-card {
-            background:var(--card); backdrop-filter:blur(20px);
-            border:1px solid var(--border); border-radius:22px;
-            padding:24px; display:flex; align-items:center; gap:16px;
-            transition:0.3s; cursor:default;
-        }
-        .metric-card:hover { transform:translateY(-4px); }
-        .metric-icon {
-            width:52px; height:52px; border-radius:14px;
-            display:grid; place-items:center; flex-shrink:0;
-        }
-        .metric-icon.total   { background:rgba(99,102,241,0.15); color:var(--primary); border:1px solid rgba(99,102,241,0.25); }
-        .metric-icon.loan    { background:rgba(239,68,68,0.12); color:var(--danger); border:1px solid rgba(239,68,68,0.2); }
-        .metric-icon.avail   { background:rgba(34,197,94,0.12); color:var(--success); border:1px solid rgba(34,197,94,0.2); }
-        .metric-icon.maint   { background:rgba(245,158,11,0.12); color:var(--warn); border:1px solid rgba(245,158,11,0.2); }
-        .metric-card.c-loan  { border-bottom:2px solid var(--danger); }
-        .metric-card.c-avail { border-bottom:2px solid var(--success); }
-        .metric-card.c-maint { border-bottom:2px solid var(--warn); }
-        .metric-card.c-total { border-bottom:2px solid var(--primary); }
-        .metric-num { font-size:2.2rem; font-weight:800; line-height:1; margin-bottom:4px; background:linear-gradient(to right,#fff,#94a3b8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-        .metric-label { font-size:0.75rem; color:var(--dim); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+        .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:36px;}
+        .metric-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:24px;display:flex;align-items:center;gap:16px;transition:0.3s;cursor:default;}
+        .metric-card:hover{transform:translateY(-4px);}
+        .metric-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex-shrink:0;}
+        .mi-total{background:rgba(99,102,241,0.15);color:var(--primary);border:1px solid rgba(99,102,241,0.25);}
+        .mi-loan{background:rgba(239,68,68,0.12);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
+        .mi-avail{background:rgba(34,197,94,0.12);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
+        .mi-maint{background:rgba(245,158,11,0.12);color:var(--warn);border:1px solid rgba(245,158,11,0.2);}
+        .mc-total{border-bottom:2px solid var(--primary);}
+        .mc-loan{border-bottom:2px solid var(--danger);}
+        .mc-avail{border-bottom:2px solid var(--success);}
+        .mc-maint{border-bottom:2px solid var(--warn);}
+        .metric-num{font-size:2.2rem;font-weight:800;line-height:1;margin-bottom:4px;background:linear-gradient(to right,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .metric-lbl{font-size:0.75rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;}
 
         /* ACCIONES */
-        .actions { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-        .action-card {
-            background:var(--card); backdrop-filter:blur(20px);
-            border:1px solid var(--border); border-radius:22px;
-            padding:28px; cursor:pointer; transition:0.35s;
-            position:relative; overflow:hidden;
-        }
-        .action-card::after {
-            content:''; position:absolute; inset:0;
-            background:linear-gradient(135deg,var(--card-color,var(--primary)),transparent);
-            opacity:0; transition:0.35s;
-        }
-        .action-card:hover { transform:translateY(-6px); border-color:var(--card-color,var(--primary)); box-shadow:0 20px 40px -15px var(--card-shadow,rgba(99,102,241,0.3)); }
-        .action-card:hover::after { opacity:0.06; }
-        .action-card:hover .action-icon { transform:scale(1.1) rotate(-5deg); }
+        .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:36px;}
+        .action-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:28px;cursor:pointer;transition:0.35s;position:relative;overflow:hidden;}
+        .action-card:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 20px 40px -15px var(--cs);}
+        .action-card:hover .action-icon{transform:scale(1.1) rotate(-5deg);}
+        .action-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;transition:0.3s;}
+        .action-card h3{font-size:1.05rem;font-weight:800;margin-bottom:6px;letter-spacing:-0.3px;}
+        .action-card p{font-size:0.82rem;color:var(--dim);line-height:1.5;}
+        .ac-eq{--c:var(--primary);--cs:rgba(99,102,241,0.3);}.ac-eq .action-icon{background:rgba(99,102,241,0.15);color:var(--primary);border:1px solid rgba(99,102,241,0.25);}
+        .ac-al{--c:var(--accent);--cs:rgba(0,242,255,0.25);}.ac-al .action-icon{background:rgba(0,242,255,0.1);color:var(--accent);border:1px solid rgba(0,242,255,0.2);}
+        .ac-pr{--c:var(--success);--cs:rgba(34,197,94,0.25);}.ac-pr .action-icon{background:rgba(34,197,94,0.12);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
+        .ac-dv{--c:var(--warn);--cs:rgba(245,158,11,0.25);}.ac-dv .action-icon{background:rgba(245,158,11,0.12);color:var(--warn);border:1px solid rgba(245,158,11,0.2);}
+        .ac-hi{--c:#a78bfa;--cs:rgba(167,139,250,0.25);}.ac-hi .action-icon{background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);}
 
-        .action-icon {
-            width:52px; height:52px; border-radius:14px;
-            display:grid; place-items:center;
-            margin-bottom:18px; transition:0.3s;
-        }
-        .action-card h3 { font-size:1.05rem; font-weight:800; margin-bottom:6px; letter-spacing:-0.3px; }
-        .action-card p { font-size:0.82rem; color:var(--dim); line-height:1.5; }
+        /* GRID INFERIOR: RESPALDO + CONFIGURACION */
+        .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
 
-        /* Colores por tarjeta */
-        .card-equipos   { --card-color:var(--primary); --card-shadow:rgba(99,102,241,0.3); }
-        .card-equipos   .action-icon { background:rgba(99,102,241,0.15); color:var(--primary); border:1px solid rgba(99,102,241,0.25); }
-        .card-alumnos   { --card-color:var(--accent); --card-shadow:rgba(0,242,255,0.25); }
-        .card-alumnos   .action-icon { background:rgba(0,242,255,0.1); color:var(--accent); border:1px solid rgba(0,242,255,0.2); }
-        .card-prestamos { --card-color:var(--success); --card-shadow:rgba(34,197,94,0.25); }
-        .card-prestamos .action-icon { background:rgba(34,197,94,0.12); color:var(--success); border:1px solid rgba(34,197,94,0.2); }
-        .card-devol     { --card-color:var(--warn); --card-shadow:rgba(245,158,11,0.25); }
-        .card-devol     .action-icon { background:rgba(245,158,11,0.12); color:var(--warn); border:1px solid rgba(245,158,11,0.2); }
-        .card-historial { --card-color:#a78bfa; --card-shadow:rgba(167,139,250,0.25); }
-        .card-historial .action-icon { background:rgba(167,139,250,0.12); color:#a78bfa; border:1px solid rgba(167,139,250,0.2); }
+        /* CARD GENERICA */
+        .info-card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:26px;}
+        .card-header{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+        .card-icon{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex-shrink:0;}
+        .ci-backup{background:rgba(99,102,241,0.12);color:var(--primary);border:1px solid rgba(99,102,241,0.2);}
+        .ci-config{background:rgba(245,158,11,0.12);color:var(--warn);border:1px solid rgba(245,158,11,0.2);}
+        .card-title{font-size:1rem;font-weight:800;}
+        .card-sub{font-size:0.82rem;color:var(--dim);margin-bottom:20px;line-height:1.5;}
 
-        @media(max-width:900px) {
-            .metrics { grid-template-columns:repeat(2,1fr); }
-            .actions { grid-template-columns:1fr 1fr; }
-            .welcome { flex-direction:column; }
-        }
-        @media(max-width:600px) {
-            .actions { grid-template-columns:1fr; }
-            .metrics { grid-template-columns:1fr 1fr; }
-        }
+        /* BOTONES BACKUP */
+        .backup-btns{display:flex;flex-direction:column;gap:10px;}
+        .backup-btn{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:700;font-size:0.85rem;transition:0.3s;border:1px solid;}
+        .bb-json{background:rgba(99,102,241,0.08);color:var(--primary);border-color:rgba(99,102,241,0.2);}
+        .bb-json:hover{background:rgba(99,102,241,0.18);transform:translateX(4px);}
+        .bb-pres{background:rgba(34,197,94,0.08);color:var(--success);border-color:rgba(34,197,94,0.18);}
+        .bb-pres:hover{background:rgba(34,197,94,0.18);transform:translateX(4px);}
+        .bb-devol{background:rgba(245,158,11,0.08);color:var(--warn);border-color:rgba(245,158,11,0.18);}
+        .bb-devol:hover{background:rgba(245,158,11,0.18);transform:translateX(4px);}
+        .backup-btn-lbl{flex:1;}
+        .backup-btn-desc{font-size:0.72rem;font-weight:400;color:var(--dim);display:block;margin-top:1px;}
+
+        /* CONFIGURACION MULTA */
+        .config-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:13px;padding:14px 16px;}
+        .config-row svg{color:var(--warn);flex-shrink:0;}
+        .config-label{flex:1;}
+        .config-label strong{display:block;font-size:0.88rem;font-weight:700;margin-bottom:2px;}
+        .config-label span{font-size:0.75rem;color:var(--dim);}
+        .config-input-wrap{display:flex;align-items:center;gap:8px;}
+        .gs-label{font-size:0.82rem;color:var(--dim);font-weight:700;white-space:nowrap;}
+        .config-input{width:100px;padding:9px 12px;background:rgba(0,0,0,0.3);border:1.5px solid var(--border);border-radius:9px;color:white;font-size:0.9rem;outline:none;font-family:'Plus Jakarta Sans',sans-serif;transition:0.25s;text-align:right;}
+        .config-input:focus{border-color:var(--warn);box-shadow:0 0 0 3px rgba(245,158,11,0.1);}
+        .btn-save-cfg{background:var(--warn);color:white;border:none;padding:9px 18px;border-radius:9px;font-weight:800;font-size:0.82rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s;white-space:nowrap;}
+        .btn-save-cfg:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(245,158,11,0.3);}
+        .config-note{font-size:0.75rem;color:var(--dim);margin-top:14px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.15);border-radius:10px;padding:10px 14px;line-height:1.5;}
+
+        /* TOAST */
+        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;font-size:0.88rem;}
+        .toast.show{display:block;animation:ti 0.35s ease;}
+        .t-ok{background:var(--success);color:white;}.t-err{background:var(--danger);color:white;}
+        @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+        @media(max-width:1000px){.metrics{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr 1fr}.bottom-grid{grid-template-columns:1fr}}
+        @media(max-width:600px){.actions{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.welcome{flex-direction:column}.config-row{flex-direction:column;align-items:flex-start}}
     </style>
 </head>
 <body>
@@ -136,20 +128,13 @@
 
 <nav>
     <div class="brand">
-        <div class="brand-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-        </div>
+        <div class="brand-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
         SmartLoan IT
     </div>
     <div class="nav-right">
         <div class="user-info">
             <div class="user-avatar" id="uav">A</div>
-            <div>
-                <div class="user-name" id="uname">Cargando...</div>
-                <div class="user-role" id="urole">Encargado</div>
-            </div>
+            <div><div class="user-name" id="uname">Cargando...</div><div class="user-role" id="urole">Encargado</div></div>
         </div>
         <button class="btn-logout" onclick="logout()">Salir</button>
     </div>
@@ -169,137 +154,102 @@
     </div>
 
     <!-- METRICAS -->
-    <p class="section-title">Resumen del sistema</p>
+    <p class="section-label">Resumen del sistema</p>
     <section class="metrics">
-        <div class="metric-card c-total">
-            <div class="metric-icon total">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <rect x="2" y="3" width="20" height="14" rx="2"/>
-                    <path d="M8 21h8M12 17v4"/>
-                </svg>
-            </div>
-            <div>
-                <div class="metric-num" id="ct">—</div>
-                <div class="metric-label">Equipos Totales</div>
-            </div>
+        <div class="metric-card mc-total">
+            <div class="metric-icon mi-total"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <div><div class="metric-num" id="ct">—</div><div class="metric-lbl">Equipos Totales</div></div>
         </div>
-        <div class="metric-card c-loan">
-            <div class="metric-icon loan">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-            </div>
-            <div>
-                <div class="metric-num" id="cp">—</div>
-                <div class="metric-label">En Prestamo</div>
-            </div>
+        <div class="metric-card mc-loan">
+            <div class="metric-icon mi-loan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+            <div><div class="metric-num" id="cp">—</div><div class="metric-lbl">En Prestamo</div></div>
         </div>
-        <div class="metric-card c-avail">
-            <div class="metric-icon avail">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M20 6L9 17l-5-5"/>
-                </svg>
-            </div>
-            <div>
-                <div class="metric-num" id="cd">—</div>
-                <div class="metric-label">Disponibles</div>
-            </div>
+        <div class="metric-card mc-avail">
+            <div class="metric-icon mi-avail"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div><div class="metric-num" id="cd">—</div><div class="metric-lbl">Disponibles</div></div>
         </div>
-        <div class="metric-card c-maint">
-            <div class="metric-icon maint">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
-                </svg>
-            </div>
-            <div>
-                <div class="metric-num" id="cm">—</div>
-                <div class="metric-label">Mantenimiento</div>
-            </div>
+        <div class="metric-card mc-maint">
+            <div class="metric-icon mi-maint"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+            <div><div class="metric-num" id="cm">—</div><div class="metric-lbl">Mantenimiento</div></div>
         </div>
     </section>
 
     <!-- ACCIONES -->
-    <p class="section-title">Acciones rapidas</p>
+    <p class="section-label">Acciones rapidas</p>
     <section class="actions">
-        <div class="action-card card-equipos" onclick="ir('equipos')">
-            <div class="action-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <rect x="2" y="3" width="20" height="14" rx="2"/>
-                    <path d="M8 21h8M12 17v4"/>
-                </svg>
-            </div>
+        <div class="action-card ac-eq" onclick="ir('equipos')">
+            <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
             <h3>Gestion de Equipos</h3>
             <p>Registro y control de estado de los activos tecnologicos de la institucion.</p>
         </div>
-        <div class="action-card card-alumnos" onclick="ir('alumnos')">
-            <div class="action-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-                </svg>
-            </div>
+        <div class="action-card ac-al" onclick="ir('alumnos')">
+            <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
             <h3>Alumnos</h3>
-            <p>Registro de alumnos habilitados para solicitar equipos en prestamo.</p>
+            <p>Registro de alumnos para solicitar equipos en prestamo.</p>
         </div>
-        <div class="action-card card-prestamos" onclick="ir('prestamos')">
-            <div class="action-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
-            </div>
+        <div class="action-card ac-pr" onclick="ir('prestamos')">
+            <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
             <h3>Registrar Prestamo</h3>
             <p>Registro de salida de equipos con contrato de uso y datos completos.</p>
         </div>
-        <div class="action-card card-devol" onclick="ir('devoluciones')">
-            <div class="action-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <polyline points="1 4 1 10 7 10"/>
-                    <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
-                </svg>
-            </div>
+        <div class="action-card ac-dv" onclick="ir('devoluciones')">
+            <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
             <h3>Recibir Devolucion</h3>
-            <p>Registro de retorno con control de danos y calculo automatico de multas.</p>
+            <p>Registro de retorno con control de daños y calculo automatico de multas.</p>
         </div>
-        <div class="action-card card-historial" onclick="ir('historial')">
-            <div class="action-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <line x1="18" y1="20" x2="18" y2="10"/>
-                    <line x1="12" y1="20" x2="12" y2="4"/>
-                    <line x1="6" y1="20" x2="6" y2="14"/>
-                </svg>
-            </div>
+        <div class="action-card ac-hi" onclick="ir('historial')">
+            <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
             <h3>Historial</h3>
             <p>Trazabilidad completa de todos los movimientos, prestamos y devoluciones.</p>
         </div>
     </section>
 
-    <!-- RESPALDO -->
-    <p class="section-title" style="margin-top:36px">Respaldo de informacion</p>
-    <div style="background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:22px;padding:24px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-        <div>
-            <div style="font-weight:700;font-size:0.95rem;margin-bottom:4px">Exportar y respaldar datos</div>
-            <div style="font-size:0.82rem;color:var(--dim)">Descarga un backup completo en JSON o exporta los registros en formato CSV para Excel.</div>
+    <!-- RESPALDO + CONFIGURACION -->
+    <p class="section-label">Administracion</p>
+    <div class="bottom-grid">
+
+        <!-- RESPALDO -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon ci-backup"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+                <div class="card-title">Respaldo de informacion</div>
+            </div>
+            <p class="card-sub">Exporta todos los prestamos y devoluciones en un archivo CSV.</p>
+            <div class="backup-btns">
+                <a href="http://localhost:3000/exportar" class="backup-btn bb-pres">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <div class="backup-btn-lbl">Exportar prestamos y devoluciones<span class="backup-btn-desc">Historial completo unificado en formato CSV</span></div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+            </div>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <a href="http://localhost:3000/backup" style="display:flex;align-items:center;gap:7px;background:rgba(99,102,241,0.12);color:var(--primary);border:1px solid rgba(99,102,241,0.25);padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:0.3s" onmouseover="this.style.background='rgba(99,102,241,0.2)'" onmouseout="this.style.background='rgba(99,102,241,0.12)'">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Backup JSON
-            </a>
-            <a href="http://localhost:3000/exportar/prestamos" style="display:flex;align-items:center;gap:7px;background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:0.3s" onmouseover="this.style.background='rgba(34,197,94,0.18)'" onmouseout="this.style.background='rgba(34,197,94,0.1)'">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Prestamos CSV
-            </a>
-            <a href="http://localhost:3000/exportar/devoluciones" style="display:flex;align-items:center;gap:7px;background:rgba(245,158,11,0.1);color:var(--warn);border:1px solid rgba(245,158,11,0.2);padding:10px 18px;border-radius:10px;font-weight:700;font-size:0.85rem;text-decoration:none;transition:0.3s" onmouseover="this.style.background='rgba(245,158,11,0.18)'" onmouseout="this.style.background='rgba(245,158,11,0.1)'">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Devoluciones CSV
-            </a>
+
+        <!-- CONFIGURACION -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon ci-config"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+                <div class="card-title">Configuracion del sistema</div>
+            </div>
+            <p class="card-sub">Ajusta los parametros operativos del sistema.</p>
+            <div class="config-row">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                <div class="config-label">
+                    <strong>Multa por dia de retraso</strong>
+                    <span>Se aplica por cada dia pasada la fecha de devolucion</span>
+                </div>
+                <div class="config-input-wrap">
+                    <span class="gs-label">Gs.</span>
+                    <input class="config-input" id="multa-input" type="number" min="0" step="1000" placeholder="10000">
+                    <button class="btn-save-cfg" id="btnCfg" onclick="guardarMulta()">Guardar</button>
+                </div>
+            </div>
+            <p class="config-note">Este valor se aplica automaticamente al calcular multas en el modulo de devoluciones. El cambio tiene efecto inmediato en el siguiente registro.</p>
         </div>
+
     </div>
 </main>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const API = 'http://localhost:3000';
@@ -310,6 +260,8 @@ const cv=document.getElementById('cv'),cx=cv.getContext('2d');let pp=[];
 function ip(){cv.width=innerWidth;cv.height=innerHeight;pp=[];for(let i=0;i<50;i++)pp.push({x:Math.random()*cv.width,y:Math.random()*cv.height,s:Math.random()*2+1,sx:(Math.random()-.5)*.4,sy:(Math.random()-.5)*.4,o:Math.random()*.25});}
 function ap(){cx.clearRect(0,0,cv.width,cv.height);pp.forEach(p=>{p.x+=p.sx;p.y+=p.sy;if(p.x<0||p.x>cv.width)p.sx*=-1;if(p.y<0||p.y>cv.height)p.sy*=-1;cx.fillStyle=`rgba(99,102,241,${p.o})`;cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);cx.fill();});requestAnimationFrame(ap);}
 window.addEventListener('resize',ip);ip();ap();
+
+function st(msg,t='t-ok'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3000);}
 
 function ir(r){
     document.body.style.transition='0.4s';
@@ -325,39 +277,63 @@ function logout(){
     }
 }
 
-// Fecha y hora en tiempo real
+// Reloj
 function actualizarReloj(){
-    const ahora = new Date();
-    const dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
-    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    document.getElementById('fecha-hoy').textContent = `${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()}`;
-    const h = String(ahora.getHours()).padStart(2,'0');
-    const m = String(ahora.getMinutes()).padStart(2,'0');
-    document.getElementById('hora-ahora').textContent = `${h}:${m} hs`;
+    const ahora=new Date();
+    const dias=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+    const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    document.getElementById('fecha-hoy').textContent=`${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()}`;
+    const h=String(ahora.getHours()).padStart(2,'0'),m=String(ahora.getMinutes()).padStart(2,'0');
+    document.getElementById('hora-ahora').textContent=`${h}:${m} hs`;
 }
 actualizarReloj();
-setInterval(actualizarReloj, 60000);
+setInterval(actualizarReloj,60000);
 
+// Métricas
 async function cargarMetricas(){
     try{
-        const r = await fetch(`${API}/equipos`);
-        const eq = await r.json();
-        document.getElementById('ct').textContent = eq.length;
-        document.getElementById('cp').textContent = eq.filter(e=>e.estado==='Prestado').length;
-        document.getElementById('cd').textContent = eq.filter(e=>e.estado==='Disponible').length;
-        document.getElementById('cm').textContent = eq.filter(e=>e.estado==='En mantenimiento').length;
-    }catch(e){ console.error(e); }
+        const r=await fetch(`${API}/equipos`);
+        const eq=await r.json();
+        document.getElementById('ct').textContent=eq.length;
+        document.getElementById('cp').textContent=eq.filter(e=>e.estado==='Prestado').length;
+        document.getElementById('cd').textContent=eq.filter(e=>e.estado==='Disponible').length;
+        document.getElementById('cm').textContent=eq.filter(e=>e.estado==='En mantenimiento').length;
+    }catch(e){console.error(e);}
 }
 
-window.onload = () => {
-    const enc = JSON.parse(localStorage.getItem('encargado') || '{}');
+// Configuracion
+async function cargarConfig(){
+    try{
+        const r=await fetch(`${API}/configuracion`);
+        const d=await r.json();
+        const multa=d.find(x=>x.clave==='multa_por_dia');
+        if(multa) document.getElementById('multa-input').value=multa.valor;
+    }catch(e){console.error('Error config:',e);}
+}
+
+async function guardarMulta(){
+    const val=document.getElementById('multa-input').value.trim();
+    if(!val||isNaN(val)||parseInt(val)<0){st('Ingresa un valor valido mayor o igual a 0','t-err');return;}
+    const btn=document.getElementById('btnCfg');
+    btn.disabled=true;btn.textContent='Guardando...';
+    try{
+        const r=await fetch(`${API}/configuracion/multa_por_dia`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({valor:val})});
+        if(r.ok){st('Multa actualizada correctamente');btn.textContent='Guardado';}
+        else{st('Error al guardar','t-err');btn.textContent='Guardar';}
+    }catch(e){st('Error de conexion','t-err');btn.textContent='Guardar';}
+    setTimeout(()=>{btn.disabled=false;btn.textContent='Guardar';},2000);
+}
+
+window.onload=()=>{
+    const enc=JSON.parse(localStorage.getItem('encargado')||'{}');
     if(enc.nombre){
-        document.getElementById('uname').textContent = `${enc.nombre} ${enc.apellido}`;
-        document.getElementById('uav').textContent = enc.nombre[0].toUpperCase();
-        document.getElementById('urole').textContent = enc.cargo || 'Encargado';
-        document.getElementById('welcome-msg').textContent = `Bienvenido, ${enc.nombre}`;
+        document.getElementById('uname').textContent=`${enc.nombre} ${enc.apellido}`;
+        document.getElementById('uav').textContent=enc.nombre[0].toUpperCase();
+        document.getElementById('urole').textContent=enc.cargo||'Encargado';
+        document.getElementById('welcome-msg').textContent=`Bienvenido, ${enc.nombre}`;
     }
     cargarMetricas();
+    cargarConfig();
 };
 </script>
 </body>

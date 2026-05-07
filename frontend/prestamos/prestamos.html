@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Prestamos</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -19,7 +20,6 @@
         .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.2);display:grid;place-items:center;color:var(--success);flex-shrink:0;}
         .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
         .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
-
         .form-card{background:var(--card);backdrop-filter:blur(20px);padding:32px;border-radius:22px;border:1px solid var(--border);margin-bottom:16px;}
         .section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--dim);font-weight:800;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
         .section-title.green{color:var(--success);}
@@ -28,48 +28,73 @@
         .g1{margin-bottom:14px;}
         .ig label{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);font-weight:700;margin-bottom:7px;}
         input,select,textarea{width:100%;padding:13px 16px;background:rgba(0,0,0,0.3);border:1.5px solid var(--border);border-radius:11px;color:white;font-size:0.92rem;outline:none;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
-        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%2394a3b8' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
+        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%2394a3b8' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-color:rgba(0,0,0,0.3);}
         select option{background:#0f172a;color:white;}
-        input:focus,select:focus,textarea:focus{border-color:var(--success);box-shadow:0 0 0 3px rgba(34,197,94,0.1);}
+        input:focus,select:focus{border-color:var(--success);box-shadow:0 0 0 3px rgba(34,197,94,0.1);}
         input.err,select.err{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(239,68,68,0.1)!important;}
         .ferr{font-size:0.72rem;color:var(--danger);margin-top:4px;display:none;}
         .ferr.show{display:block;}
-
-        /* ENCARGADO BANNER */
         .enc-banner{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;}
         .enc-avatar{width:36px;height:36px;background:rgba(34,197,94,0.15);border-radius:50%;display:grid;place-items:center;color:var(--success);flex-shrink:0;}
         .enc-name{font-weight:700;font-size:0.92rem;}
         .enc-code{font-size:0.75rem;color:var(--dim);}
-
-        /* ALUMNO INFO */
         .alu-info{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:11px;padding:12px 16px;margin-top:10px;display:none;font-size:0.85rem;}
         .alu-info.show{display:flex;align-items:center;gap:10px;}
         .alu-chip{background:var(--primary);color:white;border-radius:7px;padding:3px 10px;font-weight:800;font-size:0.78rem;}
-
-        /* RESUMEN */
         .resumen{background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:18px;margin-bottom:16px;display:none;}
         .resumen.show{display:block;}
         .resumen-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--success);font-weight:800;margin-bottom:12px;}
         .res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;}
         .res-field span{display:block;font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
         .res-field strong{font-size:0.88rem;font-weight:700;}
-
-        /* CONTRATO */
         .contract-box{background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:12px;padding:18px;max-height:130px;overflow-y:auto;font-size:0.82rem;color:var(--dim);line-height:1.7;margin-bottom:14px;}
         .contract-box h4{color:white;font-weight:700;margin-bottom:8px;font-size:0.85rem;}
         .check-row{display:flex;align-items:flex-start;gap:11px;cursor:pointer;}
         .check-row input[type=checkbox]{width:17px;height:17px;cursor:pointer;accent-color:var(--success);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;margin-top:2px;}
         .check-row span{font-size:0.88rem;font-weight:600;color:var(--dim);line-height:1.5;}
-
         .btn-submit{width:100%;padding:18px;background:var(--success);color:white;border:none;border-radius:13px;font-size:1rem;font-weight:800;cursor:pointer;transition:0.3s;margin-top:20px;font-family:'Plus Jakarta Sans',sans-serif;}
         .btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(34,197,94,0.3);}
         .btn-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-
+        /* SIN EQUIPOS / SIN ALUMNOS */
+        .aviso{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:11px;padding:13px 16px;font-size:0.88rem;color:var(--warn);font-weight:600;margin-top:8px;display:none;}
+        .aviso.show{display:block;}
+        /* COMPROBANTE */
+        #comprobante{display:none;}
+        #comprobante.show{display:block;}
+        .comp-card{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:36px;text-align:center;}
+        .comp-icon{width:64px;height:64px;background:rgba(34,197,94,0.15);border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;color:var(--success);}
+        .comp-card h3{font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+        .comp-card p{color:var(--dim);margin-bottom:22px;font-size:0.9rem;}
+        .comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;text-align:left;}
+        .comp-item{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;}
+        .comp-item span{display:block;font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+        .comp-item strong{font-size:0.88rem;font-weight:700;}
+        .comp-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+        .btn-dash{padding:12px 26px;background:var(--success);color:white;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;transition:0.3s;}
+        .btn-dash:hover{transform:translateY(-2px);}
+        .btn-nuevo{padding:12px 26px;background:rgba(255,255,255,0.06);color:white;border:1px solid var(--border);border-radius:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;transition:0.3s;}
+        .btn-nuevo:hover{background:rgba(255,255,255,0.1);}
         .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;font-size:0.88rem;}
         .toast.show{display:block;animation:ti 0.35s ease;}
         .t-ok{background:var(--success);color:white;}.t-err{background:var(--danger);color:white;}
         @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        @media(max-width:600px){.g2{grid-template-columns:1fr}main{padding:24px 16px}}
+        @media print{
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:white!important;color:black!important;font-family:'Plus Jakarta Sans',sans-serif;}
+    nav,.back,.glow,#formulario,.toast,.comp-btns,.page-header{display:none!important;}
+    main{padding:0!important;max-width:100%!important;}
+    #comprobante{display:block!important;}
+    .comp-card{background:white!important;border:2px solid #333!important;color:black!important;padding:28px!important;border-radius:8px!important;}
+    .comp-card h3{color:black!important;font-size:1.4rem!important;}
+    .comp-card p{color:#444!important;}
+    .comp-item{background:#f0f0f0!important;border-radius:6px!important;padding:12px!important;}
+    .comp-item span{color:#555!important;font-size:0.65rem!important;}
+    .comp-item strong{color:black!important;}
+    .comp-icon{background:#e8f5e9!important;}
+    .comp-icon svg{stroke:green!important;}
+    .comp-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important;}
+}
+        @media(max-width:600px){.g2{grid-template-columns:1fr}.comp-grid{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
 <body>
@@ -84,96 +109,138 @@
         <div><h1>Registrar Prestamo</h1><p>Registro de salida de equipos con contrato de uso</p></div>
     </div>
 
-    <div class="form-card">
-        <div class="section-title green">Encargado que registra</div>
-        <div class="enc-banner">
-            <div class="enc-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            <div><div class="enc-name" id="enc-nombre">Cargando...</div><div class="enc-code" id="enc-codigo"></div></div>
-        </div>
-
-        <div class="sep"></div>
-        <div class="section-title">Datos del prestamo</div>
-        <div class="g2">
-            <div class="ig"><label>Alumno *</label>
-                <select id="alumno" onchange="onAlumno()"><option value="">Seleccionar alumno...</option></select>
-                <div class="ferr" id="ferr-alumno">Selecciona un alumno</div>
+    <!-- FORMULARIO -->
+    <div id="formulario">
+        <div class="form-card">
+            <div class="section-title green">Encargado que registra</div>
+            <div class="enc-banner">
+                <div class="enc-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <div><div class="enc-name" id="enc-nombre">Cargando...</div><div class="enc-code" id="enc-codigo"></div></div>
             </div>
-            <div class="ig"><label>Equipo disponible *</label>
-                <select id="equipo" onchange="clearF('equipo')"><option value="">Seleccionar equipo...</option></select>
-                <div class="ferr" id="ferr-equipo">Selecciona un equipo</div>
+            <div class="sep"></div>
+            <div class="section-title">Datos del prestamo</div>
+            <div class="g2">
+                <div class="ig">
+                    <label>Alumno</label>
+                    <select id="alumno" onchange="onAlumno()"><option value="">Seleccionar alumno...</option></select>
+                    <div class="aviso" id="aviso-alumno">No hay alumnos disponibles. Todos tienen un prestamo activo o no hay alumnos registrados.</div>
+                    <div class="ferr" id="ferr-alumno">Selecciona un alumno</div>
+                </div>
+                <div class="ig">
+                    <label>Equipo disponible</label>
+                    <select id="equipo" onchange="clearF('equipo')"><option value="">Seleccionar equipo...</option></select>
+                    <div class="aviso" id="aviso-equipo">No hay equipos disponibles en este momento.</div>
+                    <div class="ferr" id="ferr-equipo">Selecciona un equipo</div>
+                </div>
+            </div>
+            <div id="alu-info" class="alu-info"><span class="alu-chip" id="alu-code"></span><span id="alu-detail" style="color:var(--dim);font-size:0.85rem"></span></div>
+            <div class="sep"></div>
+            <div class="section-title">Fechas y condicion</div>
+            <div class="g2">
+                <div class="ig"><label>Fecha de devolucion estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
+                <div class="ig"><label>Estado inicial del equipo</label>
+                    <select id="estado_ini"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Dañado">Danado</option></select>
+                </div>
+            </div>
+            <div class="sep"></div>
+            <div class="section-title">Detalles</div>
+            <div class="g1 ig"><label>Motivo del prestamo</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentacion, Tarea..." oninput="clearF('motivo');actualizarResumen()"><div class="ferr" id="ferr-motivo">Ingresa el motivo del prestamo</div></div>
+            <div class="g2">
+                <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..."></div>
+                <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..."></div>
+            </div>
+            <div class="resumen" id="resumen">
+                <div class="resumen-title">Resumen del prestamo</div>
+                <div class="res-grid" id="resumen-grid"></div>
+            </div>
+            <div class="sep"></div>
+            <div class="section-title">Contrato de uso</div>
+            <div class="contract-box">
+                <h4>Terminos y Condiciones de Uso de Equipo Tecnologico</h4>
+                El alumno solicitante se compromete a:<br><br>
+                1. Usar el equipo exclusivamente para fines academicos autorizados.<br>
+                2. Devolver el equipo en la fecha acordada y en el mismo estado.<br>
+                3. No ceder el equipo a terceros no autorizados.<br>
+                4. Reportar inmediatamente cualquier dano, falla o perdida.<br>
+                5. Asumir el costo de reparacion en caso de dano por mal uso.<br>
+                6. Estar sujeto a una multa por cada dia de retraso segun la tarifa vigente.<br>
+                7. El incumplimiento puede resultar en suspension del acceso al sistema.
+            </div>
+            <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato')"><span>El alumno acepta los terminos y condiciones del contrato de uso del equipo</span></label>
+            <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
+            <button class="btn-submit" id="btn" onclick="registrar()">Confirmar y registrar prestamo</button>
+        </div>
+    </div>
+
+    <!-- COMPROBANTE -->
+    <div id="comprobante">
+        <div class="comp-card">
+            <div class="comp-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <h3>Prestamo Registrado</h3>
+            <p id="comp-desc">El prestamo fue registrado correctamente.</p>
+            <div class="comp-grid">
+                <div class="comp-item"><span>Codigo alumno</span><strong id="c-codigo">—</strong></div>
+                <div class="comp-item"><span>Alumno</span><strong id="c-alumno">—</strong></div>
+                <div class="comp-item"><span>Equipo</span><strong id="c-equipo">—</strong></div>
+                <div class="comp-item"><span>Tipo / Marca</span><strong id="c-tipo">—</strong></div>
+                <div class="comp-item"><span>Devolucion estimada</span><strong id="c-fecha">—</strong></div>
+                <div class="comp-item"><span>Estado inicial</span><strong id="c-estado">—</strong></div>
+                <div class="comp-item"><span>Motivo</span><strong id="c-motivo">—</strong></div>
+                <div class="comp-item"><span>Accesorios</span><strong id="c-acc">—</strong></div>
+                <div class="comp-item"><span>Encargado</span><strong id="c-enc">—</strong></div>
+            </div>
+            <div class="comp-btns">
+                <button class="btn-nuevo" onclick="window.print()">Imprimir comprobante</button>
+                <button class="btn-nuevo" onclick="nuevoPrestamo()">Nuevo prestamo</button>
+                <button class="btn-dash" onclick="window.location.href='/home/dashboard.html'">Ir al Dashboard</button>
             </div>
         </div>
-        <div id="alu-info" class="alu-info"><span class="alu-chip" id="alu-code"></span><span id="alu-detail" style="color:var(--dim);font-size:0.85rem"></span></div>
-
-        <div class="sep"></div>
-        <div class="section-title">Fechas y condicion</div>
-        <div class="g2">
-            <div class="ig"><label>Fecha de devolucion estimada *</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
-            <div class="ig"><label>Estado inicial del equipo</label>
-                <select id="estado_ini"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Dañado">Danado</option></select>
-            </div>
-        </div>
-
-        <div class="sep"></div>
-        <div class="section-title">Detalles</div>
-        <div class="g1 ig"><label>Motivo del prestamo *</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentacion, Tarea..." oninput="clearF('motivo');actualizarResumen()"><div class="ferr" id="ferr-motivo">Ingresa el motivo</div></div>
-        <div class="g2">
-            <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..."></div>
-            <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..."></div>
-        </div>
-
-        <div class="resumen" id="resumen">
-            <div class="resumen-title">Resumen del prestamo</div>
-            <div class="res-grid" id="resumen-grid"></div>
-        </div>
-
-        <div class="sep"></div>
-        <div class="section-title">Contrato de uso</div>
-        <div class="contract-box">
-            <h4>Terminos y Condiciones de Uso de Equipo Tecnologico</h4>
-            El alumno solicitante se compromete a:<br><br>
-            1. Usar el equipo exclusivamente para fines academicos autorizados.<br>
-            2. Devolver el equipo en la fecha acordada y en el mismo estado.<br>
-            3. No ceder el equipo a terceros no autorizados.<br>
-            4. Reportar inmediatamente cualquier dano, falla o perdida.<br>
-            5. Asumir el costo de reparacion en caso de dano por mal uso.<br>
-            6. Estar sujeto a una multa de Gs. 10.000 por cada dia de retraso.<br>
-            7. El incumplimiento puede resultar en suspension del acceso al sistema.
-        </div>
-        <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato')"><span>El alumno acepta los terminos y condiciones del contrato de uso del equipo</span></label>
-        <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
-        <button class="btn-submit" id="btn" onclick="registrar()">Confirmar y registrar prestamo</button>
     </div>
 </main>
 <div class="toast" id="toast"></div>
 <script>
-const API='http://localhost:3000';
-if(!localStorage.getItem('encargado')) window.location.href='/';
-let alumnos=[],equipos=[],enc=null;
-const fn=n=>Number(n).toLocaleString('es-PY');
+const API = 'http://localhost:3000';
+if(!localStorage.getItem('encargado')) window.location.href = '/';
+let alumnos = [], equipos = [], enc = null;
+
 function st(msg,t='t-ok'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3200);}
 function clearF(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
+const ff = d => new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});
 
 async function cargar(){
-    enc=JSON.parse(localStorage.getItem('encargado')||'{}');
-    if(enc.id_encargado){document.getElementById('enc-nombre').textContent=`${enc.nombre} ${enc.apellido}`;document.getElementById('enc-codigo').textContent=`Codigo: ${enc.codigo} · ${enc.cargo||'Encargado'}`;}
-    const [ar,er]=await Promise.all([fetch(`${API}/alumnos/disponibles`),fetch(`${API}/equipos`)]);
-    alumnos=await ar.json();equipos=await er.json();
-    const as=document.getElementById('alumno');
-    if(!alumnos.length){const o=document.createElement('option');o.value='';o.textContent='Sin alumnos disponibles';o.disabled=true;as.appendChild(o);}
-    else alumnos.forEach(a=>{const o=document.createElement('option');o.value=a.id_alumno;o.textContent=`${a.codigo_alumno} — ${a.nombre} ${a.apellido}`;as.appendChild(o);});
-    const es=document.getElementById('equipo');
-    const disp=equipos.filter(e=>e.estado==='Disponible');
-    if(!disp.length){const o=document.createElement('option');o.value='';o.textContent='Sin equipos disponibles';o.disabled=true;es.appendChild(o);}
-    else disp.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+    enc = JSON.parse(localStorage.getItem('encargado')||'{}');
+    if(enc.id_encargado){
+        document.getElementById('enc-nombre').textContent = `${enc.nombre} ${enc.apellido}`;
+        document.getElementById('enc-codigo').textContent = `Codigo: ${enc.codigo} · ${enc.cargo||'Encargado'}`;
+    }
+    const [ar,er] = await Promise.all([fetch(`${API}/alumnos/disponibles`),fetch(`${API}/equipos`)]);
+    alumnos = await ar.json();
+    equipos = await er.json();
+    const as = document.getElementById('alumno');
+    const avisoAlu = document.getElementById('aviso-alumno');
+    if(!alumnos.length){
+        avisoAlu.classList.add('show');
+    } else {
+        avisoAlu.classList.remove('show');
+        alumnos.forEach(a=>{const o=document.createElement('option');o.value=a.id_alumno;o.textContent=`${a.codigo_alumno} — ${a.nombre} ${a.apellido}`;as.appendChild(o);});
+    }
+    const es = document.getElementById('equipo');
+    const avisoEq = document.getElementById('aviso-equipo');
+    const disp = equipos.filter(e=>e.estado==='Disponible');
+    if(!disp.length){
+        avisoEq.classList.add('show');
+    } else {
+        avisoEq.classList.remove('show');
+        disp.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+    }
 }
 
 function onAlumno(){
     clearF('alumno');
-    const id=parseInt(document.getElementById('alumno').value);
-    const ai=document.getElementById('alu-info');
+    const id = parseInt(document.getElementById('alumno').value);
+    const ai = document.getElementById('alu-info');
     if(!id){ai.classList.remove('show');return;}
-    const a=alumnos.find(x=>x.id_alumno===id);
+    const a = alumnos.find(x=>x.id_alumno===id);
     if(a){document.getElementById('alu-code').textContent=a.codigo_alumno;document.getElementById('alu-detail').textContent=`${a.carrera||'Sin carrera'} · ${a.curso||'—'}`;ai.classList.add('show');}
     actualizarResumen();
 }
@@ -183,7 +250,6 @@ function actualizarResumen(){
     if(!id_a||!id_e||!fecha){document.getElementById('resumen').classList.remove('show');return;}
     const a=alumnos.find(x=>x.id_alumno==id_a),e=equipos.find(x=>x.id_equipo==id_e);
     if(!a||!e)return;
-    const ff=d=>new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
     document.getElementById('resumen-grid').innerHTML=`
         <div class="res-field"><span>Alumno</span><strong>${a.codigo_alumno} — ${a.nombre} ${a.apellido}</strong></div>
         <div class="res-field"><span>Equipo</span><strong>${e.nombre} · ${e.tipo}</strong></div>
@@ -205,18 +271,47 @@ function validar(){
 async function registrar(){
     if(!validar())return;
     if(!enc?.id_encargado){st('Sesion no encontrada','t-err');return;}
-    const id_a=document.getElementById('alumno').value,id_e=document.getElementById('equipo').value,fecha=document.getElementById('fecha_dev').value;
-    const a=alumnos.find(x=>x.id_alumno==id_a),e=equipos.find(x=>x.id_equipo==id_e);
-    const ff=d=>new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-    if(!confirm(`Confirmar prestamo?\n\nAlumno: ${a.nombre} ${a.apellido}\nEquipo: ${e.nombre}\nVencimiento: ${ff(fecha)}\nMotivo: ${document.getElementById('motivo').value.trim()}`))return;
+    const id_a=document.getElementById('alumno').value;
+    const id_e=document.getElementById('equipo').value;
+    const fecha=document.getElementById('fecha_dev').value;
+    const estado_ini=document.getElementById('estado_ini').value;
+    const motivo=document.getElementById('motivo').value.trim();
+    const accesorios=document.getElementById('accesorios').value.trim();
+    const obs=document.getElementById('obs').value.trim();
+    const a=alumnos.find(x=>x.id_alumno==id_a);
+    const e=equipos.find(x=>x.id_equipo==id_e);
+    if(!confirm(`Confirmar prestamo?\n\nAlumno: ${a.nombre} ${a.apellido}\nEquipo: ${e.nombre}\nVencimiento: ${ff(fecha)}\nMotivo: ${motivo}`))return;
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Registrando...';
     try{
-        const r=await fetch(`${API}/prestamos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,id_encargado:enc.id_encargado,fecha_devolucion_estimada:fecha,estado_inicial_equipo:document.getElementById('estado_ini').value,motivo:document.getElementById('motivo').value.trim(),accesorios:document.getElementById('accesorios').value.trim(),observaciones:document.getElementById('obs').value.trim(),acepto_contrato:true})});
+        const r=await fetch(`${API}/prestamos`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,id_encargado:enc.id_encargado,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
         const d=await r.json();
-        if(r.ok){st('Prestamo registrado correctamente');setTimeout(()=>window.location.href='/home/dashboard.html',1800);}
-        else{st(d.mensaje||'Error al registrar','t-err');btn.disabled=false;btn.textContent='Confirmar y registrar prestamo';}
-    }catch(e){st('Error de conexion','t-err');btn.disabled=false;btn.textContent='Confirmar y registrar prestamo';}
+        if(r.ok){
+            // Mostrar comprobante en vez de redirigir
+            document.getElementById('c-codigo').textContent=a.codigo_alumno;
+            document.getElementById('c-alumno').textContent=`${a.nombre} ${a.apellido}`;
+            document.getElementById('c-equipo').textContent=e.nombre;
+            document.getElementById('c-tipo').textContent=`${e.tipo} · ${e.marca}`;
+            document.getElementById('c-fecha').textContent=ff(fecha);
+            document.getElementById('c-estado').textContent=estado_ini;
+            document.getElementById('c-motivo').textContent=motivo||'—';
+            document.getElementById('c-acc').textContent=accesorios||'—';
+            document.getElementById('c-enc').textContent=`${enc.nombre} ${enc.apellido}`;
+            document.getElementById('formulario').style.display='none';
+            document.getElementById('comprobante').classList.add('show');
+        } else {
+            st(d.mensaje||'Error al registrar','t-err');
+            btn.disabled=false;btn.textContent='Confirmar y registrar prestamo';
+        }
+    }catch(e){
+        st('Error de conexion','t-err');
+        btn.disabled=false;btn.textContent='Confirmar y registrar prestamo';
+    }
 }
+
+function nuevoPrestamo(){
+    window.location.reload();
+}
+
 const now=new Date(),pad=n=>String(n).padStart(2,'0');
 document.getElementById('fecha_dev').min=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
 window.onload=cargar;

@@ -1,3 +1,5 @@
+/* Controlador para encargados login y listado */
+
 const db = require('../db');
 
 exports.login = (req, res) => {

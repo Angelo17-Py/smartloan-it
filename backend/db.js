@@ -1,3 +1,5 @@
+/* Para el manejo de la base de datos MySQL */
+
 const mysql = require('mysql2');
 
 const db = mysql.createConnection({

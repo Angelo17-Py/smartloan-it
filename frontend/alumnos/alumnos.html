@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Alumnos</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -87,14 +88,14 @@
 <main>
     <div class="page-header">
         <div class="page-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <div><h1>Gestion de Alumnos</h1><p>Registro de alumnos habilitados para solicitar equipos en prestamo</p></div>
+        <div><h1>Gestion de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
     </div>
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo alumno</div>
         <div class="form-row">
-            <div class="ig"><label>Nombre *</label><input id="nombre" placeholder="Ej: Maria" oninput="clearF('nombre')"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
-            <div class="ig"><label>Apellido *</label><input id="apellido" placeholder="Ej: Lopez" oninput="clearF('apellido')"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
-            <div class="ig"><label>Carrera *</label>
+            <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" oninput="clearF('nombre')"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
+            <div class="ig"><label>Apellido</label><input id="apellido" placeholder="" oninput="clearF('apellido')"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
+            <div class="ig"><label>Carrera</label>
                 <select id="carrera" onchange="clearF('carrera')"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-carrera">Selecciona la carrera</div>
             </div>
@@ -283,9 +284,7 @@ function cerrarEdit(){
     alumnoEditandoId = null;
 }
 
-document.getElementById('mo-edit').addEventListener('click', function(e){
-    if(e.target === this) cerrarEdit();
-});
+// El modal solo se cierra con el boton X o con Guardar
 
 async function guardarAlumno(){
     const n  = document.getElementById('edit-nombre').value.trim();

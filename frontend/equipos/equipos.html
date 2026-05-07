@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Equipos</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -96,16 +97,16 @@
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo equipo</div>
         <div class="form-row">
-            <div class="ig"><label>Nombre / Modelo *</label><input id="nombre" placeholder="Ej: ThinkPad X1 Carbon" oninput="clearF('nombre')"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
-            <div class="ig"><label>Tipo *</label>
+            <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" oninput="clearF('nombre')"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
+            <div class="ig"><label>Tipo</label>
                 <select id="tipo" onchange="clearF('tipo')"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
                 <div class="ferr" id="ferr-tipo">Selecciona el tipo</div>
             </div>
-            <div class="ig"><label>Marca *</label>
+            <div class="ig"><label>Marca</label>
                 <select id="marca" onchange="clearF('marca')"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
-            <div class="ig"><label>Descripcion</label><input id="desc" placeholder="Ej: 16GB RAM, SSD 512GB"></div>
+            <div class="ig"><label>Descripcion</label><input id="desc" placeholder=""></div>
             <div class="btn-wrap"><button class="btn-add" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
         </div>
     </div>
@@ -321,10 +322,7 @@ function cerrarEdit(){
     equipoEditandoId = null;
 }
 
-// Cerrar modal al hacer clic fuera
-document.getElementById('mo-edit').addEventListener('click', function(e){
-    if(e.target === this) cerrarEdit();
-});
+// El modal solo se cierra con el boton X o con Guardar
 
 async function guardarEquipo(){
     const n = document.getElementById('edit-nombre').value.trim();
