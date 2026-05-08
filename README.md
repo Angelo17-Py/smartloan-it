@@ -7,7 +7,7 @@
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-vanilla-E34F26?style=flat-square&logo=html5&logoColor=white)
 
-> Proyecto de Grado — Ingeniería en Informática  
+> Proyecto de Grado de la Materia Proyecto y Construccion de Sistemas — Ingeniería en Informática  
 > Universidad Integración de las Américas · 2026  
 > Autor: **Angelo Caballero**
 
