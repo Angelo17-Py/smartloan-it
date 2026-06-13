@@ -1,102 +1,114 @@
-/* Controlador para manejar las operaciones relacionadas con los alumnos */
-
 const db = require('../db');
 
-exports.listar = (req, res) => {
-  db.query('SELECT * FROM alumnos WHERE estado=1 ORDER BY codigo_alumno', (err, r) => {
-    if (err) return res.status(500).json(err);
-    res.json(r);
-  });
+exports.listar = async (req, res) => {
+  try {
+    const conn = await db;
+    const [rows] = await conn.query('SELECT * FROM alumnos WHERE estado=1 ORDER BY codigo_alumno');
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
 };
 
-// Trae solo alumnos que no tienen prestamo activo en este momento
-exports.disponibles = (req, res) => {
-  db.query(`
-    SELECT * FROM alumnos
-    WHERE estado = 1
-    AND id_alumno NOT IN (
-      SELECT id_alumno FROM prestamos WHERE estado = 'ACTIVO'
-    )
-    ORDER BY codigo_alumno
-  `, (err, r) => {
-    if (err) return res.status(500).json(err);
-    res.json(r);
-  });
+exports.disponibles = async (req, res) => {
+  try {
+    const conn = await db;
+    const [rows] = await conn.query(`
+      SELECT * FROM alumnos
+      WHERE estado = 1
+      AND id_alumno NOT IN (
+        SELECT id_alumno FROM prestamos WHERE estado = 'ACTIVO'
+      )
+      ORDER BY codigo_alumno
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
 };
 
-exports.crear = (req, res) => {
+exports.crear = async (req, res) => {
   const { nombre, apellido, carrera, curso } = req.body;
   if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Nombre y apellido requeridos' });
-
-  db.query('SELECT MAX(CAST(SUBSTRING(codigo_alumno, 4) AS UNSIGNED)) AS max_num FROM alumnos', (err, result) => {
-    if (err) return res.status(500).json(err);
-    const maxNum = result[0].max_num || 0;
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [maxRow] = await conn.query('SELECT MAX(CAST(SUBSTRING(codigo_alumno, 4) AS UNSIGNED)) AS max_num FROM alumnos FOR UPDATE');
+    const maxNum = maxRow[0].max_num || 0;
     const codigo_alumno = 'ALU' + String(maxNum + 1).padStart(3, '0');
-
-    db.query(
+    await conn.query(
       'INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES (?,?,?,?,?)',
-      [codigo_alumno, nombre, apellido, carrera||'', curso||''],
-      (err) => {
-        if (err) return res.status(500).json(err);
-        res.json({ mensaje: 'Alumno registrado', codigo_alumno });
-      }
+      [codigo_alumno, nombre, apellido, carrera || '', curso || '']
     );
-  });
+    await conn.commit();
+    res.json({ mensaje: 'Alumno registrado', codigo_alumno });
+  } catch (err) {
+    await conn.rollback();
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  } finally {
+    conn.release();
+  }
 };
 
-exports.eliminar = (req, res) => {
-  const id = req.params.id;
-
-  // Antes de borrar verifico que no tenga prestamo activo
-  db.query('SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1', [id], (err, r) => {
-    if (err) return res.status(500).json(err);
-    if (r.length > 0) {
+exports.eliminar = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const conn = await db;
+    const [prestamosActivos] = await conn.query(
+      'SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1', [id]
+    );
+    if (prestamosActivos.length > 0) {
       return res.status(400).json({ mensaje: 'No se puede eliminar: el alumno tiene un préstamo activo' });
     }
-
-    // Si no tiene prestamo activo borro en cascada
-    db.query(`DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?`, [id], (err) => {
-      if (err) return res.status(500).json(err);
-      db.query('DELETE FROM prestamos WHERE id_alumno = ?', [id], (err) => {
-        if (err) return res.status(500).json(err);
-        db.query('DELETE FROM alumnos WHERE id_alumno = ?', [id], (err) => {
-          if (err) return res.status(500).json(err);
-          res.json({ mensaje: 'Alumno eliminado correctamente' });
-        });
-      });
-    });
-  });
-};
-
-exports.historial = (req, res) => {
-  db.query(`
-    SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
-      p.estado AS estado_prestamo, p.estado_inicial_equipo, p.motivo, p.accesorios,
-      e.nombre AS equipo, e.tipo, e.marca,
-      enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido,
-      d.fecha_devolucion, d.estado_equipo AS estado_devolucion,
-      d.dias_retraso, d.monto_multa, d.monto_dano, d.total_cobro, d.tiene_dano, d.tipo_dano
-    FROM prestamos p
-    JOIN equipos e ON p.id_equipo = e.id_equipo
-    JOIN encargados enc ON p.id_encargado = enc.id_encargado
-    LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo
-    WHERE p.id_alumno = ?
-    ORDER BY p.fecha_prestamo DESC
-  `, [req.params.id], (err, r) => {
-    if (err) return res.status(500).json(err);
-    res.json(r);
-  });
-};
-
-exports.editar = (req, res) => {
-  const { nombre, apellido, carrera, curso } = req.body;
-  if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Datos incompletos' });
-  db.query(
-    'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=? WHERE id_alumno=?',
-    [nombre, apellido, carrera||'', curso||'', req.params.id],
-    (err) => {
-      if (err) return res.status(500).json(err);
-      res.json({ mensaje: 'Alumno actualizado' });
+    await conn.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?', [id]);
+    await conn.query('DELETE FROM prestamos WHERE id_alumno = ?', [id]);
+    await conn.query('DELETE FROM alumnos WHERE id_alumno = ?', [id]);
+    res.json({ mensaje: 'Alumno eliminado correctamente' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
     }
-  );
+};
+
+exports.historial = async (req, res) => {
+  try {
+    const conn = await db;
+    const [rows] = await conn.query(`
+      SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
+        p.estado AS estado_prestamo, p.estado_inicial_equipo, p.motivo, p.accesorios,
+        e.nombre AS equipo, e.tipo, e.marca,
+        enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido,
+        d.fecha_devolucion, d.estado_equipo AS estado_devolucion,
+        d.dias_retraso, d.monto_multa, d.monto_dano, d.total_cobro, d.tiene_dano, d.tipo_dano
+      FROM prestamos p
+      JOIN equipos e ON p.id_equipo = e.id_equipo
+      JOIN encargados enc ON p.id_encargado = enc.id_encargado
+      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo
+      WHERE p.id_alumno = ?
+      ORDER BY p.fecha_prestamo DESC
+    `, [req.params.id]);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+};
+
+exports.editar = async (req, res) => {
+  try {
+    const { nombre, apellido, carrera, curso } = req.body;
+    if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Datos incompletos' });
+    const conn = await db;
+    await conn.query(
+      'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=? WHERE id_alumno=?',
+      [nombre, apellido, carrera || '', curso || '', req.params.id]
+    );
+    res.json({ mensaje: 'Alumno actualizado' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
 };

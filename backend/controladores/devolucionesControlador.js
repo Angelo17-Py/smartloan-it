@@ -1,53 +1,61 @@
 const db = require('../db');
 
-exports.crear = (req, res) => {
-  const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
-          observacion_dano, monto_dano, observacion } = req.body;
-  if (!id_prestamo || !estado_equipo) return res.status(400).json({ mensaje: 'Datos incompletos' });
+exports.crear = async (req, res) => {
+  try {
+    const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
+            observacion_dano, monto_dano, observacion } = req.body;
+    if (!id_prestamo || !estado_equipo) {
+      return res.status(400).json({ mensaje: 'Datos incompletos' });
+    }
+    const conn = await db;
+    const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
+    const MULTA = !cfg.length ? 10000 : (parseInt(cfg[0].valor, 10) || 10000);
 
-  // Primero leo la multa configurada en la BD
-  db.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'", (err, cfg) => {
-    const MULTA = err || !cfg.length ? 10000 : parseInt(cfg[0].valor);
+    const [prestamos] = await conn.query(
+      'SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO"', [id_prestamo]
+    );
+    if (prestamos.length === 0) {
+      return res.status(404).json({ mensaje: 'Prestamo no encontrado o ya devuelto' });
+    }
 
-    db.query('SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO"', [id_prestamo], (err, r) => {
-      if (err) return res.status(500).json(err);
-      if (r.length === 0) return res.status(404).json({ mensaje: 'Prestamo no encontrado o ya devuelto' });
+    const ahora = new Date();
+    const venc = new Date(prestamos[0].fecha_devolucion_estimada);
+    const dias = ahora > venc ? Math.ceil((ahora - venc) / (1000 * 60 * 60 * 24)) : 0;
+    const multa = dias * MULTA;
+    const dano = tiene_dano ? (parseFloat(monto_dano) || 0) : 0;
+    const total = multa + dano;
+    const fmt = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T', ' ').slice(0, 19);
 
-      const ahora = new Date();
-      const venc  = new Date(r[0].fecha_devolucion_estimada);
-      const dias  = ahora > venc ? Math.ceil((ahora - venc) / (1000*60*60*24)) : 0;
-      const multa = dias * MULTA;
-      const dano  = tiene_dano ? (parseFloat(monto_dano)||0) : 0;
-      const total = multa + dano;
-      const fmt   = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T',' ').slice(0,19);
-
-      db.query(
-        `INSERT INTO devoluciones (id_prestamo,fecha_devolucion,estado_equipo,tiene_dano,
-         tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-        [id_prestamo, fmt(ahora), estado_equipo, tiene_dano?1:0,
-         tipo_dano||null, observacion_dano||null, dano, dias, multa, total, observacion||null],
-        (err) => {
-          if (err) return res.status(500).json(err);
-          res.json({ mensaje:'Devolucion registrada', dias_retraso:dias, monto_multa:multa, monto_dano:dano, total_cobro:total });
-        }
-      );
-    });
-  });
+    await conn.query(
+      `INSERT INTO devoluciones (id_prestamo,fecha_devolucion,estado_equipo,tiene_dano,
+       tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+      [id_prestamo, fmt(ahora), estado_equipo, tiene_dano ? 1 : 0,
+       tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
+    );
+    res.json({ mensaje: 'Devolucion registrada', dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
 };
 
-exports.listar = (req, res) => {
-  db.query(`
-    SELECT d.*, p.fecha_prestamo, p.fecha_devolucion_estimada,
-      e.nombre AS equipo, e.tipo, e.marca,
-      a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso
-    FROM devoluciones d
-    JOIN prestamos p ON d.id_prestamo = p.id_prestamo
-    JOIN equipos e   ON p.id_equipo   = e.id_equipo
-    JOIN alumnos a   ON p.id_alumno   = a.id_alumno
-    ORDER BY d.fecha_devolucion DESC
-  `, (err, r) => {
-    if (err) return res.status(500).json(err);
-    res.json(r);
-  });
+exports.listar = async (req, res) => {
+  try {
+    const conn = await db;
+    const [rows] = await conn.query(`
+      SELECT d.*, p.fecha_prestamo, p.fecha_devolucion_estimada,
+        e.nombre AS equipo, e.tipo, e.marca,
+        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso
+      FROM devoluciones d
+      JOIN prestamos p ON d.id_prestamo = p.id_prestamo
+      JOIN equipos e   ON p.id_equipo   = e.id_equipo
+      JOIN alumnos a   ON p.id_alumno   = a.id_alumno
+      ORDER BY d.fecha_devolucion DESC
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
 };

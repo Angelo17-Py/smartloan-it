@@ -1,3 +1,16 @@
-/* Puerto de conexion a la API */
+const API = window.location.origin;
 
-const API = 'http://localhost:3000';
+async function apiFetch(url, options = {}) {
+  const token = localStorage.getItem('token');
+  if (!options.headers) options.headers = {};
+  if (token) {
+    options.headers['Authorization'] = 'Bearer ' + token;
+  }
+  const res = await fetch(API + url, options);
+  if (res.status === 401) {
+    localStorage.removeItem('encargado');
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  }
+  return res;
+}

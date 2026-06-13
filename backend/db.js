@@ -1,18 +1,22 @@
-/* Para el manejo de la base de datos MySQL */
+const mysql = require('mysql2/promise');
 
-const mysql = require('mysql2');
-
-const db = mysql.createConnection({
-  host: 'localhost',
-  port: 3307,
-  user: 'root',
-  password: '1234',
-  database: 'prestamos_db'
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT, 10) || 3307,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '1234',
+  database: process.env.DB_NAME || 'prestamos_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  dateStrings: true
 });
 
-db.connect(err => {
-  if (err) { console.error('Error conexión:', err); return; }
+pool.getConnection().then(conn => {
   console.log('MySQL conectado');
+  conn.release();
+}).catch(err => {
+  console.error('Error conexión:', err);
 });
 
-module.exports = db;
+module.exports = pool;

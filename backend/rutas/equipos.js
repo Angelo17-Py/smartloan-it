@@ -1,12 +1,13 @@
-/* Rutas para equipos*/
-
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/equiposControlador');
-router.get('/',              c.listar);
-router.post('/',             c.crear);
-router.delete('/:id',        c.eliminar);
-router.put('/:id',           c.editar);
-router.patch('/:id/estado',  c.cambiarEstado);
-router.get('/:id/historial', c.historial);
+const { verificarToken } = require('../middleware/auth');
+
+router.get('/',              verificarToken, c.listar);
+router.post('/',             verificarToken, c.crear);
+router.delete('/:id',        verificarToken, c.eliminar);
+router.put('/:id',           verificarToken, c.editar);
+router.patch('/:id/estado',  verificarToken, c.cambiarEstado);
+router.get('/:id/historial', verificarToken, c.historial);
+
 module.exports = router;

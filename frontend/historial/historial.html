@@ -4,64 +4,56 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Historial</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <script src="/js/utils.js" defer></script>
     <style>
-        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#020617;--card:rgba(15,23,42,0.6);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
-        body{background:var(--bg);color:var(--text);min-height:100vh;}
-        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 60% 10%,rgba(167,139,250,0.08) 0%,transparent 40%);z-index:-1;}
-        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-        .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
-        .brand-icon{background:linear-gradient(135deg,var(--primary),var(--accent));width:34px;height:34px;border-radius:10px;display:grid;place-items:center;}
-        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.85rem;padding:9px 16px;border-radius:10px;border:1px solid var(--border);transition:0.3s;}
-        .back:hover{background:rgba(255,255,255,0.05);color:white;}
-        main{max-width:1400px;margin:0 auto;padding:40px 28px;}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border);}
-        .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.2);display:grid;place-items:center;color:#a78bfa;flex-shrink:0;}
-        .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
-        .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
-        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px;}
-        .tabs{display:flex;gap:3px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;}
-        .tab{padding:9px 22px;border-radius:9px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:0.25s;color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;}
-        .tab.active{background:var(--primary);color:white;}
-        .filters{display:flex;gap:8px;flex-wrap:wrap;}
-        .fb{padding:7px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;color:var(--dim);font-weight:700;font-size:0.78rem;cursor:pointer;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;}
-        .fb.active{background:var(--primary);color:white;border-color:var(--primary);}
-        .fb:hover:not(.active){background:rgba(255,255,255,0.07);color:white;}
-        /* BARRA DE BUSQUEDA */
-        .search-bar{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:12px;padding:12px 18px;margin-bottom:16px;}
+        main{max-width:1400px;margin:0 auto;padding:40px 28px}
+        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
+        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
+        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+        .tabs{display:flex;gap:3px;background:var(--surface);padding:4px;border-radius:10px}
+        .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:0.2s;color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif}
+        .tab.active{background:var(--primary);color:white}
+        .filters{display:flex;gap:6px;flex-wrap:wrap}
+        .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:0.75rem;cursor:pointer;transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif}
+        .fb.active{background:var(--primary);color:white;border-color:var(--primary)}
+        .fb:hover:not(.active){background:var(--surface);color:var(--text);}
+        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
         .search-bar svg{color:var(--dim);flex-shrink:0;}
-        .search-bar input{background:none;border:none;color:white;font-size:0.92rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;}
+        .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;padding:0;}
         .search-bar input::placeholder{color:var(--dim);}
-        .search-count{font-size:0.78rem;color:var(--dim);white-space:nowrap;font-weight:700;}
-        .table-wrap{background:var(--card);backdrop-filter:blur(20px);border-radius:20px;border:1px solid var(--border);overflow-x:auto;}
-        .table-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-        .table-header span{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);font-weight:700;}
-        .table-count{background:rgba(167,139,250,0.12);color:#a78bfa;border-radius:20px;padding:3px 10px;font-size:0.73rem;font-weight:800;}
-        table{width:100%;border-collapse:collapse;min-width:700px;}
-        th{padding:13px 18px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.66rem;letter-spacing:2px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
-        td{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.88rem;}
-        tr:last-child td{border-bottom:none;}
-        tr:hover td{background:rgba(255,255,255,0.02);}
-        .badge{padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;display:inline-block;}
-        .ba{background:rgba(99,102,241,0.12);color:var(--primary);border:1px solid rgba(99,102,241,0.2);}
-        .bd{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.18);}
-        .bv{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.18);}
-        .code{background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:2px 8px;font-weight:800;font-size:0.8rem;font-family:monospace;}
-        .sub-text{font-size:0.78rem;color:var(--dim);margin-top:2px;}
-        .em{text-align:center;padding:50px;color:var(--dim);font-size:0.9rem;}
-        .highlight{background:rgba(167,139,250,0.15);border-radius:3px;padding:0 2px;}
+        .search-count{font-size:0.75rem;color:var(--dim);white-space:nowrap;font-weight:700;}
+        .table-wrap{border-radius:14px;overflow:hidden;}
+        .table-header{padding:14px 22px;display:flex;justify-content:space-between;align-items:center;}
+        .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
+        .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
+        th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+        td{padding:12px 18px;font-size:0.86rem;border-bottom:1px solid var(--border);}
+        .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:monospace;color:var(--text);}
+        .sub-text{font-size:0.75rem;color:var(--dim);margin-top:2px;}
+        .em{text-align:center;padding:40px;color:var(--dim);font-size:0.88rem;}
+        .highlight{background:rgba(99,102,241,0.15);border-radius:3px;padding:0 2px;}
     </style>
 </head>
 <body>
-<div class="glow"></div>
-<nav>
+<nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
-    <a href="/home/dashboard.html" class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
+    <div class="nav-right">
+        <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn-icon" onclick="document.body.classList.toggle('fullscreen-mode')" title="Pantalla completa" aria-label="Pantalla completa">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+        <a href="/home/dashboard.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
+    </div>
 </nav>
 <main>
     <div class="page-header">
-        <div class="page-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <div><h1>Historial y Trazabilidad</h1><p>Registro completo de todos los movimientos del sistema</p></div>
     </div>
     <div class="toolbar">
@@ -81,17 +73,15 @@
         <input id="busq" placeholder="Buscar por alumno, equipo, codigo, motivo..." oninput="buscar()">
         <span class="search-count" id="search-count"></span>
     </div>
-    <div id="tp" class="table-wrap"><div class="em">Cargando...</div></div>
-    <div id="td" class="table-wrap" style="display:none"><div class="em">Cargando...</div></div>
+    <div id="tp" class="table-wrap"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
+    <div id="td" class="table-wrap" style="display:none"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
 </main>
+<div class="toast" id="toast"></div>
+<script src="/js/api.js"></script>
 <script>
-var API='http://localhost:3000';
 if(!localStorage.getItem('encargado')) window.location.href='/';
-var prestamos=[],devs=[];
-var tabAct='p',filtAct='todos';
-
-function ff(d){if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});}
-function fn(n){return Number(n).toLocaleString('es-PY');}
+let prestamos=[],devs=[];
+let tabAct='p',filtAct='todos';
 
 function resaltar(texto,q){
     if(!q||!texto) return texto||'—';
@@ -101,13 +91,15 @@ function resaltar(texto,q){
 
 async function cargar(){
     try{
-        var pr=await fetch(API+'/prestamos');
-        var dr=await fetch(API+'/devoluciones');
+        let pr=await apiFetch('/prestamos');
+        let dr=await apiFetch('/devoluciones');
         prestamos=await pr.json();
         devs=await dr.json();
         renderP();renderD();
     }catch(e){
-        document.getElementById('tp').innerHTML='<div class="em">Error al cargar datos. Verifica que el servidor este corriendo.</div>';
+        console.error(e);
+        showError(document.getElementById('tp'),{message:'No se pudieron cargar los datos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
+        showError(document.getElementById('td'),{message:'',retry:null});
     }
 }
 
@@ -126,7 +118,11 @@ function getPrestFiltrados(){
                    (p.equipo&&p.equipo.toLowerCase().includes(q))||
                    (p.marca&&p.marca.toLowerCase().includes(q))||
                    (p.motivo&&p.motivo.toLowerCase().includes(q))||
-                   (String(p.id_prestamo)===q);
+                   (String(p.id_prestamo)===q)||
+                   (p.alumno_nombre&&p.alumno_apellido&&
+                    (p.alumno_nombre+' '+p.alumno_apellido).toLowerCase().includes(q))||
+                   (p.alumno_apellido&&p.alumno_nombre&&
+                    (p.alumno_apellido+' '+p.alumno_nombre).toLowerCase().includes(q));
         });
     }
     return d;
@@ -142,7 +138,11 @@ function getDevFiltrados(){
                (d.equipo&&d.equipo.toLowerCase().includes(q))||
                (d.tipo_dano&&d.tipo_dano.toLowerCase().includes(q))||
                (String(d.id_prestamo)===q)||
-               (String(d.id_devolucion)===q);
+               (String(d.id_devolucion)===q)||
+               (d.alumno_nombre&&d.alumno_apellido&&
+                (d.alumno_nombre+' '+d.alumno_apellido).toLowerCase().includes(q))||
+               (d.alumno_apellido&&d.alumno_nombre&&
+                (d.alumno_apellido+' '+d.alumno_nombre).toLowerCase().includes(q));
     });
 }
 
@@ -157,14 +157,14 @@ function renderP(){
     var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha prestamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th></tr></thead><tbody>';
     d.forEach(function(p){
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
-        var badge=venc?'<span class="badge bv">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge bd">Devuelto</span>':'<span class="badge ba">Activo</span>';
+        var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
         html+='<tr>';
         html+='<td><span class="code">#'+p.id_prestamo+'</span></td>';
         html+='<td><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
         html+='<td><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
         html+='<td>'+ff(p.fecha_prestamo)+'</td>';
         html+='<td style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
-        html+='<td style="color:var(--dim);font-size:0.83rem">'+resaltar(p.motivo||'—',q)+'</td>';
+        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td>'+badge+'</td>';
         html+='</tr>';
     });
@@ -179,7 +179,7 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Dano</th><th>Multa</th><th>Total</th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th></tr></thead><tbody>';
     d.forEach(function(dv){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
@@ -223,7 +223,7 @@ function setF(f,el){
     renderP();
 }
 
-window.onload=cargar;
+window.onload=function(){ cargar(); initTheme(); initSpotlight([]); };
 </script>
 </body>
 </html>

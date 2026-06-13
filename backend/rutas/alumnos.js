@@ -1,14 +1,13 @@
-/* Rutas para alumnos*/ 
-
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/alumnosControlador');
+const { verificarToken } = require('../middleware/auth');
 
-router.get('/disponibles',   c.disponibles);
-router.get('/',              c.listar);
-router.post('/',             c.crear);
-router.delete('/:id',        c.eliminar);
-router.put('/:id',           c.editar);
-router.get('/:id/historial', c.historial);
+router.get('/disponibles',   verificarToken, c.disponibles);
+router.get('/',              verificarToken, c.listar);
+router.post('/',             verificarToken, c.crear);
+router.delete('/:id',        verificarToken, c.eliminar);
+router.put('/:id',           verificarToken, c.editar);
+router.get('/:id/historial', verificarToken, c.historial);
 
 module.exports = router;

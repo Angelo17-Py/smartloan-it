@@ -5,6 +5,7 @@
 ![Express](https://img.shields.io/badge/Express-5.x-000000?style=flat-square&logo=express&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-auth-e34f26?style=flat-square&logo=json-web-tokens&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-vanilla-E34F26?style=flat-square&logo=html5&logoColor=white)
 
 > Proyecto de Grado de la Materia Proyecto y Construccion de Sistemas — Ingeniería en Informática  
@@ -40,7 +41,9 @@ SmartLoan IT es un sistema web para la gestión de préstamos de equipos tecnol�
 **Backend**
 - Node.js + Express 5
 - MySQL 8.0 (Docker)
-- mysql2
+- mysql2 (promises)
+- Autenticación JWT + bcrypt
+- Variables de entorno (dotenv)
 
 **Frontend**
 - HTML5 + CSS3 + JavaScript vanilla
@@ -56,6 +59,9 @@ SistemaPrestamos/
 ├── backend/
 │   ├── server.js
 │   ├── db.js
+│   ├── middleware/
+│   │   ├── auth.js          (JWT)
+│   │   └── errorHandler.js
 │   ├── controladores/
 │   │   ├── encargadosControlador.js
 │   │   ├── alumnosControlador.js
@@ -69,6 +75,8 @@ SistemaPrestamos/
 │       ├── prestamos.js
 │       └── devoluciones.js
 ├── frontend/
+│   ├── js/
+│   │   └── api.js
 │   ├── login/login.html
 │   ├── home/dashboard.html
 │   ├── equipos/equipos.html
@@ -77,6 +85,10 @@ SistemaPrestamos/
 │   ├── devoluciones/devoluciones.html
 │   └── historial/historial.html
 ├── query.sql
+├── .env.example
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
 ├── package.json
 └── README.md
 ```
@@ -89,39 +101,44 @@ SistemaPrestamos/
 - [Node.js](https://nodejs.org/) v18 o superior
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-### 1. Crear el contenedor de MySQL
+### Opción 1: Usando Docker Compose (recomendado)
 
 ```bash
-docker run --name SistemaPrestamos -e MYSQL_ROOT_PASSWORD=1234 -p 3307:3306 -d mysql:8.0
-```
+# Iniciar MySQL + App
+docker compose up -d
 
-### 2. Crear la base de datos y cargar el esquema
-
-```bash
-docker exec -i SistemaPrestamos mysql -u root -p1234 -e "CREATE DATABASE prestamos_db;"
+# Cargar esquema de base de datos
+docker exec -i SistemaPrestamos mysql -u root -p1234 -e "CREATE DATABASE IF NOT EXISTS prestamos_db;"
 docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db < query.sql
-```
 
-### 3. Crear la tabla de configuración
-
-```bash
+# Crear tabla de configuración
 docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db -e "CREATE TABLE IF NOT EXISTS configuracion (id_config INT AUTO_INCREMENT PRIMARY KEY, clave VARCHAR(100) UNIQUE NOT NULL, valor VARCHAR(200) NOT NULL, descripcion VARCHAR(300)); INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES ('multa_por_dia', '10000', 'Monto en guaranies por dia de retraso');"
 ```
 
-### 4. Instalar dependencias
+### Opción 2: Manual
 
 ```bash
-cd backend
+# 1. Crear el contenedor de MySQL
+docker run --name SistemaPrestamos -e MYSQL_ROOT_PASSWORD=1234 -p 3307:3306 -d mysql:8.0
+
+# 2. Crear la base de datos y cargar el esquema
+docker exec -i SistemaPrestamos mysql -u root -p1234 -e "CREATE DATABASE prestamos_db;"
+docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db < query.sql
+
+# 3. Crear la tabla de configuración
+docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db -e "CREATE TABLE IF NOT EXISTS configuracion (id_config INT AUTO_INCREMENT PRIMARY KEY, clave VARCHAR(100) UNIQUE NOT NULL, valor VARCHAR(200) NOT NULL, descripcion VARCHAR(300)); INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES ('multa_por_dia', '10000', 'Monto en guaranies por dia de retraso');"
+
+# 4. Configurar variables de entorno
+copy .env.example .env
+
+# 5. Instalar dependencias
 npm install
+
+# 6. Iniciar el servidor
+npm start
 ```
 
-### 5. Iniciar el servidor
-
-```bash
-node server.js
-```
-
-### 6. Acceder al sistema
+### 7. Acceder al sistema
 
 Abrí tu navegador en: **http://localhost:3000**
 
@@ -161,9 +178,12 @@ configuracion   → Parámetros del sistema (multa por día, etc.)
 
 ## API Endpoints
 
+> Todos los endpoints (excepto `/encargados/login`) requieren autenticación JWT.
+> Enviar header: `Authorization: Bearer <token>`
+
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| POST | `/encargados/login` | Autenticación |
+| POST | `/encargados/login` | Autenticación (retorna `{ token, usuario }`) |
 | GET | `/alumnos` | Listar alumnos activos |
 | GET | `/alumnos/disponibles` | Alumnos sin préstamo activo |
 | POST | `/alumnos` | Registrar alumno |

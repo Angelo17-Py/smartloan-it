@@ -4,109 +4,73 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Alumnos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <script src="/js/utils.js" defer></script>
     <style>
-        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#020617;--card:rgba(15,23,42,0.6);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
-        body{background:var(--bg);color:var(--text);min-height:100vh;}
-        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 20%,rgba(0,242,255,0.08) 0%,transparent 40%);z-index:-1;}
-        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-        .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
-        .brand-icon{background:linear-gradient(135deg,var(--primary),var(--accent));width:34px;height:34px;border-radius:10px;display:grid;place-items:center;}
-        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.85rem;padding:9px 16px;border-radius:10px;border:1px solid var(--border);transition:0.3s;}
-        .back:hover{background:rgba(255,255,255,0.05);color:white;}
-        main{max-width:1200px;margin:0 auto;padding:40px 28px;}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border);}
-        .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(0,242,255,0.1);border:1px solid rgba(0,242,255,0.2);display:grid;place-items:center;color:var(--accent);flex-shrink:0;}
-        .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
-        .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
-        .form-card{background:var(--card);backdrop-filter:blur(20px);padding:28px;border-radius:22px;border:1px solid var(--border);margin-bottom:20px;}
-        .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:800;margin-bottom:18px;}
-        .form-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
-        .ig{display:flex;flex-direction:column;gap:6px;flex:1;min-width:160px;}
-        .ig label{font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);font-weight:700;}
-        input,select{width:100%;padding:13px 16px;background:rgba(0,0,0,0.3);border:1.5px solid var(--border);border-radius:11px;color:white;font-size:0.92rem;outline:none;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
-        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%2394a3b8' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
-        select option{background:#0f172a;color:white;}
-        input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,242,255,0.1);}
-        input.err,select.err{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(239,68,68,0.1)!important;}
-        .ferr{font-size:0.72rem;color:var(--danger);margin-top:4px;display:none;}
-        .ferr.show{display:block;}
-        .btn-wrap{display:flex;align-items:flex-start;padding-top:24px;}
-        .btn-add{background:var(--accent);color:#020617;border:none;padding:0 24px;border-radius:11px;font-weight:800;font-size:0.9rem;cursor:pointer;transition:0.3s;height:48px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;}
-        .btn-add:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,242,255,0.25);}
-        .btn-add:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-        .search-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:12px;padding:12px 18px;margin-bottom:20px;}
-        .search-wrap svg{color:var(--dim);flex-shrink:0;}
-        .search-wrap input{background:none;border:none;padding:0;font-size:0.92rem;box-shadow:none;}
-        .search-wrap input:focus{border:none;box-shadow:none;}
-        .table-wrap{background:var(--card);backdrop-filter:blur(20px);border-radius:22px;border:1px solid var(--border);overflow:hidden;}
-        .table-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-        .table-header span{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);font-weight:700;}
-        .table-count{background:rgba(0,242,255,0.1);color:var(--accent);border-radius:20px;padding:3px 10px;font-size:0.75rem;font-weight:800;}
-        table{width:100%;border-collapse:collapse;}
-        th{padding:13px 20px;background:rgba(255,255,255,0.02);color:var(--dim);text-transform:uppercase;font-size:0.68rem;letter-spacing:2px;text-align:left;border-bottom:1px solid var(--border);}
-        td{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.9rem;}
-        tr:last-child td{border-bottom:none;}
-        tr:hover td{background:rgba(255,255,255,0.02);}
+        main{max-width:1200px;margin:0 auto;padding:40px 28px}
+        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
+        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
+        .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
+        .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
+        .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+        .form-row .ig{flex:1;min-width:140px;}
+        .btn-wrap{padding:0;display:flex;align-items:flex-end;}
+        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
+        .search-bar svg{color:var(--dim);flex-shrink:0;}
+        .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;padding:0;}
+        .search-bar input::placeholder{color:var(--dim);}
+        .table-wrap{border-radius:14px;overflow:hidden;}
+        .table-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
+        .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
+        .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
+        th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+        td{padding:12px 18px;font-size:0.88rem;border-bottom:1px solid var(--border);}
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
-        .code-chip{background:rgba(0,242,255,0.08);border:1px solid rgba(0,242,255,0.2);border-radius:8px;padding:3px 9px;font-weight:800;font-size:0.82rem;font-family:monospace;color:var(--accent);}
-        .empty-row td{text-align:center;color:var(--dim);padding:50px!important;}
-        .ac{display:flex;gap:7px;justify-content:center;}
-        .btn-sm{height:32px;padding:0 12px;border-radius:8px;border:none;cursor:pointer;font-size:0.73rem;font-weight:700;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;display:inline-flex;align-items:center;}
-        .btn-edit{background:rgba(0,242,255,0.08);color:var(--accent);border:1px solid rgba(0,242,255,0.2);}
-        .btn-edit:hover{background:var(--accent);color:#020617;}
-        .btn-del{width:32px;height:32px;border-radius:8px;border:1px solid rgba(239,68,68,0.2);cursor:pointer;display:grid;place-items:center;font-size:1rem;transition:0.25s;background:rgba(239,68,68,0.08);color:var(--danger);}
-        .btn-del:hover{background:var(--danger);color:white;transform:rotate(90deg);}
-        /* MODAL */
-        .mo{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);z-index:1000;display:none;place-items:center;padding:20px;}
-        .mo.show{display:grid;}
-        .md{background:#0d1526;border:1px solid var(--border);border-radius:24px;padding:36px;width:100%;max-width:520px;animation:fi 0.3s ease;}
-        @keyframes fi{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
-        .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
-        .mh h3{font-size:1.3rem;font-weight:800;}
-        .mc{background:none;border:none;color:var(--dim);font-size:1.4rem;cursor:pointer;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;transition:0.2s;}
-        .mc:hover{background:rgba(255,255,255,0.08);color:white;}
-        .mform{display:flex;flex-direction:column;gap:16px;}
-        .g2m{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-        .btn-save{width:100%;padding:14px;background:var(--accent);color:#020617;border:none;border-radius:11px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;margin-top:4px;}
-        .btn-save:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,242,255,0.2);}
-        .btn-save:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;font-size:0.88rem;}
-        .toast.show{display:block;animation:ti 0.35s ease;}
-        .t-ok{background:var(--success);color:white;}.t-err{background:var(--danger);color:white;}
-        @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        @media(max-width:900px){.form-row{flex-direction:column}.g2m{grid-template-columns:1fr}main{padding:24px 16px}}
+        .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
+        .ac{display:flex;gap:6px;justify-content:center;}
+        .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+        .mo .md{animation:fi 0.3s ease;}
+        @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
     </style>
 </head>
 <body>
-<div class="glow"></div>
-<nav>
+<nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
-    <a href="/home/dashboard.html" class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
+    <div class="nav-right">
+        <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn-icon" onclick="document.body.classList.toggle('fullscreen-mode')" title="Pantalla completa" aria-label="Pantalla completa">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+        <a href="/home/dashboard.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
+    </div>
 </nav>
 <main>
     <div class="page-header">
-        <div class="page-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
         <div><h1>Gestion de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
     </div>
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo alumno</div>
         <div class="form-row">
-            <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" oninput="clearF('nombre')"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
-            <div class="ig"><label>Apellido</label><input id="apellido" placeholder="" oninput="clearF('apellido')"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
+            <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" oninput="clearF('nombre');checkNuevoAlumno()"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
+            <div class="ig"><label>Apellido</label><input id="apellido" placeholder="" oninput="clearF('apellido');checkNuevoAlumno()"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
             <div class="ig"><label>Carrera</label>
-                <select id="carrera" onchange="clearF('carrera')"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
+                <select id="carrera" onchange="clearF('carrera');checkNuevoAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-carrera">Selecciona la carrera</div>
             </div>
             <div class="ig"><label>Curso / Año *</label>
-                <select id="curso" onchange="clearF('curso')"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
+                <select id="curso" onchange="clearF('curso');checkNuevoAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-curso">Selecciona el curso</div>
             </div>
-            <div class="btn-wrap"><button class="btn-add" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
+            <div class="btn-wrap"><button class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
         </div>
     </div>
-    <div class="search-wrap">
+    <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por nombre, apellido o codigo..." oninput="filtrar()">
     </div>
@@ -117,21 +81,20 @@
     </div>
 </main>
 
-<!-- MODAL EDICION -->
 <div class="mo" id="mo-edit">
     <div class="md">
         <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
             <div class="g2m">
-                <div class="ig"><label>Nombre *</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre')"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
-                <div class="ig"><label>Apellido *</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido')"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
+                <div class="ig"><label>Nombre *</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido *</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
             <div class="ig"><label>Carrera *</label>
-                <select id="edit-carrera" onchange="clearFE('carrera')"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
+                <select id="edit-carrera" onchange="clearFE('carrera');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-edit-carrera">Selecciona la carrera</div>
             </div>
             <div class="ig"><label>Curso / Año *</label>
-                <select id="edit-curso" onchange="clearFE('curso')"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
+                <select id="edit-curso" onchange="clearFE('curso');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
             </div>
             <button class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
@@ -140,26 +103,27 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<script src="/js/api.js"></script>
 <script>
-const API = 'http://localhost:3000';
 if(!localStorage.getItem('encargado')) window.location.href = '/';
 
 let todos = [];
 let alumnoEditandoId = null;
 
-function st(msg, t='t-ok'){
-    const e = document.getElementById('toast');
-    e.textContent = msg;
-    e.className = `toast show ${t}`;
-    setTimeout(()=>e.className='toast', 3200);
+function checkNuevoAlumno(){
+    const nombre=document.getElementById('nombre').value.trim();
+    const apellido=document.getElementById('apellido').value.trim();
+    const carrera=document.getElementById('carrera').value;
+    const curso=document.getElementById('curso').value;
+    document.getElementById('btnAdd').disabled=!(nombre&&apellido&&carrera&&curso);
 }
-function clearF(f){
-    document.getElementById(f)?.classList.remove('err');
-    document.getElementById('ferr-'+f)?.classList.remove('show');
-}
-function clearFE(f){
-    document.getElementById('edit-'+f)?.classList.remove('err');
-    document.getElementById('ferr-edit-'+f)?.classList.remove('show');
+
+function checkEditAlumno(){
+    const nombre=document.getElementById('edit-nombre').value.trim();
+    const apellido=document.getElementById('edit-apellido').value.trim();
+    const carrera=document.getElementById('edit-carrera').value;
+    const curso=document.getElementById('edit-curso').value;
+    document.getElementById('btnGuardarAlu').disabled=!(nombre&&apellido&&carrera&&curso);
 }
 
 function validarNuevo(){
@@ -177,10 +141,13 @@ function validarNuevo(){
 
 async function cargar(){
     try {
-        const r = await fetch(`${API}/alumnos`);
+        const r = await apiFetch('/alumnos');
         todos = await r.json();
         render(todos);
-    } catch(e){ console.error(e); }
+    } catch(e){
+        console.error(e);
+        showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los alumnos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
+    }
 }
 
 function render(data){
@@ -195,8 +162,8 @@ function render(data){
             <td><span class="num">${i+1}</span></td>
             <td><span class="code-chip">${a.codigo_alumno}</span></td>
             <td><strong>${a.nombre} ${a.apellido}</strong></td>
-            <td style="color:var(--dim);font-size:0.88rem">${a.carrera||'—'}</td>
-            <td style="color:var(--dim);font-size:0.88rem">${a.curso||'—'}</td>
+            <td style="color:var(--dim);font-size:0.85rem">${a.carrera||'—'}</td>
+            <td style="color:var(--dim);font-size:0.85rem">${a.curso||'—'}</td>
             <td><div class="ac">
                 <button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>
                 <button class="btn-del" onclick="confirmarEliminar(${a.id_alumno})">&#215;</button>
@@ -205,12 +172,14 @@ function render(data){
 }
 
 function filtrar(){
-    const q = document.getElementById('busq').value.toLowerCase();
+    const q = document.getElementById('busq').value.trim().toLowerCase();
     if(!q){ render(todos); return; }
     render(todos.filter(a =>
         a.nombre.toLowerCase().includes(q) ||
         a.apellido.toLowerCase().includes(q) ||
-        a.codigo_alumno.toLowerCase().includes(q)
+        a.codigo_alumno.toLowerCase().includes(q) ||
+        (a.nombre + ' ' + a.apellido).toLowerCase().includes(q) ||
+        (a.apellido + ' ' + a.nombre).toLowerCase().includes(q)
     ));
 }
 
@@ -219,7 +188,7 @@ async function crear(){
     const btn = document.getElementById('btnAdd');
     btn.disabled = true; btn.textContent = 'Registrando...';
     try {
-        const r = await fetch(`${API}/alumnos`, {
+        const r = await apiFetch('/alumnos', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({
@@ -230,12 +199,16 @@ async function crear(){
             })
         });
         const d = await r.json();
-        document.getElementById('nombre').value = '';
-        document.getElementById('apellido').value = '';
-        document.getElementById('carrera').value = '';
-        document.getElementById('curso').value = '';
-        st(`Alumno registrado: ${d.codigo_alumno}`);
-        cargar();
+        if (r.ok) {
+            document.getElementById('nombre').value = '';
+            document.getElementById('apellido').value = '';
+            document.getElementById('carrera').value = '';
+            document.getElementById('curso').value = '';
+            st(`Alumno registrado: ${d.codigo_alumno}`);
+            cargar();
+        } else {
+            st(d.mensaje || 'Error al registrar', 't-err');
+        }
     } catch(e){
         st('Error de conexion con el servidor','t-err');
     }
@@ -251,8 +224,8 @@ function confirmarEliminar(id){
 
 async function eliminar(id){
     try {
-        const r = await fetch(`${API}/alumnos/${id}`, {method:'DELETE'});
-        const d = await r.json();
+        const r = await apiFetch(`/alumnos/${id}`, {method:'DELETE'});
+        const d = r.status === 204 ? {} : await safeJson(r);
         r.ok ? st('Alumno eliminado') : st(d.mensaje||'No se puede eliminar','t-err');
         cargar();
     } catch(e){
@@ -260,7 +233,6 @@ async function eliminar(id){
     }
 }
 
-// EDICION
 function abrirEditar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
@@ -274,8 +246,8 @@ function abrirEditar(id){
         document.getElementById('ferr-edit-'+f).classList.remove('show');
     });
     const btn = document.getElementById('btnGuardarAlu');
-    btn.disabled = false;
     btn.textContent = 'Guardar cambios';
+    checkEditAlumno();
     document.getElementById('mo-edit').classList.add('show');
 }
 
@@ -283,8 +255,6 @@ function cerrarEdit(){
     document.getElementById('mo-edit').classList.remove('show');
     alumnoEditandoId = null;
 }
-
-// El modal solo se cierra con el boton X o con Guardar
 
 async function guardarAlumno(){
     const n  = document.getElementById('edit-nombre').value.trim();
@@ -301,7 +271,7 @@ async function guardarAlumno(){
     const btn = document.getElementById('btnGuardarAlu');
     btn.disabled = true; btn.textContent = 'Guardando...';
     try {
-        const r = await fetch(`${API}/alumnos/${alumnoEditandoId}`, {
+        const r = await apiFetch(`/alumnos/${alumnoEditandoId}`, {
             method: 'PUT',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({nombre:n, apellido:ap, carrera:ca, curso:cu})
@@ -321,7 +291,7 @@ async function guardarAlumno(){
     }
 }
 
-window.onload = cargar;
+window.onload = function(){ cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([]); };
 </script>
 </body>
 </html>

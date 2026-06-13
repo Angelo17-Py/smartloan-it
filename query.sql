@@ -110,6 +110,7 @@ END$$
 DELIMITER ;
 
 -- Encargado y contraseña
+-- La contraseña se migra automaticamente a bcrypt en el primer inicio de sesion
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
 ('1234', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos');
 
@@ -122,5 +123,5 @@ CREATE TABLE IF NOT EXISTS configuracion (
 );
 
 -- Multa por dia de retraso en guaranies
-INSERT INTO configuracion (clave, valor, descripcion) VALUES
+INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
 ('multa_por_dia', '10000', 'Monto en guaranies que se cobra por cada dia de retraso en la devolucion');

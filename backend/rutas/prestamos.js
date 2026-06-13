@@ -1,9 +1,10 @@
-/* Rutas para prestamos*/
-
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/prestamosControlador');
-router.post('/',   c.crear);
-router.get('/',    c.listar);
-router.get('/:id', c.buscar);
+const { verificarToken } = require('../middleware/auth');
+
+router.post('/',   verificarToken, c.crear);
+router.get('/',    verificarToken, c.listar);
+router.get('/:id', verificarToken, c.buscar);
+
 module.exports = router;

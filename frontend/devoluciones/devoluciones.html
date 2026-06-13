@@ -4,138 +4,102 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%236366f1'/><stop offset='100%25' stop-color='%2300f2ff'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Devoluciones</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <script src="/js/utils.js" defer></script>
     <style>
-        :root{--primary:#6366f1;--accent:#00f2ff;--warn:#f59e0b;--success:#22c55e;--danger:#ef4444;--bg:#020617;--card:rgba(15,23,42,0.6);--text:#f8fafc;--dim:#94a3b8;--border:rgba(255,255,255,0.08);}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
-        body{background:var(--bg);color:var(--text);min-height:100vh;}
-        .glow{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 70% 30%,rgba(245,158,11,0.07) 0%,transparent 40%);z-index:-1;}
-        nav{padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-        .brand{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:10px;}
-        .brand-icon{background:linear-gradient(135deg,var(--primary),var(--accent));width:34px;height:34px;border-radius:10px;display:grid;place-items:center;}
-        .back{display:flex;align-items:center;gap:8px;color:var(--dim);text-decoration:none;font-weight:700;font-size:0.85rem;padding:9px 16px;border-radius:10px;border:1px solid var(--border);transition:0.3s;}
-        .back:hover{background:rgba(255,255,255,0.05);color:white;}
-        main{max-width:780px;margin:0 auto;padding:40px 28px;}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border);}
-        .page-icon{width:52px;height:52px;border-radius:14px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.2);display:grid;place-items:center;color:var(--warn);flex-shrink:0;}
-        .page-header h1{font-size:1.8rem;font-weight:800;letter-spacing:-0.5px;}
-        .page-header p{color:var(--dim);font-size:0.88rem;margin-top:3px;}
+        main{max-width:780px;margin:0 auto;padding:40px 28px}
+        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
+        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
+        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
 
-        /* STEPS */
-        .steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;}
-        .step{display:flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
-        .step.active{color:white;}.step.done{color:var(--success);}
-        .sn{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:0.75rem;font-weight:800;transition:0.3s;}
-        .step.active .sn{background:var(--warn);border-color:var(--warn);}
-        .step.done .sn{background:var(--success);border-color:var(--success);}
-        .sl{width:36px;height:2px;background:var(--border);margin:0 8px;}
+        .ds{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;}
+        .dstep{display:flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
+        .dstep.active{color:var(--text);}.dstep.done{color:var(--success);}
+        .sn{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:0.7rem;font-weight:800;transition:0.3s;}
+        .dstep.active .sn{background:var(--primary);border-color:var(--primary);color:#fff;}
+        .dstep.done .sn{background:var(--success);border-color:var(--success);color:#fff;}
+        .sl{width:32px;height:2px;background:var(--border);margin:0 6px;}
         .sl.done{background:var(--success);}
 
-        /* CARDS */
-        .card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:14px;}
-        .section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--dim);font-weight:800;margin-bottom:14px;}
-        .section-title.warn{color:var(--warn);}
-
-        /* LISTA PRESTAMOS */
-        .pres-item{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;background:rgba(0,0,0,0.2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:9px;cursor:pointer;transition:0.25s;}
-        .pres-item:hover{border-color:var(--warn);background:rgba(245,158,11,0.05);transform:translateX(3px);}
-        .pres-item.sel{border-color:var(--warn);background:rgba(245,158,11,0.08);}
+        .section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;}
+        .pres-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:0.2s;}
+        .pres-item:hover{border-color:var(--primary);transform:translateX(3px);}
+        .pres-item.sel{border-color:var(--primary);background:rgba(99,102,241,0.05);}
         .pres-item:last-child{margin-bottom:0;}
-        .pi-left h4{font-weight:700;font-size:0.9rem;margin-bottom:2px;}
-        .pi-left p{font-size:0.78rem;color:var(--dim);}
-        .pi-badge{font-weight:800;font-size:0.72rem;padding:4px 10px;border-radius:8px;white-space:nowrap;}
+        .pi-left h4{font-weight:700;font-size:0.85rem;margin-bottom:1px;color:var(--text);}
+        .pi-left p{font-size:0.75rem;color:var(--dim);}
+        .pi-badge{font-weight:700;font-size:0.7rem;padding:4px 10px;border-radius:7px;white-space:nowrap;}
         .pi-ok{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
         .pi-late{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
-        .em{text-align:center;color:var(--dim);padding:16px;font-size:0.88rem;}
+        .em{text-align:center;color:var(--dim);padding:16px;font-size:0.85rem;}
 
-        /* BUSQUEDA */
         .search-row{display:flex;gap:10px;}
-        .si{flex:1;padding:12px 16px;background:rgba(0,0,0,0.3);border:1.5px solid var(--border);border-radius:11px;color:white;font-size:0.9rem;outline:none;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;}
-        .si:focus{border-color:var(--warn);box-shadow:0 0 0 3px rgba(245,158,11,0.1);}
-        .btn-buscar{background:var(--warn);color:white;border:none;padding:0 20px;border-radius:11px;font-weight:800;font-size:0.88rem;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
-        .btn-buscar:hover{transform:translateY(-2px);}
+        .si{flex:1;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:0.85rem;outline:none;transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .si:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
+        .btn-buscar{background:var(--primary);color:white;border:none;padding:0 18px;border-radius:10px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
+        .btn-buscar:hover{opacity:0.9;}
 
-        /* INFO BANNER */
         #ps{display:none;}#ps.show{display:block;}
-        .info-banner{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
-        .info-banner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-        .info-banner-header h3{font-size:1rem;font-weight:800;}
-        .btn-change{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:0.75rem;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.25s;}
-        .btn-change:hover{background:rgba(255,255,255,0.1);color:white;}
-        .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}
-        .if span{display:block;font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;font-weight:700;}
-        .if strong{font-size:0.88rem;font-weight:700;}
-        .retraso-alerta{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:11px 15px;margin-top:12px;display:flex;align-items:center;gap:9px;}
-        .retraso-alerta strong{color:var(--danger);font-size:0.85rem;}
+        .info-banner{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+        .info-banner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+        .info-banner-header h3{font-size:0.92rem;font-weight:800;color:var(--text);}
+        .btn-change{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:0.72rem;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.2s;}
+        .btn-change:hover{background:rgba(99,102,241,0.08);color:var(--primary);}
+        .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;}
+        .if span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:1px;font-weight:700;}
+        .if strong{font-size:0.84rem;font-weight:700;color:var(--text);}
+        .retraso-alerta{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.18);border-radius:9px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:8px;}
+        .retraso-alerta strong{color:var(--danger);font-size:0.82rem;}
 
-        /* FORMULARIO */
         #fd{display:none;}#fd.show{display:block;}
-        .sep{border:none;border-top:1px solid var(--border);margin:18px 0;}
-        .g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px;}
-        .ig label{display:block;font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);font-weight:700;margin-bottom:7px;}
-        input[type=text],input[type=number],select,textarea{width:100%;padding:12px 15px;background:rgba(0,0,0,0.3);border:1.5px solid var(--border);border-radius:11px;color:white;font-size:0.9rem;outline:none;transition:0.25s;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;}
-        select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%2394a3b8' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(0,0,0,0.3);}
-        select option{background:#0f172a;color:white;}
-        textarea{resize:vertical;min-height:68px;}
-        input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--warn);box-shadow:0 0 0 3px rgba(245,158,11,0.08);}
-        input.err,select.err,textarea.err{border-color:var(--danger)!important;}
-        .ferr{font-size:0.72rem;color:var(--danger);margin-top:4px;display:none;}
-        .ferr.show{display:block;}
+        #fd .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
+        .sep{border:none;border-top:1px solid var(--border);margin:16px 0;}
+        .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 
-        /* ACCESORIOS */
-        .acc-box{background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.18);border-radius:12px;padding:14px 16px;margin-bottom:13px;}
-        .acc-box h4{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--warn);margin-bottom:9px;}
-        .check-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:6px;}
-        .check-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--warn);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;margin-top:2px;}
-        .check-row span{font-size:0.85rem;font-weight:600;}
+        .acc-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;}
+        .acc-box h4{font-size:0.66rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
+        .check-row{display:flex;align-items:flex-start;gap:9px;cursor:pointer;margin-bottom:5px;}
+        .check-row input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--primary);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;margin-top:2px;}
+        .check-row span{font-size:0.82rem;font-weight:600;color:var(--dim);}
 
-        /* DAÑOS */
-        .dano-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px;}
-        .dano-toggle input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--danger);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;}
-        .dano-toggle span{font-weight:700;font-size:0.9rem;}
-        .dano-section{display:none;background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.18);border-radius:12px;padding:16px;margin-bottom:13px;}
+        .dano-toggle{display:flex;align-items:center;gap:9px;cursor:pointer;margin-bottom:10px;}
+        .dano-toggle input[type=checkbox]{width:17px;height:17px;cursor:pointer;accent-color:var(--danger);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;}
+        .dano-toggle span{font-weight:700;font-size:0.85rem;color:var(--text);}
+        .dano-section{display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
         .dano-section.show{display:block;}
 
-        /* RESUMEN COBROS */
-        .cobros-card{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;display:none;}
+        .cobros-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;display:none;}
         .cobros-card.show{display:block;}
-        .cobros-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim);font-weight:800;margin-bottom:12px;}
-        .cobro-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.88rem;}
-        .cobro-row:last-child{border-bottom:none;font-weight:800;font-size:0.95rem;border-top:2px solid var(--border);padding-top:12px;margin-top:3px;color:var(--warn);}
+        .cobros-title{font-size:0.66rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+        .cobro-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:8px;font-size:0.85rem;margin-bottom:3px;}
+        .cobro-row:last-child{margin-bottom:0;font-weight:800;font-size:0.95rem;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);}
+        .cobro-row strong{font-size:0.9rem;font-weight:700;}
+        .cobro-row:last-child strong{font-size:1rem;}
 
-        /* CONFORMIDAD */
-        .conf-box{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.18);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
-        .conf-box h4{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--success);margin-bottom:9px;}
+        .conf-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+        .conf-box h4{font-size:0.66rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
+        #p1 .card + .card{margin-top:16px}
+        .btn-procesar{width:100%;padding:15px;background:var(--primary);color:white;border:none;border-radius:11px;font-size:0.92rem;font-weight:800;cursor:pointer;transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .btn-procesar:hover{opacity:0.9;}
+        .btn-procesar:disabled{opacity:0.5;cursor:not-allowed;}
 
-        .btn-procesar{width:100%;padding:17px;background:var(--warn);color:white;border:none;border-radius:12px;font-size:0.98rem;font-weight:800;cursor:pointer;transition:0.3s;font-family:'Plus Jakarta Sans',sans-serif;}
-        .btn-procesar:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(245,158,11,0.3);}
-        .btn-procesar:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-
-        /* RESULTADO */
         #resultado{display:none;}#resultado.show{display:block;}
-        .resultado-card{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:36px;text-align:center;}
-        .res-icon{width:64px;height:64px;background:rgba(34,197,94,0.15);border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;color:var(--success);}
-        .resultado-card h3{font-size:1.5rem;font-weight:800;margin-bottom:6px;}
-        .resultado-card p{color:var(--dim);margin-bottom:22px;font-size:0.9rem;}
-        .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;}
-        .res-item{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;}
-        .res-item span{display:block;font-size:0.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
-        .res-item strong{font-size:0.95rem;font-weight:800;}
+        .resultado-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;}
+        .res-icon{width:56px;height:56px;background:rgba(99,102,241,0.1);border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;color:var(--primary);}
+        .resultado-card h3{font-size:1.3rem;font-weight:800;margin-bottom:4px;color:var(--text);}
+        .resultado-card p{color:var(--dim);margin-bottom:20px;font-size:0.85rem;}
+        .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
+        .res-item{background:var(--surface);border-radius:10px;padding:12px;}
+        .res-item span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .res-item strong{font-size:0.88rem;font-weight:800;color:var(--text);}
         .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-        .btn-nueva{padding:11px 26px;background:var(--warn);color:white;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;transition:0.3s;}
-        .btn-nueva:hover{transform:translateY(-2px);}
-        .btn-print{padding:11px 26px;background:rgba(255,255,255,0.06);color:white;border:1px solid var(--border);border-radius:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;transition:0.3s;}
-        .btn-print:hover{background:rgba(255,255,255,0.1);}
 
-        .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-weight:700;z-index:9999;display:none;white-space:nowrap;font-size:0.88rem;}
-        .toast.show{display:block;animation:ti 0.35s ease;}
-        .t-ok{background:var(--success);color:white;}.t-err{background:var(--danger);color:white;}
-        @keyframes ti{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-
-        @media print{
+        @media print {
             *{margin:0;padding:0;box-sizing:border-box;}
             body{background:white!important;color:black!important;}
-            nav,.back,.glow,#p1,#ps .card,.steps,.page-header,.toast,.res-btns{display:none!important;}
+            nav,#p1,#ps .card,.ds,.page-header,.toast,.res-btns{display:none!important;}
             main{padding:0!important;max-width:100%!important;}
             #resultado{display:block!important;}
             .resultado-card{background:white!important;border:2px solid #333!important;color:black!important;padding:28px!important;border-radius:8px!important;}
@@ -149,30 +113,36 @@
     </style>
 </head>
 <body>
-<div class="glow"></div>
-<nav>
+<nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
-    <a href="/home/dashboard.html" class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
+    <div class="nav-right">
+        <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn-icon" onclick="document.body.classList.toggle('fullscreen-mode')" title="Pantalla completa" aria-label="Pantalla completa">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+        <a href="/home/dashboard.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
+    </div>
 </nav>
 <main>
     <div class="page-header">
-        <div class="page-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
-        <div><h1>Recibir Devolucion</h1><p>Registro de retorno de equipos con control de danos y multas</p></div>
+        <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
+        <div><h1>Recibir Devolucion</h1><p>Registro de retorno de equipos con control de daños y multas</p></div>
     </div>
 
-    <div class="steps">
-        <div class="step active" id="s1"><div class="sn">1</div><span>Seleccionar</span></div>
+    <div class="ds">
+        <div class="dstep active" id="s1"><div class="sn">1</div><span>Seleccionar</span></div>
         <div class="sl" id="l12"></div>
-        <div class="step" id="s2"><div class="sn">2</div><span>Registrar</span></div>
+        <div class="dstep" id="s2"><div class="sn">2</div><span>Registrar</span></div>
         <div class="sl" id="l23"></div>
-        <div class="step" id="s3"><div class="sn">3</div><span>Completado</span></div>
+        <div class="dstep" id="s3"><div class="sn">3</div><span>Completado</span></div>
     </div>
 
-    <!-- PASO 1 -->
     <div id="p1">
         <div class="card">
-            <div class="section-title warn">Prestamos activos - selecciona uno para procesar</div>
-            <div id="lista"><p class="em">Cargando prestamos activos...</p></div>
+            <div class="section-title">Prestamos activos - selecciona uno para procesar</div>
+            <div id="lista"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div></div></div>
         </div>
         <div class="card">
             <div class="section-title">O busca por nombre del alumno</div>
@@ -183,13 +153,12 @@
         </div>
     </div>
 
-    <!-- PASO 2 -->
     <div id="ps">
         <div class="info-banner">
             <div class="info-banner-header"><h3>Prestamo seleccionado</h3><button class="btn-change" onclick="volver()">Cambiar</button></div>
             <div class="info-grid" id="ig"></div>
             <div class="retraso-alerta" id="ra" style="display:none">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <strong id="rat"></strong>
             </div>
         </div>
@@ -200,12 +169,12 @@
                     <div class="ig"><label>Estado del equipo</label>
                         <select id="estado" onchange="onEstado()"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Dañado">Dañado</option></select>
                     </div>
-                    <div class="ig"><label>Observacion general</label><input type="text" id="obs" placeholder="Notas sobre la devolucion..."></div>
+                    <div class="ig"><label>Observacion general</label><input type="text" id="obs" placeholder="Notas sobre la devolucion..." oninput="checkFormComplete()"></div>
                 </div>
                 <div class="acc-box" id="accb" style="display:none">
                     <h4>Verificacion de accesorios</h4>
-                    <div id="acct" style="font-size:0.85rem;color:var(--dim);margin-bottom:9px;"></div>
-                    <label class="check-row"><input type="checkbox" id="acc_ok"><span>Confirmo que todos los accesorios fueron devueltos correctamente</span></label>
+                    <div id="acct" style="font-size:0.82rem;color:var(--dim);margin-bottom:8px;"></div>
+                    <label class="check-row"><input type="checkbox" id="acc_ok" onchange="clearFD('accesorios');checkFormComplete()"><span>Confirmo que todos los accesorios fueron devueltos correctamente</span></label>
                     <div class="ferr" id="ferr-accesorios">Confirma la devolucion de accesorios</div>
                 </div>
             </div>
@@ -214,10 +183,10 @@
                 <label class="dano-toggle"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños al momento de la devolucion</span></label>
                 <div class="dano-section" id="ds">
                     <div class="g2">
-                        <div class="ig"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="" oninput="clearFD('tdano')"><div class="ferr" id="ferr-tdano">Describe el tipo de dano</div></div>
-                        <div class="ig"><label>Monto reparacion</label><input type="number" id="mdano" placeholder="" min="0" oninput="updRes();clearFD('mdano')"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
+                        <div class="ig"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="" oninput="clearFD('tdano');checkFormComplete()"><div class="ferr" id="ferr-tdano">Describe el tipo de dano</div></div>
+                        <div class="ig"><label>Monto reparacion</label><input type="number" id="mdano" placeholder="" min="0" oninput="updRes();clearFD('mdano');checkFormComplete()"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
                     </div>
-                    <div class="ig"><label>Descripcion del daño</label><textarea id="odano" placeholder="Descripcion detallada del daño..." oninput="clearFD('odano')"></textarea><div class="ferr" id="ferr-odano">Describe el dano en detalle</div></div>
+                    <div class="ig"><label>Descripcion del daño</label><textarea id="odano" placeholder="Descripcion detallada del daño..." oninput="clearFD('odano');checkFormComplete()"></textarea><div class="ferr" id="ferr-odano">Describe el dano en detalle</div></div>
                 </div>
             </div>
             <div class="cobros-card" id="cobros">
@@ -229,17 +198,16 @@
             </div>
             <div class="conf-box">
                 <h4>Conformidad del encargado</h4>
-                <label class="check-row"><input type="checkbox" id="conf" onchange="clearFD('conf')"><span>Confirmo que la informacion ingresada es correcta y el equipo fue recibido segun las condiciones indicadas</span></label>
+                <label class="check-row"><input type="checkbox" id="conf" onchange="clearFD('conf');checkFormComplete()"><span>Confirmo que la informacion ingresada es correcta y el equipo fue recibido segun las condiciones indicadas</span></label>
                 <div class="ferr" id="ferr-conf">Debes confirmar la conformidad para procesar</div>
             </div>
             <button class="btn-procesar" id="btn" onclick="procesar()">Procesar devolucion</button>
         </div>
     </div>
 
-    <!-- PASO 3 -->
     <div id="resultado">
         <div class="resultado-card">
-            <div class="res-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <div class="res-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
             <h3>Devolucion Registrada</h3>
             <p id="rdesc">El equipo fue procesado correctamente.</p>
             <div class="res-grid">
@@ -251,36 +219,33 @@
                 <div class="res-item"><span>Total cobrado</span><strong id="r-tot" style="color:var(--danger)">Gs. 0</strong></div>
             </div>
             <div class="res-btns">
-                <button class="btn-print" onclick="window.print()">Imprimir comprobante</button>
-                <button class="btn-nueva" onclick="nueva()">Nueva devolucion</button>
+                <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
+                <button class="btn btn-primary" onclick="nueva()">Nueva devolucion</button>
             </div>
         </div>
     </div>
 </main>
 <div class="toast" id="toast"></div>
+<script src="/js/api.js"></script>
 <script>
-const API='http://localhost:3000';
 if(!localStorage.getItem('encargado')) window.location.href='/';
-var MULTA=10000; // se actualiza desde la configuracion del servidor
+var MULTA=10000;
 
 async function cargarMulta(){
     try{
-        var r=await fetch(API+'/configuracion');
+        var r=await apiFetch('/configuracion');
         var d=await r.json();
         var cfg=d.find(function(x){return x.clave==='multa_por_dia';});
         if(cfg) MULTA=parseInt(cfg.valor)||10000;
     }catch(e){ MULTA=10000; }
 }
 let pActual=null;
-const ff=d=>{if(!d)return'—';return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});};
-const fn=n=>Number(n).toLocaleString('es-PY');
-function st(msg,t='t-err'){const e=document.getElementById('toast');e.textContent=msg;e.className=`toast show ${t}`;setTimeout(()=>e.className='toast',3200);}
 function clearFD(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
 
 async function cargarActivos(){
     const lista=document.getElementById('lista');
     try{
-        const r=await fetch(`${API}/prestamos`);
+        const r=await apiFetch('/prestamos');
         if(!r.ok){lista.innerHTML='<p class="em">Error al cargar prestamos</p>';return;}
         const activos=(await r.json()).filter(p=>p.estado==='ACTIVO');
         if(!activos.length){lista.innerHTML='<p class="em">No hay prestamos activos pendientes de devolucion</p>';return;}
@@ -290,7 +255,7 @@ async function cargarActivos(){
             const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
             return `<div class="pres-item" id="item-${p.id_prestamo}" onclick="selec(${p.id_prestamo})">
                 <div class="pi-left">
-                    <h4>#${p.id_prestamo} &mdash; ${p.alumno_nombre} ${p.alumno_apellido} <span style="font-size:0.75rem;color:var(--dim)">(${p.codigo_alumno})</span></h4>
+                    <h4>#${p.id_prestamo} &mdash; ${p.alumno_nombre} ${p.alumno_apellido} <span style="font-size:0.72rem;color:var(--dim)">(${p.codigo_alumno})</span></h4>
                     <p>${p.equipo} &middot; ${p.tipo} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
                 </div>
                 <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al dia'}</span>
@@ -307,9 +272,8 @@ async function selec(id){
 async function buscar(){
     const q=document.getElementById('idp').value.trim().toLowerCase();
     if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
-
     try{
-        const r=await fetch(API+'/prestamos');
+        const r=await apiFetch('/prestamos');
         if(!r.ok){st('Error al buscar');return;}
         const todos=await r.json();
         const activos=todos.filter(function(p){
@@ -325,16 +289,15 @@ async function buscar(){
         if(activos.length===1){
             await cargarPres(activos[0].id_prestamo);
         } else {
-            // Mostrar resultados multiples en la lista
             const lista=document.getElementById('lista');
             const ahora=new Date();
-            lista.innerHTML='<div style="font-size:0.78rem;color:var(--warn);font-weight:700;margin-bottom:10px">'+activos.length+' prestamos encontrados — selecciona uno:</div>'+
+            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' prestamos encontrados — selecciona uno:</div>'+
             activos.map(function(p){
                 const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
                 const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
                 return '<div class="pres-item" id="item-'+p.id_prestamo+'" onclick="selec('+p.id_prestamo+')">'+
                     '<div class="pi-left">'+
-                    '<h4>#'+p.id_prestamo+' &mdash; '+p.alumno_nombre+' '+p.alumno_apellido+' <span style="font-size:0.76rem;color:var(--dim)">('+p.codigo_alumno+')</span></h4>'+
+                    '<h4>#'+p.id_prestamo+' &mdash; '+p.alumno_nombre+' '+p.alumno_apellido+' <span style="font-size:0.72rem;color:var(--dim)">('+p.codigo_alumno+')</span></h4>'+
                     '<p>'+p.equipo+' &middot; '+p.tipo+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
                     '</div>'+
                     '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al dia')+'</span>'+
@@ -345,7 +308,7 @@ async function buscar(){
 }
 async function cargarPres(id){
     try{
-        const r=await fetch(`${API}/prestamos/${id}`);
+        const r=await apiFetch(`/prestamos/${id}`);
         if(!r.ok){st('Prestamo no encontrado o ya fue devuelto');return;}
         pActual=await r.json();mostrar();
     }catch(e){st('Error de conexion');}
@@ -373,7 +336,7 @@ function mostrar(){
     document.getElementById('p1').style.display='none';
     document.getElementById('ps').classList.add('show');
     document.getElementById('fd').classList.add('show');
-    setStep(2);updRes();
+    setStep(2);updRes();checkFormComplete();
 }
 
 function volver(){
@@ -387,14 +350,16 @@ function volver(){
 }
 
 function onEstado(){
-    if(document.getElementById('estado').value==='Danado'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
+    if(document.getElementById('estado').value==='Dañado'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
     updRes();
+    checkFormComplete();
 }
 function togDano(){
     const c=document.getElementById('dano').checked;
     document.getElementById('ds').classList.toggle('show',c);
     if(!c){document.getElementById('mdano').value='';document.getElementById('tdano').value='';document.getElementById('odano').value='';}
     updRes();
+    checkFormComplete();
 }
 function updRes(){
     if(!pActual)return;
@@ -406,6 +371,22 @@ function updRes(){
     document.getElementById('rda').textContent=`Gs. ${fn(dan)}`;
     document.getElementById('rt').textContent=`Gs. ${fn(mul+dan)}`;
     document.getElementById('cobros').classList.toggle('show',ret>0||dan>0);
+}
+
+function checkFormComplete(){
+    const btn=document.getElementById('btn');
+    if(!pActual){btn.disabled=true;return;}
+    const dano=document.getElementById('dano').checked;
+    const conf=document.getElementById('conf').checked;
+    if(!conf){btn.disabled=true;return;}
+    if(dano){
+        const td=document.getElementById('tdano').value.trim();
+        const md=document.getElementById('mdano').value.trim();
+        const od=document.getElementById('odano').value.trim();
+        if(!td||!md||!od||parseFloat(md)<=0||isNaN(parseFloat(md))){btn.disabled=true;return;}
+    }
+    if(document.getElementById('accb').style.display!=='none'&&!document.getElementById('acc_ok').checked){btn.disabled=true;return;}
+    btn.disabled=false;
 }
 
 function validarDev(){
@@ -432,7 +413,7 @@ async function procesar(){
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
     const dano=document.getElementById('dano').checked;
     try{
-        const r=await fetch(`${API}/devoluciones`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(document.getElementById('mdano').value)||0,observacion:document.getElementById('obs').value.trim()})});
+        const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(document.getElementById('mdano').value)||0,observacion:document.getElementById('obs').value.trim()})});
         const d=await r.json();
         if(r.ok){
             document.getElementById('r-alu').textContent=`${pActual.alumno_nombre} ${pActual.alumno_apellido}`;
@@ -460,7 +441,7 @@ function resetForm(){
     document.getElementById('dano').checked=false;document.getElementById('ds').classList.remove('show');
     document.getElementById('mdano').value='';document.getElementById('tdano').value='';document.getElementById('odano').value='';
     document.getElementById('conf').checked=false;document.getElementById('cobros').classList.remove('show');
-    document.getElementById('btn').disabled=false;document.getElementById('btn').textContent='Procesar devolucion';
+    document.getElementById('btn').textContent='Procesar devolucion';checkFormComplete();
     ['tdano','mdano','odano','conf','accesorios'].forEach(f=>clearFD(f));
 }
 function setStep(n){
@@ -469,7 +450,7 @@ function setStep(n){
     document.getElementById('l23').classList.toggle('done',n>2);
 }
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
-window.onload=function(){ cargarMulta(); cargarActivos(); };
+window.onload=function(){ cargarMulta(); cargarActivos(); initTheme(); initSpotlight([]); };
 </script>
 </body>
 </html>
