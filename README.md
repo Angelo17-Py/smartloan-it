@@ -59,6 +59,7 @@ SistemaPrestamos/
 ├── backend/
 │   ├── server.js
 │   ├── db.js
+│   ├── initDb.js             ← Auto-creación de tablas al iniciar
 │   ├── middleware/
 │   │   ├── auth.js          (JWT)
 │   │   └── errorHandler.js
@@ -85,6 +86,7 @@ SistemaPrestamos/
 │   ├── devoluciones/devoluciones.html
 │   └── historial/historial.html
 ├── query.sql
+├── railway.json              ← Configuración para Railway
 ├── .env.example
 ├── .gitignore
 ├── Dockerfile
@@ -92,6 +94,28 @@ SistemaPrestamos/
 ├── package.json
 └── README.md
 ```
+
+---
+
+## Deploy en Railway (gratuito)
+
+El sistema está preparado para desplegarse en [Railway](https://railway.app/) con un solo clic:
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/Angelo17-Py/smartloan-it)
+
+### Pasos manuales
+
+1. Crea una cuenta en [railway.app](https://railway.app/) con tu GitHub
+2. Haz clic en **New Project** → **Deploy from GitHub repo**
+3. Selecciona `Angelo17-Py/smartloan-it`
+4. Agrega un plugin **MySQL** desde el dashboard
+5. Agrega las variables de entorno:
+   - `JWT_SECRET` → cualquier clave secreta (ej: `SmartLoanIT_Produccion_2026`)
+6. Railway iniciará el deploy automáticamente
+7. Abrí la URL que Railway te asigne (ej: `smartloan-it.up.railway.app`)
+8. Inicia sesión con: código `1234` / contraseña `CREDENCIALES_BORRADAS`
+
+> **Nota**: La base de datos y tablas se crean automáticamente en el primer inicio.
 
 ---
 
@@ -107,34 +131,24 @@ SistemaPrestamos/
 # Iniciar MySQL + App
 docker compose up -d
 
-# Cargar esquema de base de datos
-docker exec -i SistemaPrestamos mysql -u root -p1234 -e "CREATE DATABASE IF NOT EXISTS prestamos_db;"
-docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db < query.sql
-
-# Crear tabla de configuración
-docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db -e "CREATE TABLE IF NOT EXISTS configuracion (id_config INT AUTO_INCREMENT PRIMARY KEY, clave VARCHAR(100) UNIQUE NOT NULL, valor VARCHAR(200) NOT NULL, descripcion VARCHAR(300)); INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES ('multa_por_dia', '10000', 'Monto en guaranies por dia de retraso');"
+# La app crea automaticamente las tablas al iniciar
+# Solo necesitas cargar los datos iniciales
+docker exec -i smartloan-app node backend/initDb.js
 ```
 
 ### Opción 2: Manual
 
 ```bash
 # 1. Crear el contenedor de MySQL
-docker run --name SistemaPrestamos -e MYSQL_ROOT_PASSWORD=1234 -p 3307:3306 -d mysql:8.0
+docker run --name smartloan-mysql -e MYSQL_ROOT_PASSWORD=1234 -p 3307:3306 -d mysql:8.0
 
-# 2. Crear la base de datos y cargar el esquema
-docker exec -i SistemaPrestamos mysql -u root -p1234 -e "CREATE DATABASE prestamos_db;"
-docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db < query.sql
-
-# 3. Crear la tabla de configuración
-docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db -e "CREATE TABLE IF NOT EXISTS configuracion (id_config INT AUTO_INCREMENT PRIMARY KEY, clave VARCHAR(100) UNIQUE NOT NULL, valor VARCHAR(200) NOT NULL, descripcion VARCHAR(300)); INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES ('multa_por_dia', '10000', 'Monto en guaranies por dia de retraso');"
-
-# 4. Configurar variables de entorno
+# 2. Configurar variables de entorno
 copy .env.example .env
 
-# 5. Instalar dependencias
+# 3. Instalar dependencias
 npm install
 
-# 6. Iniciar el servidor
+# 4. Iniciar el servidor (crea tablas automaticamente)
 npm start
 ```
 
@@ -228,20 +242,21 @@ configuracion   → Parámetros del sistema (multa por día, etc.)
 
 ## Comandos útiles
 
-Iniciar el contenedor Docker:
+Iniciar los contenedores:
 ```bash
-docker start SistemaPrestamos
+docker compose up -d
 ```
 
 Resetear la base de datos:
 ```bash
-docker exec -i SistemaPrestamos mysql -u root -p1234 -e "DROP DATABASE IF EXISTS prestamos_db; CREATE DATABASE prestamos_db;"
-docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db < query.sql
+docker compose down -v
+docker compose up -d
+# Las tablas se crean automaticamente al reiniciar la app
 ```
 
 Limpiar solo los datos de prueba (mantiene estructura):
 ```bash
-docker exec -i SistemaPrestamos mysql -u root -p1234 prestamos_db -e "DELETE FROM devoluciones; DELETE FROM prestamos; DELETE FROM equipos; DELETE FROM alumnos; ALTER TABLE equipos AUTO_INCREMENT = 1; ALTER TABLE alumnos AUTO_INCREMENT = 1; ALTER TABLE prestamos AUTO_INCREMENT = 1; ALTER TABLE devoluciones AUTO_INCREMENT = 1;"
+docker exec -i smartloan-mysql mysql -u root -p1234 prestamos_db -e "DELETE FROM devoluciones; DELETE FROM prestamos; DELETE FROM equipos; DELETE FROM alumnos; ALTER TABLE equipos AUTO_INCREMENT = 1; ALTER TABLE alumnos AUTO_INCREMENT = 1; ALTER TABLE prestamos AUTO_INCREMENT = 1; ALTER TABLE devoluciones AUTO_INCREMENT = 1;"
 ```
 
 ---

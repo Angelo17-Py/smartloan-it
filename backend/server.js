@@ -6,6 +6,7 @@ const db      = require('./db');
 const ExcelJS = require('exceljs');
 const errorHandler = require('./middleware/errorHandler');
 const { verificarToken } = require('./middleware/auth');
+const initDatabase = require('./initDb');
 
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 3000;
@@ -263,4 +264,13 @@ app.get('/exportar', verificarToken, async (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`SmartLoan IT corriendo en http://localhost:${PORT}`));
+async function start() {
+  try {
+    await initDatabase();
+    app.listen(PORT, () => console.log(`SmartLoan IT corriendo en http://localhost:${PORT}`));
+  } catch (err) {
+    console.error('Error al iniciar:', err);
+    process.exit(1);
+  }
+}
+start();
