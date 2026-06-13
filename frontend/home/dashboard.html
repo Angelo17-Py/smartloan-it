@@ -53,29 +53,51 @@
 
         /* ADMIN */
         .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-
-        .admin-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 24px;}
+        .admin-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 24px;position:relative;overflow:hidden;}
+        .admin-card-accent{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));}
         .admin-card-header{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
         .admin-card-icon{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.08);}
-        .admin-card-title{font-size:0.95rem;font-weight:800;}
+        .admin-card-title{font-size:0.95rem;font-weight:800;display:flex;align-items:center;gap:8px;}
         .admin-card-sub{font-size:0.78rem;color:var(--dim);margin-bottom:18px;line-height:1.5;}
 
-        /* EXPORT */
-        .export-btn{display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:0.2s;text-align:left;}
-        .export-btn:hover{background:var(--card);border-color:var(--border-hover);}
-        .export-btn:disabled{opacity:0.5;cursor:not-allowed;}
-        .export-btn .eb-icon{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.08);transition:0.2s;}
+        /* FORMAT BADGE */
+        .format-badge{display:inline-flex;align-items:center;padding:1px 8px;border-radius:5px;font-size:0.6rem;font-weight:800;font-family:var(--mono);letter-spacing:0.5px;background:rgba(34,197,94,0.12);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
+
+        /* EXPORT STATS */
+        .export-stats{display:flex;align-items:center;gap:0;margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:11px;}
+        .es-item{flex:1;text-align:center;}
+        .es-num{display:block;font-size:1.2rem;font-weight:800;color:var(--text);line-height:1.2;}
+        .es-lbl{display:block;font-size:0.62rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;}
+        .es-divider{width:1px;height:28px;background:var(--border);flex-shrink:0;}
+
+        /* EXPORT BUTTON */
+        .export-btn{display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--primary),#8b5cf6);color:#fff;cursor:pointer;font-family:inherit;font-size:0.85rem;font-weight:600;transition:0.25s;text-align:left;box-shadow:0 4px 15px var(--primary-glow);position:relative;overflow:hidden;}
+        .export-btn:hover{transform:translateY(-2px);box-shadow:0 6px 25px var(--primary-glow);}
+        .export-btn:active{transform:translateY(0);}
+        .export-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;}
+        .export-btn .eb-icon{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;background:rgba(255,255,255,0.15);transition:0.2s;}
+        .export-btn:hover .eb-icon{background:rgba(255,255,255,0.25);transform:translateY(-1px);}
         .export-btn .eb-label{flex:1;}
         .export-btn .eb-title{display:block;font-weight:700;font-size:0.85rem;}
-        .export-btn .eb-desc{display:block;font-size:0.7rem;color:var(--dim);margin-top:1px;}
-        .export-btn .eb-arrow{color:var(--muted);flex-shrink:0;transition:0.2s;}
-        .export-btn:hover .eb-arrow{color:var(--primary);transform:translateX(2px);}
-        .export-spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite;display:none;margin:10px;}
-        .export-btn.exporting .eb-icon{display:none;}
-        .export-btn.exporting .export-spinner{display:block;}
+        .export-btn .eb-desc{display:block;font-size:0.7rem;opacity:0.75;margin-top:1px;}
+        .export-btn .eb-arrow{flex-shrink:0;transition:0.2s;opacity:0.7;}
+        .export-btn:hover .eb-arrow{opacity:1;transform:translateX(2px);}
+        .export-btn .eb-check{display:none;flex-shrink:0;}
+        .eb-progress-wrap{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.2);border-radius:0 0 12px 12px;overflow:hidden;display:none;}
+        .eb-progress-bar{height:100%;background:#fff;border-radius:0 0 12px 12px;transition:width 0.3s ease;width:0%;}
+        .export-btn.exporting{cursor:wait;}
+        .export-btn.exporting .eb-progress-wrap{display:block;}
         .export-btn.exporting .eb-arrow{display:none;}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .export-info{font-size:0.72rem;color:var(--dim);margin-top:10px;display:flex;align-items:center;gap:6px;}
+        .export-btn.completed .eb-arrow{display:none;}
+        .export-btn.completed .eb-check{display:block;}
+        .export-btn.completed .eb-icon{display:none;}
+        .export-btn.completed{background:linear-gradient(135deg,#16a34a,#22c55e);box-shadow:0 4px 15px rgba(34,197,94,0.35);pointer-events:none;}
+
+        /* EXPORT INFO */
+        .export-info{font-size:0.72rem;color:var(--dim);margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+        .export-filesize{color:var(--muted);}
+        .export-filesize:empty{display:none;}
+        .export-filesize::before{content:'\00B7';margin-right:6px;}
 
         /* CONFIG */
         .multa-box{text-align:center;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:11px;margin-bottom:14px;}
@@ -187,23 +209,33 @@
 
         <!-- EXPORT -->
         <div class="admin-card">
+            <div class="admin-card-accent"></div>
             <div class="admin-card-header">
                 <div class="admin-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-                <div class="admin-card-title">Respaldo de informacion</div>
+                <div class="admin-card-title">Respaldo de informacion <span class="format-badge">XLSX</span></div>
             </div>
-            <p class="admin-card-sub">Exporta todos los prestamos y devoluciones en un archivo de Excel.</p>
+            <p class="admin-card-sub">Exporta todos los prestamos y devoluciones en un archivo de Excel con formato profesional.</p>
+            <div class="export-stats" id="exportStats">
+                <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Prestamos</span></div>
+                <div class="es-divider"></div>
+                <div class="es-item"><span class="es-num" id="expReturns">—</span><span class="es-lbl">Devoluciones</span></div>
+                <div class="es-divider"></div>
+                <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
+            </div>
             <button class="export-btn" id="exportBtn" onclick="exportarCSV()">
-                <span class="eb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-                <span class="export-spinner"></span>
+                <span class="eb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
                 <span class="eb-label">
-                    <span class="eb-title">Exportar prestamos y devoluciones</span>
-                    <span class="eb-desc">Historial completo en formato .xlsx</span>
+                    <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
+                    <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
                 </span>
                 <svg class="eb-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                <span class="eb-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
             </button>
             <div class="export-info" id="exportInfo">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 <span>Ultima exportacion: <strong id="lastExport">—</strong></span>
+                <span class="export-filesize" id="lastExportSize"></span>
             </div>
         </div>
 
@@ -250,27 +282,116 @@ function ir(r){
 
 async function exportarCSV(){
     const btn=document.getElementById('exportBtn');
+    const bar=document.getElementById('progressBar');
+    const title=document.getElementById('exportBtnTitle');
+    const desc=document.getElementById('exportBtnDesc');
     btn.disabled=true;btn.classList.add('exporting');
+    title.textContent='Exportando...';
+    desc.textContent='Preparando archivo Excel';
+
+    let progress=0;
+    const sim=setInterval(function(){
+        if(progress<90){
+            progress+=Math.random()*12+4;
+            if(progress>90)progress=90;
+            bar.style.width=Math.round(progress)+'%';
+        }
+    },400);
+
     try {
         const r = await apiFetch('/exportar');
-        if (!r.ok) { st('Error al exportar','t-err');btn.disabled=false;btn.classList.remove('exporting');return; }
+        if (!r.ok) { st('Error al exportar','t-err');resetExportBtn();return; }
+
+        const loanCount=r.headers.get('X-Export-Loans');
+        const returnCount=r.headers.get('X-Export-Returns');
+        const studentCount=r.headers.get('X-Export-Students');
+
+        clearInterval(sim);
+        bar.style.width='100%';
+
         const blob = await r.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        const hoy=new Date().toISOString().slice(0,10);
+        const hoy=(new Date()).toISOString().slice(0,10);
         a.download = 'smartloan_exportacion_' + hoy + '.xlsx';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
         const ahora=new Date();
-        const fechaStr=ahora.toLocaleDateString('es-PY',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-        localStorage.setItem('ultimaExportacion',fechaStr);
-        document.getElementById('lastExport').textContent=fechaStr;
+        const exportMeta={
+            iso:ahora.toISOString(),
+            prestamos:loanCount,
+            devoluciones:returnCount,
+            alumnos:studentCount
+        };
+        localStorage.setItem('ultimaExportacion',JSON.stringify(exportMeta));
+        actualizarInfoExportacion();
+
+        btn.classList.remove('exporting');
+        btn.classList.add('completed');
+        title.textContent='Exportacion completada';
+        desc.textContent='Archivo descargado exitosamente';
         st('Exportacion completada');
-    } catch(e) { st('Error de conexion','t-err'); }
-    btn.disabled=false;btn.classList.remove('exporting');
+
+        setTimeout(function(){
+            btn.classList.remove('completed');
+            resetExportBtn();
+        },2500);
+    } catch(e) { st('Error de conexion','t-err');clearInterval(sim);resetExportBtn(); }
+}
+
+function resetExportBtn(){
+    var btn=document.getElementById('exportBtn');
+    var bar=document.getElementById('progressBar');
+    var title=document.getElementById('exportBtnTitle');
+    var desc=document.getElementById('exportBtnDesc');
+    btn.disabled=false;
+    btn.classList.remove('exporting','completed');
+    bar.style.width='0%';
+    title.textContent='Exportar ahora';
+    desc.textContent='Historial completo en .xlsx';
+}
+
+function actualizarInfoExportacion(){
+    var raw=localStorage.getItem('ultimaExportacion');
+    if(!raw) return;
+    try{
+        var meta=JSON.parse(raw);
+        document.getElementById('lastExport').textContent=formatearTiempoRelativo(meta.iso);
+        var sizeEl=document.getElementById('lastExportSize');
+        if(meta.prestamos){
+            sizeEl.textContent=meta.prestamos+' prest. · '+meta.devoluciones+' dev. · '+meta.alumnos+' al.';
+            sizeEl.style.display='inline';
+        } else {
+            sizeEl.style.display='none';
+        }
+        if(meta.prestamos){
+            document.getElementById('expLoans').textContent=meta.prestamos;
+            document.getElementById('expReturns').textContent=meta.devoluciones;
+            document.getElementById('expStudents').textContent=meta.alumnos;
+        }
+    }catch(e){
+        // formato antiguo (string plano)
+        document.getElementById('lastExport').textContent=raw;
+    }
+}
+
+function formatearTiempoRelativo(iso){
+    var ahora=new Date();
+    var fecha=new Date(iso);
+    var diffMs=ahora-fecha;
+    var diffMin=Math.floor(diffMs/60000);
+    var diffHoras=Math.floor(diffMs/3600000);
+    var diffDias=Math.floor(diffMs/86400000);
+    if(diffMin<1) return 'hace unos segundos';
+    if(diffMin<60) return 'hace '+diffMin+' min';
+    if(diffHoras<24) return 'hace '+diffHoras+' h';
+    if(diffDias===1) return 'ayer';
+    if(diffDias<7) return 'hace '+diffDias+' dias';
+    return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
 function logout(){
@@ -374,8 +495,7 @@ window.onload=()=>{
         document.getElementById('urole').textContent=enc.cargo||'Encargado';
         document.getElementById('welcome-msg').textContent=`Bienvenido, ${enc.nombre}`;
     }
-    var ultimaExport=localStorage.getItem('ultimaExportacion');
-    if(ultimaExport) document.getElementById('lastExport').textContent=ultimaExport;
+    actualizarInfoExportacion();
     cargarMetricas();
     cargarConfig();
     initTheme();

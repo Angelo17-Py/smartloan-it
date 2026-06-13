@@ -240,6 +240,15 @@ app.get('/exportar', verificarToken, async (req, res) => {
       }
     );
 
+    const loanCount = rows.length;
+    const returnCount = devRows.length;
+    const studentSet = new Set(rows.map(function(r) { return r.codigo_alumno; }));
+    const studentCount = studentSet.size;
+
+    res.setHeader('X-Export-Loans', loanCount);
+    res.setHeader('X-Export-Returns', returnCount);
+    res.setHeader('X-Export-Students', studentCount);
+
     const fecha = new Date().toISOString().slice(0, 10);
     res.setHeader('Content-Disposition', 'attachment; filename=smartloan_exportacion_' + fecha + '.xlsx');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
