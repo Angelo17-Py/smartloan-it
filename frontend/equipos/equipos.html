@@ -52,7 +52,7 @@
 <main>
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-        <div><h1>Gestion de Equipos</h1><p>Registro y control de estado de los activos tecnologicos</p></div>
+        <div><h1>Gestión de Equipos</h1><p>Registro y control de estado de los activos tecnológicos</p></div>
     </div>
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo equipo</div>
@@ -66,7 +66,7 @@
                 <select id="marca" onchange="clearF('marca');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
-            <div class="ig"><label>Descripcion</label><input id="desc" placeholder=""></div>
+            <div class="ig"><label>Descripción</label><input id="desc" placeholder="" oninput="clearF('desc');checkNuevoEquipo()"><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
             <div class="btn-wrap"><button class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
         </div>
     </div>
@@ -102,7 +102,7 @@
                     <div class="ferr" id="ferr-edit-marca">Selecciona la marca</div>
                 </div>
             </div>
-            <div class="ig"><label>Descripcion</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB"></div>
+            <div class="ig"><label>Descripción</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" oninput="clearFE('desc');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
             <button class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
         </div>
     </div>
@@ -124,19 +124,21 @@ function checkNuevoEquipo(){
     const nombre=document.getElementById('nombre').value.trim();
     const tipo=document.getElementById('tipo').value;
     const marca=document.getElementById('marca').value;
-    document.getElementById('btnAdd').disabled=!(nombre&&tipo&&marca);
+    const desc=document.getElementById('desc').value.trim();
+    document.getElementById('btnAdd').disabled=!(nombre&&tipo&&marca&&desc);
 }
 
 function checkEditEquipo(){
     const nombre=document.getElementById('edit-nombre').value.trim();
     const tipo=document.getElementById('edit-tipo').value;
     const marca=document.getElementById('edit-marca').value;
-    document.getElementById('btnGuardar').disabled=!(nombre&&tipo&&marca);
+    const desc=document.getElementById('edit-desc').value.trim();
+    document.getElementById('btnGuardar').disabled=!(nombre&&tipo&&marca&&desc);
 }
 
 function validarNuevo(){
     let ok = true;
-    ['nombre','tipo','marca'].forEach(f => {
+    ['nombre','tipo','marca','desc'].forEach(f => {
         const el = document.getElementById(f);
         if(!el.value.trim()){
             el.classList.add('err');
@@ -228,7 +230,7 @@ async function crear(){
             st('Error al registrar el equipo','t-err');
         }
     } catch(e){
-        st('Error de conexion con el servidor','t-err');
+        st('Error de conexión con el servidor','t-err');
     }
     btn.disabled = false; btn.textContent = '+ Agregar equipo';
 }
@@ -236,7 +238,7 @@ async function crear(){
 function confirmarEliminar(id){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     if(!eq) return;
-    if(!confirm(`Eliminar el equipo "${eq.nombre}"?\n\nSe eliminara tambien todo su historial de prestamos. Esta accion no se puede deshacer.`)) return;
+    if(!confirm(`Eliminar el equipo "${eq.nombre}"?\n\nSe eliminará también todo su historial de préstamos. Esta acción no se puede deshacer.`)) return;
     eliminar(id);
 }
 
@@ -247,7 +249,7 @@ async function eliminar(id){
         r.ok ? st('Equipo eliminado') : st(d.mensaje||'No se puede eliminar','t-err');
         cargar();
     } catch(e){
-        st('Error de conexion','t-err');
+        st('Error de conexión','t-err');
     }
 }
 
@@ -256,7 +258,7 @@ async function cambiar(id, estado){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     const nombre = eq ? eq.nombre : 'este equipo';
     const msg = estado === '3'
-        ? `Enviar "${nombre}" a mantenimiento?\nNo estara disponible para prestamos hasta marcarlo como disponible.`
+        ? `Enviar "${nombre}" a mantenimiento?\nNo estará disponible para préstamos hasta marcarlo como disponible.`
         : `Marcar "${nombre}" como Disponible?`;
     if(!confirm(msg)) return;
     try {
@@ -268,7 +270,7 @@ async function cambiar(id, estado){
         st(`Estado actualizado: ${_estadoLabels[estado]||estado}`);
         cargar();
     } catch(e){
-        st('Error de conexion','t-err');
+        st('Error de conexión','t-err');
     }
 }
 
@@ -304,6 +306,7 @@ async function guardarEquipo(){
     if(!n){ document.getElementById('edit-nombre').classList.add('err'); document.getElementById('ferr-edit-nombre').classList.add('show'); ok=false; }
     if(!t){ document.getElementById('edit-tipo').classList.add('err');   document.getElementById('ferr-edit-tipo').classList.add('show');   ok=false; }
     if(!m){ document.getElementById('edit-marca').classList.add('err');  document.getElementById('ferr-edit-marca').classList.add('show');  ok=false; }
+    if(!d){ document.getElementById('edit-desc').classList.add('err');   document.getElementById('ferr-edit-desc').classList.add('show');   ok=false; }
     if(!ok) return;
     if(!equipoEditandoId){ st('Error interno: ID no encontrado','t-err'); return; }
     const btn = document.getElementById('btnGuardar');
@@ -324,7 +327,7 @@ async function guardarEquipo(){
             btn.disabled = false; btn.textContent = 'Guardar cambios';
         }
     } catch(e){
-        st('Error de conexion con el servidor','t-err');
+        st('Error de conexión con el servidor','t-err');
         btn.disabled = false; btn.textContent = 'Guardar cambios';
     }
 }

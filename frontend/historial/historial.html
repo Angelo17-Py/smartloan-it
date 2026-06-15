@@ -36,6 +36,9 @@
         .sub-text{font-size:0.75rem;color:var(--dim);margin-top:2px;}
         .em{text-align:center;padding:40px;color:var(--dim);font-size:0.88rem;}
         .highlight{background:rgba(99,102,241,0.15);border-radius:3px;padding:0 2px;}
+        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:0.15s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .btn-del-row:hover{background:rgba(239,68,68,0.1);}
+        th.ac{width:52px;}
     </style>
 </head>
 <body>
@@ -58,7 +61,7 @@
     </div>
     <div class="toolbar">
         <div class="tabs">
-            <button class="tab active" onclick="setTab('p',this)">Prestamos</button>
+            <button class="tab active" onclick="setTab('p',this)">Préstamos</button>
             <button class="tab" onclick="setTab('d',this)">Devoluciones</button>
         </div>
         <div class="filters" id="filtros">
@@ -70,7 +73,7 @@
     </div>
     <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="busq" placeholder="Buscar por alumno, equipo, codigo, motivo..." oninput="buscar()">
+        <input id="busq" placeholder="Buscar por alumno, equipo, código, motivo..." oninput="buscar()">
         <span class="search-count" id="search-count"></span>
     </div>
     <div id="tp" class="table-wrap"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
@@ -151,10 +154,10 @@ function renderP(){
     var d=getPrestFiltrados();
     var q=document.getElementById('busq').value.trim();
     var w=document.getElementById('tp');
-    var header='<div class="table-header"><span>Registro de prestamos</span><span class="table-count">'+d.length+' registros</span></div>';
+    var header='<div class="table-header"><span>Registro de préstamos</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha prestamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha préstamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th><th class="ac"></th></tr></thead><tbody>';
     d.forEach(function(p){
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
@@ -166,6 +169,7 @@ function renderP(){
         html+='<td style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
         html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td>'+badge+'</td>';
+        html+='<td><button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button></td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -179,7 +183,7 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th><th class="ac"></th></tr></thead><tbody>';
     d.forEach(function(dv){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
@@ -193,6 +197,7 @@ function renderD(){
         html+='<td>'+danoCell+'</td>';
         html+='<td style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
         html+='<td style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
+        html+='<td><button class="btn-del-row" onclick="eliminarDevolucion('+dv.id_devolucion+')" title="Eliminar devolución">✕</button></td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -223,6 +228,20 @@ function setF(f,el){
     renderP();
 }
 
+function eliminarPrestamo(id){
+    if(!confirm('Eliminar el préstamo #'+id+'?\n\nSe borrarán todos los datos asociados (incluyendo devolución si existe).\nEsta acción no se puede deshacer.')) return;
+    apiFetch('/prestamos/'+id,{method:'DELETE'}).then(function(r){
+        if(r.ok){st('Préstamo eliminado');cargar();}
+        else{r.json().then(function(d){st(d.mensaje||'Error','t-err');});}
+    }).catch(function(){st('Error de conexión','t-err');});
+}
+function eliminarDevolucion(id){
+    if(!confirm('Eliminar la devolución #'+id+'?\n\nEl préstamo se reactivará y el equipo volverá a estar disponible.\nEsta acción no se puede deshacer.')) return;
+    apiFetch('/devoluciones/'+id,{method:'DELETE'}).then(function(r){
+        if(r.ok){st('Devolución eliminada');cargar();}
+        else{r.json().then(function(d){st(d.mensaje||'Error','t-err');});}
+    }).catch(function(){st('Error de conexión','t-err');});
+}
 window.onload=function(){ cargar(); initTheme(); initSpotlight([]); };
 </script>
 </body>

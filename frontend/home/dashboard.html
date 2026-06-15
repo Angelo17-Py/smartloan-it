@@ -149,7 +149,7 @@
     <div class="welcome">
         <div class="welcome-left">
             <h1 id="welcome-msg">Bienvenido</h1>
-            <p>Panel de control del sistema de gestion de recursos tecnologicos</p>
+            <p>Panel de control del sistema de gestión de recursos tecnológicos</p>
         </div>
         <div class="welcome-right">
             <div class="wr-date" id="fecha-hoy"></div>
@@ -183,7 +183,7 @@
     <section class="actions">
         <div class="action-card" onclick="ir('equipos')">
             <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-            <div class="action-body"><h3>Gestion de Equipos</h3><p>Registro y control de activos tecnologicos</p></div>
+            <div class="action-body"><h3>Gestión de Equipos</h3><p>Registro y control de activos tecnológicos</p></div>
         </div>
         <div class="action-card" onclick="ir('alumnos')">
             <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
@@ -212,7 +212,7 @@
             <div class="admin-card-accent"></div>
             <div class="admin-card-header">
                 <div class="admin-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-                <div class="admin-card-title">Respaldo de informacion <span class="format-badge">XLSX</span></div>
+                <div class="admin-card-title">Respaldo de información <span class="format-badge">XLSX</span></div>
             </div>
             <p class="admin-card-sub">Exporta todos los prestamos y devoluciones en un archivo de Excel con formato profesional.</p>
             <div class="export-stats" id="exportStats">
@@ -243,9 +243,9 @@
         <div class="admin-card">
             <div class="admin-card-header">
                 <div class="admin-card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
-                <div class="admin-card-title">Configuracion del sistema</div>
+                <div class="admin-card-title">Configuración del sistema</div>
             </div>
-            <p class="admin-card-sub">Ajusta los parametros operativos del sistema.</p>
+            <p class="admin-card-sub">Ajusta los parámetros operativos del sistema.</p>
             <div class="multa-box" id="multaDisplay">
                 <div class="mb-label">Valor de multa por dia</div>
                 <div class="mb-value"><span class="mb-cur">Gs.</span> <span id="multaValor">—</span></div>
@@ -262,7 +262,7 @@
                     <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
                 </div>
             </div>
-            <p class="cfg-note">Se aplica automaticamente al calcular multas en el modulo de devoluciones. El cambio tiene efecto inmediato.</p>
+            <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
         </div>
 
     </div>
@@ -340,7 +340,7 @@ async function exportarCSV(){
             btn.classList.remove('completed');
             resetExportBtn();
         },2500);
-    } catch(e) { st('Error de conexion','t-err');clearInterval(sim);resetExportBtn(); }
+    } catch(e) { st('Error de conexión','t-err');clearInterval(sim);resetExportBtn(); }
 }
 
 function resetExportBtn(){
@@ -390,12 +390,12 @@ function formatearTiempoRelativo(iso){
     if(diffMin<60) return 'hace '+diffMin+' min';
     if(diffHoras<24) return 'hace '+diffHoras+' h';
     if(diffDias===1) return 'ayer';
-    if(diffDias<7) return 'hace '+diffDias+' dias';
+    if(diffDias<7) return 'hace '+diffDias+' días';
     return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
 function logout(){
-    if(confirm('Cerrar sesion del sistema?')){
+    if(confirm('Cerrar sesión del sistema?')){
         localStorage.removeItem('encargado');
         localStorage.removeItem('token');
         window.location.href='/';
@@ -405,7 +405,7 @@ function logout(){
 // Reloj
 function actualizarReloj(){
     const ahora=new Date();
-    const dias=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+    const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
     const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
     document.getElementById('fecha-hoy').textContent=`${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()}`;
     const h=String(ahora.getHours()).padStart(2,'0'),m=String(ahora.getMinutes()).padStart(2,'0');
@@ -473,7 +473,7 @@ async function cargarConfig(){
 function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}
 async function guardarMulta(){
     const val=document.getElementById('multa-input').value.replace(/\./g,'').trim();
-    if(!val||isNaN(val)||parseInt(val)<0){st('Ingresa un valor valido mayor o igual a 0','t-err');return;}
+    if(!val||isNaN(val)||parseInt(val)<0){st('Ingresa un valor válido mayor o igual a 0','t-err');return;}
     const btn=document.getElementById('btnCfg');
     btn.disabled=true;btn.textContent='Guardando...';
     try{
@@ -484,7 +484,7 @@ async function guardarMulta(){
             actualizarDisplayMulta(val);
         }
         else{st('Error al guardar','t-err');btn.textContent='Guardar';}
-    }catch(e){st('Error de conexion','t-err');btn.textContent='Guardar';}
+    }catch(e){st('Error de conexión','t-err');btn.textContent='Guardar';}
     setTimeout(()=>{btn.disabled=false;btn.textContent='Guardar';btn.classList.remove('saved');},2000);
 }
 

@@ -160,7 +160,7 @@ app.get('/exportar', verificarToken, async (req, res) => {
         else estFont = 'FFD97706';
 
         return [
-          { value: r.id_prestamo, align: 'right', bold: ret, fontColor: ret ? 'FFDC2626' : null, bgColor: bg },
+          { value: ri + 1, align: 'right', bold: ret, fontColor: ret ? 'FFDC2626' : null, bgColor: bg },
           { value: r.codigo_alumno, bgColor: bg },
           { value: r.alumno_nombre, bgColor: bg },
           { value: r.alumno_apellido, bgColor: bg },
@@ -205,7 +205,7 @@ app.get('/exportar', verificarToken, async (req, res) => {
           { value: r.alumno_nombre, bgColor: bg },
           { value: r.alumno_apellido, bgColor: bg },
           { value: r.equipo, bgColor: bg },
-          { value: r.id_devolucion, align: 'right', bgColor: bg },
+          { value: ri + 1, align: 'right', bgColor: bg },
           { value: fmtFecha(r.fecha_devolucion), bgColor: bg },
           { value: r.estado_devolucion, bgColor: bg },
           { value: r.tiene_dano ? 'Si' : 'No', bgColor: bg },

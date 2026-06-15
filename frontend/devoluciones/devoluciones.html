@@ -204,7 +204,7 @@
 
     <div id="p1">
         <div class="card">
-            <div class="section-title">Prestamos activos - selecciona uno para procesar</div>
+            <div class="section-title">Préstamos activos - selecciona uno para procesar</div>
             <div id="lista"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div></div></div>
         </div>
         <div class="card">
@@ -218,7 +218,7 @@
 
     <div id="ps">
         <div class="info-banner">
-            <div class="info-banner-header"><h3>Prestamo seleccionado</h3><button class="btn-change" onclick="volver()">Cambiar</button></div>
+            <div class="info-banner-header"><h3>Préstamo seleccionado</h3><button class="btn-change" onclick="volver()">Cambiar</button></div>
             <div class="info-grid" id="ig"></div>
             <div class="retraso-alerta" id="ra" style="display:none">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -232,40 +232,40 @@
                     <div class="ig"><label>Estado del equipo</label>
                         <select id="estado" onchange="onEstado()"><option value="1">Excelente</option><option value="2">Bueno</option><option value="3">Dañado</option></select>
                     </div>
-                    <div class="ig"><label>Observacion general</label><input type="text" id="obs" placeholder="Notas sobre la devolucion..." oninput="checkFormComplete()"></div>
+                    <div class="ig"><label>Observación general</label><input type="text" id="obs" placeholder="Notas sobre la devolución..." oninput="checkFormComplete()"></div>
                 </div>
                 <div class="acc-box" id="accb" style="display:none">
                     <h4>Verificacion de accesorios</h4>
                     <div id="acct" style="font-size:0.82rem;color:var(--dim);margin-bottom:8px;"></div>
                     <label class="check-row"><input type="checkbox" id="acc_ok" onchange="clearFD('accesorios');checkFormComplete()"><span>Confirmo que todos los accesorios fueron devueltos correctamente</span></label>
-                    <div class="ferr" id="ferr-accesorios">Confirma la devolucion de accesorios</div>
+                    <div class="ferr" id="ferr-accesorios">Confirma la devolución de accesorios</div>
                 </div>
             </div>
             <div class="card">
                 <div class="section-title">Registro de daños</div>
-                <label class="dano-toggle"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños al momento de la devolucion</span></label>
+                <label class="dano-toggle"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños al momento de la devolución</span></label>
                 <div class="dano-section" id="ds">
                     <div class="g2">
-                        <div class="ig"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="" oninput="clearFD('tdano');checkFormComplete()"><div class="ferr" id="ferr-tdano">Describe el tipo de dano</div></div>
-                        <div class="ig"><label>Monto reparacion</label><input type="text" id="mdano" placeholder="0" oninput="fmtMonto(this);updRes();clearFD('mdano');checkFormComplete()"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
+                        <div class="ig"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="" oninput="clearFD('tdano');checkFormComplete()"><div class="ferr" id="ferr-tdano">Describe el tipo de daño</div></div>
+                        <div class="ig"><label>Monto reparación</label><input type="text" id="mdano" placeholder="0" oninput="fmtMonto(this);updRes();clearFD('mdano');checkFormComplete()"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
                     </div>
-                    <div class="ig"><label>Descripcion del daño</label><textarea id="odano" placeholder="Descripcion detallada del daño..." oninput="clearFD('odano');checkFormComplete()"></textarea><div class="ferr" id="ferr-odano">Describe el dano en detalle</div></div>
+                    <div class="ig"><label>Descripción del daño</label><textarea id="odano" placeholder="Descripción detallada del daño..." oninput="clearFD('odano');checkFormComplete()"></textarea><div class="ferr" id="ferr-odano">Describe el daño en detalle</div></div>
                 </div>
             </div>
             <div class="cobros-card" id="cobros">
                 <div class="cobros-title">Resumen de cobros</div>
                 <div class="cobro-row"><span>Multa por dia</span><strong id="rmpd" style="color:var(--primary)">Gs. 0</strong></div>
-                <div class="cobro-row"><span>Dias de retraso</span><strong id="rd" style="color:var(--warn)">0 dias</strong></div>
+                <div class="cobro-row"><span>Días de retraso</span><strong id="rd" style="color:var(--warn)">0 días</strong></div>
                 <div class="cobro-row"><span>Multa por retraso</span><strong id="rm" style="color:var(--warn)">Gs. 0</strong></div>
                 <div class="cobro-row"><span>Costo por daños</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
                 <div class="cobro-row"><span>Total a cobrar</span><strong id="rt">Gs. 0</strong></div>
             </div>
             <div class="conf-box">
                 <h4>Conformidad del encargado</h4>
-                <label class="check-row"><input type="checkbox" id="conf" onchange="clearFD('conf');checkFormComplete()"><span>Confirmo que la informacion ingresada es correcta y el equipo fue recibido segun las condiciones indicadas</span></label>
+                <label class="check-row"><input type="checkbox" id="conf" onchange="clearFD('conf');checkFormComplete()"><span>Confirmo que la información ingresada es correcta y el equipo fue recibido según las condiciones indicadas</span></label>
                 <div class="ferr" id="ferr-conf">Debes confirmar la conformidad para procesar</div>
             </div>
-            <button class="btn-procesar" id="btn" onclick="procesar()">Procesar devolucion</button>
+            <button class="btn-procesar" id="btn" onclick="procesar()">Procesar devolución</button>
         </div>
     </div>
 
@@ -334,7 +334,7 @@
         </div>
         <div class="res-btns">
             <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
-            <button class="btn btn-primary" onclick="nueva()">Nueva devolucion</button>
+            <button class="btn btn-primary" onclick="nueva()">Nueva devolución</button>
         </div>
     </div>
 </main>
@@ -359,9 +359,9 @@ async function cargarActivos(){
     const lista=document.getElementById('lista');
     try{
         const r=await apiFetch('/prestamos');
-        if(!r.ok){lista.innerHTML='<p class="em">Error al cargar prestamos</p>';return;}
+        if(!r.ok){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';return;}
         const activos=(await r.json()).filter(p=>p.estado==='ACTIVO');
-        if(!activos.length){lista.innerHTML='<p class="em">No hay prestamos activos pendientes de devolucion</p>';return;}
+        if(!activos.length){lista.innerHTML='<p class="em">No hay préstamos activos pendientes de devolución</p>';return;}
         const ahora=new Date();
         lista.innerHTML=activos.map(p=>{
             const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
@@ -398,13 +398,13 @@ async function buscar(){
                 (p.codigo_alumno && p.codigo_alumno.toLowerCase().includes(q))
             );
         });
-        if(!activos.length){st('No se encontro ningun prestamo activo para ese alumno');return;}
+        if(!activos.length){st('No se encontró ningún préstamo activo para ese alumno');return;}
         if(activos.length===1){
             await cargarPres(activos[0].id_prestamo);
         } else {
             const lista=document.getElementById('lista');
             const ahora=new Date();
-            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' prestamos encontrados — selecciona uno:</div>'+
+            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' préstamos encontrados — selecciona uno:</div>'+
             activos.map(function(p){
                 const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
                 const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
@@ -417,27 +417,27 @@ async function buscar(){
                     '</div>';
             }).join('');
         }
-    }catch(e){st('Error de conexion');}
+    }catch(e){st('Error de conexión');}
 }
 async function cargarPres(id){
     try{
         const r=await apiFetch(`/prestamos/${id}`);
-        if(!r.ok){st('Prestamo no encontrado o ya fue devuelto');return;}
+        if(!r.ok){st('Préstamo no encontrado o ya fue devuelto');return;}
         pActual=await r.json();mostrar();
-    }catch(e){st('Error de conexion');}
+    }catch(e){st('Error de conexión');}
 }
 
 function mostrar(){
     const p=pActual,ahora=new Date(),v=new Date(p.fecha_devolucion_estimada);
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     document.getElementById('ig').innerHTML=`
-        <div class="if"><span>Prestamo</span><strong>#${p.id_prestamo}</strong></div>
+        <div class="if"><span>Préstamo</span><strong>#${p.id_prestamo}</strong></div>
         <div class="if"><span>Alumno</span><strong>${p.alumno_nombre} ${p.alumno_apellido}</strong></div>
         <div class="if"><span>Codigo</span><strong>${p.codigo_alumno}</strong></div>
         <div class="if"><span>Carrera</span><strong>${p.carrera||'—'}</strong></div>
         <div class="if"><span>Equipo</span><strong>${p.equipo}</strong></div>
         <div class="if"><span>Tipo / Marca</span><strong>${p.tipo} &middot; ${p.marca}</strong></div>
-        <div class="if"><span>Fecha prestamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
+        <div class="if"><span>Fecha préstamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
         <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
         <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>`;
     const ra=document.getElementById('ra');
@@ -572,8 +572,8 @@ async function procesar(){
             document.getElementById('ps').classList.remove('show');document.getElementById('fd').classList.remove('show');
             document.getElementById('resultado').classList.add('show');setStep(3);
             window.scrollTo({top:0,behavior:'smooth'});
-        }else{st(d.mensaje||'Error al registrar');btn.disabled=false;btn.textContent='Procesar devolucion';}
-    }catch(e){st('Error de conexion');btn.disabled=false;btn.textContent='Procesar devolucion';}
+        }else{st(d.mensaje||'Error al registrar');btn.disabled=false;btn.textContent='Procesar devolución';}
+    }catch(e){st('Error de conexión');btn.disabled=false;btn.textContent='Procesar devolución';}
 }
 
 function nueva(){
@@ -588,7 +588,7 @@ function resetForm(){
     document.getElementById('dano').checked=false;document.getElementById('ds').classList.remove('show');
     document.getElementById('mdano').value='';document.getElementById('tdano').value='';document.getElementById('odano').value='';
     document.getElementById('conf').checked=false;document.getElementById('cobros').classList.remove('show');
-    document.getElementById('btn').textContent='Procesar devolucion';checkFormComplete();
+    document.getElementById('btn').textContent='Procesar devolución';checkFormComplete();
     ['tdano','mdano','odano','conf','accesorios'].forEach(f=>clearFD(f));
 }
 function setStep(n){

@@ -12,7 +12,7 @@ async function initDatabase() {
       password       VARCHAR(100) NOT NULL,
       nombre         VARCHAR(100) NOT NULL,
       apellido       VARCHAR(100) NOT NULL,
-      cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnologicos',
+      cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnológicos',
       estado         BOOLEAN DEFAULT TRUE,
       fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -148,7 +148,7 @@ async function initDatabase() {
     const hash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
     await conn.query(
       'INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES (?, ?, ?, ?, ?)',
-      ['1234', hash, 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos']
+      ['1234', hash, 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos']
     );
     console.log('Encargado por defecto creado (1234 / CREDENCIALES_BORRADAS)');
   }

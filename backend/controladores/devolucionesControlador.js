@@ -45,6 +45,42 @@ exports.crear = async (req, res) => {
   }
 };
 
+exports.eliminar = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const conn = await db;
+    const [devoluciones] = await conn.query(
+      'SELECT id_prestamo FROM devoluciones WHERE id_devolucion = ?', [id]
+    );
+    if (devoluciones.length === 0) {
+      return res.status(404).json({ mensaje: 'Devolución no encontrada' });
+    }
+    const idPrestamo = devoluciones[0].id_prestamo;
+    const tx = await db.getConnection();
+    try {
+      await tx.beginTransaction();
+      const [eq] = await tx.query(
+        'SELECT p.id_equipo FROM prestamos p WHERE p.id_prestamo = ?', [idPrestamo]
+      );
+      await tx.query('DELETE FROM devoluciones WHERE id_devolucion = ?', [id]);
+      await tx.query("UPDATE prestamos SET estado = 'ACTIVO' WHERE id_prestamo = ?", [idPrestamo]);
+      if (eq.length > 0) {
+        await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [eq[0].id_equipo]);
+      }
+      await tx.commit();
+      res.json({ mensaje: 'Devolución eliminada correctamente. Préstamo reactivado.' });
+    } catch (txErr) {
+      await tx.rollback();
+      throw txErr;
+    } finally {
+      tx.release();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 exports.listar = async (req, res) => {
   try {
     const conn = await db;

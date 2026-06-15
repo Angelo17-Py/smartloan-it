@@ -52,7 +52,7 @@
 <main>
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <div><h1>Gestion de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
+        <div><h1>Gestión de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
     </div>
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo alumno</div>
@@ -210,7 +210,7 @@ async function crear(){
             st(d.mensaje || 'Error al registrar', 't-err');
         }
     } catch(e){
-        st('Error de conexion con el servidor','t-err');
+        st('Error de conexión con el servidor','t-err');
     }
     btn.disabled = false; btn.textContent = '+ Registrar alumno';
 }
@@ -218,7 +218,7 @@ async function crear(){
 function confirmarEliminar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
-    if(!confirm(`Eliminar al alumno "${a.nombre} ${a.apellido}"?\n\nSi tiene historial de prestamos tambien se eliminara. Esta accion no se puede deshacer.`)) return;
+    if(!confirm(`Eliminar al alumno "${a.nombre} ${a.apellido}"?\n\nSi tiene historial de préstamos también se eliminará. Esta acción no se puede deshacer.`)) return;
     eliminar(id);
 }
 
@@ -229,7 +229,7 @@ async function eliminar(id){
         r.ok ? st('Alumno eliminado') : st(d.mensaje||'No se puede eliminar','t-err');
         cargar();
     } catch(e){
-        st('Error de conexion','t-err');
+        st('Error de conexión','t-err');
     }
 }
 
@@ -286,7 +286,7 @@ async function guardarAlumno(){
             btn.disabled = false; btn.textContent = 'Guardar cambios';
         }
     } catch(e){
-        st('Error de conexion con el servidor','t-err');
+        st('Error de conexión con el servidor','t-err');
         btn.disabled = false; btn.textContent = 'Guardar cambios';
     }
 }

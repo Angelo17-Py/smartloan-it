@@ -151,12 +151,12 @@
                 <div><div class="enc-name" id="enc-nombre">Cargando...</div><div class="enc-code" id="enc-codigo"></div></div>
             </div>
             <div class="sep"></div>
-            <div class="section-title">Datos del prestamo</div>
+            <div class="section-title">Datos del préstamo</div>
             <div class="g2">
                 <div class="ig">
                     <label>Alumno</label>
                     <select id="alumno" onchange="onAlumno()"><option value="">Seleccionar alumno...</option></select>
-                    <div class="aviso" id="aviso-alumno">No hay alumnos disponibles. Todos tienen un prestamo activo o no hay alumnos registrados.</div>
+                    <div class="aviso" id="aviso-alumno">No hay alumnos disponibles. Todos tienen un préstamo activo o no hay alumnos registrados.</div>
                     <div class="ferr" id="ferr-alumno">Selecciona un alumno</div>
                 </div>
                 <div class="ig">
@@ -170,38 +170,38 @@
             <div class="sep"></div>
             <div class="section-title">Fechas y condicion</div>
             <div class="g2">
-                <div class="ig"><label>Fecha de devolucion estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
+                <div class="ig"><label>Fecha de devolución estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
                 <div class="ig"><label>Estado inicial del equipo</label>
                     <select id="estado_ini"><option value="1">Excelente</option><option value="2">Bueno</option><option value="3">Dañado</option></select>
                 </div>
             </div>
             <div class="sep"></div>
             <div class="section-title">Detalles</div>
-            <div class="g1 ig"><label>Motivo del prestamo</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentacion, Tarea..." oninput="clearF('motivo');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-motivo">Ingresa el motivo del prestamo</div></div>
+            <div class="g1 ig"><label>Motivo del préstamo</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentación, Tarea..." oninput="clearF('motivo');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-motivo">Ingresa el motivo del préstamo</div></div>
             <div class="g2">
                 <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." oninput="checkFormComplete()"><div class="ferr" id="ferr-accesorios">Ingresa los accesorios entregados</div></div>
                 <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..." oninput="checkFormComplete()"><div class="ferr" id="ferr-obs">Ingresa las observaciones</div></div>
             </div>
             <div class="resumen" id="resumen">
-                <div class="resumen-title">Resumen del prestamo</div>
+                <div class="resumen-title">Resumen del préstamo</div>
                 <div class="res-grid" id="resumen-grid"></div>
             </div>
             <div class="sep"></div>
             <div class="section-title">Contrato de uso</div>
             <div class="contract-box">
-                <h4>Terminos y Condiciones de Uso de Equipo Tecnologico</h4>
+                <h4>Términos y Condiciones de Uso de Equipo Tecnológico</h4>
                 El alumno solicitante se compromete a:<br><br>
                 1. Usar el equipo exclusivamente para fines academicos autorizados.<br>
                 2. Devolver el equipo en la fecha acordada y en el mismo estado.<br>
                 3. No ceder el equipo a terceros no autorizados.<br>
-                4. Reportar inmediatamente cualquier dano, falla o perdida.<br>
-                5. Asumir el costo de reparacion en caso de dano por mal uso.<br>
-                6. Estar sujeto a una multa por cada dia de retraso segun la tarifa vigente.<br>
+4. Reportar inmediatamente cualquier daño, falla o pérdida.<br>
+                 5. Asumir el costo de reparación en caso de daño por mal uso.<br>
+                 6. Estar sujeto a una multa por cada día de retraso según la tarifa vigente.<br>
                 7. El incumplimiento puede resultar en suspension del acceso al sistema.
             </div>
-            <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los terminos y condiciones del contrato de uso del equipo</span></label>
+            <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
-            <button class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar prestamo</button>
+            <button class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
         </div>
     </div>
 
@@ -268,7 +268,7 @@
         </div>
         <div class="comp-btns">
             <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
-            <button class="btn btn-secondary" onclick="nuevoPrestamo()">Nuevo prestamo</button>
+            <button class="btn btn-secondary" onclick="nuevoPrestamo()">Nuevo préstamo</button>
             <button class="btn btn-primary" onclick="window.location.href='/home/dashboard.html'">Ir al Dashboard</button>
         </div>
     </div>
@@ -283,7 +283,7 @@ async function cargar(){
     enc = JSON.parse(localStorage.getItem('encargado')||'{}');
     if(enc.id_encargado){
         document.getElementById('enc-nombre').textContent = `${enc.nombre} ${enc.apellido}`;
-        document.getElementById('enc-codigo').textContent = `Codigo: ${enc.codigo} · ${enc.cargo||'Encargado'}`;
+        document.getElementById('enc-codigo').textContent = `Código: ${enc.codigo} · ${enc.cargo||'Encargado'}`;
     }
     const [ar,er] = await Promise.all([apiFetch('/alumnos/disponibles'),apiFetch('/equipos')]);
     alumnos = await ar.json();
@@ -366,7 +366,7 @@ async function registrar(){
     const obs=document.getElementById('obs').value.trim();
     const a=alumnos.find(x=>x.id_alumno==id_a);
     const e=equipos.find(x=>x.id_equipo==id_e);
-    if(!confirm(`Confirmar prestamo?\n\nAlumno: ${a.nombre} ${a.apellido}\nEquipo: ${e.nombre}\nVencimiento: ${ff(fecha)}\nMotivo: ${motivo}`))return;
+    if(!confirm(`Confirmar préstamo?\n\nAlumno: ${a.nombre} ${a.apellido}\nEquipo: ${e.nombre}\nVencimiento: ${ff(fecha)}\nMotivo: ${motivo}`))return;
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Registrando...';
     try{
         const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,id_encargado:enc.id_encargado,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
@@ -398,11 +398,11 @@ async function registrar(){
             document.getElementById('comprobante').classList.add('show');
         } else {
             st(d.mensaje||'Error al registrar','t-err');
-            btn.disabled=false;btn.textContent='Confirmar y registrar prestamo';
+            btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
         }
     }catch(e){
-        st('Error de conexion','t-err');
-        btn.disabled=false;btn.textContent='Confirmar y registrar prestamo';
+        st('Error de conexión','t-err');
+        btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
     }
 }
 
