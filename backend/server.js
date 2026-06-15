@@ -25,29 +25,7 @@ app.use('/equipos',      require('./rutas/equipos'));
 app.use('/prestamos',    require('./rutas/prestamos'));
 app.use('/devoluciones', require('./rutas/devoluciones'));
 
-app.get('/configuracion', verificarToken, async (req, res) => {
-  try {
-    const conn = await db;
-    const [rows] = await conn.query('SELECT * FROM configuracion');
-    res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ mensaje: 'Error interno del servidor' });
-  }
-});
-
-app.put('/configuracion/:clave', verificarToken, async (req, res) => {
-  try {
-    const { valor } = req.body;
-    if (!valor) return res.status(400).json({ mensaje: 'Valor requerido' });
-    const conn = await db;
-    await conn.query('UPDATE configuracion SET valor=? WHERE clave=?', [valor, req.params.clave]);
-    res.json({ mensaje: 'Configuracion actualizada' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ mensaje: 'Error interno del servidor' });
-  }
-});
+app.use('/configuracion', require('./rutas/configuracion'));
 
 app.get('/exportar', verificarToken, async (req, res) => {
   try {

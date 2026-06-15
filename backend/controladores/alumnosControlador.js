@@ -63,10 +63,20 @@ exports.eliminar = async (req, res) => {
     if (prestamosActivos.length > 0) {
       return res.status(400).json({ mensaje: 'No se puede eliminar: el alumno tiene un préstamo activo' });
     }
-    await conn.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?', [id]);
-    await conn.query('DELETE FROM prestamos WHERE id_alumno = ?', [id]);
-    await conn.query('DELETE FROM alumnos WHERE id_alumno = ?', [id]);
-    res.json({ mensaje: 'Alumno eliminado correctamente' });
+    const tx = await db.getConnection();
+    try {
+      await tx.beginTransaction();
+      await tx.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?', [id]);
+      await tx.query('DELETE FROM prestamos WHERE id_alumno = ?', [id]);
+      await tx.query('DELETE FROM alumnos WHERE id_alumno = ?', [id]);
+      await tx.commit();
+      res.json({ mensaje: 'Alumno eliminado correctamente' });
+    } catch (txErr) {
+      await tx.rollback();
+      throw txErr;
+    } finally {
+      tx.release();
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });

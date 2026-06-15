@@ -258,7 +258,7 @@
                 </div>
                 <div class="cfg-input-group">
                     <span class="cfg-prefix">Gs.</span>
-                    <input class="cfg-input" id="multa-input" type="number" min="0" step="1000" placeholder="10000">
+                    <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
                     <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
                 </div>
             </div>
@@ -464,14 +464,15 @@ async function cargarConfig(){
         const d=await r.json();
         const multa=d.find(x=>x.clave==='multa_por_dia');
         if(multa){
-            document.getElementById('multa-input').value=multa.valor;
+            document.getElementById('multa-input').value=Number(multa.valor).toLocaleString('es-PY');
             actualizarDisplayMulta(multa.valor);
         }
     }catch(e){console.error('Error config:',e);}
 }
 
+function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}
 async function guardarMulta(){
-    const val=document.getElementById('multa-input').value.trim();
+    const val=document.getElementById('multa-input').value.replace(/\./g,'').trim();
     if(!val||isNaN(val)||parseInt(val)<0){st('Ingresa un valor valido mayor o igual a 0','t-err');return;}
     const btn=document.getElementById('btnCfg');
     btn.disabled=true;btn.textContent='Guardando...';

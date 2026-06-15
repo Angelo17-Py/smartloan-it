@@ -7,7 +7,7 @@ USE prestamos_db;
 
 CREATE TABLE encargados (
     id_encargado   INT AUTO_INCREMENT PRIMARY KEY,
-    codigo         VARCHAR(4) UNIQUE NOT NULL,
+    codigo         VARCHAR(10) UNIQUE NOT NULL,
     password       VARCHAR(100) NOT NULL,
     nombre         VARCHAR(100) NOT NULL,
     apellido       VARCHAR(100) NOT NULL,
@@ -46,6 +46,7 @@ CREATE TABLE prestamos (
     fecha_prestamo            DATETIME NOT NULL,
     fecha_devolucion_estimada DATETIME NOT NULL,
     estado_inicial_equipo     ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente',
+    multa_base                DECIMAL(12,2) DEFAULT NULL,
     accesorios                VARCHAR(300),
     motivo                    VARCHAR(300),
     observaciones             VARCHAR(300),

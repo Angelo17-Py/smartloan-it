@@ -170,9 +170,9 @@ function render(data){
     tb.innerHTML = data.map((e,i) => {
             let btn = '';
             if(e.estado === 'Disponible')
-                btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'En mantenimiento')">Mantenimiento</button>`;
+                btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'3')">Mantenimiento</button>`;
             else if(e.estado === 'En mantenimiento')
-                btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'Disponible')">Disponible</button>`;
+                btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'1')">Disponible</button>`;
             else
                 btn = `<span class="chip">En prestamo</span>`;
             const bx = e.estado !== 'Prestado'
@@ -251,10 +251,11 @@ async function eliminar(id){
     }
 }
 
+const _estadoLabels = {'1':'Disponible','2':'Prestado','3':'En mantenimiento'};
 async function cambiar(id, estado){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     const nombre = eq ? eq.nombre : 'este equipo';
-    const msg = estado === 'En mantenimiento'
+    const msg = estado === '3'
         ? `Enviar "${nombre}" a mantenimiento?\nNo estara disponible para prestamos hasta marcarlo como disponible.`
         : `Marcar "${nombre}" como Disponible?`;
     if(!confirm(msg)) return;
@@ -264,7 +265,7 @@ async function cambiar(id, estado){
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({estado})
         });
-        st(`Estado actualizado: ${estado}`);
+        st(`Estado actualizado: ${_estadoLabels[estado]||estado}`);
         cargar();
     } catch(e){
         st('Error de conexion','t-err');

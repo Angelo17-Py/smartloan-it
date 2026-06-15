@@ -4,12 +4,12 @@ exports.crear = async (req, res) => {
   try {
     const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
             observacion_dano, monto_dano, observacion } = req.body;
-    if (!id_prestamo || !estado_equipo) {
-      return res.status(400).json({ mensaje: 'Datos incompletos' });
+    const estadoEqMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
+    const estadoEq = estadoEqMap[estado_equipo];
+    if (!id_prestamo || !estadoEq) {
+      return res.status(400).json({ mensaje: 'Datos incompletos o estado inválido' });
     }
     const conn = await db;
-    const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
-    const MULTA = !cfg.length ? 10000 : (parseInt(cfg[0].valor, 10) || 10000);
 
     const [prestamos] = await conn.query(
       'SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO"', [id_prestamo]
@@ -18,6 +18,11 @@ exports.crear = async (req, res) => {
       return res.status(404).json({ mensaje: 'Prestamo no encontrado o ya devuelto' });
     }
 
+    let MULTA = prestamos[0].multa_base != null ? parseFloat(prestamos[0].multa_base) : null;
+    if (MULTA == null || isNaN(MULTA)) {
+      const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
+      MULTA = !cfg.length ? 10000 : (parseFloat(cfg[0].valor) || 10000);
+    }
     const ahora = new Date();
     const venc = new Date(prestamos[0].fecha_devolucion_estimada);
     const dias = ahora > venc ? Math.ceil((ahora - venc) / (1000 * 60 * 60 * 24)) : 0;
@@ -30,7 +35,7 @@ exports.crear = async (req, res) => {
       `INSERT INTO devoluciones (id_prestamo,fecha_devolucion,estado_equipo,tiene_dano,
        tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-      [id_prestamo, fmt(ahora), estado_equipo, tiene_dano ? 1 : 0,
+      [id_prestamo, fmt(ahora), estadoEq, tiene_dano ? 1 : 0,
        tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
     );
     res.json({ mensaje: 'Devolucion registrada', dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total });

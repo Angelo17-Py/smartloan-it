@@ -8,7 +8,7 @@ async function initDatabase() {
   await conn.query(`
     CREATE TABLE IF NOT EXISTS encargados (
       id_encargado   INT AUTO_INCREMENT PRIMARY KEY,
-      codigo         VARCHAR(4) UNIQUE NOT NULL,
+      codigo         VARCHAR(10) UNIQUE NOT NULL,
       password       VARCHAR(100) NOT NULL,
       nombre         VARCHAR(100) NOT NULL,
       apellido       VARCHAR(100) NOT NULL,
@@ -52,11 +52,12 @@ async function initDatabase() {
       id_encargado              INT NOT NULL,
       fecha_prestamo            DATETIME NOT NULL,
       fecha_devolucion_estimada DATETIME NOT NULL,
-      estado_inicial_equipo     ENUM('Excelente','Bueno','Daniado') DEFAULT 'Excelente',
+      estado_inicial_equipo     ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente',
       accesorios                VARCHAR(300),
       motivo                    VARCHAR(300),
       observaciones             VARCHAR(300),
       acepto_contrato           BOOLEAN DEFAULT FALSE,
+      multa_base                DECIMAL(12,2) DEFAULT NULL,
       estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
       FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
       FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
@@ -69,7 +70,7 @@ async function initDatabase() {
       id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
       id_prestamo      INT NOT NULL,
       fecha_devolucion DATETIME NOT NULL,
-      estado_equipo    ENUM('Excelente','Bueno','Daniado') NOT NULL,
+      estado_equipo    ENUM('Excelente','Bueno','Dañado') NOT NULL,
       tiene_dano       BOOLEAN DEFAULT FALSE,
       tipo_dano        VARCHAR(200),
       observacion_dano VARCHAR(300),
@@ -90,6 +91,15 @@ async function initDatabase() {
       descripcion VARCHAR(300)
     )
   `);
+
+  // Migraciones para bases de datos existentes
+  try { await conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"); } catch (e) {}
+  try { await conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"); } catch (e) {}
+  try { await conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"); } catch (e) {}
+  try { await conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"); } catch (e) {}
+  try { await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato"); } catch (e) {}
+  try { await conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"); } catch (e) {}
+  try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) UNIQUE NOT NULL"); } catch (e) {}
 
   await conn.query('DROP TRIGGER IF EXISTS validar_prestamo');
   await conn.query(`

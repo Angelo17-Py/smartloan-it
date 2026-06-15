@@ -36,10 +36,20 @@ exports.eliminar = async (req, res) => {
     if (prestamosActivos.length > 0) {
       return res.status(400).json({ mensaje: 'No se puede eliminar: el equipo tiene un préstamo activo' });
     }
-    await conn.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_equipo = ?', [id]);
-    await conn.query('DELETE FROM prestamos WHERE id_equipo = ?', [id]);
-    await conn.query('DELETE FROM equipos WHERE id_equipo = ?', [id]);
-    res.json({ mensaje: 'Equipo eliminado correctamente' });
+    const tx = await db.getConnection();
+    try {
+      await tx.beginTransaction();
+      await tx.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_equipo = ?', [id]);
+      await tx.query('DELETE FROM prestamos WHERE id_equipo = ?', [id]);
+      await tx.query('DELETE FROM equipos WHERE id_equipo = ?', [id]);
+      await tx.commit();
+      res.json({ mensaje: 'Equipo eliminado correctamente' });
+    } catch (txErr) {
+      await tx.rollback();
+      throw txErr;
+    } finally {
+      tx.release();
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -48,8 +58,9 @@ exports.eliminar = async (req, res) => {
 
 exports.cambiarEstado = async (req, res) => {
   try {
-    const { estado } = req.body;
-    if (!['Disponible', 'Prestado', 'En mantenimiento'].includes(estado)) {
+    const estadoMap = {1:'Disponible', 2:'Prestado', 3:'En mantenimiento'};
+    const estado = estadoMap[req.body.estado];
+    if (!estado) {
       return res.status(400).json({ mensaje: 'Estado inválido' });
     }
     const conn = await db;

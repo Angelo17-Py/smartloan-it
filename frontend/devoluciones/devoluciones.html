@@ -85,29 +85,92 @@
         .btn-procesar:hover{opacity:0.9;}
         .btn-procesar:disabled{opacity:0.5;cursor:not-allowed;}
 
-        #resultado{display:none;}#resultado.show{display:block;}
-        .resultado-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;}
-        .res-icon{width:56px;height:56px;background:rgba(99,102,241,0.1);border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;color:var(--primary);}
-        .resultado-card h3{font-size:1.3rem;font-weight:800;margin-bottom:4px;color:var(--text);}
-        .resultado-card p{color:var(--dim);margin-bottom:20px;font-size:0.85rem;}
-        .res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
-        .res-item{background:var(--surface);border-radius:10px;padding:12px;}
-        .res-item span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
-        .res-item strong{font-size:0.88rem;font-weight:800;color:var(--text);}
-        .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+        #resultado{display:none;}#resultado.show{display:block;max-width:480px;margin:0 auto;}
+        .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
+
+        .receipt{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:0;overflow:hidden;}
+        .receipt-header{background:var(--surface);padding:24px 28px 20px;border-bottom:2px dashed var(--border);text-align:center;}
+        .receipt-header .rh-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
+        .receipt-header .rh-brand svg{color:var(--primary);flex-shrink:0;}
+        .receipt-header .rh-brand h2{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin:0;}
+        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;}
+        .receipt-title{margin-top:14px;}
+        .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
+        .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:rgba(99,102,241,0.08);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
+
+        .receipt-body{padding:20px 28px;}
+        .rsec{margin-bottom:20px;}
+        .rsec:last-child{margin-bottom:0;}
+        .rsec-title{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
+        .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
+        .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
+        .rg-item:last-child{border-bottom:none;}
+        .rg-item.full{grid-column:1/-1;}
+        .rg-item span{font-size:0.72rem;color:var(--dim);font-weight:600;}
+        .rg-item strong{font-size:0.82rem;font-weight:700;color:var(--text);text-align:right;}
+
+        .rc-table{width:100%;border-collapse:collapse;}
+        .rc-table td{padding:5px 0;font-size:0.8rem;border-bottom:1px dotted var(--border);}
+        .rc-table td:last-child{text-align:right;font-weight:700;}
+        .rc-table .rc-label{color:var(--dim);font-weight:600;}
+        .rc-table .rc-value{text-align:right;font-weight:700;color:var(--text);}
+        .rc-table .rc-divider td{padding:2px 0;border-bottom:1.5px solid var(--text);}
+        .rc-table .rc-divider td:last-child{text-align:right;}
+        .rc-table .rc-total td{font-size:0.95rem;font-weight:800;color:var(--text);border-bottom:none;padding-top:8px;}
+        .rc-table .rc-total td:last-child{color:var(--danger);}
+
+        .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
+        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
+        .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
+
+        .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
+        .receipt-stamp{text-align:center;margin-bottom:14px;}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:rgba(34,197,94,0.12);color:var(--success);border:1.5px solid rgba(34,197,94,0.25);}
+        .stamp-badge.late{background:rgba(239,68,68,0.1);color:var(--danger);border-color:rgba(239,68,68,0.2);}
+        .stamp-badge.damage{background:rgba(245,158,11,0.1);color:var(--warn);border-color:rgba(245,158,11,0.2);}
+        .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
+        .sig-field{flex:1;max-width:200px;}
+        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .sig-field .sig-line{border-bottom:1.5px solid var(--text);height:24px;margin-bottom:2px;}
+        .sig-field small{font-size:0.62rem;color:var(--muted);}
+        .receipt-legal{text-align:center;}
+        .receipt-legal .rl-date{font-size:0.7rem;color:var(--dim);font-weight:600;}
+        .receipt-legal p{font-size:0.65rem;color:var(--muted);margin:4px 0 0;line-height:1.4;}
 
         @media print {
-            *{margin:0;padding:0;box-sizing:border-box;}
-            body{background:white!important;color:black!important;}
-            nav,#p1,#ps .card,.ds,.page-header,.toast,.res-btns{display:none!important;}
-            main{padding:0!important;max-width:100%!important;}
-            #resultado{display:block!important;}
-            .resultado-card{background:white!important;border:2px solid #333!important;color:black!important;padding:28px!important;border-radius:8px!important;}
-            .resultado-card h3,.resultado-card p{color:black!important;}
-            .res-item{background:#f0f0f0!important;border-radius:6px!important;}
-            .res-item span{color:#555!important;}
-            .res-item strong{color:black!important;}
-            .res-icon{background:#e8f5e9!important;color:#22c55e!important;}
+            @page{margin:12mm 15mm;}
+            *{margin:0;padding:0;box-sizing:border-box;background:transparent!important;}
+            html,body{background:white!important;color:black!important;font-size:11pt;}
+            nav,.page-header,.ds,#p1,#ps,.toast,.res-btns,.btn-change{display:none!important;}
+            main{max-width:100%!important;padding:0!important;margin:0!important;}
+            #resultado{display:block!important;max-width:100%!important;box-shadow:none!important;}
+            .receipt{border:none!important;border-radius:0!important;background:white!important;box-shadow:none!important;}
+            .receipt-header{border-bottom:2px dashed #999!important;background:white!important;padding:0 0 16px!important;}
+            .receipt-header .rh-brand h2{color:black!important;font-size:14pt!important;}
+            .receipt-header .rh-sub{color:#666!important;}
+            .receipt-title h3{color:black!important;font-size:13pt!important;}
+            .receipt-title .rt-number{color:black!important;background:#eee!important;border:1px solid #ccc!important;}
+            .receipt-body{padding:16px 0!important;}
+            .rsec-title{color:#666!important;border-bottom-color:#999!important;font-size:8pt!important;}
+            .rg-item{border-bottom-color:#ddd!important;}
+            .rg-item span{color:#555!important;}
+            .rg-item strong{color:black!important;}
+            .rc-table td{border-bottom-color:#ddd!important;font-size:10pt!important;}
+            .rc-table .rc-label{color:#555!important;}
+            .rc-table .rc-value{color:black!important;}
+            .rc-table .rc-divider td{border-bottom-color:black!important;}
+            .rc-table .rc-total td{font-size:12pt!important;}
+            .rc-table .rc-total td:last-child{color:black!important;}
+            .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:8px 12px!important;}
+            .rsec-obs span{color:#555!important;}
+            .rsec-obs p{color:#333!important;}
+            .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:16px 0 0!important;}
+            .stamp-badge{border:1.5px solid #999!important;color:black!important;background:white!important;font-size:9pt!important;}
+            .stamp-badge svg{display:none!important;}
+            .sig-field span{color:#555!important;}
+            .sig-field .sig-line{border-bottom-color:black!important;height:30px!important;}
+            .receipt-legal .rl-date{color:#555!important;}
+            .receipt-legal p{color:#666!important;font-size:7pt!important;}
         }
         @media(max-width:600px){.g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
@@ -167,7 +230,7 @@
                 <div class="section-title">Estado del equipo al retorno</div>
                 <div class="g2">
                     <div class="ig"><label>Estado del equipo</label>
-                        <select id="estado" onchange="onEstado()"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Dañado">Dañado</option></select>
+                        <select id="estado" onchange="onEstado()"><option value="1">Excelente</option><option value="2">Bueno</option><option value="3">Dañado</option></select>
                     </div>
                     <div class="ig"><label>Observacion general</label><input type="text" id="obs" placeholder="Notas sobre la devolucion..." oninput="checkFormComplete()"></div>
                 </div>
@@ -184,13 +247,14 @@
                 <div class="dano-section" id="ds">
                     <div class="g2">
                         <div class="ig"><label>Tipo de daño</label><input type="text" id="tdano" placeholder="" oninput="clearFD('tdano');checkFormComplete()"><div class="ferr" id="ferr-tdano">Describe el tipo de dano</div></div>
-                        <div class="ig"><label>Monto reparacion</label><input type="number" id="mdano" placeholder="" min="0" oninput="updRes();clearFD('mdano');checkFormComplete()"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
+                        <div class="ig"><label>Monto reparacion</label><input type="text" id="mdano" placeholder="0" oninput="fmtMonto(this);updRes();clearFD('mdano');checkFormComplete()"><div class="ferr" id="ferr-mdano">Ingresa el monto</div></div>
                     </div>
                     <div class="ig"><label>Descripcion del daño</label><textarea id="odano" placeholder="Descripcion detallada del daño..." oninput="clearFD('odano');checkFormComplete()"></textarea><div class="ferr" id="ferr-odano">Describe el dano en detalle</div></div>
                 </div>
             </div>
             <div class="cobros-card" id="cobros">
                 <div class="cobros-title">Resumen de cobros</div>
+                <div class="cobro-row"><span>Multa por dia</span><strong id="rmpd" style="color:var(--primary)">Gs. 0</strong></div>
                 <div class="cobro-row"><span>Dias de retraso</span><strong id="rd" style="color:var(--warn)">0 dias</strong></div>
                 <div class="cobro-row"><span>Multa por retraso</span><strong id="rm" style="color:var(--warn)">Gs. 0</strong></div>
                 <div class="cobro-row"><span>Costo por daños</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
@@ -206,22 +270,71 @@
     </div>
 
     <div id="resultado">
-        <div class="resultado-card">
-            <div class="res-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
-            <h3>Devolucion Registrada</h3>
-            <p id="rdesc">El equipo fue procesado correctamente.</p>
-            <div class="res-grid">
-                <div class="res-item"><span>Alumno</span><strong id="r-alu">—</strong></div>
-                <div class="res-item"><span>Equipo</span><strong id="r-eq">—</strong></div>
-                <div class="res-item"><span>Estado</span><strong id="r-est">—</strong></div>
-                <div class="res-item"><span>Dias retraso</span><strong id="r-dias" style="color:var(--warn)">0</strong></div>
-                <div class="res-item"><span>Multa</span><strong id="r-mul" style="color:var(--warn)">Gs. 0</strong></div>
-                <div class="res-item"><span>Total cobrado</span><strong id="r-tot" style="color:var(--danger)">Gs. 0</strong></div>
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <div class="rh-brand">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <h2>SmartLoan IT</h2>
+                </div>
+                <div class="rh-sub">Sistema de Gesti&oacute;n de Pr&eacute;stamos Tecnol&oacute;gicos</div>
+                <div class="receipt-title">
+                    <h3>COMPROBANTE DE DEVOLUCI&Oacute;N</h3>
+                    <span class="rt-number" id="r-recibo">REC-0000</span>
+                </div>
             </div>
-            <div class="res-btns">
-                <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
-                <button class="btn btn-primary" onclick="nueva()">Nueva devolucion</button>
+            <div class="receipt-body">
+                <div class="rsec">
+                    <div class="rsec-title">Datos del Pr&eacute;stamo</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item"><span># Pr&eacute;stamo</span><strong id="r-id">—</strong></div>
+                        <div class="rg-item"><span>Alumno</span><strong id="r-alu">—</strong></div>
+                        <div class="rg-item"><span>C&oacute;digo</span><strong id="r-cod">—</strong></div>
+                        <div class="rg-item"><span>Carrera</span><strong id="r-car">—</strong></div>
+                        <div class="rg-item full"><span>Equipo</span><strong id="r-eq">—</strong></div>
+                        <div class="rg-item"><span>Tipo / Marca</span><strong id="r-tm">—</strong></div>
+                        <div class="rg-item"><span>Fecha Pr&eacute;stamo</span><strong id="r-fp">—</strong></div>
+                        <div class="rg-item"><span>Vencimiento</span><strong id="r-fv">—</strong></div>
+                        <div class="rg-item"><span>Fecha Devoluci&oacute;n</span><strong id="r-fd">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec">
+                    <div class="rsec-title">Detalle de Cobros</div>
+                    <table class="rc-table">
+                        <tr><td class="rc-label">Estado del equipo</td><td class="rc-value" id="r-est">—</td></tr>
+                        <tr><td class="rc-label">D&iacute;as de retraso</td><td class="rc-value" id="r-dias">0</td></tr>
+                        <tr><td class="rc-label">Multa por d&iacute;a</td><td class="rc-value" id="r-mpd">Gs. 0</td></tr>
+                        <tr><td class="rc-label">Multa por retraso</td><td class="rc-value" id="r-mul">Gs. 0</td></tr>
+                        <tr id="r-dano-tr"><td class="rc-label">Da&ntilde;os</td><td class="rc-value" id="r-dano">No</td></tr>
+                        <tr id="r-dano-monto-tr" style="display:none"><td class="rc-label">Monto da&ntilde;o</td><td class="rc-value" id="r-mdano">Gs. 0</td></tr>
+                        <tr class="rc-divider"><td></td><td></td></tr>
+                        <tr class="rc-total"><td>TOTAL COBRADO</td><td id="r-tot">Gs. 0</td></tr>
+                    </table>
+                </div>
+                <div class="rsec-obs" id="r-obs-section" style="display:none">
+                    <span>Observaciones</span>
+                    <p id="r-obs-text">—</p>
+                </div>
             </div>
+            <div class="receipt-footer">
+                <div class="receipt-stamp">
+                    <div class="stamp-badge" id="r-stamp">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        DEVUELTO
+                    </div>
+                </div>
+                <div class="sig-row">
+                    <div class="sig-field"><span>Encargado</span><div class="sig-line"></div><small>Firma</small></div>
+                    <div class="sig-field"><span>Alumno</span><div class="sig-line"></div><small>Firma</small></div>
+                </div>
+                <div class="receipt-legal">
+                    <div class="rl-date" id="r-emision">—</div>
+                    <p>Este comprobante es v&aacute;lido como constancia de devoluci&oacute;n de equipos tecnol&oacute;gicos.</p>
+                </div>
+            </div>
+        </div>
+        <div class="res-btns">
+            <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
+            <button class="btn btn-primary" onclick="nueva()">Nueva devolucion</button>
         </div>
     </div>
 </main>
@@ -328,7 +441,8 @@ function mostrar(){
         <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
         <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>`;
     const ra=document.getElementById('ra');
-    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} dia(s) — Multa estimada: Gs. ${fn(ret*MULTA)}`;ra.style.display='flex';}
+    var multaPreview=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
+    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} dia(s) — Multa estimada: Gs. ${fn(ret*multaPreview)}`;ra.style.display='flex';}
     else ra.style.display='none';
     const ab=document.getElementById('accb');
     if(p.accesorios&&p.accesorios.trim()){document.getElementById('acct').innerHTML=`Accesorios entregados al prestar: <strong>${p.accesorios}</strong>`;ab.style.display='block';}
@@ -350,7 +464,7 @@ function volver(){
 }
 
 function onEstado(){
-    if(document.getElementById('estado').value==='Dañado'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
+    if(document.getElementById('estado').value==='3'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
     updRes();
     checkFormComplete();
 }
@@ -361,16 +475,20 @@ function togDano(){
     updRes();
     checkFormComplete();
 }
+function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}
+function _rv(id){return document.getElementById(id).value.replace(/\./g,'');}
 function updRes(){
     if(!pActual)return;
     const v=new Date(pActual.fecha_devolucion_estimada),ahora=new Date();
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
-    const mul=ret*MULTA,dan=document.getElementById('dano').checked?(parseFloat(document.getElementById('mdano').value)||0):0;
+    var multaUsar=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
+    const mul=ret*multaUsar,dan=document.getElementById('dano').checked?(parseFloat(_rv('mdano'))||0):0;
+    document.getElementById('rmpd').textContent=`Gs. ${fn(multaUsar)}`;
     document.getElementById('rd').textContent=`${ret} dia(s)`;
     document.getElementById('rm').textContent=`Gs. ${fn(mul)}`;
     document.getElementById('rda').textContent=`Gs. ${fn(dan)}`;
     document.getElementById('rt').textContent=`Gs. ${fn(mul+dan)}`;
-    document.getElementById('cobros').classList.toggle('show',ret>0||dan>0);
+    document.getElementById('cobros').classList.add('show');
 }
 
 function checkFormComplete(){
@@ -381,7 +499,7 @@ function checkFormComplete(){
     if(!conf){btn.disabled=true;return;}
     if(dano){
         const td=document.getElementById('tdano').value.trim();
-        const md=document.getElementById('mdano').value.trim();
+        const md=_rv('mdano').trim();
         const od=document.getElementById('odano').value.trim();
         if(!td||!md||!od||parseFloat(md)<=0||isNaN(parseFloat(md))){btn.disabled=true;return;}
     }
@@ -397,7 +515,7 @@ function validarDev(){
             const el=document.getElementById(c.id);
             if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
         });
-        if(parseFloat(document.getElementById('mdano').value)<=0||isNaN(parseFloat(document.getElementById('mdano').value))){
+        if(parseFloat(_rv('mdano'))<=0||isNaN(parseFloat(_rv('mdano')))){
             document.getElementById('mdano').classList.add('err');document.getElementById('ferr-mdano').classList.add('show');ok=false;
         }
     }
@@ -413,18 +531,47 @@ async function procesar(){
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
     const dano=document.getElementById('dano').checked;
     try{
-        const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(document.getElementById('mdano').value)||0,observacion:document.getElementById('obs').value.trim()})});
+        const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(_rv('mdano'))||0,observacion:document.getElementById('obs').value.trim()})});
         const d=await r.json();
         if(r.ok){
+            const ahora=new Date();
+            const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+            const numRec=String(pActual.id_prestamo).padStart(4,'0');
+            const danoSi=document.getElementById('dano').checked;
+            const obsVal=document.getElementById('obs').value.trim();
+            const multaBase=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
+            document.getElementById('r-recibo').textContent=`REC-${numRec}`;
+            document.getElementById('r-id').textContent=`#${pActual.id_prestamo}`;
             document.getElementById('r-alu').textContent=`${pActual.alumno_nombre} ${pActual.alumno_apellido}`;
+            document.getElementById('r-cod').textContent=pActual.codigo_alumno;
+            document.getElementById('r-car').textContent=pActual.carrera||'—';
             document.getElementById('r-eq').textContent=pActual.equipo;
-            document.getElementById('r-est').textContent=document.getElementById('estado').value;
+            document.getElementById('r-tm').textContent=`${pActual.tipo} · ${pActual.marca}`;
+            document.getElementById('r-fp').textContent=ff(pActual.fecha_prestamo);
+            document.getElementById('r-fv').textContent=ff(pActual.fecha_devolucion_estimada);
+            document.getElementById('r-fd').textContent=ff(new Date().toISOString());
+            document.getElementById('r-est').textContent=document.getElementById('estado').selectedOptions[0].textContent;
             document.getElementById('r-dias').textContent=d.dias_retraso;
+            document.getElementById('r-mpd').textContent=`Gs. ${fn(multaBase)}`;
             document.getElementById('r-mul').textContent=`Gs. ${fn(d.monto_multa)}`;
+            if(danoSi){
+                document.getElementById('r-dano').textContent='Sí';
+                document.getElementById('r-dano-monto-tr').style.display='';
+                document.getElementById('r-mdano').textContent=`Gs. ${fn(d.monto_dano)}`;
+            }
             document.getElementById('r-tot').textContent=`Gs. ${fn(d.total_cobro)}`;
-            document.getElementById('rdesc').textContent=dano?`Equipo con danos — pasa a mantenimiento. Total: Gs. ${fn(d.total_cobro)}`:d.dias_retraso>0?`${d.dias_retraso} dia(s) de retraso. Multa: Gs. ${fn(d.monto_multa)}`:'Devuelto en tiempo y forma.';
+            const stamp=document.getElementById('r-stamp');
+            stamp.className='stamp-badge';
+            if(danoSi)stamp.classList.add('damage');
+            else if(d.dias_retraso>0)stamp.classList.add('late');
+            if(obsVal){
+                document.getElementById('r-obs-section').style.display='block';
+                document.getElementById('r-obs-text').textContent=obsVal;
+            }
+            document.getElementById('r-emision').textContent=`Emitido: ${hoy}`;
             document.getElementById('ps').classList.remove('show');document.getElementById('fd').classList.remove('show');
             document.getElementById('resultado').classList.add('show');setStep(3);
+            window.scrollTo({top:0,behavior:'smooth'});
         }else{st(d.mensaje||'Error al registrar');btn.disabled=false;btn.textContent='Procesar devolucion';}
     }catch(e){st('Error de conexion');btn.disabled=false;btn.textContent='Procesar devolucion';}
 }
@@ -437,7 +584,7 @@ function nueva(){
     setStep(1);resetForm();cargarActivos();
 }
 function resetForm(){
-    document.getElementById('estado').value='Excelente';document.getElementById('obs').value='';
+    document.getElementById('estado').value='1';document.getElementById('obs').value='';
     document.getElementById('dano').checked=false;document.getElementById('ds').classList.remove('show');
     document.getElementById('mdano').value='';document.getElementById('tdano').value='';document.getElementById('odano').value='';
     document.getElementById('conf').checked=false;document.getElementById('cobros').classList.remove('show');

@@ -11,21 +11,30 @@ exports.crear = async (req, res) => {
   try {
     const { id_alumno, id_equipo, id_encargado, fecha_devolucion_estimada,
             estado_inicial_equipo, accesorios, motivo, observaciones, acepto_contrato } = req.body;
+    const estadoIniMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
+    const estadoIni = estadoIniMap[estado_inicial_equipo] || 'Excelente';
     if (!id_alumno || !id_equipo || !id_encargado || !fecha_devolucion_estimada) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
     }
     if (!acepto_contrato) {
       return res.status(400).json({ mensaje: 'El alumno debe aceptar el contrato' });
     }
+    const ahora = new Date();
+    const devEst = new Date(fecha_devolucion_estimada);
+    if (devEst <= ahora) {
+      return res.status(400).json({ mensaje: 'La fecha de devolución debe ser posterior a la fecha actual' });
+    }
     const conn = await db;
-    await conn.query(
+    const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
+    const multaBase = !cfg.length ? 10000 : (parseFloat(cfg[0].valor) || 10000);
+    const [result] = await conn.query(
       `INSERT INTO prestamos (id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
-       estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato)
-       VALUES (?,?,?,?,?,?,?,?,?,?)`,
+       estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
       [id_alumno, id_equipo, id_encargado, fmt(new Date()), fmt(fecha_devolucion_estimada),
-       estado_inicial_equipo || 'Excelente', accesorios || '', motivo || '', observaciones || '', 1]
+       estadoIni, accesorios || '', motivo || '', observaciones || '', 1, multaBase]
     );
-    res.json({ mensaje: 'Préstamo registrado correctamente' });
+    res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId });
   } catch (err) {
     if (err.sqlMessage && err.sqlMessage.toLowerCase().includes('disponible')) {
       return res.status(400).json({ mensaje: 'El equipo no está disponible' });

@@ -36,36 +36,92 @@
         .check-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;}
         .check-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--primary);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;margin-top:2px;}
         .check-row span{font-size:0.85rem;font-weight:600;color:var(--dim);line-height:1.5;}
-        #comprobante{display:none;}
-        #comprobante.show{display:block;}
-        .comp-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;}
-        .comp-icon{width:56px;height:56px;background:rgba(99,102,241,0.1);border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;color:var(--primary);}
-        .comp-card h3{font-size:1.3rem;font-weight:800;margin-bottom:4px;color:var(--text);}
-        .comp-card p{color:var(--dim);margin-bottom:20px;font-size:0.85rem;}
-        .comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;text-align:left;}
-        .comp-item{background:var(--surface);border-radius:10px;padding:12px;}
-        .comp-item span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
-        .comp-item strong{font-size:0.84rem;font-weight:700;color:var(--text);}
-        .comp-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+        #comprobante{display:none;}#comprobante.show{display:block;max-width:480px;margin:0 auto;}
+        .comp-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
         .aviso{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:0.82rem;color:var(--dim);font-weight:600;margin-top:6px;display:none;}
         .aviso.show{display:block;}
+
+        .receipt{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:0;overflow:hidden;}
+        .receipt-header{background:var(--surface);padding:24px 28px 20px;border-bottom:2px dashed var(--border);text-align:center;}
+        .receipt-header .rh-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
+        .receipt-header .rh-brand svg{color:var(--primary);flex-shrink:0;}
+        .receipt-header .rh-brand h2{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin:0;}
+        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;}
+        .receipt-title{margin-top:14px;}
+        .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
+        .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:rgba(99,102,241,0.08);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
+
+        .receipt-body{padding:20px 28px;}
+        .rsec{margin-bottom:20px;}
+        .rsec:last-child{margin-bottom:0;}
+        .rsec-title{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
+        .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
+        .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
+        .rg-item:last-child{border-bottom:none;}
+        .rg-item.full{grid-column:1/-1;}
+        .rg-item span{font-size:0.72rem;color:var(--dim);font-weight:600;}
+        .rg-item strong{font-size:0.82rem;font-weight:700;color:var(--text);text-align:right;}
+        .rsec-full{display:block;}
+        .rsec-full .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
+        .rsec-full .rg-item:last-child{border-bottom:none;}
+        .rsec-full .rg-item span{font-size:0.72rem;color:var(--dim);font-weight:600;}
+        .rsec-full .rg-item strong{font-size:0.82rem;font-weight:700;color:var(--text);text-align:right;}
+
+        .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
+        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
+        .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
+
+        .contract-ack{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border-radius:8px;padding:10px 14px;}
+        .contract-ack svg{color:var(--success);flex-shrink:0;margin-top:1px;}
+        .contract-ack p{font-size:0.72rem;color:var(--dim);margin:0;line-height:1.5;}
+
+        .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
+        .receipt-stamp{text-align:center;margin-bottom:14px;}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:rgba(99,102,241,0.1);color:var(--primary);border:1.5px solid rgba(99,102,241,0.2);}
+        .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
+        .sig-field{flex:1;max-width:200px;}
+        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .sig-field .sig-line{border-bottom:1.5px solid var(--text);height:24px;margin-bottom:2px;}
+        .sig-field small{font-size:0.62rem;color:var(--muted);}
+        .receipt-legal{text-align:center;}
+        .receipt-legal .rl-date{font-size:0.7rem;color:var(--dim);font-weight:600;}
+        .receipt-legal p{font-size:0.65rem;color:var(--muted);margin:4px 0 0;line-height:1.4;}
+
         @media print {
-            *{margin:0;padding:0;box-sizing:border-box}
-            body{background:white!important;color:black!important;font-family:'Plus Jakarta Sans',sans-serif}
-            nav,#formulario,.toast,.comp-btns,.page-header{display:none!important}
-            main{padding:0!important;max-width:100%!important}
-            #comprobante{display:block!important}
-            .comp-card{background:white!important;border:2px solid #333!important;color:black!important;padding:28px!important;border-radius:8px!important}
-            .comp-card h3{color:black!important;font-size:1.4rem!important}
-            .comp-card p{color:#444!important}
-            .comp-item{background:#f0f0f0!important;border-radius:6px!important;padding:12px!important}
-            .comp-item span{color:#555!important;font-size:0.65rem!important}
-            .comp-item strong{color:black!important}
-            .comp-icon{background:#e8f5e9!important}
-            .comp-icon svg{stroke:green!important}
-            .comp-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important}
+            @page{margin:12mm 15mm;}
+            *{margin:0;padding:0;box-sizing:border-box;background:transparent!important;}
+            html,body{background:white!important;color:black!important;font-size:11pt;}
+            nav,.page-header,.toast,.comp-btns,#formulario{display:none!important;}
+            main{max-width:100%!important;padding:0!important;margin:0!important;}
+            #comprobante{display:block!important;max-width:100%!important;box-shadow:none!important;}
+            .receipt{border:none!important;border-radius:0!important;background:white!important;box-shadow:none!important;}
+            .receipt-header{border-bottom:2px dashed #999!important;background:white!important;padding:0 0 16px!important;}
+            .receipt-header .rh-brand h2{color:black!important;font-size:14pt!important;}
+            .receipt-header .rh-sub{color:#666!important;}
+            .receipt-title h3{color:black!important;font-size:13pt!important;}
+            .receipt-title .rt-number{color:black!important;background:#eee!important;border:1px solid #ccc!important;}
+            .receipt-body{padding:16px 0!important;}
+            .rsec-title{color:#666!important;border-bottom-color:#999!important;font-size:8pt!important;}
+            .rg-item{border-bottom-color:#ddd!important;}
+            .rg-item span{color:#555!important;}
+            .rg-item strong{color:black!important;}
+            .rsec-full .rg-item{border-bottom-color:#ddd!important;}
+            .rsec-full .rg-item span{color:#555!important;}
+            .rsec-full .rg-item strong{color:black!important;}
+            .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:8px 12px!important;}
+            .rsec-obs span{color:#555!important;}
+            .rsec-obs p{color:#333!important;}
+            .contract-ack{border:1px solid #ddd!important;background:#f9f9f9!important;}
+            .contract-ack p{color:#333!important;}
+            .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:16px 0 0!important;}
+            .stamp-badge{border:1.5px solid #999!important;color:black!important;background:white!important;font-size:9pt!important;}
+            .stamp-badge svg{display:none!important;}
+            .sig-field span{color:#555!important;}
+            .sig-field .sig-line{border-bottom-color:black!important;height:30px!important;}
+            .receipt-legal .rl-date{color:#555!important;}
+            .receipt-legal p{color:#666!important;font-size:7pt!important;}
         }
-        @media(max-width:600px){.g2{grid-template-columns:1fr}.comp-grid{grid-template-columns:1fr}main{padding:24px 16px}}
+        @media(max-width:600px){.g2{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
 <body>
@@ -116,7 +172,7 @@
             <div class="g2">
                 <div class="ig"><label>Fecha de devolucion estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
                 <div class="ig"><label>Estado inicial del equipo</label>
-                    <select id="estado_ini"><option value="Excelente">Excelente</option><option value="Bueno">Bueno</option><option value="Dañado">Dañado</option></select>
+                    <select id="estado_ini"><option value="1">Excelente</option><option value="2">Bueno</option><option value="3">Dañado</option></select>
                 </div>
             </div>
             <div class="sep"></div>
@@ -150,26 +206,70 @@
     </div>
 
     <div id="comprobante">
-        <div class="comp-card">
-            <div class="comp-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
-            <h3>Prestamo Registrado</h3>
-            <p id="comp-desc">El prestamo fue registrado correctamente.</p>
-            <div class="comp-grid">
-                <div class="comp-item"><span>Codigo alumno</span><strong id="c-codigo">—</strong></div>
-                <div class="comp-item"><span>Alumno</span><strong id="c-alumno">—</strong></div>
-                <div class="comp-item"><span>Equipo</span><strong id="c-equipo">—</strong></div>
-                <div class="comp-item"><span>Tipo / Marca</span><strong id="c-tipo">—</strong></div>
-                <div class="comp-item"><span>Devolucion estimada</span><strong id="c-fecha">—</strong></div>
-                <div class="comp-item"><span>Estado inicial</span><strong id="c-estado">—</strong></div>
-                <div class="comp-item"><span>Motivo</span><strong id="c-motivo">—</strong></div>
-                <div class="comp-item"><span>Accesorios</span><strong id="c-acc">—</strong></div>
-                <div class="comp-item"><span>Encargado</span><strong id="c-enc">—</strong></div>
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <div class="rh-brand">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <h2>SmartLoan IT</h2>
+                </div>
+                <div class="rh-sub">Sistema de Gesti&oacute;n de Pr&eacute;stamos Tecnol&oacute;gicos</div>
+                <div class="receipt-title">
+                    <h3>COMPROBANTE DE PR&Eacute;STAMO</h3>
+                    <span class="rt-number" id="c-recibo">PRE-0000</span>
+                </div>
             </div>
-            <div class="comp-btns">
-                <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
-                <button class="btn btn-secondary" onclick="nuevoPrestamo()">Nuevo prestamo</button>
-                <button class="btn btn-primary" onclick="window.location.href='/home/dashboard.html'">Ir al Dashboard</button>
+            <div class="receipt-body">
+                <div class="rsec">
+                    <div class="rsec-title">Datos del Pr&eacute;stamo</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item"><span># Pr&eacute;stamo</span><strong id="c-id">—</strong></div>
+                        <div class="rg-item"><span>Alumno</span><strong id="c-alumno">—</strong></div>
+                        <div class="rg-item"><span>C&oacute;digo</span><strong id="c-codigo">—</strong></div>
+                        <div class="rg-item"><span>Carrera</span><strong id="c-carrera">—</strong></div>
+                        <div class="rg-item full"><span>Equipo</span><strong id="c-equipo">—</strong></div>
+                        <div class="rg-item"><span>Tipo / Marca</span><strong id="c-tipo">—</strong></div>
+                        <div class="rg-item"><span>Fecha Pr&eacute;stamo</span><strong id="c-fecha-prestamo">—</strong></div>
+                        <div class="rg-item"><span>Vencimiento</span><strong id="c-fecha-dev">—</strong></div>
+                        <div class="rg-item"><span>Estado inicial</span><strong id="c-estado">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec">
+                    <div class="rsec-title">Detalles</div>
+                    <div class="rsec-full">
+                        <div class="rg-item"><span>Motivo</span><strong id="c-motivo">—</strong></div>
+                        <div class="rg-item"><span>Accesorios</span><strong id="c-accesorios">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec-obs" id="c-obs-section" style="display:none">
+                    <span>Observaciones</span>
+                    <p id="c-obs-text">—</p>
+                </div>
+                <div class="contract-ack">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <p>El alumno acept&oacute; los t&eacute;rminos y condiciones del contrato de uso del equipo.</p>
+                </div>
             </div>
+            <div class="receipt-footer">
+                <div class="receipt-stamp">
+                    <div class="stamp-badge" id="c-stamp">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        PR&Eacute;STAMO ACTIVO
+                    </div>
+                </div>
+                <div class="sig-row">
+                    <div class="sig-field"><span>Encargado</span><div class="sig-line"></div><small>Firma</small></div>
+                    <div class="sig-field"><span>Alumno</span><div class="sig-line"></div><small>Firma</small></div>
+                </div>
+                <div class="receipt-legal">
+                    <div class="rl-date" id="c-emision">—</div>
+                    <p>Este comprobante es v&aacute;lido como constancia de pr&eacute;stamo de equipos tecnol&oacute;gicos. El alumno se compromete a devolver el equipo en la fecha acordada.</p>
+                </div>
+            </div>
+        </div>
+        <div class="comp-btns">
+            <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
+            <button class="btn btn-secondary" onclick="nuevoPrestamo()">Nuevo prestamo</button>
+            <button class="btn btn-primary" onclick="window.location.href='/home/dashboard.html'">Ir al Dashboard</button>
         </div>
     </div>
 </main>
@@ -272,15 +372,28 @@ async function registrar(){
         const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,id_encargado:enc.id_encargado,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
         const d=await r.json();
         if(r.ok){
-            document.getElementById('c-codigo').textContent=a.codigo_alumno;
+            const ahora=new Date();
+            const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+            const idPrestamo=d.id_prestamo||0;
+            const numRec=String(idPrestamo).padStart(4,'0');
+            document.getElementById('c-recibo').textContent=`PRE-${numRec}`;
+            document.getElementById('c-id').textContent=`#${idPrestamo}`;
             document.getElementById('c-alumno').textContent=`${a.nombre} ${a.apellido}`;
+            document.getElementById('c-codigo').textContent=a.codigo_alumno;
+            document.getElementById('c-carrera').textContent=a.carrera||'—';
             document.getElementById('c-equipo').textContent=e.nombre;
             document.getElementById('c-tipo').textContent=`${e.tipo} · ${e.marca}`;
-            document.getElementById('c-fecha').textContent=ff(fecha);
-            document.getElementById('c-estado').textContent=estado_ini;
+            document.getElementById('c-fecha-prestamo').textContent=ff(new Date().toISOString());
+            document.getElementById('c-fecha-dev').textContent=ff(fecha);
+            const estadoLabels={'1':'Excelente','2':'Bueno','3':'Dañado'};
+            document.getElementById('c-estado').textContent=estadoLabels[estado_ini]||estado_ini;
             document.getElementById('c-motivo').textContent=motivo||'—';
-            document.getElementById('c-acc').textContent=accesorios||'—';
-            document.getElementById('c-enc').textContent=`${enc.nombre} ${enc.apellido}`;
+            document.getElementById('c-accesorios').textContent=accesorios||'Ninguno';
+            if(obs){
+                document.getElementById('c-obs-section').style.display='block';
+                document.getElementById('c-obs-text').textContent=obs;
+            }
+            document.getElementById('c-emision').textContent=`Emitido: ${hoy}`;
             document.getElementById('formulario').style.display='none';
             document.getElementById('comprobante').classList.add('show');
         } else {
