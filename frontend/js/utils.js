@@ -113,6 +113,14 @@ function fadeOutNavigate(url) {
   setTimeout(function () { window.location.href = url; }, 250);
 }
 
+function logout() {
+  showConfirm('Cerrar sesi\u00f3n del sistema?', function () {
+    localStorage.removeItem('encargado');
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  });
+}
+
 /* Confirm modal (replaces native confirm()) */
 function showConfirm(msg, onConfirm) {
   var overlay = document.getElementById('confirm-modal');

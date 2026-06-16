@@ -29,16 +29,16 @@ exports.crear = async (req, res) => {
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
-    const conn = await db;
-    const [prestamosActivos] = await conn.query(
-      'SELECT id_prestamo FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" LIMIT 1', [id]
-    );
-    if (prestamosActivos.length > 0) {
-      return res.status(400).json({ mensaje: 'No se puede eliminar: el equipo tiene un préstamo activo' });
-    }
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
+      const [prestamosActivos] = await tx.query(
+        'SELECT id_prestamo FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
+      );
+      if (prestamosActivos.length > 0) {
+        await tx.rollback(); tx.release();
+        return res.status(400).json({ mensaje: 'No se puede eliminar: el equipo tiene un préstamo activo' });
+      }
       await tx.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_equipo = ?', [id]);
       await tx.query('DELETE FROM prestamos WHERE id_equipo = ?', [id]);
       await tx.query('DELETE FROM equipos WHERE id_equipo = ?', [id]);

@@ -15,7 +15,7 @@
         .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;}
         .user-name{font-size:0.82rem;font-weight:700;color:var(--text);line-height:1.2;}
         .user-role{font-size:0.7rem;color:var(--dim);}
-        .btn-logout{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.25s;}
+                .btn-logout{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.25s;}
         .btn-logout:hover{background:var(--danger);color:#fff;transform:translateY(-1px);}
 
         /* WELCOME */
@@ -399,14 +399,6 @@ function formatearTiempoRelativo(iso){
     if(diffDias===1) return 'ayer';
     if(diffDias<7) return 'hace '+diffDias+' días';
     return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-}
-
-function logout(){
-    showConfirm('Cerrar sesi\u00f3n del sistema?',function(){
-        localStorage.removeItem('encargado');
-        localStorage.removeItem('token');
-        window.location.href='/';
-    });
 }
 
 // Reloj
