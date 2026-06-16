@@ -60,11 +60,11 @@
                 <select id="carrera" onchange="clearF('carrera');checkNuevoAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-carrera">Selecciona la carrera</div>
             </div>
-            <div class="ig"><label>Curso / Año *</label>
+            <div class="ig"><label>Curso / Año</label>
                 <select id="curso" onchange="clearF('curso');checkNuevoAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-curso">Selecciona el curso</div>
             </div>
-            <div class="btn-wrap"><button class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
+            <div class="ig" style="flex:0"><label>&nbsp;</label><button class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
         </div>
     </div>
     <div class="search-bar">
@@ -83,14 +83,14 @@
         <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
             <div class="g2m">
-                <div class="ig"><label>Nombre *</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
-                <div class="ig"><label>Apellido *</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
+                <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
-            <div class="ig"><label>Carrera *</label>
+            <div class="ig"><label>Carrera</label>
                 <select id="edit-carrera" onchange="clearFE('carrera');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-edit-carrera">Selecciona la carrera</div>
             </div>
-            <div class="ig"><label>Curso / Año *</label>
+            <div class="ig"><label>Curso / Año</label>
                 <select id="edit-curso" onchange="clearFE('curso');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
             </div>
