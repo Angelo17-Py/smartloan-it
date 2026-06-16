@@ -79,7 +79,6 @@ if(!localStorage.getItem('encargado')) window.location.href='/';
 let prestamos=[],devs=[];
 let tabAct='p',filtAct='todos';
 
-function esc(t){return String(t).replace(/[&<>"']/g,function(m){return m=='&'?'&amp;':m=='<'?'&lt;':m=='>'?'&gt;':m=='"'?'&quot;':'&#39;';});}
 function resaltar(texto,q){
     if(!q||!texto) return esc(texto)||'—';
     var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');

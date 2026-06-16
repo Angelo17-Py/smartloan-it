@@ -177,8 +177,8 @@ function render(data){
                 : '';
             return `<tr>
                 <td><span class="num">${i+1}</span></td>
-                <td><strong>${e.nombre}</strong>${e.descripcion?`<br><span style="font-size:0.76rem;color:var(--dim)">${e.descripcion}</span>`:''}</td>
-                <td style="color:var(--dim);font-size:0.85rem">${e.tipo} &middot; ${e.marca}</td>
+                <td><strong>${esc(e.nombre)}</strong>${e.descripcion?'<br><span style="font-size:0.76rem;color:var(--dim)">'+esc(e.descripcion)+'</span>':''}</td>
+                <td style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
                 <td>${bE(e.estado)}</td>
                 <td><div class="ac">
                     <button class="btn-sm btn-edit" onclick="abrirEditar(${e.id_equipo})">Editar</button>

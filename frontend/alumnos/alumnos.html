@@ -152,10 +152,10 @@ function render(data){
     tb.innerHTML = data.map((a,i) => `
         <tr>
             <td><span class="num">${i+1}</span></td>
-            <td><span class="code-chip">${a.codigo_alumno}</span></td>
-            <td><strong>${a.nombre} ${a.apellido}</strong></td>
-            <td style="color:var(--dim);font-size:0.85rem">${a.carrera||'—'}</td>
-            <td style="color:var(--dim);font-size:0.85rem">${a.curso||'—'}</td>
+            <td><span class="code-chip">${esc(a.codigo_alumno)}</span></td>
+            <td><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
+            <td style="color:var(--dim);font-size:0.85rem">${esc(a.carrera||'—')}</td>
+            <td style="color:var(--dim);font-size:0.85rem">${esc(a.curso||'—')}</td>
             <td><div class="ac">
                 <button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>
                 <button class="btn-del" onclick="confirmarEliminar(${a.id_alumno})">&#215;</button>

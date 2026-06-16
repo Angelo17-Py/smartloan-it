@@ -319,10 +319,10 @@ function actualizarResumen(){
     const a=alumnos.find(x=>x.id_alumno==id_a),e=equipos.find(x=>x.id_equipo==id_e);
     if(!a||!e)return;
     document.getElementById('resumen-grid').innerHTML=`
-        <div class="res-field"><span>Alumno</span><strong>${a.codigo_alumno} — ${a.nombre} ${a.apellido}</strong></div>
-        <div class="res-field"><span>Equipo</span><strong>${e.nombre} · ${e.tipo}</strong></div>
+        <div class="res-field"><span>Alumno</span><strong>${esc(a.codigo_alumno)} — ${esc(a.nombre)} ${esc(a.apellido)}</strong></div>
+        <div class="res-field"><span>Equipo</span><strong>${esc(e.nombre)} · ${esc(e.tipo)}</strong></div>
         <div class="res-field"><span>Devolucion estimada</span><strong>${ff(fecha)}</strong></div>
-        ${motivo?`<div class="res-field"><span>Motivo</span><strong>${motivo}</strong></div>`:''}`;
+        ${motivo?'<div class="res-field"><span>Motivo</span><strong>'+esc(motivo)+'</strong></div>':''}`;
     document.getElementById('resumen').classList.add('show');
 }
 

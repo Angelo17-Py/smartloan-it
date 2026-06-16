@@ -65,7 +65,13 @@ exports.eliminar = async (req, res) => {
       await tx.query('DELETE FROM devoluciones WHERE id_devolucion = ?', [id]);
       await tx.query("UPDATE prestamos SET estado = 'ACTIVO' WHERE id_prestamo = ?", [idPrestamo]);
       if (eq.length > 0) {
-        await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [eq[0].id_equipo]);
+        const [activos] = await tx.query(
+          'SELECT COUNT(*) AS c FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" AND id_prestamo != ?',
+          [eq[0].id_equipo, idPrestamo]
+        );
+        if (activos[0].c === 0) {
+          await tx.query("UPDATE equipos SET estado = 'Prestado' WHERE id_equipo = ?", [eq[0].id_equipo]);
+        }
       }
       await tx.commit();
       res.json({ mensaje: 'Devolución eliminada correctamente. Préstamo reactivado.' });

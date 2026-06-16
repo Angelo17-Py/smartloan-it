@@ -100,6 +100,12 @@ function safeJson(r) {
   return r.status === 204 ? {} : r.json();
 }
 
+function esc(t) {
+  return String(t).replace(/[&<>"']/g, function (m) {
+    return m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m === '"' ? '&quot;' : '&#39;';
+  });
+}
+
 /* Confirm modal (replaces native confirm()) */
 function showConfirm(msg, onConfirm) {
   var overlay = document.getElementById('confirm-modal');

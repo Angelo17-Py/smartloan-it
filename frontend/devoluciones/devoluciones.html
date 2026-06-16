@@ -362,8 +362,8 @@ async function cargarActivos(){
             const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
             return `<div class="pres-item" id="item-${p.id_prestamo}" onclick="selec(${p.id_prestamo})">
                 <div class="pi-left">
-                    <h4>#${p.id_prestamo} &mdash; ${p.alumno_nombre} ${p.alumno_apellido} <span style="font-size:0.72rem;color:var(--dim)">(${p.codigo_alumno})</span></h4>
-                    <p>${p.equipo} &middot; ${p.tipo} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
+                    <h4>#${p.id_prestamo} &mdash; ${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)} <span style="font-size:0.72rem;color:var(--dim)">(${esc(p.codigo_alumno)})</span></h4>
+                    <p>${esc(p.equipo)} &middot; ${esc(p.tipo)} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
                 </div>
                 <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al dia'}</span>
             </div>`;
@@ -399,14 +399,14 @@ async function buscar(){
         } else {
             const lista=document.getElementById('lista');
             const ahora=new Date();
-            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' préstamos encontrados — selecciona uno:</div>'+
+            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' pr\u00e9stamos encontrados \u2014 selecciona uno:</div>'+
             activos.map(function(p){
                 const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
                 const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
                 return '<div class="pres-item" id="item-'+p.id_prestamo+'" onclick="selec('+p.id_prestamo+')">'+
                     '<div class="pi-left">'+
-                    '<h4>#'+p.id_prestamo+' &mdash; '+p.alumno_nombre+' '+p.alumno_apellido+' <span style="font-size:0.72rem;color:var(--dim)">('+p.codigo_alumno+')</span></h4>'+
-                    '<p>'+p.equipo+' &middot; '+p.tipo+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
+                    '<h4>#'+p.id_prestamo+' &mdash; '+esc(p.alumno_nombre)+' '+esc(p.alumno_apellido)+' <span style="font-size:0.72rem;color:var(--dim)">('+esc(p.codigo_alumno)+')</span></h4>'+
+                    '<p>'+esc(p.equipo)+' &middot; '+esc(p.tipo)+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
                     '</div>'+
                     '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al dia')+'</span>'+
                     '</div>';
@@ -427,22 +427,22 @@ function mostrar(){
     const p=pActual,ahora=new Date(),v=new Date(p.fecha_devolucion_estimada);
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     document.getElementById('ig').innerHTML=`
-        <div class="if"><span>Préstamo</span><strong>#${p.id_prestamo}</strong></div>
-        <div class="if"><span>Alumno</span><strong>${p.alumno_nombre} ${p.alumno_apellido}</strong></div>
-        <div class="if"><span>Codigo</span><strong>${p.codigo_alumno}</strong></div>
-        <div class="if"><span>Carrera</span><strong>${p.carrera||'—'}</strong></div>
-        <div class="if"><span>Equipo</span><strong>${p.equipo}</strong></div>
-        <div class="if"><span>Tipo / Marca</span><strong>${p.tipo} &middot; ${p.marca}</strong></div>
-        <div class="if"><span>Fecha préstamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
+        <div class="if"><span>Pr\u00e9stamo</span><strong>#${p.id_prestamo}</strong></div>
+        <div class="if"><span>Alumno</span><strong>${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)}</strong></div>
+        <div class="if"><span>Codigo</span><strong>${esc(p.codigo_alumno)}</strong></div>
+        <div class="if"><span>Carrera</span><strong>${esc(p.carrera||'\u2014')}</strong></div>
+        <div class="if"><span>Equipo</span><strong>${esc(p.equipo)}</strong></div>
+        <div class="if"><span>Tipo / Marca</span><strong>${esc(p.tipo)} &middot; ${esc(p.marca)}</strong></div>
+        <div class="if"><span>Fecha pr\u00e9stamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
         <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
-        <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>
-        <div class="if"><span>Encargado</span><strong>${p.encargado_nombre||''} ${p.encargado_apellido||''}</strong></div>`;
+        <div class="if"><span>Estado inicial</span><strong>${esc(p.estado_inicial_equipo||'\u2014')}</strong></div>
+        <div class="if"><span>Encargado</span><strong>${esc(p.encargado_nombre||'')} ${esc(p.encargado_apellido||'')}</strong></div>`;
     const ra=document.getElementById('ra');
     var multaPreview=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
     if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} dia(s) — Multa estimada: Gs. ${fn(ret*multaPreview)}`;ra.style.display='flex';}
     else ra.style.display='none';
     const ab=document.getElementById('accb');
-    if(p.accesorios&&p.accesorios.trim()){document.getElementById('acct').innerHTML=`Accesorios entregados al prestar: <strong>${p.accesorios}</strong>`;ab.style.display='block';}
+    if(p.accesorios&&p.accesorios.trim()){document.getElementById('acct').innerHTML='Accesorios entregados al prestar: <strong>'+esc(p.accesorios)+'</strong>';ab.style.display='block';}
     else ab.style.display='none';
     document.getElementById('p1').style.display='none';
     document.getElementById('ps').classList.add('show');
