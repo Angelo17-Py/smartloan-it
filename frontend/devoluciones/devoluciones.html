@@ -534,7 +534,8 @@ async function procesar(){
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
     const dano=document.getElementById('dano').checked;
     try{
-        const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(_rv('mdano'))||0,observacion:document.getElementById('obs').value.trim()})});
+        const encDev = JSON.parse(localStorage.getItem('encargado')||'{}');
+        const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(_rv('mdano'))||0,observacion:document.getElementById('obs').value.trim(),id_encargado:encDev.id_encargado||null})});
         const d=await r.json();
         if(r.ok){
             const ahora=new Date();
@@ -571,7 +572,6 @@ async function procesar(){
                 document.getElementById('r-obs-section').style.display='block';
                 document.getElementById('r-obs-text').textContent=obsVal;
             }
-            const encDev = JSON.parse(localStorage.getItem('encargado')||'{}');
             document.getElementById('r-enc-prestamo').textContent = pActual.encargado_nombre ? `${pActual.encargado_nombre} ${pActual.encargado_apellido} (${pActual.codigo_encargado||''})` : '—';
             document.getElementById('r-enc-devolucion').textContent = encDev.nombre ? `${encDev.nombre} ${encDev.apellido} (${encDev.codigo||''})` : '—';
             document.getElementById('r-sig-enc-label').textContent = encDev.nombre || 'Encargado';

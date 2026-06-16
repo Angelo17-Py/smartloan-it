@@ -151,7 +151,19 @@ function getDevFiltrados(){
                (d.alumno_nombre&&d.alumno_apellido&&
                 (d.alumno_nombre+' '+d.alumno_apellido).toLowerCase().includes(q))||
                (d.alumno_apellido&&d.alumno_nombre&&
-                (d.alumno_apellido+' '+d.alumno_nombre).toLowerCase().includes(q));
+                (d.alumno_apellido+' '+d.alumno_nombre).toLowerCase().includes(q))||
+               (d.enc_prestamo_nombre&&d.enc_prestamo_nombre.toLowerCase().includes(q))||
+               (d.enc_prestamo_apellido&&d.enc_prestamo_apellido.toLowerCase().includes(q))||
+               (d.enc_prestamo_nombre&&d.enc_prestamo_apellido&&
+                (d.enc_prestamo_nombre+' '+d.enc_prestamo_apellido).toLowerCase().includes(q))||
+               (d.enc_prestamo_apellido&&d.enc_prestamo_nombre&&
+                (d.enc_prestamo_apellido+' '+d.enc_prestamo_nombre).toLowerCase().includes(q))||
+               (d.enc_devolucion_nombre&&d.enc_devolucion_nombre.toLowerCase().includes(q))||
+               (d.enc_devolucion_apellido&&d.enc_devolucion_apellido.toLowerCase().includes(q))||
+               (d.enc_devolucion_nombre&&d.enc_devolucion_apellido&&
+                (d.enc_devolucion_nombre+' '+d.enc_devolucion_apellido).toLowerCase().includes(q))||
+               (d.enc_devolucion_apellido&&d.enc_devolucion_nombre&&
+                (d.enc_devolucion_apellido+' '+d.enc_devolucion_nombre).toLowerCase().includes(q));
     });
 }
 
@@ -190,7 +202,7 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th><th class="ac"></th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Registró</th><th>Recibió</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th><th class="ac"></th></tr></thead><tbody>';
     d.forEach(function(dv){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
@@ -200,6 +212,8 @@ function renderD(){
         html+='<td><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
         html+='<td><strong>'+resaltar(dv.equipo,q)+'</strong><div class="sub-text">'+dv.tipo+'</div></td>';
         html+='<td>'+ff(dv.fecha_devolucion)+'</td>';
+        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_prestamo_nombre||'')+' '+(dv.enc_prestamo_apellido||''),q)+'</td>';
+        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_devolucion_nombre||'')+' '+(dv.enc_devolucion_apellido||''),q)+'</td>';
         html+='<td>'+dv.estado_equipo+'</td>';
         html+='<td>'+danoCell+'</td>';
         html+='<td style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';

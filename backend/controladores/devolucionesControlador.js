@@ -3,7 +3,7 @@ const db = require('../db');
 exports.crear = async (req, res) => {
   try {
     const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
-            observacion_dano, monto_dano, observacion } = req.body;
+            observacion_dano, monto_dano, observacion, id_encargado } = req.body;
     const estadoEqMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
     const estadoEq = estadoEqMap[estado_equipo];
     if (!id_prestamo || !estadoEq) {
@@ -32,10 +32,10 @@ exports.crear = async (req, res) => {
     const fmt = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T', ' ').slice(0, 19);
 
     await conn.query(
-      `INSERT INTO devoluciones (id_prestamo,fecha_devolucion,estado_equipo,tiene_dano,
+      `INSERT INTO devoluciones (id_prestamo,id_encargado,fecha_devolucion,estado_equipo,tiene_dano,
        tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-      [id_prestamo, fmt(ahora), estadoEq, tiene_dano ? 1 : 0,
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [id_prestamo, id_encargado || null, fmt(ahora), estadoEq, tiene_dano ? 1 : 0,
        tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
     );
     res.json({ mensaje: 'Devolucion registrada', dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total });
@@ -87,11 +87,15 @@ exports.listar = async (req, res) => {
     const [rows] = await conn.query(`
       SELECT d.*, p.fecha_prestamo, p.fecha_devolucion_estimada,
         e.nombre AS equipo, e.tipo, e.marca,
-        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso
+        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso,
+        enc_p.nombre AS enc_prestamo_nombre, enc_p.apellido AS enc_prestamo_apellido,
+        enc_d.nombre AS enc_devolucion_nombre, enc_d.apellido AS enc_devolucion_apellido
       FROM devoluciones d
       JOIN prestamos p ON d.id_prestamo = p.id_prestamo
       JOIN equipos e   ON p.id_equipo   = e.id_equipo
       JOIN alumnos a   ON p.id_alumno   = a.id_alumno
+      LEFT JOIN encargados enc_p ON p.id_encargado = enc_p.id_encargado
+      LEFT JOIN encargados enc_d ON d.id_encargado = enc_d.id_encargado
       ORDER BY d.fecha_devolucion DESC
     `);
     res.json(rows);

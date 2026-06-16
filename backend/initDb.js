@@ -116,6 +116,8 @@ async function initDatabase() {
   try { await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato"); } catch (e) {}
   try { await conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"); } catch (e) {}
   try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) UNIQUE NOT NULL"); } catch (e) {}
+  try { await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo"); } catch (e) {}
+  try { await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)"); } catch (e) {}
 
   await conn.query('DROP TRIGGER IF EXISTS validar_prestamo');
   await conn.query(`
