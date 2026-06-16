@@ -243,12 +243,11 @@ app.get('/exportar', verificarToken, async (req, res) => {
 app.use(errorHandler);
 
 async function start() {
-  try {
-    await initDatabase();
-    app.listen(PORT, () => console.log(`SmartLoan IT corriendo en http://localhost:${PORT}`));
-  } catch (err) {
-    console.error('Error al iniciar:', err);
-    process.exit(1);
-  }
+  app.listen(PORT, () => {
+    console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
+    initDatabase().catch(err => {
+      console.error('Error al inicializar BD:', err);
+    });
+  });
 }
 start();
