@@ -545,7 +545,7 @@ async function procesar(){
             document.getElementById('r-tm').textContent=`${pActual.tipo} · ${pActual.marca}`;
             document.getElementById('r-fp').textContent=ff(pActual.fecha_prestamo);
             document.getElementById('r-fv').textContent=ff(pActual.fecha_devolucion_estimada);
-            document.getElementById('r-fd').textContent=ff(new Date().toISOString());
+            document.getElementById('r-fd').textContent=ff(d.fecha_devolucion);
             document.getElementById('r-est').textContent=document.getElementById('estado').selectedOptions[0].textContent;
             document.getElementById('r-dias').textContent=d.dias_retraso;
             document.getElementById('r-mpd').textContent=`Gs. ${fn(multaBase)}`;

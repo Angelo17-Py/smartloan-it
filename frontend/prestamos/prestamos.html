@@ -377,7 +377,7 @@ async function registrar(){
             document.getElementById('c-carrera').textContent=a.carrera||'—';
             document.getElementById('c-equipo').textContent=e.nombre;
             document.getElementById('c-tipo').textContent=`${e.tipo} · ${e.marca}`;
-            document.getElementById('c-fecha-prestamo').textContent=ff(new Date().toISOString());
+            document.getElementById('c-fecha-prestamo').textContent=ff(d.fecha_prestamo);
             document.getElementById('c-fecha-dev').textContent=ff(fecha);
             const estadoLabels={'1':'Excelente','2':'Bueno','3':'Dañado'};
             document.getElementById('c-estado').textContent=estadoLabels[estado_ini]||estado_ini;

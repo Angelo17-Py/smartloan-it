@@ -34,7 +34,7 @@ exports.crear = async (req, res) => {
       [id_alumno, id_equipo, id_encargado, fmt(new Date()), fmt(fecha_devolucion_estimada),
        estadoIni, accesorios || '', motivo || '', observaciones || '', 1, multaBase]
     );
-    res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId });
+    res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()) });
   } catch (err) {
     if (err.sqlMessage && err.sqlMessage.toLowerCase().includes('disponible')) {
       return res.status(400).json({ mensaje: 'El equipo no está disponible' });

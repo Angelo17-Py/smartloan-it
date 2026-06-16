@@ -38,7 +38,7 @@ exports.crear = async (req, res) => {
       [id_prestamo, id_encargado || null, fmt(ahora), estadoEq, tiene_dano ? 1 : 0,
        tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
     );
-    res.json({ mensaje: 'Devolucion registrada', dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total });
+    res.json({ mensaje: 'Devolucion registrada', dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total, fecha_devolucion: fmt(ahora) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
