@@ -47,6 +47,7 @@ function ff(d) {
 }
 
 function fn(n) {
+  if (n == null || isNaN(n)) return '0';
   return Number(n).toLocaleString('es-PY');
 }
 

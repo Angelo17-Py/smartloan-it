@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Panel de Control</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -431,12 +431,13 @@ async function cargarMetricas(){
             document.getElementById('cm').textContent = '...';
         }
         const r=await apiFetch('/equipos');
+        if(!r.ok){st('Error al cargar métricas','t-err');return;}
         const eq=await r.json();
         animarNumero('ct', eq.length);
         animarNumero('cp', eq.filter(e=>e.estado==='Prestado').length);
         animarNumero('cd', eq.filter(e=>e.estado==='Disponible').length);
         animarNumero('cm', eq.filter(e=>e.estado==='En mantenimiento').length);
-    }catch(e){console.error(e);}
+    }catch(e){st('Error de conexión al cargar métricas','t-err');}
 }
 
 function animarNumero(id, target) {
@@ -486,7 +487,7 @@ async function cargarConfig(){
             document.getElementById('multa-input').value=Number(multa.valor).toLocaleString('es-PY');
             actualizarDisplayMulta(multa.valor);
         }
-    }catch(e){console.error('Error config:',e);}
+    }catch(e){st('Error al cargar configuración','t-err');}
 }
 
 function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}

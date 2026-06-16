@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Equipos</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -60,7 +60,7 @@
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
             <div class="ig"><label>Descripción</label><input id="desc" placeholder="" oninput="clearF('desc');checkNuevoEquipo()"><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
-            <div class="ig"><label>&nbsp;</label><button class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
+            <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
         </div>
     </div>
     <div class="search-bar">
@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="ig"><label>Descripción</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" oninput="clearFE('desc','edit-');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
-            <button class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
+            <button type="button" class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
         </div>
     </div>
 </div>
@@ -194,7 +194,6 @@ async function cargar(){
         listaEquipos = await r.json();
         render(listaEquipos);
     } catch(e){
-        console.error('Error al cargar equipos:', e);
         showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los equipos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
     }
 }
@@ -327,7 +326,7 @@ async function guardarEquipo(){
     }
 }
 
-window.onload = function(){ cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([]); };
+window.onload = function(){ cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

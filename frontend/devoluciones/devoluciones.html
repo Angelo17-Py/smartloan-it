@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Devoluciones</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -203,7 +203,7 @@
             <div class="section-title">O busca por nombre del alumno</div>
             <div class="search-row">
                 <input type="text" class="si" id="idp" placeholder="Nombre, apellido o codigo...">
-                <button class="btn-buscar" onclick="buscar()">Buscar</button>
+                <button class="btn-buscar" id="btnBuscar" onclick="buscar()">Buscar</button>
             </div>
         </div>
     </div>
@@ -257,7 +257,7 @@
                 <label class="check-row"><input type="checkbox" id="conf" onchange="clearFD('conf');checkFormComplete()"><span>Confirmo que la información ingresada es correcta y el equipo fue recibido según las condiciones indicadas</span></label>
                 <div class="ferr" id="ferr-conf">Debes confirmar la conformidad para procesar</div>
             </div>
-            <button class="btn-procesar" id="btn" onclick="procesar()">Procesar devolución</button>
+            <button type="button" class="btn-procesar" id="btn" onclick="procesar()">Procesar devolución</button>
         </div>
     </div>
 
@@ -379,6 +379,7 @@ async function selec(id){
 async function buscar(){
     const q=document.getElementById('idp').value.trim().toLowerCase();
     if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
+    const btn=document.getElementById('btnBuscar');btn.disabled=true;btn.textContent='Buscando...';
     try{
         const r=await apiFetch('/prestamos');
         if(!r.ok){st('Error al buscar');return;}
@@ -412,6 +413,7 @@ async function buscar(){
             }).join('');
         }
     }catch(e){st('Error de conexión');}
+    finally{btn.disabled=false;btn.textContent='Buscar';}
 }
 async function cargarPres(id){
     try{
@@ -598,7 +600,7 @@ function setStep(n){
     document.getElementById('l23').classList.toggle('done',n>2);
 }
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
-window.onload=function(){ cargarMulta(); cargarActivos(); initTheme(); initSpotlight([]); };
+window.onload=function(){ cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

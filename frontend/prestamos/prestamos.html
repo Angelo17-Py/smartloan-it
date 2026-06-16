@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Prestamos</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -172,8 +172,8 @@
             <div class="section-title">Detalles</div>
             <div class="g1 ig"><label>Motivo del préstamo</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentación, Tarea..." oninput="clearF('motivo');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-motivo">Ingresa el motivo del préstamo</div></div>
             <div class="g2">
-                <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." oninput="checkFormComplete()"><div class="ferr" id="ferr-accesorios">Ingresa los accesorios entregados</div></div>
-                <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..." oninput="checkFormComplete()"><div class="ferr" id="ferr-obs">Ingresa las observaciones</div></div>
+                <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." oninput="checkFormComplete()"></div>
+                <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..." oninput="checkFormComplete()"></div>
             </div>
             <div class="resumen" id="resumen">
                 <div class="resumen-title">Resumen del préstamo</div>
@@ -194,7 +194,7 @@
             </div>
             <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
-            <button class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
+            <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
         </div>
     </div>
 
@@ -334,13 +334,13 @@ function checkFormComplete(){
     const accesorios=document.getElementById('accesorios').value.trim();
     const obs=document.getElementById('obs').value.trim();
     const contrato=document.getElementById('contrato').checked;
-    const completo=alumno&&equipo&&fecha&&motivo&&accesorios&&obs&&contrato;
+    const completo=alumno&&equipo&&fecha&&motivo&&contrato;
     document.getElementById('btn').disabled=!completo;
 }
 
 function validar(){
     let ok=true;
-    [{id:'alumno'},{id:'equipo'},{id:'fecha_dev'},{id:'motivo'},{id:'accesorios'},{id:'obs'}].forEach(c=>{
+    [{id:'alumno'},{id:'equipo'},{id:'fecha_dev'},{id:'motivo'}].forEach(c=>{
         const el=document.getElementById(c.id);
         if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
     });
@@ -410,7 +410,7 @@ function nuevoPrestamo(){
 window.onload=function(){
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
     document.getElementById('fecha_dev').min=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
-    cargar(); checkFormComplete(); initTheme(); initSpotlight([]);
+    cargar(); checkFormComplete(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
 };
 </script>
 </body>

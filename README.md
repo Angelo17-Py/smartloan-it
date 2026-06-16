@@ -113,7 +113,7 @@ El sistema está preparado para desplegarse en [Railway](https://railway.app/) c
    - `JWT_SECRET` → cualquier clave secreta (ej: `SmartLoanIT_Produccion_2026`)
 6. Railway iniciará el deploy automáticamente
 7. Abrí la URL que Railway te asigne (ej: `smartloan-it.up.railway.app`)
-8. Inicia sesión con: código `1234` / contraseña `CREDENCIALES_BORRADAS`
+8. Inicia sesión con: código `1010` a `1050` / contraseña `CREDENCIALES_BORRADAS`
 
 > **Nota**: La base de datos y tablas se crean automáticamente en el primer inicio.
 
@@ -162,7 +162,7 @@ Abrí tu navegador en: **http://localhost:3000**
 
 | Campo | Valor |
 |-------|-------|
-| Código | `1234` |
+| Código | `1010`, `1020`, `1030`, `1040` o `1050` |
 | Contraseña | `CREDENCIALES_BORRADAS` |
 
 ---

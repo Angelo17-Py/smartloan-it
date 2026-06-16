@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Historial</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -79,10 +79,11 @@ if(!localStorage.getItem('encargado')) window.location.href='/';
 let prestamos=[],devs=[];
 let tabAct='p',filtAct='todos';
 
+function esc(t){return String(t).replace(/[&<>"']/g,function(m){return m=='&'?'&amp;':m=='<'?'&lt;':m=='>'?'&gt;':m=='"'?'&quot;':'&#39;';});}
 function resaltar(texto,q){
-    if(!q||!texto) return texto||'—';
+    if(!q||!texto) return esc(texto)||'—';
     var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
-    return String(texto).replace(re,'<span class="highlight">$1</span>');
+    return esc(texto).replace(re,'<span class="highlight">$1</span>');
 }
 
 async function cargar(){
@@ -93,7 +94,6 @@ async function cargar(){
         devs=await dr.json();
         renderP();renderD();
     }catch(e){
-        console.error(e);
         showError(document.getElementById('tp'),{message:'No se pudieron cargar los datos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
         showError(document.getElementById('td'),{message:'',retry:null});
     }
@@ -102,7 +102,7 @@ async function cargar(){
 function getPrestFiltrados(){
     var ahora=new Date();
     var d=prestamos.slice();
-    if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)>=ahora;});
+    if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO';});
     if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
     if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
     var q=document.getElementById('busq').value.trim().toLowerCase();
@@ -246,17 +246,17 @@ function eliminarPrestamo(id){
     if(!confirm('Eliminar el préstamo #'+id+'?\n\nSe borrarán todos los datos asociados (incluyendo devolución si existe).\nEsta acción no se puede deshacer.')) return;
     apiFetch('/prestamos/'+id,{method:'DELETE'}).then(function(r){
         if(r.ok){st('Préstamo eliminado');cargar();}
-        else{r.json().then(function(d){st(d.mensaje||'Error','t-err');});}
+        else{safeJson(r).then(function(d){st(d.mensaje||'Error','t-err');});}
     }).catch(function(){st('Error de conexión','t-err');});
 }
 function eliminarDevolucion(id){
     if(!confirm('Eliminar la devolución #'+id+'?\n\nEl préstamo se reactivará y el equipo volverá a estar disponible.\nEsta acción no se puede deshacer.')) return;
     apiFetch('/devoluciones/'+id,{method:'DELETE'}).then(function(r){
         if(r.ok){st('Devolución eliminada');cargar();}
-        else{r.json().then(function(d){st(d.mensaje||'Error','t-err');});}
+        else{safeJson(r).then(function(d){st(d.mensaje||'Error','t-err');});}
     }).catch(function(){st('Error de conexión','t-err');});
 }
-window.onload=function(){ cargar(); initTheme(); initSpotlight([]); };
+window.onload=function(){ cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>
