@@ -1,7 +1,23 @@
 const db = require('./db');
 const bcrypt = require('bcryptjs');
 
+async function esperarMySQL(intentos = 30, intervalo = 2000) {
+  for (let i = 1; i <= intentos; i++) {
+    try {
+      const conn = await db.getConnection();
+      conn.release();
+      console.log('MySQL conectado exitosamente');
+      return;
+    } catch (err) {
+      console.log(`Esperando MySQL (intento ${i}/${intentos})...`);
+      if (i === intentos) throw new Error('No se pudo conectar a MySQL: ' + err.message);
+      await new Promise(r => setTimeout(r, intervalo));
+    }
+  }
+}
+
 async function initDatabase() {
+  await esperarMySQL();
   const conn = await db;
   console.log('Inicializando base de datos...');
 
