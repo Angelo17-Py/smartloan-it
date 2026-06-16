@@ -159,15 +159,22 @@ async function initDatabase() {
     END
   `);
 
-  const [encargados] = await conn.query('SELECT COUNT(*) AS c FROM encargados');
-  if (encargados[0].c === 0) {
-    const hash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
+  await conn.query("DELETE FROM encargados WHERE codigo = '1234'");
+  const hash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
+  const usuarios = [
+    ['1010', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos'],
+    ['1020', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos'],
+    ['1030', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos'],
+    ['1040', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos'],
+    ['1050', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos'],
+  ];
+  for (const u of usuarios) {
     await conn.query(
-      'INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES (?, ?, ?, ?, ?)',
-      ['1234', hash, 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos']
+      'INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo) VALUES (?, ?, ?, ?, ?)',
+      u
     );
-    console.log('Encargado por defecto creado (1234 / CREDENCIALES_BORRADAS)');
   }
+  console.log('Encargados sincronizados (1010-1050 / CREDENCIALES_BORRADAS)');
 
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",
