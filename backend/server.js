@@ -242,11 +242,11 @@ app.get('/exportar', verificarToken, async (req, res) => {
 
 app.use(errorHandler);
 
-async function start() {
+function start() {
   app.listen(PORT, () => {
     console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
     initDatabase().catch(err => {
-      console.error('Error al inicializar BD:', err);
+      console.error('Error al inicializar BD:', err.message);
     });
   });
 }
