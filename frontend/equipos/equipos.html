@@ -175,7 +175,7 @@ function render(data){
             const bx = e.estado !== 'Prestado'
                 ? `<button class="btn-del" onclick="confirmarEliminar(${e.id_equipo})">&#215;</button>`
                 : '';
-            return `<tr>
+            var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
                 <td><span class="num">${i+1}</span></td>
                 <td><strong>${esc(e.nombre)}</strong>${e.descripcion?'<br><span style="font-size:0.76rem;color:var(--dim)">'+esc(e.descripcion)+'</span>':''}</td>
                 <td style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>

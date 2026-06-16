@@ -106,6 +106,13 @@ function esc(t) {
   });
 }
 
+function fadeOutNavigate(url) {
+  if (!url || url === window.location.pathname) return;
+  document.body.style.transition = 'opacity 0.25s ease';
+  document.body.style.opacity = '0';
+  setTimeout(function () { window.location.href = url; }, 250);
+}
+
 /* Confirm modal (replaces native confirm()) */
 function showConfirm(msg, onConfirm) {
   var overlay = document.getElementById('confirm-modal');
@@ -261,3 +268,17 @@ function initSpotlight(pages) {
     }
   });
 }
+
+/* Smooth fade-out on navigation */
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('a[href]');
+  if (!el || !el.href) return;
+  if (el.host !== window.location.host) return;
+  if (el.target === '_blank') return;
+  if (el.getAttribute('href') === '#' || el.getAttribute('href') === '') return;
+  if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+  var samePage = el.pathname === window.location.pathname;
+  if (samePage) return;
+  e.preventDefault();
+  fadeOutNavigate(el.href);
+});

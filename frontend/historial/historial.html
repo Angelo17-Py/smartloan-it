@@ -168,10 +168,11 @@ function renderP(){
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha préstamo</th><th>Vencimiento</th><th>Encargado</th><th>Motivo</th><th>Estado</th><th class="ac"></th></tr></thead><tbody>';
-    d.forEach(function(p){
+    d.forEach(function(p,i){
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
-        html+='<tr>';
+        var sc='animate-fi-'+Math.min(i+1,10);
+        html+='<tr class="'+sc+'">';
         html+='<td><span class="code">#'+p.id_prestamo+'</span></td>';
         html+='<td><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
         html+='<td><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
@@ -195,10 +196,11 @@ function renderD(){
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Registró</th><th>Recibió</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th><th class="ac"></th></tr></thead><tbody>';
-    d.forEach(function(dv){
+    d.forEach(function(dv,i){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
-        html+='<tr>';
+        var sc='animate-fi-'+Math.min(i+1,10);
+        html+='<tr class="'+sc+'">';
         html+='<td><span class="code">#'+dv.id_devolucion+'</span></td>';
         html+='<td><span class="code">#'+dv.id_prestamo+'</span></td>';
         html+='<td><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
@@ -226,8 +228,11 @@ function setTab(t,el){
     tabAct=t;
     document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
     el.classList.add('active');
-    document.getElementById('tp').style.display=t==='p'?'block':'none';
-    document.getElementById('td').style.display=t==='d'?'block':'none';
+    var tp=document.getElementById('tp'),td=document.getElementById('td');
+    tp.style.display=t==='p'?'block':'none';
+    td.style.display=t==='d'?'block':'none';
+    if(t==='p'){tp.style.animation='none';void tp.offsetWidth;tp.style.animation='fi 0.35s var(--ease-out) both';}
+    else{td.style.animation='none';void td.offsetWidth;td.style.animation='fi 0.35s var(--ease-out) both';}
     document.getElementById('filtros').style.display=t==='p'?'flex':'none';
     document.getElementById('busq').value='';
     document.getElementById('search-count').textContent='';

@@ -231,7 +231,7 @@ img{max-width:100%;display:block}
   letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);
   white-space:nowrap;position:sticky;top:0;background:var(--card);
 }
-.table td{padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.table td{padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--border);color:var(--text-secondary);transition:background 0.15s ease}
 .table tr:last-child td{border-bottom:none}
 .table tr:hover td{background:rgba(255,255,255,0.02)}
 .table .actions{display:flex;gap:var(--space-2);align-items:center}
@@ -240,8 +240,8 @@ img{max-width:100%;display:block}
 
 /* ---- CUSTOM MODAL ---- */
 .mo{position:fixed;inset:0;background:var(--overlay);z-index:1000;display:none;place-items:center;padding:20px}
-.mo.show{display:grid}
-.md{background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.mo.show{display:grid;animation:fi 0.25s var(--ease-out) both}
+.md{background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:scaleIn 0.25s var(--ease-out) both}
 .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-5)}
 .mh h3{font-size:var(--text-lg);font-weight:800}
 .mc{background:none;border:none;color:var(--dim);font-size:1.4rem;cursor:pointer;width:32px;height:32px;border-radius:var(--radius-sm);display:grid;place-items:center;transition:0.2s}
@@ -361,9 +361,15 @@ img{max-width:100%;display:block}
 
 .animate-fi{animation:fi 0.5s var(--ease-out) both}
 .animate-fi-1{animation-delay:0.05s}
-.animate-fi-2{animation-delay:0.1s}
-.animate-fi-3{animation-delay:0.15s}
-.animate-fi-4{animation-delay:0.2s}
+.animate-fi-2{animation-delay:0.08s}
+.animate-fi-3{animation-delay:0.12s}
+.animate-fi-4{animation-delay:0.16s}
+.animate-fi-5{animation-delay:0.2s}
+.animate-fi-6{animation-delay:0.24s}
+.animate-fi-7{animation-delay:0.28s}
+.animate-fi-8{animation-delay:0.32s}
+.animate-fi-9{animation-delay:0.36s}
+.animate-fi-10{animation-delay:0.4s}
 .animate-shake{animation:shake 0.4s var(--ease-out)}
 
 /* ---- FORM CARD ---- */
@@ -394,6 +400,9 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .ig input:not([type=checkbox]):not([type=radio]),.ig select,.ig textarea,.ig input[type=datetime-local]{width:100%;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:var(--text-sm);transition:all var(--duration-fast) ease;outline:none;appearance:none;-webkit-appearance:none}
 .ig select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8.825L1.175 4 2.238 2.938 6 6.7 9.763 2.937 10.825 4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
 .ig input:focus,.ig select:focus,.ig textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+
+/* ---- RECEIPT ENTER ANIMATION ---- */
+.receipt-enter{animation:slideUp 0.4s var(--ease-out) both}
 
 /* ---- FADE IN MAIN ---- */
 main{animation:fi 0.6s var(--ease-out) both}

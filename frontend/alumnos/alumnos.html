@@ -149,8 +149,9 @@ function render(data){
         tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
     }
-    tb.innerHTML = data.map((a,i) => `
-        <tr>
+    tb.innerHTML = data.map((a,i) => {
+        var sc='animate-fi-'+(Math.min(i+1,10));return `
+        <tr class="${sc}">
             <td><span class="num">${i+1}</span></td>
             <td><span class="code-chip">${esc(a.codigo_alumno)}</span></td>
             <td><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
