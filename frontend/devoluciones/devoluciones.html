@@ -9,11 +9,6 @@
     <script src="/js/utils.js" defer></script>
     <style>
         main{max-width:780px;margin:0 auto;padding:40px 28px}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
-        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
-        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
-
         .ds{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;}
         .dstep{display:flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
         .dstep.active{color:var(--text);}.dstep.done{color:var(--success);}
@@ -582,6 +577,7 @@ async function procesar(){
 }
 
 function nueva(){
+    if(!confirm('¿Registrar una nueva devolución? Se perderá el comprobante actual.')) return;
     pActual=null;
     document.getElementById('resultado').classList.remove('show');
     document.getElementById('p1').style.display='block';

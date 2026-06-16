@@ -27,13 +27,14 @@ function clearF(f) {
   if (fer) fer.classList.remove('show');
 }
 
-function clearFE(f) {
-  var el = document.getElementById(f);
+function clearFE(f, prefix) {
+  prefix = prefix || '';
+  var el = document.getElementById(prefix + f);
   if (el) {
     el.classList.remove('err');
     el.textContent = '';
   }
-  var fer = document.getElementById('ferr-' + f);
+  var fer = document.getElementById('ferr-' + prefix + f);
   if (fer) fer.classList.remove('show');
 }
 
@@ -200,7 +201,11 @@ function initSpotlight(pages) {
     }).join('');
   }
 
-  input.addEventListener('input', function () { search(input.value); });
+  var debounceTimer;
+  input.addEventListener('input', function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () { search(input.value); }, 300);
+  });
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeSpotlight();
     else if (e.key === 'ArrowDown') { e.preventDefault(); navigate(1); }

@@ -9,10 +9,6 @@
     <script src="/js/utils.js" defer></script>
     <style>
         main{max-width:1200px;margin:0 auto;padding:40px 28px}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
-        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
-        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
         .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
         .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
@@ -83,15 +79,15 @@
         <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
             <div class="g2m">
-                <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
-                <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
+                <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
             <div class="ig"><label>Carrera</label>
-                <select id="edit-carrera" onchange="clearFE('carrera');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
+                <select id="edit-carrera" onchange="clearFE('carrera','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-edit-carrera">Selecciona la carrera</div>
             </div>
             <div class="ig"><label>Curso / Año</label>
-                <select id="edit-curso" onchange="clearFE('curso');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
+                <select id="edit-curso" onchange="clearFE('curso','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
             </div>
             <button class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
@@ -171,13 +167,15 @@ function render(data){
 function filtrar(){
     const q = document.getElementById('busq').value.trim().toLowerCase();
     if(!q){ render(todos); return; }
-    render(todos.filter(a =>
+    const filtrados = todos.filter(a =>
         a.nombre.toLowerCase().includes(q) ||
         a.apellido.toLowerCase().includes(q) ||
         a.codigo_alumno.toLowerCase().includes(q) ||
         (a.nombre + ' ' + a.apellido).toLowerCase().includes(q) ||
         (a.apellido + ' ' + a.nombre).toLowerCase().includes(q)
-    ));
+    );
+    document.getElementById('count').textContent = `${filtrados.length} de ${todos.length} alumnos`;
+    render(filtrados);
 }
 
 async function crear(){

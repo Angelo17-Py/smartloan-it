@@ -455,8 +455,20 @@ function animarNumero(id, target) {
     requestAnimationFrame(step);
 }
 
-let refreshInterval = setInterval(cargarMetricas, 30000);
-window.addEventListener('beforeunload', () => clearInterval(refreshInterval));
+let refreshInterval;
+function startPolling() {
+  cargarMetricas();
+  refreshInterval = setInterval(cargarMetricas, 30000);
+}
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    if (refreshInterval) clearInterval(refreshInterval);
+  } else {
+    startPolling();
+  }
+});
+window.addEventListener('beforeunload', function() { if (refreshInterval) clearInterval(refreshInterval); });
+startPolling();
 
 // Config
 function actualizarDisplayMulta(valor){

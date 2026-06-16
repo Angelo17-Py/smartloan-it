@@ -9,10 +9,6 @@
     <script src="/js/utils.js" defer></script>
     <style>
         main{max-width:1200px;margin:0 auto;padding:40px 28px}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
-        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
-        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
         .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
         .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
@@ -84,22 +80,22 @@
         <div class="mform">
             <div class="ig">
                 <label>Nombre / Modelo</label>
-                <input id="edit-nombre" placeholder="Ej: ThinkPad X1 Carbon" oninput="clearFE('nombre');checkEditEquipo()">
+                <input id="edit-nombre" placeholder="Ej: ThinkPad X1 Carbon" oninput="clearFE('nombre','edit-');checkEditEquipo()">
                 <div class="ferr" id="ferr-edit-nombre">Ingresa el nombre del equipo</div>
             </div>
             <div class="g2m">
                 <div class="ig">
                     <label>Tipo</label>
-                    <select id="edit-tipo" onchange="clearFE('tipo');checkEditEquipo()"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
+                    <select id="edit-tipo" onchange="clearFE('tipo','edit-');checkEditEquipo()"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
                     <div class="ferr" id="ferr-edit-tipo">Selecciona el tipo</div>
                 </div>
                 <div class="ig">
                     <label>Marca</label>
-                    <select id="edit-marca" onchange="clearFE('marca');checkEditEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
+                    <select id="edit-marca" onchange="clearFE('marca','edit-');checkEditEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
                     <div class="ferr" id="ferr-edit-marca">Selecciona la marca</div>
                 </div>
             </div>
-            <div class="ig"><label>Descripción</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" oninput="clearFE('desc');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
+            <div class="ig"><label>Descripción</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" oninput="clearFE('desc','edit-');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
             <button class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
         </div>
     </div>
@@ -151,12 +147,14 @@ let listaEquipos = [];
 function filtrar(){
     const q = document.getElementById('busq').value.trim().toLowerCase();
     if(!q){ render(listaEquipos); return; }
-    render(listaEquipos.filter(e =>
+    const filtrados = listaEquipos.filter(e =>
         e.nombre.toLowerCase().includes(q) ||
         e.tipo.toLowerCase().includes(q) ||
         e.marca.toLowerCase().includes(q) ||
         (e.descripcion||'').toLowerCase().includes(q)
-    ));
+    );
+    document.getElementById('count').textContent = `${filtrados.length} de ${listaEquipos.length} equipos`;
+    render(filtrados);
 }
 
 function render(data){

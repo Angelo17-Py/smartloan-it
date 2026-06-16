@@ -9,10 +9,6 @@
     <script src="/js/utils.js" defer></script>
     <style>
         main{max-width:780px;margin:0 auto;padding:40px 28px}
-        .page-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-        .page-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
-        .page-header h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;color:var(--text);}
-        .page-header p{font-size:0.85rem;color:var(--dim);margin-top:2px;}
         .section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
         .sep{border:none;border-top:1px solid var(--border);margin:18px 0;}
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
@@ -408,7 +404,7 @@ async function registrar(){
 }
 
 function nuevoPrestamo(){
-    window.location.reload();
+    if(confirm('¿Registrar un nuevo préstamo?')) window.location.reload();
 }
 
 window.onload=function(){

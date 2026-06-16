@@ -106,13 +106,15 @@ img{max-width:100%;display:block}
 .page-header .icon-wrap{
   width:48px;height:48px;border-radius:var(--radius-md);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  color:var(--primary);background:var(--primary-glow);
 }
 .page-header .page-icon{
-  width:52px;height:52px;border-radius:14px;
+  width:48px;height:48px;border-radius:var(--radius-md);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  color:var(--primary);background:var(--primary-glow);
 }
 .page-header h1{
-  font-size:var(--text-2xl);font-weight:800;letter-spacing:-1px;
+  font-size:var(--text-2xl);font-weight:800;letter-spacing:-0.5px;color:var(--text);
 }
 .page-header p{font-size:var(--text-sm);color:var(--dim);margin-top:2px}
 
