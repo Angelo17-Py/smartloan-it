@@ -1,3 +1,4 @@
+console.log('Iniciando SmartLoan IT...');
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const express = require('express');
 const cors    = require('cors');
