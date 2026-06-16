@@ -125,7 +125,13 @@ function getPrestFiltrados(){
                    (p.alumno_nombre&&p.alumno_apellido&&
                     (p.alumno_nombre+' '+p.alumno_apellido).toLowerCase().includes(q))||
                    (p.alumno_apellido&&p.alumno_nombre&&
-                    (p.alumno_apellido+' '+p.alumno_nombre).toLowerCase().includes(q));
+                    (p.alumno_apellido+' '+p.alumno_nombre).toLowerCase().includes(q))||
+                   (p.encargado_nombre&&p.encargado_nombre.toLowerCase().includes(q))||
+                   (p.encargado_apellido&&p.encargado_apellido.toLowerCase().includes(q))||
+                   (p.encargado_nombre&&p.encargado_apellido&&
+                    (p.encargado_nombre+' '+p.encargado_apellido).toLowerCase().includes(q))||
+                   (p.encargado_apellido&&p.encargado_nombre&&
+                    (p.encargado_apellido+' '+p.encargado_nombre).toLowerCase().includes(q));
         });
     }
     return d;
@@ -157,7 +163,7 @@ function renderP(){
     var header='<div class="table-header"><span>Registro de préstamos</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha préstamo</th><th>Vencimiento</th><th>Motivo</th><th>Estado</th><th class="ac"></th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha préstamo</th><th>Vencimiento</th><th>Encargado</th><th>Motivo</th><th>Estado</th><th class="ac"></th></tr></thead><tbody>';
     d.forEach(function(p){
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
@@ -167,6 +173,7 @@ function renderP(){
         html+='<td><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
         html+='<td>'+ff(p.fecha_prestamo)+'</td>';
         html+='<td style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
+        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((p.encargado_nombre||'')+' '+(p.encargado_apellido||''),q)+'</td>';
         html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td>'+badge+'</td>';
         html+='<td><button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button></td>';

@@ -105,10 +105,12 @@ exports.buscar = async (req, res) => {
     const [rows] = await conn.query(`
       SELECT p.*, e.nombre AS equipo, e.tipo, e.marca,
         a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
-        a.carrera, a.curso, a.cedula
+        a.carrera, a.curso, a.cedula,
+        enc.codigo AS codigo_encargado, enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido
       FROM prestamos p
       JOIN equipos e ON p.id_equipo = e.id_equipo
       JOIN alumnos a ON p.id_alumno = a.id_alumno
+      JOIN encargados enc ON p.id_encargado = enc.id_encargado
       WHERE p.id_prestamo = ? AND p.estado = 'ACTIVO'
     `, [req.params.id]);
     if (rows.length === 0) {

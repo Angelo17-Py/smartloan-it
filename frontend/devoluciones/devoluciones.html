@@ -295,6 +295,8 @@
                         <div class="rg-item"><span>Fecha Pr&eacute;stamo</span><strong id="r-fp">—</strong></div>
                         <div class="rg-item"><span>Vencimiento</span><strong id="r-fv">—</strong></div>
                         <div class="rg-item"><span>Fecha Devoluci&oacute;n</span><strong id="r-fd">—</strong></div>
+                        <div class="rg-item full"><span>Registr&oacute; pr&eacute;stamo</span><strong id="r-enc-prestamo">—</strong></div>
+                        <div class="rg-item full"><span>Recibi&oacute; devoluci&oacute;n</span><strong id="r-enc-devolucion">—</strong></div>
                     </div>
                 </div>
                 <div class="rsec">
@@ -323,8 +325,8 @@
                     </div>
                 </div>
                 <div class="sig-row">
-                    <div class="sig-field"><span>Encargado</span><div class="sig-line"></div><small>Firma</small></div>
-                    <div class="sig-field"><span>Alumno</span><div class="sig-line"></div><small>Firma</small></div>
+                    <div class="sig-field"><span id="r-sig-enc-label">Encargado</span><div class="sig-line"></div><small id="r-sig-enc-name">Firma</small></div>
+                    <div class="sig-field"><span id="r-sig-alu-label">Alumno</span><div class="sig-line"></div><small id="r-sig-alu-name">Firma</small></div>
                 </div>
                 <div class="receipt-legal">
                     <div class="rl-date" id="r-emision">—</div>
@@ -439,7 +441,8 @@ function mostrar(){
         <div class="if"><span>Tipo / Marca</span><strong>${p.tipo} &middot; ${p.marca}</strong></div>
         <div class="if"><span>Fecha préstamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
         <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
-        <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>`;
+        <div class="if"><span>Estado inicial</span><strong>${p.estado_inicial_equipo||'—'}</strong></div>
+        <div class="if"><span>Encargado</span><strong>${p.encargado_nombre||''} ${p.encargado_apellido||''}</strong></div>`;
     const ra=document.getElementById('ra');
     var multaPreview=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
     if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} dia(s) — Multa estimada: Gs. ${fn(ret*multaPreview)}`;ra.style.display='flex';}
@@ -568,6 +571,13 @@ async function procesar(){
                 document.getElementById('r-obs-section').style.display='block';
                 document.getElementById('r-obs-text').textContent=obsVal;
             }
+            const encDev = JSON.parse(localStorage.getItem('encargado')||'{}');
+            document.getElementById('r-enc-prestamo').textContent = pActual.encargado_nombre ? `${pActual.encargado_nombre} ${pActual.encargado_apellido} (${pActual.codigo_encargado||''})` : '—';
+            document.getElementById('r-enc-devolucion').textContent = encDev.nombre ? `${encDev.nombre} ${encDev.apellido} (${encDev.codigo||''})` : '—';
+            document.getElementById('r-sig-enc-label').textContent = encDev.nombre || 'Encargado';
+            document.getElementById('r-sig-enc-name').textContent = encDev.nombre ? `${encDev.nombre} ${encDev.apellido}` : 'Firma';
+            document.getElementById('r-sig-alu-label').textContent = pActual.alumno_nombre || 'Alumno';
+            document.getElementById('r-sig-alu-name').textContent = pActual.alumno_nombre ? `${pActual.alumno_nombre} ${pActual.alumno_apellido}` : 'Firma';
             document.getElementById('r-emision').textContent=`Emitido: ${hoy}`;
             document.getElementById('ps').classList.remove('show');document.getElementById('fd').classList.remove('show');
             document.getElementById('resultado').classList.add('show');setStep(3);

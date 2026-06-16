@@ -231,6 +231,7 @@
                         <div class="rg-item"><span>Fecha Pr&eacute;stamo</span><strong id="c-fecha-prestamo">—</strong></div>
                         <div class="rg-item"><span>Vencimiento</span><strong id="c-fecha-dev">—</strong></div>
                         <div class="rg-item"><span>Estado inicial</span><strong id="c-estado">—</strong></div>
+                        <div class="rg-item full"><span>Encargado que registra</span><strong id="c-encargado">—</strong></div>
                     </div>
                 </div>
                 <div class="rsec">
@@ -257,8 +258,8 @@
                     </div>
                 </div>
                 <div class="sig-row">
-                    <div class="sig-field"><span>Encargado</span><div class="sig-line"></div><small>Firma</small></div>
-                    <div class="sig-field"><span>Alumno</span><div class="sig-line"></div><small>Firma</small></div>
+                    <div class="sig-field"><span id="c-sig-enc-label">Encargado</span><div class="sig-line"></div><small id="c-sig-enc-name">Firma</small></div>
+                    <div class="sig-field"><span id="c-sig-alu-label">Alumno</span><div class="sig-line"></div><small id="c-sig-alu-name">Firma</small></div>
                 </div>
                 <div class="receipt-legal">
                     <div class="rl-date" id="c-emision">—</div>
@@ -393,6 +394,11 @@ async function registrar(){
                 document.getElementById('c-obs-section').style.display='block';
                 document.getElementById('c-obs-text').textContent=obs;
             }
+            document.getElementById('c-encargado').textContent=`${enc.nombre} ${enc.apellido} (${enc.codigo})`;
+            document.getElementById('c-sig-enc-label').textContent=enc.nombre;
+            document.getElementById('c-sig-enc-name').textContent=`${enc.nombre} ${enc.apellido}`;
+            document.getElementById('c-sig-alu-label').textContent=a.nombre;
+            document.getElementById('c-sig-alu-name').textContent=`${a.nombre} ${a.apellido}`;
             document.getElementById('c-emision').textContent=`Emitido: ${hoy}`;
             document.getElementById('formulario').style.display='none';
             document.getElementById('comprobante').classList.add('show');
