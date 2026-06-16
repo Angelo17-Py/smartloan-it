@@ -212,8 +212,7 @@ async function crear(){
 function confirmarEliminar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
-    if(!confirm(`Eliminar al alumno "${a.nombre} ${a.apellido}"?\n\nSi tiene historial de préstamos también se eliminará. Esta acción no se puede deshacer.`)) return;
-    eliminar(id);
+    showConfirm('Eliminar al alumno "'+a.nombre+' '+a.apellido+'"\n\nSi tiene historial de pr\u00e9stamos tambi\u00e9n se eliminar\u00e1. Esta acci\u00f3n no se puede deshacer.',function(){ eliminar(id); });
 }
 
 async function eliminar(id){

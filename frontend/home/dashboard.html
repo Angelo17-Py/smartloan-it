@@ -402,11 +402,11 @@ function formatearTiempoRelativo(iso){
 }
 
 function logout(){
-    if(confirm('Cerrar sesión del sistema?')){
+    showConfirm('Cerrar sesi\u00f3n del sistema?',function(){
         localStorage.removeItem('encargado');
         localStorage.removeItem('token');
         window.location.href='/';
-    }
+    });
 }
 
 // Reloj

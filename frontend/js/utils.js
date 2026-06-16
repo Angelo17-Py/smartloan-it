@@ -100,6 +100,41 @@ function safeJson(r) {
   return r.status === 204 ? {} : r.json();
 }
 
+/* Confirm modal (replaces native confirm()) */
+function showConfirm(msg, onConfirm) {
+  var overlay = document.getElementById('confirm-modal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'confirm-modal';
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML =
+      '<div class="confirm-box">' +
+      '<div class="cb-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
+      '<h3>Confirmar acci\u00f3n</h3>' +
+      '<p id="confirm-msg"></p>' +
+      '<div class="cb-btns">' +
+      '<button class="btn btn-secondary" id="confirm-cancel">Cancelar</button>' +
+      '<button class="btn btn-primary" id="confirm-ok">Confirmar</button>' +
+      '</div></div>';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeConfirm(); });
+    document.getElementById('confirm-cancel').addEventListener('click', closeConfirm);
+  }
+  document.getElementById('confirm-msg').textContent = msg;
+  overlay.classList.add('show');
+  var okBtn = document.getElementById('confirm-ok');
+  okBtn.onclick = function () {
+    closeConfirm();
+    if (typeof onConfirm === 'function') onConfirm();
+  };
+  okBtn.focus();
+}
+
+function closeConfirm() {
+  var overlay = document.getElementById('confirm-modal');
+  if (overlay) overlay.classList.remove('show');
+}
+
 /* Restore body styles on bfcache restore (fix back/forward navigation) */
 window.addEventListener('pageshow', function() {
   document.body.style.opacity = '';

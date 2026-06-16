@@ -73,6 +73,14 @@ CREATE TABLE devoluciones (
     FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo)
 );
 
+-- Tabla de configuracion del sistema
+CREATE TABLE IF NOT EXISTS configuracion (
+    id_config  INT AUTO_INCREMENT PRIMARY KEY,
+    clave      VARCHAR(100) UNIQUE NOT NULL,
+    valor      VARCHAR(200) NOT NULL,
+    descripcion VARCHAR(300)
+);
+
 DELIMITER $$
 
 CREATE TRIGGER validar_prestamo
@@ -113,19 +121,11 @@ DELIMITER ;
 -- Encargado y contraseña
 -- La contraseña se migra automaticamente a bcrypt en el primer inicio de sesion
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
-('1010', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos');
-('1020', 'CREDENCIALES_BORRADAS', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnologicos');
-('1030', 'CREDENCIALES_BORRADAS', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnologicos');
-('1040', 'CREDENCIALES_BORRADAS', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnologicos');
+('1010', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos'),
+('1020', 'CREDENCIALES_BORRADAS', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnologicos'),
+('1030', 'CREDENCIALES_BORRADAS', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnologicos'),
+('1040', 'CREDENCIALES_BORRADAS', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnologicos'),
 ('1050', 'CREDENCIALES_BORRADAS', 'Aitana', 'Berenguer', 'Encargado de Recursos Tecnologicos');
-
--- Tabla de configuracion del sistema
-CREATE TABLE IF NOT EXISTS configuracion (
-    id_config  INT AUTO_INCREMENT PRIMARY KEY,
-    clave      VARCHAR(100) UNIQUE NOT NULL,
-    valor      VARCHAR(200) NOT NULL,
-    descripcion VARCHAR(300)
-);
 
 -- Multa por dia de retraso en guaranies
 INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES

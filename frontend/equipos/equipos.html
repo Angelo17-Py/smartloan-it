@@ -232,8 +232,7 @@ async function crear(){
 function confirmarEliminar(id){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     if(!eq) return;
-    if(!confirm(`Eliminar el equipo "${eq.nombre}"?\n\nSe eliminará también todo su historial de préstamos. Esta acción no se puede deshacer.`)) return;
-    eliminar(id);
+    showConfirm('Eliminar el equipo "'+eq.nombre+'"\n\nSe eliminar\u00e1 tambi\u00e9n todo su historial de pr\u00e9stamos. Esta acci\u00f3n no se puede deshacer.',function(){ eliminar(id); });
 }
 
 async function eliminar(id){
@@ -252,9 +251,10 @@ async function cambiar(id, estado){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     const nombre = eq ? eq.nombre : 'este equipo';
     const msg = estado === '3'
-        ? `Enviar "${nombre}" a mantenimiento?\nNo estará disponible para préstamos hasta marcarlo como disponible.`
-        : `Marcar "${nombre}" como Disponible?`;
-    if(!confirm(msg)) return;
+        ? 'Enviar "'+nombre+'" a mantenimiento?\nNo estar\u00e1 disponible para pr\u00e9stamos hasta marcarlo como disponible.'
+        : 'Marcar "'+nombre+'" como Disponible?';
+    showConfirm(msg,function(){
+    (async()=>{
     try {
         await apiFetch(`/equipos/${id}/estado`, {
             method: 'PATCH',
@@ -266,6 +266,8 @@ async function cambiar(id, estado){
     } catch(e){
         st('Error de conexión','t-err');
     }
+    })();
+    });
 }
 
 function abrirEditar(id){

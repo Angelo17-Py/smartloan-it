@@ -579,12 +579,13 @@ async function procesar(){
 }
 
 function nueva(){
-    if(!confirm('¿Registrar una nueva devolución? Se perderá el comprobante actual.')) return;
+    showConfirm('\u00bfRegistrar una nueva devoluci\u00f3n? Se perder\u00e1 el comprobante actual.',function(){
     pActual=null;
     document.getElementById('resultado').classList.remove('show');
     document.getElementById('p1').style.display='block';
     document.getElementById('idp').value='';
     setStep(1);resetForm();cargarActivos();
+    });
 }
 function resetForm(){
     document.getElementById('estado').value='1';document.getElementById('obs').value='';

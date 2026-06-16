@@ -243,18 +243,20 @@ function setF(f,el){
 }
 
 function eliminarPrestamo(id){
-    if(!confirm('Eliminar el préstamo #'+id+'?\n\nSe borrarán todos los datos asociados (incluyendo devolución si existe).\nEsta acción no se puede deshacer.')) return;
+    showConfirm('Eliminar el pr\u00e9stamo #'+id+'\n\nSe borrar\u00e1n todos los datos asociados (incluyendo devoluci\u00f3n si existe).\nEsta acci\u00f3n no se puede deshacer.',function(){
     apiFetch('/prestamos/'+id,{method:'DELETE'}).then(function(r){
         if(r.ok){st('Préstamo eliminado');cargar();}
         else{safeJson(r).then(function(d){st(d.mensaje||'Error','t-err');});}
     }).catch(function(){st('Error de conexión','t-err');});
+    });
 }
 function eliminarDevolucion(id){
-    if(!confirm('Eliminar la devolución #'+id+'?\n\nEl préstamo se reactivará y el equipo volverá a estar disponible.\nEsta acción no se puede deshacer.')) return;
+    showConfirm('Eliminar la devoluci\u00f3n #'+id+'\n\nEl pr\u00e9stamo se reactivar\u00e1 y el equipo volver\u00e1 a estar disponible.\nEsta acci\u00f3n no se puede deshacer.',function(){
     apiFetch('/devoluciones/'+id,{method:'DELETE'}).then(function(r){
         if(r.ok){st('Devolución eliminada');cargar();}
         else{safeJson(r).then(function(d){st(d.mensaje||'Error','t-err');});}
     }).catch(function(){st('Error de conexión','t-err');});
+    });
 }
 window.onload=function(){ cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
