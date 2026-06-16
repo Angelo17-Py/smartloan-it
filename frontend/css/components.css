@@ -148,10 +148,10 @@ img{max-width:100%;display:block}
 .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
 .btn-primary{
   background:var(--primary);
-  color:#fff;box-shadow:0 4px 15px var(--primary-glow);
+  color:#fff;
 }
 .btn-primary:hover:not(:disabled){
-  transform:translateY(-2px);box-shadow:0 6px 25px var(--primary-glow);
+  transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);
 }
 .btn-secondary{
   background:var(--surface);color:var(--text);border:1px solid var(--border);
@@ -199,11 +199,10 @@ img{max-width:100%;display:block}
   color:#fff;font-family:var(--font);font-size:var(--text-sm);font-weight:800;
   text-transform:uppercase;letter-spacing:1px;
   cursor:pointer;transition:all var(--duration-fast) var(--ease-out);
-  box-shadow:0 4px 15px var(--primary-glow);
   margin-top:var(--space-2);
 }
 .btn-save:hover:not(:disabled){
-  transform:translateY(-2px);box-shadow:0 6px 25px var(--primary-glow);
+  transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);
 }
 .btn-save:active:not(:disabled){transform:scale(0.97)}
 .btn-save:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}

@@ -2,9 +2,9 @@
 
 :root {
   /* Colors - Dark */
-  --primary: #6366f1;
-  --primary-hover: #818cf8;
-  --primary-glow: rgba(99,102,241,0.35);
+  --primary: #2563eb;
+  --primary-hover: #3b82f6;
+  --primary-glow: rgba(37,99,235,0.2);
   --accent: #00f2ff;
   --accent-glow: rgba(0,242,255,0.25);
   --bg: #020617;
@@ -85,9 +85,9 @@
 /* Light mode */
 @media (prefers-color-scheme: light) {
   :root:not(.dark) {
-    --primary: #4f46e5;
-    --primary-hover: #6366f1;
-    --primary-glow: rgba(79,70,229,0.2);
+    --primary: #1d4ed8;
+    --primary-hover: #2563eb;
+    --primary-glow: rgba(29,78,216,0.15);
     --accent: #0891b2;
     --accent-glow: rgba(8,145,178,0.15);
     --bg: #f1f5f9;
@@ -108,9 +108,9 @@
 }
 
 :root.light {
-  --primary: #4f46e5;
-  --primary-hover: #6366f1;
-  --primary-glow: rgba(79,70,229,0.2);
+  --primary: #1d4ed8;
+  --primary-hover: #2563eb;
+  --primary-glow: rgba(29,78,216,0.15);
   --accent: #0891b2;
   --accent-glow: rgba(8,145,178,0.15);
   --bg: #f1f5f9;
