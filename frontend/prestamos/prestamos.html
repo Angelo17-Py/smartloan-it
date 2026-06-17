@@ -37,6 +37,7 @@
         .aviso.show{display:block;}
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
+        @media print{nav,.btn-wrap,.toast,.btn-primary,.btn-secondary{display:none!important}body{background:#fff;color:#000}.contract-box{border:1px solid #000;padding:16px;border-radius:0}.check-row{display:none}.page-header{display:none}}
         @media(max-width:600px){.g2{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
@@ -44,6 +45,10 @@
 <nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
     <div class="nav-right">
+        <div class="nav-user" id="navUser" style="display:none">
+            <div class="avatar" id="navAvatar">A</div>
+            <span class="nav-user-name" id="navName">Cargando...</span>
+        </div>
         <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
@@ -52,6 +57,7 @@
     </div>
 </nav>
 <main>
+    <div class="breadcrumbs"><a href="/home/dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Préstamos</span></div>
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
         <div><h1>Registrar Préstamo</h1><p>Registro de salida de equipos con contrato de uso</p></div>
@@ -120,6 +126,7 @@
             </div>
             <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="margin-top:8px">Imprimir contrato</button>
             <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
         </div>
     </div>
@@ -131,6 +138,8 @@ if(!localStorage.getItem('encargado')) window.location.href = '/';
 let alumnos = [], equipos = [], enc = null;
 
 async function cargar(){
+    document.getElementById('alumno').innerHTML = '<option value="">Cargando alumnos...</option>';
+    document.getElementById('equipo').innerHTML = '<option value="">Cargando equipos...</option>';
     enc = JSON.parse(localStorage.getItem('encargado')||'{}');
     if(enc.id_encargado){
         document.getElementById('enc-nombre').textContent = `${enc.nombre} ${enc.apellido}`;
@@ -246,6 +255,12 @@ window.onload=function(){
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
     document.getElementById('fecha_dev').min=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
     cargar(); checkFormComplete(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
+    var _enc = JSON.parse(localStorage.getItem('encargado') || '{}');
+    if(_enc.nombre){
+        document.getElementById('navAvatar').textContent = _enc.nombre[0].toUpperCase();
+        document.getElementById('navName').textContent = _enc.nombre + ' ' + (_enc.apellido || '');
+        document.getElementById('navUser').style.display = 'flex';
+    }
 };
 </script>
 </body>
