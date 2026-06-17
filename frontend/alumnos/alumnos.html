@@ -118,6 +118,18 @@ if(!localStorage.getItem('encargado')) window.location.href = '/';
 
 let todos = [];
 let alumnoEditandoId = null;
+var formDirty = false;
+
+window.onbeforeunload = function(e){
+    if(formDirty){
+        e.preventDefault();
+        e.returnValue = '';
+    }
+};
+
+document.querySelectorAll('.form-card input, .form-card select, .form-card textarea').forEach(function(el){
+    el.addEventListener('input', function(){ formDirty = true; });
+});
 
 function checkNuevoAlumno(){
     const nombre=document.getElementById('nombre').value.trim();
@@ -211,6 +223,7 @@ async function crear(){
         });
         const d = await safeJson(r);
         if (r.ok) {
+            formDirty = false;
             document.getElementById('nombre').value = '';
             document.getElementById('apellido').value = '';
             document.getElementById('carrera').value = '';

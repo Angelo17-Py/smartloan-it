@@ -136,6 +136,18 @@
 <script>
 if(!localStorage.getItem('encargado')) window.location.href = '/';
 let alumnos = [], equipos = [], enc = null;
+var formDirty = false;
+
+window.onbeforeunload = function(e){
+    if(formDirty){
+        e.preventDefault();
+        e.returnValue = '';
+    }
+};
+
+document.querySelectorAll('.form-card input, .form-card select, .form-card textarea').forEach(function(el){
+    el.addEventListener('input', function(){ formDirty = true; });
+});
 
 async function cargar(){
     document.getElementById('alumno').innerHTML = '<option value="">Cargando alumnos...</option>';
@@ -234,6 +246,7 @@ async function registrar(){
         const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
         const d = await safeJson(r);
         if(r.ok){
+            formDirty = false;
             st('Préstamo registrado correctamente','t-ok');
             btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
             setTimeout(()=>window.location.href='/home/dashboard.html',1500);
