@@ -165,31 +165,25 @@ async function initDatabase() {
     END
   `);
 
-  await conn.query("DELETE FROM encargados WHERE codigo = '1234'");
-  await conn.query("DELETE FROM encargados WHERE codigo IN ('1010','1020','1030','1040','1050','1001','1002','1003','1004','1005')");
   const hash = await bcrypt.hash('Adm1n2026', 10);
+  const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
   const usuarios = [
     ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
     ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
     ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
     ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
     ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura'],
   ];
   for (const u of usuarios) {
     await conn.query(
-      'INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)',
+      `INSERT INTO encargados (codigo, password, nombre, apellido, cargo, rol)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE password = VALUES(password)`,
       u
     );
   }
-  console.log('Encargados administradores sincronizados');
-
-  await conn.query("DELETE FROM encargados WHERE codigo = '0000'");
-  const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
-  await conn.query(
-    "INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)",
-    ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura']
-  );
-  console.log('Usuario de solo lectura creado (0000 / V1su4l#2026)');
+  console.log('Encargados sincronizados');
 
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",
