@@ -57,6 +57,19 @@ exports.eliminar = async (req, res) => {
   }
 };
 
+exports.disponibles = async (req, res) => {
+  try {
+    const conn = await db;
+    const [rows] = await conn.query(
+      "SELECT * FROM equipos WHERE estado = 'Disponible' ORDER BY nombre"
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 exports.cambiarEstado = async (req, res) => {
   try {
     const estadoMap = {1:'Disponible', 2:'Prestado', 3:'En mantenimiento'};

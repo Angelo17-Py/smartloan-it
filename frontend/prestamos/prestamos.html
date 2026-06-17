@@ -136,7 +136,7 @@ async function cargar(){
         document.getElementById('enc-nombre').textContent = `${enc.nombre} ${enc.apellido}`;
         document.getElementById('enc-codigo').textContent = `Código: ${enc.codigo} · ${enc.cargo||'Encargado'}`;
     }
-    const [ar,er] = await Promise.all([apiFetch('/alumnos/disponibles'),apiFetch('/equipos')]);
+    const [ar,er] = await Promise.all([apiFetch('/alumnos/disponibles'),apiFetch('/equipos/disponibles')]);
     if(!ar.ok||!er.ok){st('Error al cargar datos','t-err');return;}
     alumnos = await safeJson(ar);
     equipos = await safeJson(er);
@@ -150,12 +150,11 @@ async function cargar(){
     }
     const es = document.getElementById('equipo');
     const avisoEq = document.getElementById('aviso-equipo');
-    const disp = equipos.filter(e=>e.estado==='Disponible');
-    if(!disp.length){
+    if(!equipos.length){
         avisoEq.classList.add('show');
     } else {
         avisoEq.classList.remove('show');
-        disp.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+        equipos.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
     }
     checkFormComplete();
 }
