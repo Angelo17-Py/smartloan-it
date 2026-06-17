@@ -185,7 +185,7 @@ async function initDatabase() {
 
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",
-    ['multa_por_dia', '10000', 'Monto en guaranies por dia de retraso']
+    ['multa_por_dia', '10000', 'Monto en guaraníes por día de retraso']
   );
 
   // Seed data de ejemplo

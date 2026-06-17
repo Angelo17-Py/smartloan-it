@@ -184,7 +184,7 @@ function render(data){
                 else if(e.estado === 'En mantenimiento')
                     btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'1')">Disponible</button>`;
                 else
-                    btn = `<span class="chip">En prestamo</span>`;
+                    btn = `<span class="chip">En préstamo</span>`;
             }
             var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
                 <td><span class="num">${i+1}</span></td>

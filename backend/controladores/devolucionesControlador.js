@@ -17,7 +17,7 @@ exports.crear = async (req, res) => {
       );
       if (prestamos.length === 0) {
         await tx.rollback();
-        return res.status(404).json({ mensaje: 'Prestamo no encontrado o ya devuelto' });
+        return res.status(404).json({ mensaje: 'Préstamo no encontrado o ya devuelto' });
       }
 
       let MULTA = prestamos[0].multa_base != null ? parseFloat(prestamos[0].multa_base) : null;

@@ -28,7 +28,7 @@ exports.actualizar = async (req, res) => {
       return res.status(404).json({ mensaje: 'La clave de configuración no existe' });
     }
     await conn.query('UPDATE configuracion SET valor=? WHERE clave=?', [String(Math.round(valNum)), req.params.clave]);
-    res.json({ mensaje: 'Configuracion actualizada' });
+    res.json({ mensaje: 'Configuración actualizada' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });

@@ -110,8 +110,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 | **JWT** | Autenticación basada en tokens |
 | **bcrypt** | Hash de contraseñas |
 | **express-rate-limit** | Protección contra fuerza bruta |
-| **json2csv / exceljs** | Exportación de datos |
-| **helmet** | Seguridad HTTP headers |
+| **exceljs** | Exportación de datos a Excel |
 | **cors** | Control de acceso cross-origin |
 
 ### Frontend

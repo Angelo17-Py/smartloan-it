@@ -1,4 +1,4 @@
--- Sistema de Gestion de Préstamos de Equipos Tecnológicos
+-- Sistema de Gestión de Préstamos de Equipos Tecnológicos
 -- SmartLoan IT - UNIDA
 -- ATENCION: Este schema se genera automaticamente via initDb.js al iniciar la app.
 -- Este archivo es solo para referencia o para inicializar la BD manualmente.
@@ -88,7 +88,7 @@ CREATE TABLE configuracion (
 );
 
 INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
-('multa_por_dia', '10000', 'Monto en guaranies por dia de retraso');
+('multa_por_dia', '10000', 'Monto en guaraníes por día de retraso');
 
 DELIMITER $$
 
@@ -138,8 +138,8 @@ DELIMITER ;
 
 -- Datos de ejemplo
 INSERT IGNORE INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso) VALUES
-('ALU001', 'Maria',   'Gonzalez', 'Ingenieria en Informatica',  '3er año'),
-('ALU002', 'Carlos',  'Mendoza',  'Administracion de Empresas', '2do año'),
+('ALU001', 'María',   'González', 'Ingeniería en Informática',  '3er año'),
+('ALU002', 'Carlos',  'Mendoza',  'Administración de Empresas', '2do año'),
 ('ALU003', 'Ana',     'Rivas',    'Medicina',                   '4to año');
 
 INSERT IGNORE INTO equipos (nombre, tipo, marca, descripcion) VALUES

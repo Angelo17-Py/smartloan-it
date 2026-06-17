@@ -4,7 +4,7 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SmartLoan IT - Registro de préstamos de equipos tecnológicos con contrato de uso.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
-    <title>SmartLoan IT | Prestamos</title>
+    <title>SmartLoan IT | Préstamos</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
@@ -54,7 +54,7 @@
 <main>
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-        <div><h1>Registrar Prestamo</h1><p>Registro de salida de equipos con contrato de uso</p></div>
+        <div><h1>Registrar Préstamo</h1><p>Registro de salida de equipos con contrato de uso</p></div>
     </div>
 
     <div class="no-access" style="display:none;text-align:center;padding:80px 20px;color:var(--dim)">
@@ -110,13 +110,13 @@
             <div class="contract-box">
                 <h4>Términos y Condiciones de Uso de Equipo Tecnológico</h4>
                 El alumno solicitante se compromete a:<br><br>
-                1. Usar el equipo exclusivamente para fines academicos autorizados.<br>
+                1. Usar el equipo exclusivamente para fines académicos autorizados.<br>
                 2. Devolver el equipo en la fecha acordada y en el mismo estado.<br>
                 3. No ceder el equipo a terceros no autorizados.<br>
 4. Reportar inmediatamente cualquier daño, falla o pérdida.<br>
                  5. Asumir el costo de reparación en caso de daño por mal uso.<br>
                  6. Estar sujeto a una multa por cada día de retraso según la tarifa vigente.<br>
-                7. El incumplimiento puede resultar en suspension del acceso al sistema.
+                7. El incumplimiento puede resultar en suspensión del acceso al sistema.
             </div>
             <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
@@ -179,7 +179,7 @@ function actualizarResumen(){
     document.getElementById('resumen-grid').innerHTML=`
         <div class="res-field"><span>Alumno</span><strong>${esc(a.codigo_alumno)} — ${esc(a.nombre)} ${esc(a.apellido)}</strong></div>
         <div class="res-field"><span>Equipo</span><strong>${esc(e.nombre)} · ${esc(e.tipo)}</strong></div>
-        <div class="res-field"><span>Devolucion estimada</span><strong>${ff(fecha)}</strong></div>
+        <div class="res-field"><span>Devolución estimada</span><strong>${ff(fecha)}</strong></div>
         ${motivo?'<div class="res-field"><span>Motivo</span><strong>'+esc(motivo)+'</strong></div>':''}`;
     document.getElementById('resumen').classList.add('show');
 }

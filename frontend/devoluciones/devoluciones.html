@@ -187,7 +187,7 @@
 <main>
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
-        <div><h1>Recibir Devolucion</h1><p>Registro de retorno de equipos con control de daños y multas</p></div>
+        <div><h1>Recibir Devolución</h1><p>Registro de retorno de equipos con control de daños y multas</p></div>
     </div>
 
     <div class="ds">
@@ -236,7 +236,7 @@
                     <div class="ig"><label>Observación general</label><input type="text" id="obs" placeholder="Notas sobre la devolución..." maxlength="300" oninput="checkFormComplete()"></div>
                 </div>
                 <div class="acc-box" id="accb" style="display:none">
-                    <h4>Verificacion de accesorios</h4>
+                    <h4>Verificación de accesorios</h4>
                     <div id="acct" style="font-size:0.82rem;color:var(--dim);margin-bottom:8px;"></div>
                     <label class="check-row"><input type="checkbox" id="acc_ok" onchange="clearFD('accesorios');checkFormComplete()"><span>Confirmo que todos los accesorios fueron devueltos correctamente</span></label>
                     <div class="ferr" id="ferr-accesorios">Confirma la devolución de accesorios</div>
@@ -376,7 +376,7 @@ async function cargarActivos(){
                     <h4>#${p.id_prestamo} &mdash; ${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)} <span style="font-size:0.72rem;color:var(--dim)">(${esc(p.codigo_alumno)})</span></h4>
                     <p>${esc(p.equipo)} &middot; ${esc(p.tipo)} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
                 </div>
-                <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al dia'}</span>
+                <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al día'}</span>
             </div>`;
         }).join('');
     }catch(e){lista.innerHTML='<p class="em">Error al conectar con el servidor</p>';}
@@ -420,7 +420,7 @@ async function buscar(){
                     '<h4>#'+p.id_prestamo+' &mdash; '+esc(p.alumno_nombre)+' '+esc(p.alumno_apellido)+' <span style="font-size:0.72rem;color:var(--dim)">('+esc(p.codigo_alumno)+')</span></h4>'+
                     '<p>'+esc(p.equipo)+' &middot; '+esc(p.tipo)+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
                     '</div>'+
-                    '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al dia')+'</span>'+
+                    '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al día')+'</span>'+
                     '</div>';
             }).join('');
         }
@@ -451,7 +451,7 @@ function mostrar(){
         <div class="if"><span>Encargado</span><strong>${esc(p.encargado_nombre||'')} ${esc(p.encargado_apellido||'')}</strong></div>`;
     const ra=document.getElementById('ra');
     var multaPreview=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
-    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} dia(s) — Multa estimada: Gs. ${fn(ret*multaPreview)}`;ra.style.display='flex';}
+    if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} día(s) — Multa estimada: Gs. ${fn(ret*multaPreview)}`;ra.style.display='flex';}
     else ra.style.display='none';
     const ab=document.getElementById('accb');
     if(p.accesorios&&p.accesorios.trim()){document.getElementById('acct').innerHTML='Accesorios entregados al prestar: <strong>'+esc(p.accesorios)+'</strong>';ab.style.display='block';}
@@ -493,7 +493,7 @@ function updRes(){
     var multaUsar=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
     const mul=ret*multaUsar,dan=document.getElementById('dano').checked?(parseFloat(_rv('mdano'))||0):0;
     document.getElementById('rmpd').textContent=`Gs. ${fn(multaUsar)}`;
-    document.getElementById('rd').textContent=`${ret} dia(s)`;
+    document.getElementById('rd').textContent=`${ret} día(s)`;
     document.getElementById('rm').textContent=`Gs. ${fn(mul)}`;
     document.getElementById('rda').textContent=`Gs. ${fn(dan)}`;
     document.getElementById('rt').textContent=`Gs. ${fn(mul+dan)}`;
