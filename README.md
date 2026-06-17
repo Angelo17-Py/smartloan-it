@@ -260,18 +260,21 @@ start http://localhost:3000
 
 ## Credenciales
 
-| Campo | Valor |
-|-------|-------|
-| Código | `1010`, `1020`, `1030`, `1040` o `1050` |
-| Contraseña | `CREDENCIALES_BORRADAS` |
+El sistema cuenta con dos roles de acceso:
 
-> **Importante**: Cambiar las credenciales en producción.
+| Rol | Codigo | Contrasena | Permisos |
+|-----|--------|------------|----------|
+| Administrador | `1010`, `1020`, `1030`, `1040`, `1050` | `CREDENCIALES_BORRADAS` | Acceso completo: registrar, editar, eliminar, exportar y configurar |
+| Solo lectura | `0000` | `CREDENCIALES_BORRADAS` | Solo CREDENCIALES_BORRADAS listados y dashboard. No puede registrar, modificar ni eliminar datos |
+
+> **Importante**: Cambiar las credenciales en produccion.
 
 ---
 
 ## API
 
-> Todos los endpoints requieren autenticación JWT (excepto `/encargados/login`).  
+> Todos los endpoints requieren autenticacion JWT (excepto `/encargados/login`).  
+> Los endpoints de escritura (POST, PUT, PATCH, DELETE) requieren rol `admin`.  
 > Enviar header: `Authorization: Bearer <token>`
 
 ### Autenticación
@@ -280,46 +283,46 @@ start http://localhost:3000
 | POST | `/encargados/login` | Iniciar sesión (retorna `{ token, usuario }`) |
 
 ### Alumnos
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/alumnos` | Listar alumnos activos |
-| GET | `/alumnos/disponibles` | Alumnos sin préstamo activo |
-| POST | `/alumnos` | Registrar nuevo alumno |
-| PUT | `/alumnos/:id` | Editar alumno |
-| DELETE | `/alumnos/:id` | Eliminar alumno |
+| Metodo | Ruta | Descripcion | Rol |
+|--------|------|-------------|-----|
+| GET | `/alumnos` | Listar alumnos activos | todos |
+| GET | `/alumnos/disponibles` | Alumnos sin prestamo activo | todos |
+| POST | `/alumnos` | Registrar nuevo alumno | admin |
+| PUT | `/alumnos/:id` | Editar alumno | admin |
+| DELETE | `/alumnos/:id` | Eliminar alumno | admin |
 
 ### Equipos
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/equipos` | Listar equipos |
-| POST | `/equipos` | Registrar nuevo equipo |
-| PUT | `/equipos/:id` | Editar equipo |
-| PATCH | `/equipos/:id/estado` | Cambiar estado |
-| DELETE | `/equipos/:id` | Eliminar equipo |
+| Metodo | Ruta | Descripcion | Rol |
+|--------|------|-------------|-----|
+| GET | `/equipos` | Listar equipos | todos |
+| POST | `/equipos` | Registrar nuevo equipo | admin |
+| PUT | `/equipos/:id` | Editar equipo | admin |
+| PATCH | `/equipos/:id/estado` | Cambiar estado | admin |
+| DELETE | `/equipos/:id` | Eliminar equipo | admin |
 
-### Préstamos
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/prestamos` | Listar préstamos |
-| POST | `/prestamos` | Registrar préstamo |
-| GET | `/prestamos/:id` | Buscar préstamo activo por ID |
+### Prestamos
+| Metodo | Ruta | Descripcion | Rol |
+|--------|------|-------------|-----|
+| GET | `/prestamos` | Listar prestamos | todos |
+| POST | `/prestamos` | Registrar prestamo | admin |
+| GET | `/prestamos/:id` | Buscar prestamo activo por ID | todos |
 
 ### Devoluciones
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/devoluciones` | Listar devoluciones |
-| POST | `/devoluciones` | Registrar devolución |
+| Metodo | Ruta | Descripcion | Rol |
+|--------|------|-------------|-----|
+| GET | `/devoluciones` | Listar devoluciones | todos |
+| POST | `/devoluciones` | Registrar devolucion | admin |
 
-### Configuración
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/configuracion` | Leer parámetros del sistema |
-| PUT | `/configuracion/:clave` | Actualizar parámetro |
+### Configuracion
+| Metodo | Ruta | Descripcion | Rol |
+|--------|------|-------------|-----|
+| GET | `/configuracion` | Leer parametros del sistema | todos |
+| PUT | `/configuracion/:clave` | Actualizar parametro | admin |
 
-### Exportación
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/exportar` | Descargar Excel (.xlsx) con todos los registros |
+### Exportacion
+| Metodo | Ruta | Descripcion | Rol |
+|--------|------|-------------|-----|
+| GET | `/exportar` | Descargar Excel (.xlsx) con todos los registros | admin |
 
 ---
 
