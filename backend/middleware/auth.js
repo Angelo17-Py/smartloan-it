@@ -8,7 +8,7 @@ const SECRET = process.env.JWT_SECRET;
 
 function generarToken(usuario) {
   return jwt.sign(
-    { id: usuario.id_encargado, codigo: usuario.codigo },
+    { id: usuario.id_encargado, codigo: usuario.codigo, rol: usuario.rol || 'lectura' },
     SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '12h' }
   );

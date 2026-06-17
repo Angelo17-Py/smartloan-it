@@ -17,6 +17,8 @@
         .chart-container canvas{width:100%!important}
         .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
         .hero-stat-label.skeleton-pulse{width:80px;height:12px;display:inline-block;margin-top:4px}
+        .admin-only{display:none!important;}
+        body.role-admin .admin-only{display:revert!important;}
         @media(max-width:768px){
           .hero-glass{padding:var(--space-5)}
           .hero-inner{flex-direction:column}
@@ -215,7 +217,7 @@
 
         <!-- ADMIN -->
         <p class="section-title">Administración</p>
-        <div class="bento-admin">
+        <div class="bento-admin admin-only">
             <div class="glass">
                 <div class="admin-card-header">
                     <div class="ac-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
@@ -722,11 +724,13 @@ async function guardarMulta(){
 // ---- INIT ----
 window.onload = function(){
     var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
+    var rol = localStorage.getItem('rol');
+    if(rol === 'admin') document.body.classList.add('role-admin');
     if(enc.nombre){
         var inicial = enc.nombre[0].toUpperCase();
         document.getElementById('s-avatar').textContent = inicial;
         document.getElementById('s-name').textContent = enc.nombre + ' ' + (enc.apellido || '');
-        document.getElementById('s-role').textContent = enc.cargo || 'Encargado';
+        document.getElementById('s-role').textContent = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
         document.getElementById('welcome-msg').textContent = 'Bienvenido, ' + enc.nombre;
     }
     actualizarInfoExportacion();

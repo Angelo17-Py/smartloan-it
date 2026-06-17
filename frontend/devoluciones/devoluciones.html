@@ -168,6 +168,8 @@
             .receipt-legal .rl-date{color:#555!important;}
             .receipt-legal p{color:#666!important;font-size:7pt!important;}
         }
+        .admin-only{display:none!important;}
+        body.role-admin .admin-only{display:revert!important;}
         @media(max-width:600px){.g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
@@ -219,7 +221,12 @@
                 <strong id="rat"></strong>
             </div>
         </div>
-        <div id="fd">
+        <div class="no-access" style="display:none;text-align:center;padding:80px 20px;color:var(--dim)">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.4"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--text)">Acceso restringido</h2>
+        <p style="font-size:0.88rem;max-width:360px;margin:0 auto">Solo los administradores pueden procesar devoluciones. Contactá al encargado del sistema si necesitas realizar esta operación.</p>
+    </div>
+    <div id="fd" class="admin-only">
             <div class="card">
                 <div class="section-title">Estado del equipo al retorno</div>
                 <div class="g2">
@@ -606,7 +613,7 @@ function setStep(n){
     document.getElementById('l23').classList.toggle('done',n>2);
 }
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
-window.onload=function(){ cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); else document.querySelector('.no-access').style.display='block'; cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

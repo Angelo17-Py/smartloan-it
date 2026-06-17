@@ -121,6 +121,7 @@ async function initDatabase() {
   try { await conn.query("ALTER TABLE alumnos ADD CONSTRAINT uq_alumnos_cedula UNIQUE (cedula)"); } catch (e) { console.error('Migracion 10 fallo (no critico):', e.message); }
   try { await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)"); } catch (e) { console.error('Migracion 11 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)"); } catch (e) { console.error('Migracion 12 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo"); } catch (e) { console.error('Migracion 13 fallo (no critico):', e.message); }
 
   await conn.query('DROP TRIGGER IF EXISTS validar_prestamo');
   await conn.query(`
@@ -167,19 +168,26 @@ async function initDatabase() {
   await conn.query("DELETE FROM encargados WHERE codigo = '1234'");
   const hash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
   const usuarios = [
-    ['1010', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos'],
-    ['1020', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos'],
-    ['1030', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos'],
-    ['1040', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos'],
-    ['1050', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos'],
+    ['1010', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1020', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1030', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1040', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1050', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
   ];
   for (const u of usuarios) {
     await conn.query(
-      'INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo) VALUES (?, ?, ?, ?, ?)',
+      'INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)',
       u
     );
   }
   console.log('Encargados sincronizados (1010-1050 / CREDENCIALES_BORRADAS)');
+
+  const viewerHash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
+  await conn.query(
+    "INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)",
+    ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura']
+  );
+  console.log('Usuario de solo lectura creado (0000 / CREDENCIALES_BORRADAS)');
 
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",

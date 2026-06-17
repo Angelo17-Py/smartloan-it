@@ -7,6 +7,7 @@ const db      = require('./db');
 const ExcelJS = require('exceljs');
 const errorHandler = require('./middleware/errorHandler');
 const { verificarToken } = require('./middleware/auth');
+const requireAdmin = require('./middleware/requireAdmin');
 const initDatabase = require('./initDb');
 
 process.on('unhandledRejection', (reason) => {
@@ -37,7 +38,7 @@ app.use('/devoluciones', require('./rutas/devoluciones'));
 
 app.use('/configuracion', require('./rutas/configuracion'));
 
-app.get('/exportar', verificarToken, async (req, res) => {
+app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
   try {
     const conn = await db;
     const [rows] = await conn.query(`

@@ -174,7 +174,7 @@ function renderP(){
         html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((p.encargado_nombre||'')+' '+(p.encargado_apellido||''),q)+'</td>';
         html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td>'+badge+'</td>';
-        html+='<td><button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button></td>';
+        html+='<td>'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button>':'')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -205,7 +205,7 @@ function renderD(){
         html+='<td>'+danoCell+'</td>';
         html+='<td style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
         html+='<td style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
-        html+='<td><button class="btn-del-row" onclick="eliminarDevolucion('+dv.id_devolucion+')" title="Eliminar devolución">✕</button></td>';
+        html+='<td>'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarDevolucion('+dv.id_devolucion+')" title="Eliminar devolución">✕</button>':'')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -253,7 +253,7 @@ function eliminarDevolucion(id){
     }).catch(function(){st('Error de conexión','t-err');});
     });
 }
-window.onload=function(){ cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

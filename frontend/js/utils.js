@@ -93,6 +93,10 @@ function toggleTheme() {
   localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }
 
+function esAdmin() {
+  return localStorage.getItem('rol') === 'admin';
+}
+
 async function safeJson(r) {
   if (r.status === 204) return {};
   try {

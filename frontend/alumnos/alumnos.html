@@ -35,6 +35,8 @@
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
         .ac{display:flex;gap:6px;justify-content:center;white-space:nowrap;}
+        .admin-only{display:none!important;}
+        body.role-admin .admin-only{display:revert!important;}
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
         .mo .md{animation:fi 0.3s ease;}
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
@@ -56,7 +58,7 @@
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
         <div><h1>Gestión de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
     </div>
-    <div class="form-card">
+    <div class="form-card admin-only">
         <div class="form-card-title">Registrar nuevo alumno</div>
         <div class="form-row">
             <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoAlumno()"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
@@ -159,6 +161,7 @@ function render(data){
         tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
     }
+    var admin = esAdmin();
     tb.innerHTML = data.map((a,i) => {
         var sc='animate-fi-'+(Math.min(i+1,10));return `
         <tr class="${sc}">
@@ -167,10 +170,7 @@ function render(data){
             <td><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
             <td style="color:var(--dim);font-size:0.85rem">${esc(a.carrera||'—')}</td>
             <td style="color:var(--dim);font-size:0.85rem">${esc(a.curso||'—')}</td>
-            <td><div class="ac">
-                <button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>
-                <button class="btn-del" onclick="confirmarEliminar(${a.id_alumno})">&#215;</button>
-            </div></td>
+            <td>${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+a.id_alumno+')">Editar</button><button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button></div>' : ''}</td>
         </tr>`;}).join('');
 }
 
@@ -295,7 +295,7 @@ async function guardarAlumno(){
     }
 }
 
-window.onload = function(){ cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+window.onload = function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

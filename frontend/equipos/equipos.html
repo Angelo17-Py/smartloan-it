@@ -35,6 +35,8 @@
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
         .ac{display:flex;gap:6px;justify-content:center;white-space:nowrap;}
         .eq-desc{display:block;font-size:0.76rem;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.4}
+        .admin-only{display:none!important;}
+        body.role-admin .admin-only{display:revert!important;}
         .mo .md{animation:fi 0.3s ease;}
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
@@ -56,7 +58,7 @@
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
         <div><h1>Gestión de Equipos</h1><p>Registro y control de estado de los activos tecnológicos</p></div>
     </div>
-    <div class="form-card">
+    <div class="form-card admin-only">
         <div class="form-card-title">Registrar nuevo equipo</div>
         <div class="form-row">
             <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoEquipo()"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
@@ -173,26 +175,23 @@ function render(data){
         tb.innerHTML = '<tr class="empty-row"><td colspan="5">No hay equipos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
     }
+    var admin = esAdmin();
     tb.innerHTML = data.map((e,i) => {
             let btn = '';
-            if(e.estado === 'Disponible')
-                btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'3')">Mantenimiento</button>`;
-            else if(e.estado === 'En mantenimiento')
-                btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'1')">Disponible</button>`;
-            else
-                btn = `<span class="chip">En prestamo</span>`;
-            const bx = e.estado !== 'Prestado'
-                ? `<button class="btn-del" onclick="confirmarEliminar(${e.id_equipo})">&#215;</button>`
-                : '';
+            if(admin){
+                if(e.estado === 'Disponible')
+                    btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'3')">Mantenimiento</button>`;
+                else if(e.estado === 'En mantenimiento')
+                    btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'1')">Disponible</button>`;
+                else
+                    btn = `<span class="chip">En prestamo</span>`;
+            }
             var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
                 <td><span class="num">${i+1}</span></td>
                 <td><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
                 <td style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
                 <td>${bE(e.estado)}</td>
-                <td><div class="ac">
-                    <button class="btn-sm btn-edit" onclick="abrirEditar(${e.id_equipo})">Editar</button>
-                    ${btn}${bx}
-                </div></td>
+                <td>${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+e.id_equipo+')">Editar</button>'+btn+(e.estado!=='Prestado'?'<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>':'')+'</div>' : ''}</td>
             </tr>`;
         }).join('');
 }
@@ -338,7 +337,7 @@ async function guardarEquipo(){
     }
 }
 
-window.onload = function(){ cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+window.onload = function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

@@ -125,6 +125,7 @@ async function login(){
         if(res.ok&&data.token){
             localStorage.setItem('token',data.token);
             localStorage.setItem('encargado',JSON.stringify(data.usuario));
+            localStorage.setItem('rol',data.usuario.rol||'lectura');
             const b=document.getElementById('box');
             b.style.transition='0.4s';b.style.opacity='0';b.style.transform='scale(1.08) translateY(-20px)';
             setTimeout(()=>window.location.href='/home/dashboard.html',400);
