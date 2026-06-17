@@ -65,6 +65,19 @@ exports.cambiarEstado = async (req, res) => {
       return res.status(400).json({ mensaje: 'Estado inválido' });
     }
     const conn = await db;
+    const [equipos] = await conn.query('SELECT estado FROM equipos WHERE id_equipo=?', [req.params.id]);
+    if (equipos.length === 0) {
+      return res.status(404).json({ mensaje: 'Equipo no encontrado' });
+    }
+    const actual = equipos[0].estado;
+    const permitidas = {
+      'Disponible':       ['En mantenimiento'],
+      'En mantenimiento': ['Disponible'],
+      'Prestado':         []
+    };
+    if (!permitidas[actual] || !permitidas[actual].includes(estado)) {
+      return res.status(400).json({ mensaje: `Transición no permitida: ${actual} -> ${estado}. Los cambios de estado manuales solo pueden ser Disponible <-> En mantenimiento.` });
+    }
     await conn.query('UPDATE equipos SET estado=? WHERE id_equipo=?', [estado, req.params.id]);
     res.json({ mensaje: 'Estado actualizado' });
   } catch (err) {

@@ -99,9 +99,11 @@ function esAdmin() {
 
 async function safeJson(r) {
   if (r.status === 204) return {};
+  if (!r) return {};
   try {
     return await r.json();
-  } catch {
+  } catch (e) {
+    console.warn('safeJson: error parseando respuesta JSON', e);
     return {};
   }
 }
@@ -230,6 +232,8 @@ function initSpotlight(pages) {
     if (idx >= 0 && items[idx]) items[idx].click();
   }
 
+  var spotlightCache = { alumnos: null, equipos: null };
+
   async function search(q) {
     q = q.trim();
     if (!q) { results.innerHTML = '<div class="spotlight-empty">Escribe para buscar\u2026</div>'; return; }
@@ -237,31 +241,29 @@ function initSpotlight(pages) {
     var nq = normalizeText(q);
     var allPages = pages.slice();
     if (nq.length >= 2) {
-      try {
-        var r1 = await apiFetch('/alumnos');
-        if (r1.ok) {
-          var alumnos = await r1.json();
-          alumnos.forEach(function (a) {
-            var name = normalizeText(a.nombre + ' ' + a.apellido);
-            var code = normalizeText(a.codigo_alumno || '');
-            if (name.includes(nq) || code.includes(nq)) {
-              allPages.push({ label: a.codigo_alumno + ' \u2014 ' + a.nombre + ' ' + a.apellido, sub: a.carrera || 'Alumno', url: '/alumnos/alumnos.html' });
-            }
-          });
-        }
-      } catch (e) {}
-      try {
-        var r2 = await apiFetch('/equipos');
-        if (r2.ok) {
-          var equipos = await r2.json();
-          equipos.forEach(function (e) {
-            var name = normalizeText(e.nombre + ' ' + e.marca);
-            if (name.includes(nq)) {
-              allPages.push({ label: e.nombre, sub: e.tipo + ' \u2022 ' + e.marca, url: '/equipos/equipos.html' });
-            }
-          });
-        }
-      } catch (e) {}
+      if (!spotlightCache.alumnos) {
+        try { var r1 = await apiFetch('/alumnos'); if (r1.ok) spotlightCache.alumnos = await r1.json(); } catch (e) {}
+      }
+      if (!spotlightCache.equipos) {
+        try { var r2 = await apiFetch('/equipos'); if (r2.ok) spotlightCache.equipos = await r2.json(); } catch (e) {}
+      }
+      if (spotlightCache.alumnos) {
+        spotlightCache.alumnos.forEach(function (a) {
+          var name = normalizeText(a.nombre + ' ' + a.apellido);
+          var code = normalizeText(a.codigo_alumno || '');
+          if (name.includes(nq) || code.includes(nq)) {
+            allPages.push({ label: a.codigo_alumno + ' \u2014 ' + a.nombre + ' ' + a.apellido, sub: a.carrera || 'Alumno', url: '/alumnos/alumnos.html' });
+          }
+        });
+      }
+      if (spotlightCache.equipos) {
+        spotlightCache.equipos.forEach(function (e) {
+          var name = normalizeText(e.nombre + ' ' + e.marca);
+          if (name.includes(nq)) {
+            allPages.push({ label: e.nombre, sub: e.tipo + ' \u2022 ' + e.marca, url: '/equipos/equipos.html' });
+          }
+        });
+      }
     }
     var filtered = allPages.filter(function (p) {
       return normalizeText(p.label + ' ' + p.sub).includes(nq);

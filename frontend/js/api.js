@@ -20,10 +20,21 @@ async function apiFetch(url, options = {}) {
     throw new Error('Error de conexión con el servidor');
   }
   clearTimeout(timeout);
-  if (res.status === 401) {
+  if (res.status === 401 && !options.skipAuthRedirect) {
     localStorage.removeItem('encargado');
     localStorage.removeItem('token');
     window.location.href = '/';
   }
   return res;
+}
+
+async function apiFetchBackground(url, options = {}) {
+  options.skipAuthRedirect = true;
+  try {
+    const res = await apiFetch(url, options);
+    if (res.status === 401) return null;
+    return res;
+  } catch {
+    return null;
+  }
 }

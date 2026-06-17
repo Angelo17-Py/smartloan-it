@@ -31,7 +31,7 @@ exports.disponibles = async (req, res) => {
 };
 
 exports.crear = async (req, res) => {
-  const { nombre, apellido, carrera, curso } = req.body;
+  const { nombre, apellido, carrera, curso, cedula } = req.body;
   if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Nombre y apellido requeridos' });
   const conn = await db.getConnection();
   try {
@@ -40,8 +40,8 @@ exports.crear = async (req, res) => {
     const maxNum = maxRow[0].max_num || 0;
     const codigo_alumno = 'ALU' + String(maxNum + 1).padStart(3, '0');
     await conn.query(
-      'INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES (?,?,?,?,?)',
-      [codigo_alumno, s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50)]
+      'INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,cedula) VALUES (?,?,?,?,?,?)',
+      [codigo_alumno, s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50), s(cedula, 20) || null]
     );
     await conn.commit();
     res.json({ mensaje: 'Alumno registrado', codigo_alumno });
@@ -110,12 +110,12 @@ exports.historial = async (req, res) => {
 
 exports.editar = async (req, res) => {
   try {
-    const { nombre, apellido, carrera, curso } = req.body;
+    const { nombre, apellido, carrera, curso, cedula } = req.body;
     if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Datos incompletos' });
     const conn = await db;
     await conn.query(
-      'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=? WHERE id_alumno=?',
-      [s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50), req.params.id]
+      'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=?, cedula=? WHERE id_alumno=?',
+      [s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50), s(cedula, 20) || null, req.params.id]
     );
     res.json({ mensaje: 'Alumno actualizado' });
   } catch (err) {

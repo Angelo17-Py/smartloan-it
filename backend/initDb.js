@@ -179,7 +179,7 @@ async function initDatabase() {
     await conn.query(
       `INSERT INTO encargados (codigo, password, nombre, apellido, cargo, rol)
        VALUES (?, ?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE password = VALUES(password)`,
+       ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), apellido = VALUES(apellido), cargo = VALUES(cargo), rol = VALUES(rol)`,
       u
     );
   }

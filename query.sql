@@ -1,5 +1,8 @@
 -- Sistema de Gestion de Préstamos de Equipos Tecnológicos
 -- SmartLoan IT - UNIDA
+-- ATENCION: Este schema se genera automaticamente via initDb.js al iniciar la app.
+-- Este archivo es solo para referencia o para inicializar la BD manualmente.
+-- Los passwords deben generarse con bcrypt (ver initDb.js para los valores actualizados).
 
 CREATE DATABASE IF NOT EXISTS prestamos_db;
 USE prestamos_db;
@@ -11,6 +14,7 @@ CREATE TABLE encargados (
     nombre         VARCHAR(100) NOT NULL,
     apellido       VARCHAR(100) NOT NULL,
     cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnológicos',
+    rol            VARCHAR(20) DEFAULT 'admin',
     estado         BOOLEAN DEFAULT TRUE,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -45,11 +49,11 @@ CREATE TABLE prestamos (
     fecha_prestamo            DATETIME NOT NULL,
     fecha_devolucion_estimada DATETIME NOT NULL,
     estado_inicial_equipo     ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente',
-    multa_base                DECIMAL(12,2) DEFAULT NULL,
     accesorios                VARCHAR(300),
     motivo                    VARCHAR(300),
     observaciones             VARCHAR(300),
     acepto_contrato           BOOLEAN DEFAULT FALSE,
+    multa_base                DECIMAL(12,2) DEFAULT NULL,
     estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
     FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
     FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
@@ -77,13 +81,15 @@ CREATE TABLE devoluciones (
     FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
 );
 
--- Tabla de configuracion del sistema
-CREATE TABLE IF NOT EXISTS configuracion (
+CREATE TABLE configuracion (
     id_config  INT AUTO_INCREMENT PRIMARY KEY,
     clave      VARCHAR(100) UNIQUE NOT NULL,
     valor      VARCHAR(200) NOT NULL,
     descripcion VARCHAR(300)
 );
+
+INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
+('multa_por_dia', '10000', 'Monto en guaranies por dia de retraso');
 
 DELIMITER $$
 
@@ -122,25 +128,22 @@ END$$
 
 DELIMITER ;
 
--- Encargados y contraseña
-INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
-('1010', 'REEMPLAZAR_CONTRASENA', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos'),
-('1020', 'REEMPLAZAR_CONTRASENA', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnológicos'),
-('1030', 'REEMPLAZAR_CONTRASENA', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnológicos'),
-('1040', 'REEMPLAZAR_CONTRASENA', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnológicos'),
-('1050', 'REEMPLAZAR_CONTRASENA', 'Aitana', 'Berenguer', 'Encargado de Recursos Tecnológicos');
-
--- Multa por dia de retraso en guaranies
-INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
-('multa_por_dia', '10000', 'Monto en guaranies que se cobra por cada dia de retraso en la devolucion');
+-- NOTA: Los passwords deben generarse con bcrypt (ver initDb.js).
+-- Usuarios del sistema (admin: Adm1n2026, invitado: V1su4l#2026):
+-- ('1001', '<bcrypt_hash>', 'Angelo',  'Caballero', 'Encargado de Recursos Tecnológicos', 'admin'),
+-- ('1002', '<bcrypt_hash>', 'Elian',   'Valtierra', 'Encargado de Recursos Tecnológicos', 'admin'),
+-- ('1003', '<bcrypt_hash>', 'Naira',   'Soldevila', 'Encargado de Recursos Tecnológicos', 'admin'),
+-- ('1004', '<bcrypt_hash>', 'Gael',    'Monteserín','Encargado de Recursos Tecnológicos', 'admin'),
+-- ('1005', '<bcrypt_hash>', 'Aitana',  'Berenguer', 'Encargado de Recursos Tecnológicos', 'admin'),
+-- ('0000', '<bcrypt_hash>', 'Invitado','',           'Visualizador',                     'lectura')
 
 -- Datos de ejemplo
-INSERT INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso) VALUES
+INSERT IGNORE INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso) VALUES
 ('ALU001', 'Maria',   'Gonzalez', 'Ingenieria en Informatica',  '3er año'),
 ('ALU002', 'Carlos',  'Mendoza',  'Administracion de Empresas', '2do año'),
 ('ALU003', 'Ana',     'Rivas',    'Medicina',                   '4to año');
 
-INSERT INTO equipos (nombre, tipo, marca, descripcion) VALUES
+INSERT IGNORE INTO equipos (nombre, tipo, marca, descripcion) VALUES
 ('ThinkPad X1 Carbon',   'Laptop', 'Lenovo',    '16GB RAM, SSD 512GB'),
 ('MacBook Pro 14',       'Laptop', 'Apple',     'M3 Pro, 18GB RAM'),
 ('OptiPlex 7090',        'PC',     'Dell',      'Intel i7, 32GB RAM, SSD 1TB'),
