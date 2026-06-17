@@ -42,7 +42,6 @@ async function initDatabase() {
       apellido       VARCHAR(100) NOT NULL,
       carrera        VARCHAR(150),
       curso          VARCHAR(50),
-      cedula         VARCHAR(20),
       estado         BOOLEAN DEFAULT TRUE,
       fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -118,8 +117,7 @@ async function initDatabase() {
   try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) UNIQUE NOT NULL"); } catch (e) { console.error('Migracion 7 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo"); } catch (e) { console.error('Migracion 8 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)"); } catch (e) { console.error('Migracion 9 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE alumnos ADD CONSTRAINT uq_alumnos_cedula UNIQUE (cedula)"); } catch (e) { console.error('Migracion 10 fallo (no critico):', e.message); }
-  try { await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)"); } catch (e) { console.error('Migracion 11 fallo (no critico):', e.message); }
+  try { await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)"); } catch (e) { console.error('Migracion 10 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)"); } catch (e) { console.error('Migracion 12 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo"); } catch (e) { console.error('Migracion 13 fallo (no critico):', e.message); }
 

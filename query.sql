@@ -26,7 +26,6 @@ CREATE TABLE alumnos (
     apellido       VARCHAR(100) NOT NULL,
     carrera        VARCHAR(150),
     curso          VARCHAR(50),
-    cedula         VARCHAR(20) UNIQUE,
     estado         BOOLEAN DEFAULT TRUE,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
