@@ -80,7 +80,7 @@ exports.eliminar = async (req, res) => {
           [eq[0].id_equipo, idPrestamo]
         );
         if (activos[0].c === 0) {
-          await tx.query("UPDATE equipos SET estado = 'Prestado' WHERE id_equipo = ?", [eq[0].id_equipo]);
+          await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [eq[0].id_equipo]);
         }
       }
       await tx.commit();

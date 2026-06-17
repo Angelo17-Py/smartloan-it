@@ -31,7 +31,7 @@ exports.crear = async (req, res) => {
     }
     const conn = await db;
     const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
-    const multaBase = cfg.length ? parseFloat(cfg[0].valor) : 10000;
+    let multaBase = cfg.length ? parseFloat(cfg[0].valor) : 10000;
     if (multaBase == null || isNaN(multaBase) || multaBase < 0) multaBase = 10000;
     const [result] = await conn.query(
       `INSERT INTO prestamos (id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,

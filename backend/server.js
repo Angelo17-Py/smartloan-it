@@ -9,6 +9,10 @@ const errorHandler = require('./middleware/errorHandler');
 const { verificarToken } = require('./middleware/auth');
 const initDatabase = require('./initDb');
 
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+});
+
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 
