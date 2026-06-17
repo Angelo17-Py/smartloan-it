@@ -65,7 +65,7 @@ exports.eliminar = async (req, res) => {
         'SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
       );
       if (prestamosActivos.length > 0) {
-        await tx.rollback(); tx.release();
+        await tx.rollback();
         return res.status(400).json({ mensaje: 'No se puede eliminar: el alumno tiene un préstamo activo' });
       }
       await tx.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?', [id]);

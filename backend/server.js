@@ -21,6 +21,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/login/login.html'));
 });
 
+app.get('/health', (req, res) => {
+  res.json({ estado: 'ok', servicio: 'SmartLoan IT', timestamp: new Date().toISOString() });
+});
+
 app.use('/encargados',   require('./rutas/encargados'));
 app.use('/alumnos',      require('./rutas/alumnos'));
 app.use('/equipos',      require('./rutas/equipos'));
@@ -235,11 +239,14 @@ app.get('/exportar', verificarToken, async (req, res) => {
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
     await wb.xlsx.write(res);
-    res.end();
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
+});
+
+app.use('/api', (req, res) => {
+  res.status(404).json({ mensaje: 'Ruta no encontrada' });
 });
 
 app.use(errorHandler);

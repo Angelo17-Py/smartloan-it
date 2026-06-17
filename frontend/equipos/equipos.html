@@ -193,7 +193,8 @@ function render(data){
 async function cargar(){
     try {
         const r = await apiFetch('/equipos');
-        listaEquipos = await r.json();
+        if(!r.ok){st('Error al cargar equipos','t-err');return;}
+        listaEquipos = await safeJson(r);
         render(listaEquipos);
     } catch(e){
         showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los equipos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
@@ -320,7 +321,7 @@ async function guardarEquipo(){
             cerrarEdit();
             cargar();
         } else {
-            const err = await r.json();
+            const err = await safeJson(r);
             st(err.mensaje||'Error al actualizar','t-err');
             btn.disabled = false; btn.textContent = 'Guardar cambios';
         }

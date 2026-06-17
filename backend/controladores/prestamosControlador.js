@@ -26,12 +26,13 @@ exports.crear = async (req, res) => {
     }
     const ahora = new Date();
     const devEst = new Date(fecha_devolucion_estimada);
-    if (devEst <= ahora) {
+    if (isNaN(devEst.getTime()) || devEst <= ahora) {
       return res.status(400).json({ mensaje: 'La fecha de devolución debe ser posterior a la fecha actual' });
     }
     const conn = await db;
     const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
-    const multaBase = !cfg.length ? 10000 : (parseFloat(cfg[0].valor) || 10000);
+    const multaBase = cfg.length ? parseFloat(cfg[0].valor) : 10000;
+    if (multaBase == null || isNaN(multaBase) || multaBase < 0) multaBase = 10000;
     const [result] = await conn.query(
       `INSERT INTO prestamos (id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
        estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
@@ -41,8 +42,8 @@ exports.crear = async (req, res) => {
     );
     res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()) });
   } catch (err) {
-    if (err.sqlMessage && err.sqlMessage.toLowerCase().includes('disponible')) {
-      return res.status(400).json({ mensaje: 'El equipo no está disponible' });
+    if (err.code === 'ER_SIGNAL_EXCEPTION') {
+      return res.status(400).json({ mensaje: 'El equipo no está disponible para préstamo' });
     }
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });

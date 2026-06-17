@@ -343,7 +343,8 @@ var MULTA=10000;
 async function cargarMulta(){
     try{
         var r=await apiFetch('/configuracion');
-        var d=await r.json();
+        if(!r.ok){return;}
+        var d=await safeJson(r);
         var cfg=d.find(function(x){return x.clave==='multa_por_dia';});
         if(cfg) MULTA=parseInt(cfg.valor)||10000;
     }catch(e){ MULTA=10000; }
@@ -534,7 +535,7 @@ async function procesar(){
     try{
         const encDev = JSON.parse(localStorage.getItem('encargado')||'{}');
         const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(_rv('mdano'))||0,observacion:document.getElementById('obs').value.trim()})});
-        let d; try { d=await r.json(); } catch(e) { d={}; }
+        const d = await safeJson(r);
         if(r.ok){
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});

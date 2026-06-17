@@ -16,14 +16,15 @@ exports.crear = async (req, res) => {
         'SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO" FOR UPDATE', [id_prestamo]
       );
       if (prestamos.length === 0) {
-        await tx.rollback(); tx.release();
+        await tx.rollback();
         return res.status(404).json({ mensaje: 'Prestamo no encontrado o ya devuelto' });
       }
 
       let MULTA = prestamos[0].multa_base != null ? parseFloat(prestamos[0].multa_base) : null;
       if (MULTA == null || isNaN(MULTA)) {
         const [cfg] = await tx.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
-        MULTA = !cfg.length ? 10000 : (parseFloat(cfg[0].valor) || 10000);
+        MULTA = cfg.length ? parseFloat(cfg[0].valor) : 10000;
+        if (MULTA == null || isNaN(MULTA) || MULTA < 0) MULTA = 10000;
       }
       const ahora = new Date();
       const venc = new Date(prestamos[0].fecha_devolucion_estimada);

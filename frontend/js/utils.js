@@ -151,6 +151,15 @@ function showConfirm(msg, onConfirm) {
     if (typeof onConfirm === 'function') onConfirm();
   };
   okBtn.focus();
+
+  function keyHandler(e) {
+    if (e.key === 'Escape') { closeConfirm(); document.removeEventListener('keydown', keyHandler); }
+  }
+  document.addEventListener('keydown', keyHandler);
+  var origClose = overlay._closeHandler;
+  if (origClose) overlay.removeEventListener('click', origClose);
+  overlay._closeHandler = function (e) { if (e.target === overlay) { closeConfirm(); document.removeEventListener('keydown', keyHandler); } };
+  overlay.addEventListener('click', overlay._closeHandler);
 }
 
 function closeConfirm() {

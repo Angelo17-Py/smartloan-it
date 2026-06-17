@@ -91,8 +91,9 @@ async function cargar(){
     try{
         let pr=await apiFetch('/prestamos');
         let dr=await apiFetch('/devoluciones');
-        prestamos=await pr.json();
-        devs=await dr.json();
+        if(!pr.ok||!dr.ok){st('Error al cargar datos','t-err');return;}
+        prestamos=await safeJson(pr);
+        devs=await safeJson(dr);
         renderP();renderD();
     }catch(e){
         showError(document.getElementById('tp'),{message:'No se pudieron cargar los datos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});

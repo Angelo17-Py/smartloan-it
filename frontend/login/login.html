@@ -121,7 +121,7 @@ async function login(){
     btn.disabled=true; btn.textContent='Verificando...';
     try{
         const res=await apiFetch('/encargados/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo,password})});
-        const data=await res.json();
+        const data=await safeJson(res);
         if(res.ok&&data.token){
             localStorage.setItem('token',data.token);
             localStorage.setItem('encargado',JSON.stringify(data.usuario));

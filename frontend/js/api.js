@@ -6,12 +6,20 @@ async function apiFetch(url, options = {}) {
   if (token) {
     options.headers['Authorization'] = 'Bearer ' + token;
   }
+  const controller = new AbortController();
+  const timeout = setTimeout(function () { controller.abort(); }, 15000);
+  options.signal = controller.signal;
   let res;
   try {
     res = await fetch(API + url, options);
   } catch (e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') {
+      throw new Error('La solicitud tardó demasiado. Intenta de nuevo.');
+    }
     throw new Error('Error de conexión con el servidor');
   }
+  clearTimeout(timeout);
   if (res.status === 401) {
     localStorage.removeItem('encargado');
     localStorage.removeItem('token');

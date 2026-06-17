@@ -425,7 +425,7 @@ async function cargarMetricas(){
         }
         const r=await apiFetch('/equipos');
         if(!r.ok){st('Error al cargar métricas','t-err');return;}
-        const eq=await r.json();
+        const eq=await safeJson(r);
         animarNumero('ct', eq.length);
         animarNumero('cp', eq.filter(e=>e.estado==='Prestado').length);
         animarNumero('cd', eq.filter(e=>e.estado==='Disponible').length);
@@ -474,7 +474,8 @@ function actualizarDisplayMulta(valor){
 async function cargarConfig(){
     try{
         const r=await apiFetch('/configuracion');
-        const d=await r.json();
+        if(!r.ok){st('Error al cargar configuración','t-err');return;}
+        const d=await safeJson(r);
         const multa=d.find(x=>x.clave==='multa_por_dia');
         if(multa){
             document.getElementById('multa-input').value=Number(multa.valor).toLocaleString('es-PY');
