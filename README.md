@@ -262,9 +262,9 @@ start http://localhost:3000
 
 | Rol | Codigo | Contrasena | Permisos |
 |-----|--------|------------|----------|
-| Solo lectura | `0000` | `CREDENCIALES_BORRADAS` | Visualizar listados y dashboard. No puede registrar, modificar ni eliminar datos |
+| Solo lectura | `0000` | `V1su4l#2026` | Visualizar listados y dashboard. No puede registrar, modificar ni eliminar datos |
 
-> Los administradores tienen credenciales privadas asignadas internamente.
+> Los administradores tienen credenciales asignadas por el departamento de sistemas.
 
 ---
 
@@ -373,7 +373,7 @@ start http://localhost:3000
    - `JWT_SECRET` → cualquier clave secreta (ej: `SmartLoanIT_Produccion_2026`)
 6. Railway iniciará el deploy automáticamente
 7. Abre la URL asignada (ej: `smartloan-it.up.railway.app`)
-8. Inicia sesión con las [credenciales por defecto](#-credenciales)
+8. Inicia sesión como invitado con [credenciales de solo lectura](#credenciales) o con tu usuario administrativo
 
 > La base de datos y tablas se crean automáticamente en el primer inicio.
 

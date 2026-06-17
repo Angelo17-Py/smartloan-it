@@ -167,28 +167,33 @@ async function initDatabase() {
 
   await conn.query("DELETE FROM encargados WHERE codigo = '1234'");
   await conn.query("DELETE FROM encargados WHERE codigo IN ('1010','1020','1030','1040','1050','1001','1002','1003','1004','1005')");
-  const hash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
-  const usuarios = [
-    ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
-  ];
-  for (const u of usuarios) {
-    await conn.query(
-      'INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)',
-      u
-    );
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (adminPassword) {
+    const hash = await bcrypt.hash(adminPassword, 10);
+    const usuarios = [
+      ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
+      ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
+      ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
+      ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
+      ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ];
+    for (const u of usuarios) {
+      await conn.query(
+        'INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)',
+        u
+      );
+    }
+    console.log('Encargados administradores sincronizados');
+  } else {
+    console.log('ADMIN_PASSWORD no definido — se omite creacion de administradores');
   }
-  console.log('Encargados sincronizados (1001-1005 / CREDENCIALES_BORRADAS)');
 
-  const viewerHash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
+  const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
   await conn.query(
     "INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)",
     ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura']
   );
-  console.log('Usuario de solo lectura creado (0000 / CREDENCIALES_BORRADAS)');
+  console.log('Usuario de solo lectura creado (0000 / V1su4l#2026)');
 
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",

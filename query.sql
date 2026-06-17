@@ -124,11 +124,11 @@ DELIMITER ;
 
 -- Encargados y contraseña
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
-('1010', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos'),
-('1020', 'CREDENCIALES_BORRADAS', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnológicos'),
-('1030', 'CREDENCIALES_BORRADAS', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnológicos'),
-('1040', 'CREDENCIALES_BORRADAS', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnológicos'),
-('1050', 'CREDENCIALES_BORRADAS', 'Aitana', 'Berenguer', 'Encargado de Recursos Tecnológicos');
+('1010', 'REEMPLAZAR_CONTRASENA', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos'),
+('1020', 'REEMPLAZAR_CONTRASENA', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnológicos'),
+('1030', 'REEMPLAZAR_CONTRASENA', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnológicos'),
+('1040', 'REEMPLAZAR_CONTRASENA', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnológicos'),
+('1050', 'REEMPLAZAR_CONTRASENA', 'Aitana', 'Berenguer', 'Encargado de Recursos Tecnológicos');
 
 -- Multa por dia de retraso en guaranies
 INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
