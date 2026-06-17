@@ -166,13 +166,14 @@ async function initDatabase() {
   `);
 
   await conn.query("DELETE FROM encargados WHERE codigo = '1234'");
+  await conn.query("DELETE FROM encargados WHERE codigo IN ('1010','1020','1030','1040','1050','1001','1002','1003','1004','1005')");
   const hash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
   const usuarios = [
-    ['1010', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1020', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1030', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1040', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1050', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
   ];
   for (const u of usuarios) {
     await conn.query(
@@ -180,7 +181,7 @@ async function initDatabase() {
       u
     );
   }
-  console.log('Encargados sincronizados (1010-1050 / CREDENCIALES_BORRADAS)');
+  console.log('Encargados sincronizados (1001-1005 / CREDENCIALES_BORRADAS)');
 
   const viewerHash = await bcrypt.hash('CREDENCIALES_BORRADAS', 10);
   await conn.query(
