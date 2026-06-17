@@ -12,7 +12,8 @@ const initDatabase = require('./initDb');
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 
-app.use(cors());
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
+app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
@@ -243,12 +244,16 @@ app.get('/exportar', verificarToken, async (req, res) => {
 
 app.use(errorHandler);
 
-function start() {
+async function start() {
+  try {
+    await initDatabase();
+    console.log('Base de datos inicializada correctamente');
+  } catch (err) {
+    console.error('Error al inicializar BD:', err.message);
+    process.exit(1);
+  }
   app.listen(PORT, () => {
     console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
-    initDatabase().catch(err => {
-      console.error('Error al inicializar BD:', err.message);
-    });
   });
 }
 start();

@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmartLoan IT - Historial y trazabilidad de préstamos y devoluciones de equipos tecnológicos.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Historial</title>
     <link rel="stylesheet" href="/css/tokens.css">
@@ -168,7 +169,7 @@ function renderP(){
     var header='<div class="table-header"><span>Registro de préstamos</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#</th><th>Alumno</th><th>Equipo</th><th>Fecha préstamo</th><th>Vencimiento</th><th>Encargado</th><th>Motivo</th><th>Estado</th><th class="ac"></th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th><th scope="col" class="ac"></th></tr></thead><tbody>';
     d.forEach(function(p,i){
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
@@ -196,7 +197,7 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th>#Dev</th><th>#Pres</th><th>Alumno</th><th>Equipo</th><th>Fecha dev.</th><th>Registró</th><th>Recibió</th><th>Estado</th><th>Daño</th><th>Multa</th><th>Total</th><th class="ac"></th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th scope="col">#Dev</th><th scope="col">#Pres</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total</th><th scope="col" class="ac"></th></tr></thead><tbody>';
     d.forEach(function(dv,i){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
@@ -235,8 +236,6 @@ function setTab(t,el){
     if(t==='p'){tp.style.animation='none';void tp.offsetWidth;tp.style.animation='fi 0.35s var(--ease-out) both';}
     else{td.style.animation='none';void td.offsetWidth;td.style.animation='fi 0.35s var(--ease-out) both';}
     document.getElementById('filtros').style.display=t==='p'?'flex':'none';
-    document.getElementById('busq').value='';
-    document.getElementById('search-count').textContent='';
     if(t==='p') renderP(); else renderD();
 }
 

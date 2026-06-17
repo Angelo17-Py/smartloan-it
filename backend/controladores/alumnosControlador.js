@@ -29,6 +29,8 @@ exports.disponibles = async (req, res) => {
     }
 };
 
+function sanitizar(v, max) { return v ? String(v).trim().slice(0, max) : ''; }
+
 exports.crear = async (req, res) => {
   const { nombre, apellido, carrera, curso } = req.body;
   if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Nombre y apellido requeridos' });
@@ -40,7 +42,7 @@ exports.crear = async (req, res) => {
     const codigo_alumno = 'ALU' + String(maxNum + 1).padStart(3, '0');
     await conn.query(
       'INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES (?,?,?,?,?)',
-      [codigo_alumno, nombre, apellido, carrera || '', curso || '']
+      [codigo_alumno, sanitizar(nombre, 100), sanitizar(apellido, 100), sanitizar(carrera, 150), sanitizar(curso, 50)]
     );
     await conn.commit();
     res.json({ mensaje: 'Alumno registrado', codigo_alumno });
@@ -114,7 +116,7 @@ exports.editar = async (req, res) => {
     const conn = await db;
     await conn.query(
       'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=? WHERE id_alumno=?',
-      [nombre, apellido, carrera || '', curso || '', req.params.id]
+      [sanitizar(nombre, 100), sanitizar(apellido, 100), sanitizar(carrera, 150), sanitizar(curso, 50), req.params.id]
     );
     res.json({ mensaje: 'Alumno actualizado' });
   } catch (err) {

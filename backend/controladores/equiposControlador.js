@@ -16,8 +16,9 @@ exports.crear = async (req, res) => {
     const { nombre, tipo, marca, descripcion } = req.body;
     if (!nombre || !tipo || !marca || !descripcion) return res.status(400).json({ mensaje: 'Datos incompletos' });
     const conn = await db;
+    const s = (v, n) => v ? String(v).trim().slice(0, n) : '';
     await conn.query('INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES (?,?,?,?)',
-      [nombre, tipo, marca, descripcion]
+      [s(nombre, 100), s(tipo, 50), s(marca, 50), s(descripcion, 200)]
     );
     res.json({ mensaje: 'Equipo creado' });
   } catch (err) {
@@ -100,9 +101,10 @@ exports.editar = async (req, res) => {
     const { nombre, tipo, marca, descripcion } = req.body;
     if (!nombre || !tipo || !marca || !descripcion) return res.status(400).json({ mensaje: 'Datos incompletos' });
     const conn = await db;
+    const s = (v, n) => v ? String(v).trim().slice(0, n) : '';
     await conn.query(
       'UPDATE equipos SET nombre=?, tipo=?, marca=?, descripcion=? WHERE id_equipo=?',
-      [nombre, tipo, marca, descripcion, req.params.id]
+      [s(nombre, 100), s(tipo, 50), s(marca, 50), s(descripcion, 200), req.params.id]
     );
     res.json({ mensaje: 'Equipo actualizado' });
   } catch (err) {

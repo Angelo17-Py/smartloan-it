@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmartLoan IT - Gestión de alumnos para solicitud de préstamos de equipos tecnológicos.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Alumnos</title>
     <link rel="stylesheet" href="/css/tokens.css">
@@ -51,8 +52,8 @@
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo alumno</div>
         <div class="form-row">
-            <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" oninput="clearF('nombre');checkNuevoAlumno()"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
-            <div class="ig"><label>Apellido</label><input id="apellido" placeholder="" oninput="clearF('apellido');checkNuevoAlumno()"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
+            <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoAlumno()"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
+            <div class="ig"><label>Apellido</label><input id="apellido" placeholder="" maxlength="100" oninput="clearF('apellido');checkNuevoAlumno()"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
             <div class="ig"><label>Carrera</label>
                 <select id="carrera" onchange="clearF('carrera');checkNuevoAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-carrera">Selecciona la carrera</div>
@@ -70,7 +71,7 @@
     </div>
     <div class="table-wrap">
         <div class="table-header"><span>Lista de alumnos</span><span class="table-count" id="count">0 alumnos</span></div>
-        <table><thead><tr><th>#</th><th>Codigo</th><th>Alumno</th><th>Carrera</th><th>Curso</th><th style="text-align:center">Acciones</th></tr></thead>
+        <table><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Carrera</th><th scope="col">Curso</th><th scope="col" style="text-align:center">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
     </div>
 </main>
@@ -80,8 +81,8 @@
         <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
             <div class="g2m">
-                <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" oninput="clearFE('nombre','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
-                <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" oninput="clearFE('apellido','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
+                <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" maxlength="100" oninput="clearFE('nombre','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" maxlength="100" oninput="clearFE('apellido','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
             <div class="ig"><label>Carrera</label>
                 <select id="edit-carrera" onchange="clearFE('carrera','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingenieria en Informatica</option><option>Ingenieria Industrial</option><option>Ingenieria Civil</option><option>Administracion de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>

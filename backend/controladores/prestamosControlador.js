@@ -7,13 +7,18 @@ const fmt = (d) => {
   return str.replace('T', ' ').slice(0, 19);
 };
 
+const MAX_LEN = (v, n) => v && v.length > n ? v.slice(0, n) : v;
+
 exports.crear = async (req, res) => {
   try {
-    const { id_alumno, id_equipo, id_encargado, fecha_devolucion_estimada,
+    const { id_alumno, id_equipo, fecha_devolucion_estimada,
             estado_inicial_equipo, accesorios, motivo, observaciones, acepto_contrato } = req.body;
     const estadoIniMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
-    const estadoIni = estadoIniMap[estado_inicial_equipo] || 'Excelente';
-    if (!id_alumno || !id_equipo || !id_encargado || !fecha_devolucion_estimada) {
+    const estadoIni = estadoIniMap[estado_inicial_equipo];
+    if (!estadoIni) {
+      return res.status(400).json({ mensaje: 'Estado inicial inválido' });
+    }
+    if (!id_alumno || !id_equipo || !fecha_devolucion_estimada) {
       return res.status(400).json({ mensaje: 'Datos incompletos' });
     }
     if (!acepto_contrato) {
@@ -31,8 +36,8 @@ exports.crear = async (req, res) => {
       `INSERT INTO prestamos (id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
        estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-      [id_alumno, id_equipo, id_encargado, fmt(new Date()), fmt(fecha_devolucion_estimada),
-       estadoIni, accesorios || '', motivo || '', observaciones || '', 1, multaBase]
+      [id_alumno, id_equipo, req.encargado.id, fmt(new Date()), fmt(fecha_devolucion_estimada),
+       estadoIni, MAX_LEN(accesorios, 300) || '', MAX_LEN(motivo, 300) || '', MAX_LEN(observaciones, 300) || '', 1, multaBase]
     );
     res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()) });
   } catch (err) {

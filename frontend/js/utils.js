@@ -30,10 +30,7 @@ function clearF(f) {
 function clearFE(f, prefix) {
   prefix = prefix || '';
   var el = document.getElementById(prefix + f);
-  if (el) {
-    el.classList.remove('err');
-    el.textContent = '';
-  }
+  if (el) el.classList.remove('err');
   var fer = document.getElementById('ferr-' + prefix + f);
   if (fer) fer.classList.remove('show');
 }
@@ -96,8 +93,13 @@ function toggleTheme() {
   localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }
 
-function safeJson(r) {
-  return r.status === 204 ? {} : r.json();
+async function safeJson(r) {
+  if (r.status === 204) return {};
+  try {
+    return await r.json();
+  } catch {
+    return {};
+  }
 }
 
 function esc(t) {
@@ -284,6 +286,7 @@ document.addEventListener('click', function (e) {
   if (el.host !== window.location.host) return;
   if (el.target === '_blank') return;
   if (el.getAttribute('href') === '#' || el.getAttribute('href') === '') return;
+  if (el.hasAttribute('download')) return;
   if (e.ctrlKey || e.metaKey || e.shiftKey) return;
   var samePage = el.pathname === window.location.pathname;
   if (samePage) return;

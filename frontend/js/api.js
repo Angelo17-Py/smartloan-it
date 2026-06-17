@@ -6,7 +6,12 @@ async function apiFetch(url, options = {}) {
   if (token) {
     options.headers['Authorization'] = 'Bearer ' + token;
   }
-  const res = await fetch(API + url, options);
+  let res;
+  try {
+    res = await fetch(API + url, options);
+  } catch (e) {
+    throw new Error('Error de conexión con el servidor');
+  }
   if (res.status === 401) {
     localStorage.removeItem('encargado');
     localStorage.removeItem('token');

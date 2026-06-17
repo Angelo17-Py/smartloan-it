@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+if (!process.env.JWT_SECRET) {
+  console.error('ADVERTENCIA: JWT_SECRET no está definido. Usando valor por defecto inseguro. Define JWT_SECRET en .env para producción.');
+}
 const SECRET = process.env.JWT_SECRET || 'dev-secret-inseguro';
 
 function generarToken(usuario) {

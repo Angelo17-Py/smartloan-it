@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmartLoan IT - Gestión de equipos tecnológicos, registro y control de estado de activos.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Equipos</title>
     <link rel="stylesheet" href="/css/tokens.css">
@@ -51,7 +52,7 @@
     <div class="form-card">
         <div class="form-card-title">Registrar nuevo equipo</div>
         <div class="form-row">
-            <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" oninput="clearF('nombre');checkNuevoEquipo()"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
+            <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoEquipo()"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
             <div class="ig"><label>Tipo</label>
                 <select id="tipo" onchange="clearF('tipo');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
                 <div class="ferr" id="ferr-tipo">Selecciona el tipo</div>
@@ -60,7 +61,7 @@
                 <select id="marca" onchange="clearF('marca');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
-            <div class="ig"><label>Descripción</label><input id="desc" placeholder="" oninput="clearF('desc');checkNuevoEquipo()"><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
+            <div class="ig"><label>Descripción</label><input id="desc" placeholder="" maxlength="200" oninput="clearF('desc');checkNuevoEquipo()"><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
         </div>
     </div>
@@ -70,7 +71,7 @@
     </div>
     <div class="table-wrap">
         <div class="table-header"><span>Lista de equipos</span><span class="table-count" id="count">0 equipos</span></div>
-        <table><thead><tr><th>#</th><th>Equipo</th><th>Tipo / Marca</th><th>Estado</th><th style="text-align:center">Acciones</th></tr></thead>
+        <table><thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col">Tipo / Marca</th><th scope="col">Estado</th><th scope="col" style="text-align:center">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
     </div>
 </main>
@@ -81,7 +82,7 @@
         <div class="mform">
             <div class="ig">
                 <label>Nombre / Modelo</label>
-                <input id="edit-nombre" placeholder="Ej: ThinkPad X1 Carbon" oninput="clearFE('nombre','edit-');checkEditEquipo()">
+                <input id="edit-nombre" placeholder="Ej: ThinkPad X1 Carbon" maxlength="100" oninput="clearFE('nombre','edit-');checkEditEquipo()">
                 <div class="ferr" id="ferr-edit-nombre">Ingresa el nombre del equipo</div>
             </div>
             <div class="g2m">
@@ -96,7 +97,7 @@
                     <div class="ferr" id="ferr-edit-marca">Selecciona la marca</div>
                 </div>
             </div>
-            <div class="ig"><label>Descripción</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" oninput="clearFE('desc','edit-');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
+            <div class="ig"><label>Descripción</label>                <input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" maxlength="200" oninput="clearFE('desc','edit-');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
             <button type="button" class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
         </div>
     </div>

@@ -3,7 +3,7 @@ const db = require('../db');
 exports.crear = async (req, res) => {
   try {
     const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
-            observacion_dano, monto_dano, observacion, id_encargado } = req.body;
+            observacion_dano, monto_dano, observacion } = req.body;
     const estadoEqMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
     const estadoEq = estadoEqMap[estado_equipo];
     if (!id_prestamo || !estadoEq) {
@@ -37,7 +37,7 @@ exports.crear = async (req, res) => {
         `INSERT INTO devoluciones (id_prestamo,id_encargado,fecha_devolucion,estado_equipo,tiene_dano,
          tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
          VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-        [id_prestamo, id_encargado || null, fmt(ahora), estadoEq, tiene_dano ? 1 : 0,
+        [id_prestamo, req.encargado.id || null, fmt(ahora), estadoEq, tiene_dano ? 1 : 0,
          tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
       );
       await tx.commit();

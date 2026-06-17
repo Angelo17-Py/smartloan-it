@@ -109,15 +109,18 @@ async function initDatabase() {
   `);
 
   // Migraciones para bases de datos existentes
-  try { await conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"); } catch (e) {}
-  try { await conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"); } catch (e) {}
-  try { await conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"); } catch (e) {}
-  try { await conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"); } catch (e) {}
-  try { await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato"); } catch (e) {}
-  try { await conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"); } catch (e) {}
-  try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) UNIQUE NOT NULL"); } catch (e) {}
-  try { await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo"); } catch (e) {}
-  try { await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)"); } catch (e) {}
+  try { await conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 1 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"); } catch (e) { console.error('Migracion 2 fallo (no critico):', e.message); }
+  try { await conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 3 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"); } catch (e) { console.error('Migracion 4 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato"); } catch (e) { console.error('Migracion 5 fallo (no critico):', e.message); }
+  try { await conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"); } catch (e) { console.error('Migracion 6 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) UNIQUE NOT NULL"); } catch (e) { console.error('Migracion 7 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo"); } catch (e) { console.error('Migracion 8 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)"); } catch (e) { console.error('Migracion 9 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE alumnos ADD CONSTRAINT uq_alumnos_cedula UNIQUE (cedula)"); } catch (e) { console.error('Migracion 10 fallo (no critico):', e.message); }
+  try { await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)"); } catch (e) { console.error('Migracion 11 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)"); } catch (e) { console.error('Migracion 12 fallo (no critico):', e.message); }
 
   await conn.query('DROP TRIGGER IF EXISTS validar_prestamo');
   await conn.query(`
@@ -129,7 +132,7 @@ async function initDatabase() {
       SELECT estado INTO estado_actual FROM equipos WHERE id_equipo = NEW.id_equipo;
       IF estado_actual != 'Disponible' THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'El equipo no esta disponible para prestamo';
+        SET MESSAGE_TEXT = 'El equipo no está disponible para préstamo';
       END IF;
     END
   `);
@@ -182,6 +185,25 @@ async function initDatabase() {
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",
     ['multa_por_dia', '10000', 'Monto en guaranies por dia de retraso']
   );
+
+  // Seed data de ejemplo
+  const [aluCount] = await conn.query('SELECT COUNT(*) AS c FROM alumnos');
+  if (aluCount[0].c === 0) {
+    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU001','Maria','Gonzalez','Ingenieria en Informatica','3er año')");
+    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU002','Carlos','Mendoza','Administracion de Empresas','2do año')");
+    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU003','Ana','Rivas','Medicina','4to año')");
+    console.log('Alumnos de ejemplo creados (ALU001-ALU003)');
+  }
+
+  const [eqCount] = await conn.query('SELECT COUNT(*) AS c FROM equipos');
+  if (eqCount[0].c === 0) {
+    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('ThinkPad X1 Carbon','Laptop','Lenovo','16GB RAM, SSD 512GB')");
+    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('MacBook Pro 14','Laptop','Apple','M3 Pro, 18GB RAM')");
+    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('OptiPlex 7090','PC','Dell','Intel i7, 32GB RAM, SSD 1TB')");
+    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('Surface Laptop 5','Laptop','Microsoft','i5, 8GB RAM, 256GB SSD')");
+    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('Predator Helios 300','Laptop','Acer','i7, 16GB RAM, RTX 3060')");
+    console.log('Equipos de ejemplo creados (5 equipos)');
+  }
 
   console.log('Base de datos inicializada correctamente');
 }

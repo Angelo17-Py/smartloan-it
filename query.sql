@@ -1,6 +1,5 @@
--- Sistema de Gestion de Préstamos de Equipos TecnolOgicos
+-- Sistema de Gestion de Préstamos de Equipos Tecnológicos
 -- SmartLoan IT - UNIDA
-
 
 CREATE DATABASE IF NOT EXISTS prestamos_db;
 USE prestamos_db;
@@ -23,7 +22,7 @@ CREATE TABLE alumnos (
     apellido       VARCHAR(100) NOT NULL,
     carrera        VARCHAR(150),
     curso          VARCHAR(50),
-    cedula         VARCHAR(20),
+    cedula         VARCHAR(20) UNIQUE,
     estado         BOOLEAN DEFAULT TRUE,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -54,12 +53,16 @@ CREATE TABLE prestamos (
     estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
     FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
     FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
-    FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
+    FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado),
+    CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)
 );
+
+CREATE INDEX idx_prestamos_estado ON prestamos(estado);
 
 CREATE TABLE devoluciones (
     id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
     id_prestamo      INT NOT NULL,
+    id_encargado     INT DEFAULT NULL,
     fecha_devolucion DATETIME NOT NULL,
     estado_equipo    ENUM('Excelente','Bueno','Dañado') NOT NULL,
     tiene_dano       BOOLEAN DEFAULT FALSE,
@@ -70,7 +73,8 @@ CREATE TABLE devoluciones (
     monto_multa      DECIMAL(12,2) DEFAULT 0,
     total_cobro      DECIMAL(12,2) DEFAULT 0,
     observacion      VARCHAR(300),
-    FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo)
+    FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo),
+    FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
 );
 
 -- Tabla de configuracion del sistema
@@ -118,15 +122,27 @@ END$$
 
 DELIMITER ;
 
--- Encargado y contraseña
--- La contraseña se migra automaticamente a bcrypt en el primer inicio de sesion
+-- Encargados y contraseña
 INSERT INTO encargados (codigo, password, nombre, apellido, cargo) VALUES
-('1010', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnologicos'),
-('1020', 'CREDENCIALES_BORRADAS', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnologicos'),
-('1030', 'CREDENCIALES_BORRADAS', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnologicos'),
-('1040', 'CREDENCIALES_BORRADAS', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnologicos'),
-('1050', 'CREDENCIALES_BORRADAS', 'Aitana', 'Berenguer', 'Encargado de Recursos Tecnologicos');
+('1010', 'CREDENCIALES_BORRADAS', 'Angelo', 'Caballero', 'Encargado de Recursos Tecnológicos'),
+('1020', 'CREDENCIALES_BORRADAS', 'Elian', 'Valtierra', 'Encargado de Recursos Tecnológicos'),
+('1030', 'CREDENCIALES_BORRADAS', 'Naira', 'Soldevila', 'Encargado de Recursos Tecnológicos'),
+('1040', 'CREDENCIALES_BORRADAS', 'Gael', 'Monteserín', 'Encargado de Recursos Tecnológicos'),
+('1050', 'CREDENCIALES_BORRADAS', 'Aitana', 'Berenguer', 'Encargado de Recursos Tecnológicos');
 
 -- Multa por dia de retraso en guaranies
 INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
 ('multa_por_dia', '10000', 'Monto en guaranies que se cobra por cada dia de retraso en la devolucion');
+
+-- Datos de ejemplo
+INSERT INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso) VALUES
+('ALU001', 'Maria',   'Gonzalez', 'Ingenieria en Informatica',  '3er año'),
+('ALU002', 'Carlos',  'Mendoza',  'Administracion de Empresas', '2do año'),
+('ALU003', 'Ana',     'Rivas',    'Medicina',                   '4to año');
+
+INSERT INTO equipos (nombre, tipo, marca, descripcion) VALUES
+('ThinkPad X1 Carbon',   'Laptop', 'Lenovo',    '16GB RAM, SSD 512GB'),
+('MacBook Pro 14',       'Laptop', 'Apple',     'M3 Pro, 18GB RAM'),
+('OptiPlex 7090',        'PC',     'Dell',      'Intel i7, 32GB RAM, SSD 1TB'),
+('Surface Laptop 5',     'Laptop', 'Microsoft', 'i5, 8GB RAM, 256GB SSD'),
+('Predator Helios 300',  'Laptop', 'Acer',      'i7, 16GB RAM, RTX 3060');

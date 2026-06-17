@@ -6,6 +6,10 @@ const user     = process.env.MYSQLUSER     || process.env.MYSQL_USER     || proc
 const password = process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || '1234';
 const database = process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || process.env.DB_NAME     || 'prestamos_db';
 
+if (!process.env.MYSQLPASSWORD && !process.env.MYSQL_PASSWORD && !process.env.DB_PASSWORD) {
+  console.warn('ADVERTENCIA: No se definió contraseña de MySQL. Usando valor por defecto (solo para desarrollo local).');
+}
+
 const pool = mysql.createPool({
   host,
   port,
