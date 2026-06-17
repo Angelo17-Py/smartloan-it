@@ -229,6 +229,9 @@ img{max-width:100%;display:block}
 
 /* ---- TABLES ---- */
 .table-wrap{overflow-x:auto;border-radius:var(--radius-xl);background:var(--card);border:1px solid var(--border)}
+.table-wrap table{width:100%;border-collapse:collapse;table-layout:fixed}
+.table-wrap th,.table-wrap td{word-break:break-word;overflow:hidden}
+.table-wrap th:last-child,.table-wrap td:last-child{white-space:nowrap;overflow:visible;text-overflow:clip}
 .table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
 .table th{
   text-align:left;padding:var(--space-3) var(--space-4);
