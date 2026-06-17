@@ -1,4 +1,5 @@
 const db = require('../db');
+const { s } = require('../utils/sanitize');
 
 const fmt = (d) => {
   if (!d) return null;
@@ -6,8 +7,6 @@ const fmt = (d) => {
   const str = new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' });
   return str.replace('T', ' ').slice(0, 19);
 };
-
-const MAX_LEN = (v, n) => v && v.length > n ? v.slice(0, n) : v;
 
 exports.crear = async (req, res) => {
   try {
@@ -38,7 +37,7 @@ exports.crear = async (req, res) => {
        estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
       [id_alumno, id_equipo, req.encargado.id, fmt(new Date()), fmt(fecha_devolucion_estimada),
-       estadoIni, MAX_LEN(accesorios, 300) || '', MAX_LEN(motivo, 300) || '', MAX_LEN(observaciones, 300) || '', 1, multaBase]
+       estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase]
     );
     res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()) });
   } catch (err) {

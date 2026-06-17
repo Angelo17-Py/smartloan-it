@@ -249,7 +249,7 @@ app.get('/exportar', verificarToken, async (req, res) => {
   }
 });
 
-app.use('/api', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({ mensaje: 'Ruta no encontrada' });
 });
 
@@ -263,8 +263,24 @@ async function start() {
     console.error('Error al inicializar BD:', err.message);
     process.exit(1);
   }
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
   });
+
+  function shutdown(signal) {
+    console.log(`\n${signal} recibido. Cerrando servidor...`);
+    server.close(() => {
+      console.log('Servidor HTTP cerrado.');
+      db.end().then(() => {
+        console.log('Pool de MySQL cerrado.');
+        process.exit(0);
+      }).catch((err) => {
+        console.error('Error al cerrar MySQL:', err.message);
+        process.exit(1);
+      });
+    });
+  }
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT',  () => shutdown('SIGINT'));
 }
 start();

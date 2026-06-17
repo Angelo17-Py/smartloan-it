@@ -1,6 +1,5 @@
 const db = require('../db');
-
-const s = (v, n) => v ? String(v).trim().slice(0, n) : '';
+const { s } = require('../utils/sanitize');
 
 exports.listar = async (req, res) => {
   try {
