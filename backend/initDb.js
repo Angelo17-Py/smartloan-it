@@ -188,6 +188,7 @@ async function initDatabase() {
     console.log('ADMIN_PASSWORD no definido — se omite creacion de administradores');
   }
 
+  await conn.query("DELETE FROM encargados WHERE codigo = '0000'");
   const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
   await conn.query(
     "INSERT IGNORE INTO encargados (codigo, password, nombre, apellido, cargo, rol) VALUES (?, ?, ?, ?, ?, ?)",
