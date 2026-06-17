@@ -28,10 +28,9 @@
         th:nth-child(1){width:40px;}
         th:nth-child(2){width:100px;}
         th:nth-child(3){width:auto;}
-        th:nth-child(4){width:115px;}
-        th:nth-child(5){width:130px;}
+        th:nth-child(4){width:130px;}
+        th:nth-child(5){width:115px;}
         th:nth-child(6){width:95px;}
-        th:nth-child(7){width:95px;}
         td{padding:12px 16px;font-size:0.88rem;border-bottom:1px solid var(--border);vertical-align:middle;}
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
@@ -72,7 +71,6 @@
                 <select id="curso" onchange="clearF('curso');checkNuevoAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-curso">Selecciona el curso</div>
             </div>
-            <div class="ig"><label>Cédula (opcional)</label><input id="cedula" placeholder="Ej: 1234567" maxlength="20"></div>
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
         </div>
     </div>
@@ -82,7 +80,7 @@
     </div>
     <div class="table-wrap">
         <div class="table-header"><span>Lista de alumnos</span><span class="table-count" id="count">0 alumnos</span></div>
-        <table><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Cédula</th><th scope="col">Carrera</th><th scope="col">Curso</th><th scope="col" style="text-align:center">Acciones</th></tr></thead>
+        <table><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Carrera</th><th scope="col">Curso</th><th scope="col" style="text-align:center">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
     </div>
 </main>
@@ -103,7 +101,6 @@
                 <select id="edit-curso" onchange="clearFE('curso','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
             </div>
-            <div class="ig"><label>Cédula (opcional)</label><input id="edit-cedula" placeholder="Ej: 1234567" maxlength="20"></div>
             <button type="button" class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
         </div>
     </div>
@@ -161,7 +158,7 @@ function render(data){
     document.getElementById('count').textContent = `${data.length} alumno${data.length!==1?'s':''}`;
     const tb = document.getElementById('tb');
     if(!data.length){
-        tb.innerHTML = '<tr class="empty-row"><td colspan="7">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
+        tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
     }
     var admin = esAdmin();
@@ -171,7 +168,6 @@ function render(data){
             <td><span class="num">${i+1}</span></td>
             <td><span class="code-chip">${esc(a.codigo_alumno)}</span></td>
             <td><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
-            <td style="color:var(--dim);font-size:0.85rem">${esc(a.cedula||'—')}</td>
             <td style="color:var(--dim);font-size:0.85rem">${esc(a.carrera||'—')}</td>
             <td style="color:var(--dim);font-size:0.85rem">${esc(a.curso||'—')}</td>
             <td>${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+a.id_alumno+')">Editar</button><button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button></div>' : ''}</td>
@@ -185,7 +181,6 @@ function filtrar(){
         normalizeText(a.nombre).includes(q) ||
         normalizeText(a.apellido).includes(q) ||
         normalizeText(a.codigo_alumno).includes(q) ||
-        normalizeText(a.cedula||'').includes(q) ||
         normalizeText(a.nombre + ' ' + a.apellido).includes(q) ||
         normalizeText(a.apellido + ' ' + a.nombre).includes(q)
     );
@@ -205,8 +200,7 @@ async function crear(){
                 nombre:   document.getElementById('nombre').value.trim(),
                 apellido: document.getElementById('apellido').value.trim(),
                 carrera:  document.getElementById('carrera').value,
-                curso:    document.getElementById('curso').value,
-                cedula:   document.getElementById('cedula').value.trim() || null
+                curso:    document.getElementById('curso').value
             })
         });
         const d = await safeJson(r);
@@ -251,7 +245,6 @@ function abrirEditar(id){
     document.getElementById('edit-apellido').value = a.apellido;
     document.getElementById('edit-carrera').value = a.carrera || '';
     document.getElementById('edit-curso').value = a.curso || '';
-    document.getElementById('edit-cedula').value = a.cedula || '';
     ['nombre','apellido','carrera','curso'].forEach(f => {
         document.getElementById('edit-'+f).classList.remove('err');
         document.getElementById('ferr-edit-'+f).classList.remove('show');
@@ -285,7 +278,7 @@ async function guardarAlumno(){
         const r = await apiFetch(`/alumnos/${alumnoEditandoId}`, {
             method: 'PUT',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({nombre:n, apellido:ap, carrera:ca, curso:cu, cedula: document.getElementById('edit-cedula').value.trim() || null})
+            body: JSON.stringify({nombre:n, apellido:ap, carrera:ca, curso:cu})
         });
         if(r.ok){
             st('Alumno actualizado correctamente');
