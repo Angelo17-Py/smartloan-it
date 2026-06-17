@@ -24,10 +24,10 @@
         .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
         .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
         th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
-        td{padding:12px 18px;font-size:0.88rem;border-bottom:1px solid var(--border);}
+        td{padding:12px 18px;font-size:0.88rem;border-bottom:1px solid var(--border);vertical-align:middle;}
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
-        .ac{display:flex;gap:6px;justify-content:center;}
+        .ac{display:flex;gap:6px;justify-content:center;white-space:nowrap;}
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
         .mo .md{animation:fi 0.3s ease;}
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
@@ -168,14 +168,14 @@ function render(data){
 }
 
 function filtrar(){
-    const q = document.getElementById('busq').value.trim().toLowerCase();
+    const q = normalizeText(document.getElementById('busq').value);
     if(!q){ render(todos); return; }
     const filtrados = todos.filter(a =>
-        a.nombre.toLowerCase().includes(q) ||
-        a.apellido.toLowerCase().includes(q) ||
-        a.codigo_alumno.toLowerCase().includes(q) ||
-        (a.nombre + ' ' + a.apellido).toLowerCase().includes(q) ||
-        (a.apellido + ' ' + a.nombre).toLowerCase().includes(q)
+        normalizeText(a.nombre).includes(q) ||
+        normalizeText(a.apellido).includes(q) ||
+        normalizeText(a.codigo_alumno).includes(q) ||
+        normalizeText(a.nombre + ' ' + a.apellido).includes(q) ||
+        normalizeText(a.apellido + ' ' + a.nombre).includes(q)
     );
     document.getElementById('count').textContent = `${filtrados.length} de ${todos.length} alumnos`;
     render(filtrados);

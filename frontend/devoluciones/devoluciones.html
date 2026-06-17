@@ -381,7 +381,7 @@ async function selec(id){
     await cargarPres(id);
 }
 async function buscar(){
-    const q=document.getElementById('idp').value.trim().toLowerCase();
+    const q=normalizeText(document.getElementById('idp').value);
     if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
     const btn=document.getElementById('btnBuscar');btn.disabled=true;btn.textContent='Buscando...';
     try{
@@ -389,12 +389,12 @@ async function buscar(){
         if(!r.ok){st('Error al buscar');return;}
         const todos=await r.json();
         const activos=todos.filter(function(p){
-            var nombreCompleto = ((p.alumno_nombre||'') + ' ' + (p.alumno_apellido||'')).toLowerCase();
-            var nombreInverso  = ((p.alumno_apellido||'') + ' ' + (p.alumno_nombre||'')).toLowerCase();
+            var nombreCompleto = normalizeText((p.alumno_nombre||'') + ' ' + (p.alumno_apellido||''));
+            var nombreInverso  = normalizeText((p.alumno_apellido||'') + ' ' + (p.alumno_nombre||''));
             return p.estado==='ACTIVO' && (
                 nombreCompleto.includes(q) ||
                 nombreInverso.includes(q) ||
-                (p.codigo_alumno && p.codigo_alumno.toLowerCase().includes(q))
+                normalizeText(p.codigo_alumno||'').includes(q)
             );
         });
         if(!activos.length){st('No se encontró ningún préstamo activo para ese alumno');return;}

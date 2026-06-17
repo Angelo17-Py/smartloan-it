@@ -28,12 +28,12 @@
         .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
         .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
         th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
-        td{padding:12px 18px;font-size:0.86rem;border-bottom:1px solid var(--border);}
-        .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:monospace;color:var(--text);}
+        td{padding:12px 18px;font-size:0.86rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+        .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:monospace;color:var(--text);white-space:nowrap;}
         .sub-text{font-size:0.75rem;color:var(--dim);margin-top:2px;}
         .em{text-align:center;padding:40px;color:var(--dim);font-size:0.88rem;}
         .highlight{background:rgba(99,102,241,0.15);border-radius:3px;padding:0 2px;}
-        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:0.15s;font-family:'Plus Jakarta Sans',sans-serif;}
+        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:0.15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
         .btn-del-row:hover{background:rgba(239,68,68,0.1);}
         th.ac{width:52px;}
     </style>
@@ -107,58 +107,48 @@ function getPrestFiltrados(){
     if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO';});
     if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
     if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
-    var q=document.getElementById('busq').value.trim().toLowerCase();
+    var q=normalizeText(document.getElementById('busq').value);
     if(q){
         d=d.filter(function(p){
-            return (p.alumno_nombre&&p.alumno_nombre.toLowerCase().includes(q))||
-                   (p.alumno_apellido&&p.alumno_apellido.toLowerCase().includes(q))||
-                   (p.codigo_alumno&&p.codigo_alumno.toLowerCase().includes(q))||
-                   (p.equipo&&p.equipo.toLowerCase().includes(q))||
-                   (p.marca&&p.marca.toLowerCase().includes(q))||
-                   (p.motivo&&p.motivo.toLowerCase().includes(q))||
-                   (String(p.id_prestamo)===q)||
-                   (p.alumno_nombre&&p.alumno_apellido&&
-                    (p.alumno_nombre+' '+p.alumno_apellido).toLowerCase().includes(q))||
-                   (p.alumno_apellido&&p.alumno_nombre&&
-                    (p.alumno_apellido+' '+p.alumno_nombre).toLowerCase().includes(q))||
-                   (p.encargado_nombre&&p.encargado_nombre.toLowerCase().includes(q))||
-                   (p.encargado_apellido&&p.encargado_apellido.toLowerCase().includes(q))||
-                   (p.encargado_nombre&&p.encargado_apellido&&
-                    (p.encargado_nombre+' '+p.encargado_apellido).toLowerCase().includes(q))||
-                   (p.encargado_apellido&&p.encargado_nombre&&
-                    (p.encargado_apellido+' '+p.encargado_nombre).toLowerCase().includes(q));
+            return normalizeText(p.alumno_nombre||'').includes(q)||
+                   normalizeText(p.alumno_apellido||'').includes(q)||
+                   normalizeText(p.codigo_alumno||'').includes(q)||
+                   normalizeText(p.equipo||'').includes(q)||
+                   normalizeText(p.marca||'').includes(q)||
+                   normalizeText(p.motivo||'').includes(q)||
+                   (String(p.id_prestamo)===document.getElementById('busq').value.trim())||
+                   normalizeText((p.alumno_nombre||'')+' '+(p.alumno_apellido||'')).includes(q)||
+                   normalizeText((p.alumno_apellido||'')+' '+(p.alumno_nombre||'')).includes(q)||
+                   normalizeText(p.encargado_nombre||'').includes(q)||
+                   normalizeText(p.encargado_apellido||'').includes(q)||
+                   normalizeText((p.encargado_nombre||'')+' '+(p.encargado_apellido||'')).includes(q)||
+                   normalizeText((p.encargado_apellido||'')+' '+(p.encargado_nombre||'')).includes(q);
         });
     }
     return d;
 }
 
 function getDevFiltrados(){
-    var q=document.getElementById('busq').value.trim().toLowerCase();
+    var q=normalizeText(document.getElementById('busq').value);
     if(!q) return devs.slice();
     return devs.filter(function(d){
-        return (d.alumno_nombre&&d.alumno_nombre.toLowerCase().includes(q))||
-               (d.alumno_apellido&&d.alumno_apellido.toLowerCase().includes(q))||
-               (d.codigo_alumno&&d.codigo_alumno.toLowerCase().includes(q))||
-               (d.equipo&&d.equipo.toLowerCase().includes(q))||
-               (d.tipo_dano&&d.tipo_dano.toLowerCase().includes(q))||
-               (String(d.id_prestamo)===q)||
-               (String(d.id_devolucion)===q)||
-               (d.alumno_nombre&&d.alumno_apellido&&
-                (d.alumno_nombre+' '+d.alumno_apellido).toLowerCase().includes(q))||
-               (d.alumno_apellido&&d.alumno_nombre&&
-                (d.alumno_apellido+' '+d.alumno_nombre).toLowerCase().includes(q))||
-               (d.enc_prestamo_nombre&&d.enc_prestamo_nombre.toLowerCase().includes(q))||
-               (d.enc_prestamo_apellido&&d.enc_prestamo_apellido.toLowerCase().includes(q))||
-               (d.enc_prestamo_nombre&&d.enc_prestamo_apellido&&
-                (d.enc_prestamo_nombre+' '+d.enc_prestamo_apellido).toLowerCase().includes(q))||
-               (d.enc_prestamo_apellido&&d.enc_prestamo_nombre&&
-                (d.enc_prestamo_apellido+' '+d.enc_prestamo_nombre).toLowerCase().includes(q))||
-               (d.enc_devolucion_nombre&&d.enc_devolucion_nombre.toLowerCase().includes(q))||
-               (d.enc_devolucion_apellido&&d.enc_devolucion_apellido.toLowerCase().includes(q))||
-               (d.enc_devolucion_nombre&&d.enc_devolucion_apellido&&
-                (d.enc_devolucion_nombre+' '+d.enc_devolucion_apellido).toLowerCase().includes(q))||
-               (d.enc_devolucion_apellido&&d.enc_devolucion_nombre&&
-                (d.enc_devolucion_apellido+' '+d.enc_devolucion_nombre).toLowerCase().includes(q));
+        return normalizeText(d.alumno_nombre||'').includes(q)||
+               normalizeText(d.alumno_apellido||'').includes(q)||
+               normalizeText(d.codigo_alumno||'').includes(q)||
+               normalizeText(d.equipo||'').includes(q)||
+               normalizeText(d.tipo_dano||'').includes(q)||
+               (String(d.id_prestamo)===document.getElementById('busq').value.trim())||
+               (String(d.id_devolucion)===document.getElementById('busq').value.trim())||
+               normalizeText((d.alumno_nombre||'')+' '+(d.alumno_apellido||'')).includes(q)||
+               normalizeText((d.alumno_apellido||'')+' '+(d.alumno_nombre||'')).includes(q)||
+               normalizeText(d.enc_prestamo_nombre||'').includes(q)||
+               normalizeText(d.enc_prestamo_apellido||'').includes(q)||
+               normalizeText((d.enc_prestamo_nombre||'')+' '+(d.enc_prestamo_apellido||'')).includes(q)||
+               normalizeText((d.enc_prestamo_apellido||'')+' '+(d.enc_prestamo_nombre||'')).includes(q)||
+               normalizeText(d.enc_devolucion_nombre||'').includes(q)||
+               normalizeText(d.enc_devolucion_apellido||'').includes(q)||
+               normalizeText((d.enc_devolucion_nombre||'')+' '+(d.enc_devolucion_apellido||'')).includes(q)||
+               normalizeText((d.enc_devolucion_apellido||'')+' '+(d.enc_devolucion_nombre||'')).includes(q);
     });
 }
 

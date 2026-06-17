@@ -24,10 +24,11 @@
         .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
         .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
         th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
-        td{padding:12px 18px;font-size:0.88rem;border-bottom:1px solid var(--border);}
+        td{padding:12px 18px;font-size:0.88rem;border-bottom:1px solid var(--border);vertical-align:middle;}
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
-        .ac{display:flex;gap:6px;justify-content:center;}
+        .ac{display:flex;gap:6px;justify-content:center;white-space:nowrap;}
+        .eq-desc{display:block;font-size:0.76rem;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;line-height:1.4}
         .mo .md{animation:fi 0.3s ease;}
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
@@ -147,13 +148,13 @@ function validarNuevo(){
 let listaEquipos = [];
 
 function filtrar(){
-    const q = document.getElementById('busq').value.trim().toLowerCase();
+    const q = normalizeText(document.getElementById('busq').value);
     if(!q){ render(listaEquipos); return; }
     const filtrados = listaEquipos.filter(e =>
-        e.nombre.toLowerCase().includes(q) ||
-        e.tipo.toLowerCase().includes(q) ||
-        e.marca.toLowerCase().includes(q) ||
-        (e.descripcion||'').toLowerCase().includes(q)
+        normalizeText(e.nombre).includes(q) ||
+        normalizeText(e.tipo).includes(q) ||
+        normalizeText(e.marca).includes(q) ||
+        normalizeText(e.descripcion||'').includes(q)
     );
     document.getElementById('count').textContent = `${filtrados.length} de ${listaEquipos.length} equipos`;
     render(filtrados);
@@ -179,7 +180,7 @@ function render(data){
                 : '';
             var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
                 <td><span class="num">${i+1}</span></td>
-                <td><strong>${esc(e.nombre)}</strong>${e.descripcion?'<br><span style="font-size:0.76rem;color:var(--dim)">'+esc(e.descripcion)+'</span>':''}</td>
+                <td><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
                 <td style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
                 <td>${bE(e.estado)}</td>
                 <td><div class="ac">

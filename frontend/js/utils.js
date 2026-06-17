@@ -102,6 +102,11 @@ async function safeJson(r) {
   }
 }
 
+function normalizeText(s) {
+  if (!s) return '';
+  return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
 function esc(t) {
   return String(t).replace(/[&<>"']/g, function (m) {
     return m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m === '"' ? '&quot;' : '&#39;';
@@ -222,19 +227,20 @@ function initSpotlight(pages) {
   }
 
   async function search(q) {
-    q = q.trim().toLowerCase();
+    q = q.trim();
     if (!q) { results.innerHTML = '<div class="spotlight-empty">Escribe para buscar\u2026</div>'; return; }
     idx = -1;
+    var nq = normalizeText(q);
     var allPages = pages.slice();
-    if (q.length >= 2) {
+    if (nq.length >= 2) {
       try {
         var r1 = await apiFetch('/alumnos');
         if (r1.ok) {
           var alumnos = await r1.json();
           alumnos.forEach(function (a) {
-            var name = (a.nombre + ' ' + a.apellido).toLowerCase();
-            var code = (a.codigo_alumno || '').toLowerCase();
-            if (name.includes(q) || code.includes(q)) {
+            var name = normalizeText(a.nombre + ' ' + a.apellido);
+            var code = normalizeText(a.codigo_alumno || '');
+            if (name.includes(nq) || code.includes(nq)) {
               allPages.push({ label: a.codigo_alumno + ' \u2014 ' + a.nombre + ' ' + a.apellido, sub: a.carrera || 'Alumno', url: '/alumnos/alumnos.html' });
             }
           });
@@ -245,8 +251,8 @@ function initSpotlight(pages) {
         if (r2.ok) {
           var equipos = await r2.json();
           equipos.forEach(function (e) {
-            var name = (e.nombre + ' ' + e.marca).toLowerCase();
-            if (name.includes(q)) {
+            var name = normalizeText(e.nombre + ' ' + e.marca);
+            if (name.includes(nq)) {
               allPages.push({ label: e.nombre, sub: e.tipo + ' \u2022 ' + e.marca, url: '/equipos/equipos.html' });
             }
           });
@@ -254,7 +260,7 @@ function initSpotlight(pages) {
       } catch (e) {}
     }
     var filtered = allPages.filter(function (p) {
-      return (p.label + ' ' + p.sub).toLowerCase().includes(q);
+      return normalizeText(p.label + ' ' + p.sub).includes(nq);
     });
     if (!filtered.length) {
       results.innerHTML = '<div class="spotlight-empty">Sin resultados para \u201c' + q + '\u201d</div>';
