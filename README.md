@@ -17,25 +17,25 @@
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
-- [Descripción](#-descripción)
-- [Pantallas](#-pantallas)
-- [Características](#-características)
-- [Tecnologías](#-tecnologías)
-- [Arquitectura](#-arquitectura)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Inicio Rápido](#-inicio-rápido)
-- [Credenciales](#-credenciales)
-- [API](#-api)
-- [Lógica de Negocio](#-lógica-de-negocio)
-- [Base de Datos](#-base-de-datos)
-- [Deploy en Railway](#-deploy-en-railway)
-- [Comandos Útiles](#-comandos-útiles)
+- [Descripcion](#descripcion)
+- [Pantallas](#pantallas)
+- [Caracteristicas](#caracteristicas)
+- [Tecnologias](#tecnologias)
+- [Arquitectura](#arquitectura)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Inicio Rapido](#inicio-rapido)
+- [Credenciales](#credenciales)
+- [API](#api)
+- [Logica de Negocio](#logica-de-negocio)
+- [Base de Datos](#base-de-datos)
+- [Deploy en Railway](#deploy-en-railway)
+- [Comandos Utiles](#comandos-utiles)
 
 ---
 
-## 🎯 Descripción
+## Descripcion
 
 SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos tecnológicos en instituciones educativas. Permite **registrar, controlar y hacer seguimiento** del uso de laptops, PCs y periféricos con control automático de estados, cálculo de multas por retraso, registro de daños y trazabilidad completa de todos los movimientos.
 
@@ -43,7 +43,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 
 ---
 
-## 🖥️ Pantallas
+## Pantallas
 
 <div align="center">
 
@@ -61,7 +61,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 
 ---
 
-## ✨ Características
+## Caracteristicas
 
 ### Dashboard Interactivo
 - **Métricas en vivo** con animación de números (`requestAnimationFrame`)
@@ -98,7 +98,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 
 ---
 
-## 🛠️ Tecnologías
+## Tecnologias
 
 ### Backend
 | Tecnología | Uso |
@@ -134,7 +134,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌─────────┐
@@ -155,7 +155,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 SistemaPrestamos/
@@ -205,7 +205,7 @@ SistemaPrestamos/
 
 ---
 
-## 🚀 Inicio Rápido
+## Inicio Rapido
 
 ### Requisitos Previos
 - [Node.js](https://nodejs.org/) v18 o superior
@@ -258,18 +258,18 @@ start http://localhost:3000
 
 ---
 
-## 🔐 Credenciales
+## Credenciales
 
 | Campo | Valor |
 |-------|-------|
 | Código | `1010`, `1020`, `1030`, `1040` o `1050` |
 | Contraseña | `CREDENCIALES_BORRADAS` |
 
-> ⚠️ **Importante**: Cambiar las credenciales en producción.
+> **Importante**: Cambiar las credenciales en producción.
 
 ---
 
-## 📡 API
+## API
 
 > Todos los endpoints requieren autenticación JWT (excepto `/encargados/login`).  
 > Enviar header: `Authorization: Bearer <token>`
@@ -323,7 +323,7 @@ start http://localhost:3000
 
 ---
 
-## 🧠 Lógica de Negocio
+## Logica de Negocio
 
 | Regla | Comportamiento |
 |-------|---------------|
@@ -336,7 +336,7 @@ start http://localhost:3000
 
 ---
 
-## 🗄️ Base de Datos
+## Base de Datos
 
 ### Tablas
 
@@ -359,7 +359,7 @@ start http://localhost:3000
 
 ---
 
-## ☁️ Deploy en Railway
+## Deploy en Railway
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/Angelo17-Py/smartloan-it)
 
@@ -379,7 +379,7 @@ start http://localhost:3000
 
 ---
 
-## 🔧 Comandos Útiles
+## Comandos Utiles
 
 ```bash
 # Iniciar contenedores
@@ -410,14 +410,8 @@ docker exec -it smartloan-mysql mysql -u root -p1234 prestamos_db
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Proyecto desarrollado con fines académicos.
 
 © 2026 Angelo Caballero — Universidad Integración de las Américas
-
----
-
-<div align="center">
-  <sub>Hecho con ❤️ para la gestión educativa</sub>
-</div>
