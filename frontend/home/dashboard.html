@@ -8,273 +8,303 @@
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <style>
-        body{background:var(--bg)}
-        main{max-width:1200px;margin:40px auto;padding:0 24px}
-
-        .user-info{display:flex;align-items:center;gap:12px;padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:100px;}
-        .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;}
-        .user-name{font-size:0.82rem;font-weight:700;color:var(--text);line-height:1.2;}
-        .user-role{font-size:0.7rem;color:var(--dim);}
-                .btn-logout{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.25s;}
-        .btn-logout:hover{background:var(--danger);color:#fff;transform:translateY(-1px);}
-
-        /* WELCOME */
-        .welcome{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
-        .welcome-left h1{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;color:var(--text);}
-        .welcome-left p{font-size:0.88rem;color:var(--dim);}
-        .welcome-right{text-align:right;}
-        .welcome-right .wr-date{font-size:0.92rem;font-weight:700;color:var(--text);}
-        .welcome-right .wr-time{font-size:0.78rem;color:var(--dim);}
-
-        /* SECTION LABEL */
-        .section-label{font-size:0.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:14px;}
-
-        /* METRICS */
-        .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;}
-        .metric-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 22px;display:flex;align-items:center;gap:16px;transition:0.2s;}
-        .metric-card:hover{border-color:var(--border-hover);}
-        .metric-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.1);}
-        .metric-body{flex:1;min-width:0;}
-        .metric-num{font-size:1.8rem;font-weight:800;line-height:1.1;color:var(--text);margin-bottom:2px;}
-        .metric-lbl{font-size:0.72rem;color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
-        .metric-status{display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;font-weight:700;margin-top:4px;}
-        .ms-dot{width:6px;height:6px;border-radius:50%;}
-        .ms-dot.green{background:var(--success)}.ms-dot.red{background:var(--danger)}.ms-dot.amber{background:var(--warn)}.ms-dot.gray{background:var(--muted)}
-
-        /* ACTIONS */
-        .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:40px;}
-        .action-card{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:0.2s;}
-        .action-card:hover{background:var(--surface);border-color:var(--border-hover);transform:translateY(-1px);}
-        .action-card:active{transform:translateY(0);}
-        .action-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.08);}
-        .action-body{flex:1;min-width:0;}
-        .action-body h3{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:1px;}
-        .action-body p{font-size:0.72rem;color:var(--dim);line-height:1.4;}
-
-        /* ADMIN */
-        .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
-        .admin-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;}
-        .admin-card-header{display:flex;align-items:center;gap:10px;margin-bottom:2px;}
-        .admin-card-icon{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;color:var(--primary);background:rgba(99,102,241,0.07);}
-        .admin-card-title{font-size:0.9rem;font-weight:700;color:var(--text);}
-        .admin-card-sub{font-size:0.75rem;color:var(--dim);margin-bottom:16px;line-height:1.5;}
-
-        .card-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
-        .card-row + .card-row{margin-top:8px;}
-
-        /* FORMAT BADGE */
-        .format-badge{display:inline-flex;align-items:center;padding:1px 8px;border-radius:4px;font-size:0.55rem;font-weight:700;font-family:var(--mono);letter-spacing:0.5px;background:var(--success-bg);color:var(--success);border:1px solid var(--success-bg);margin-left:6px;}
-
-        /* EXPORT */
-        .export-stats{display:flex;align-items:center;margin-bottom:14px;}
-        .es-item{flex:1;text-align:center;padding:10px 0;}
-        .es-num{display:block;font-size:1.2rem;font-weight:700;color:var(--text);line-height:1.2;}
-        .es-lbl{display:block;font-size:0.6rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px;}
-        .es-divider{width:1px;height:24px;background:var(--border);align-self:center;}
-
-        .export-btn{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer;font-family:inherit;font-size:0.82rem;font-weight:600;transition:0.15s;text-align:left;}
-        .export-btn:hover{background:var(--primary-hover);}
-        .export-btn:active{transform:scale(0.98);}
-        .export-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;}
-        .export-btn .eb-icon{width:32px;height:32px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;background:rgba(255,255,255,0.12);}
-        .export-btn .eb-label{flex:1;min-width:0;}
-        .export-btn .eb-title{display:block;font-weight:600;font-size:0.82rem;}
-        .export-btn .eb-desc{display:block;font-size:0.66rem;opacity:0.65;margin-top:1px;}
-        .export-btn .eb-arrow{flex-shrink:0;opacity:0.5;transition:0.15s;}
-        .export-btn:hover .eb-arrow{opacity:1;transform:translateX(2px);}
-        .export-btn .eb-check{display:none;flex-shrink:0;}
-        .eb-progress-wrap{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.15);border-radius:0 0 10px 10px;overflow:hidden;display:none;}
-        .eb-progress-bar{height:100%;background:#fff;transition:width 0.3s;width:0%;}
-        .export-btn.exporting .eb-progress-wrap{display:block;}
-        .export-btn.exporting .eb-arrow{display:none;}
-        .export-btn.completed .eb-arrow{display:none;}
-        .export-btn.completed .eb-check{display:block;}
-        .export-btn.completed .eb-icon{display:none;}
-        .export-btn.completed{background:var(--success);}
-
-        .export-info{font-size:0.7rem;color:var(--dim);margin-top:10px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-        .export-info svg{color:var(--muted);flex-shrink:0;}
-        .export-filesize{color:var(--muted);}
-        .export-filesize:empty{display:none;}
-        .export-filesize::before{content:'·';margin-right:5px;}
-
-        /* CONFIG */
-        .cfg-section{padding:14px;}
-        .cfg-section + .cfg-section{border-top:1px solid var(--border);padding-top:16px;}
-
-        .multa-value{font-size:1.4rem;font-weight:700;color:var(--text);}
-        .multa-value .cur{font-size:0.8rem;font-weight:600;color:var(--dim);}
-
-        .cfg-row{display:flex;align-items:center;gap:10px;}
-        .cfg-label{flex:1;min-width:0;}
-        .cfg-label strong{display:block;font-size:0.8rem;font-weight:600;color:var(--text);margin-bottom:1px;}
-        .cfg-label span{font-size:0.68rem;color:var(--dim);}
-
-        .cfg-input-group{display:flex;align-items:center;border:1px solid var(--border);border-radius:7px;overflow:hidden;transition:0.15s;flex-shrink:0;}
-        .cfg-input-group:focus-within{border-color:var(--primary);}
-        .cfg-input-group .cfg-prefix{padding:0 0 0 10px;font-size:0.75rem;color:var(--dim);font-weight:600;background:var(--surface);}
-        .cfg-input-group .cfg-input{width:110px;padding:8px 12px 8px 4px;background:var(--surface);border:none;color:var(--text);font-size:0.85rem;outline:none;font-family:var(--font);text-align:right;letter-spacing:0.3px;}
-        .cfg-input-group .btn-cfg-save{background:var(--primary);color:white;border:none;padding:8px 14px;font-weight:600;font-size:0.75rem;cursor:pointer;font-family:var(--font);transition:0.15s;white-space:nowrap;}
-        .cfg-input-group .btn-cfg-save:hover{background:var(--primary-hover);}
-        .cfg-input-group .btn-cfg-save.saved{background:var(--success);}
-
-        .cfg-note{font-size:0.68rem;color:var(--dim);line-height:1.5;padding-top:8px;}
-
-        @media(max-width:1000px){.metrics{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr 1fr}.admin-grid{grid-template-columns:1fr}}
-        @media(max-width:600px){.actions{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}.welcome{flex-direction:column;align-items:flex-start}.welcome-right{text-align:left}}
+        .main-content{display:flex;flex-direction:column}
+        .skeleton-pulse{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--border) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:skeleton 1.5s ease-in-out infinite;border-radius:6px}
+        @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        .chart-container{position:relative;width:100%}
+        .chart-container canvas{width:100%!important}
+        .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
+        .hero-stat-label.skeleton-pulse{width:80px;height:12px;display:inline-block;margin-top:4px}
+        @media(max-width:768px){
+          .hero-glass{padding:var(--space-5)}
+          .hero-inner{flex-direction:column}
+          .hero-right{text-align:left;width:100%}
+        }
     </style>
 </head>
 <body>
 
-<nav class="nav">
-    <div class="brand">
-        <div class="brand-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-        SmartLoan IT
-    </div>
-    <div class="nav-right">
-        <div class="user-info">
-            <div class="user-avatar" id="uav">A</div>
-            <div><div class="user-name" id="uname">Cargando...</div><div class="user-role" id="urole">Encargado</div></div>
-        </div>
-        <button class="btn-logout" onclick="logout()">Salir</button>
-        <button class="btn-theme" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-    </div>
-</nav>
+<div class="layout" id="layout">
+    <!-- SIDEBAR OVERLAY (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-<main>
-    <!-- WELCOME -->
-    <div class="welcome">
-        <div class="welcome-left">
-            <h1 id="welcome-msg">Bienvenido</h1>
-            <p>Panel de control del sistema de gestión de recursos tecnológicos</p>
-        </div>
-        <div class="welcome-right">
-            <div class="wr-date" id="fecha-hoy"></div>
-            <div class="wr-time" id="hora-ahora"></div>
-        </div>
-    </div>
-
-    <!-- METRICS -->
-    <p class="section-label">Resumen del sistema</p>
-    <section class="metrics">
-        <div class="metric-card animate-fi-1">
-            <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-            <div class="metric-body"><div class="metric-num" id="ct">—</div><div class="metric-lbl">Equipos Totales</div></div>
-        </div>
-        <div class="metric-card animate-fi-2">
-            <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-            <div class="metric-body"><div class="metric-num" id="cp">—</div><div class="metric-lbl">En Prestamo</div><div class="metric-status"><span class="ms-dot red"></span> Activos</div></div>
-        </div>
-        <div class="metric-card animate-fi-3">
-            <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
-            <div class="metric-body"><div class="metric-num" id="cd">—</div><div class="metric-lbl">Disponibles</div><div class="metric-status"><span class="ms-dot green"></span> Para prestamo</div></div>
-        </div>
-        <div class="metric-card animate-fi-4">
-            <div class="metric-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
-            <div class="metric-body"><div class="metric-num" id="cm">—</div><div class="metric-lbl">Mantenimiento</div><div class="metric-status"><span class="ms-dot amber"></span> En reparacion</div></div>
-        </div>
-    </section>
-
-    <!-- ACTIONS -->
-    <p class="section-label">Acciones rapidas</p>
-    <section class="actions">
-        <div class="action-card animate-fi-1" onclick="ir('equipos')">
-            <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-            <div class="action-body"><h3>Gestión de Equipos</h3><p>Registro y control de activos tecnológicos</p></div>
-        </div>
-        <div class="action-card animate-fi-5" onclick="ir('alumnos')">
-            <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-            <div class="action-body"><h3>Alumnos</h3><p>Registro de alumnos solicitantes</p></div>
-        </div>
-        <div class="action-card animate-fi-6" onclick="ir('prestamos')">
-            <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-            <div class="action-body"><h3>Registrar Prestamo</h3><p>Salida de equipos con contrato de uso</p></div>
-        </div>
-        <div class="action-card animate-fi-7" onclick="ir('devoluciones')">
-            <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
-            <div class="action-body"><h3>Recibir Devolucion</h3><p>Retorno con control de daños y multas</p></div>
-        </div>
-        <div class="action-card animate-fi-8" onclick="ir('historial')">
-            <div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-            <div class="action-body"><h3>Historial</h3><p>Trazabilidad de prestamos y devoluciones</p></div>
-        </div>
-    </section>
-
-    <!-- ADMIN -->
-    <p class="section-label">Administracion</p>
-    <div class="admin-grid">
-
-        <!-- EXPORT -->
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <div class="admin-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-                <div class="admin-card-title">Respaldo de información <span class="format-badge">XLSX</span></div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
-            <p class="admin-card-sub">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
-            <div class="export-stats" id="exportStats">
-                <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
-                <div class="es-divider"></div>
-                <div class="es-item"><span class="es-num" id="expReturns">—</span><span class="es-lbl">Devoluciones</span></div>
-                <div class="es-divider"></div>
-                <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
+            <span class="sidebar-brand-text">SmartLoan IT</span>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="sidebar-avatar" id="s-avatar">A</div>
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name" id="s-name">Cargando...</div>
+                <div class="sidebar-user-role" id="s-role">Encargado</div>
             </div>
-            <button class="export-btn" id="exportBtn" onclick="exportarCSV()">
-                <span class="eb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-                <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
-                <span class="eb-label">
-                    <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
-                    <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
-                </span>
-                <svg class="eb-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                <span class="eb-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+
+        <nav class="sidebar-nav" id="sidebarNav">
+            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
+            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                Equipos
+            </a>
+            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                Alumnos
+            </a>
+            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Préstamos
+                <span class="ni-badge" id="badge-prestamos">0</span>
+            </a>
+            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                Devoluciones
+            </a>
+            <a href="/historial/historial.html" class="nav-item" data-page="historial">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Historial
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Cambiar tema">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                Tema
             </button>
-            <div class="export-info" id="exportInfo">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>Última exportación: <strong id="lastExport">—</strong></span>
-                <span class="export-filesize" id="lastExportSize"></span>
+            <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+        <!-- TOPBAR (mobile) -->
+        <div class="topbar">
+            <button class="hamburger" onclick="toggleSidebar()" aria-label="Menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+            </button>
+            <span class="topbar-brand">SmartLoan IT</span>
+            <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+        </div>
+
+        <div class="main-content">
+
+        <!-- HERO -->
+        <section class="hero-glass">
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <h1 id="welcome-msg">Bienvenido</h1>
+                    <p>Panel de control del sistema de gestión de recursos tecnológicos</p>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-date" id="hero-date"></div>
+                    <div class="hero-time" id="hero-time"></div>
+                </div>
+            </div>
+            <div class="hero-stats" id="heroStats">
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="h-prestamos">—</span>
+                    <span class="hero-stat-label">Préstamos activos</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="h-equipos">—</span>
+                    <span class="hero-stat-label">Equipos totales</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="h-alumnos">—</span>
+                    <span class="hero-stat-label">Alumnos registrados</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="h-devueltos">—</span>
+                    <span class="hero-stat-label">Devueltos hoy</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- METRICS -->
+        <div class="bento-metrics">
+            <div class="metric-card glass" id="m-total">
+                <div class="mc-top">
+                    <div class="mc-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="mc-num" id="ct">—</div>
+                    <div class="mc-label">Equipos Totales</div>
+                </div>
+                <canvas class="sparkline" id="sp-total" height="32"></canvas>
+            </div>
+            <div class="metric-card glass" id="m-prestado">
+                <div class="mc-top">
+                    <div class="mc-icon red">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="mc-num" id="cp">—</div>
+                    <div class="mc-label">En Préstamo</div>
+                </div>
+                <canvas class="sparkline" id="sp-prestado" height="32"></canvas>
+            </div>
+            <div class="metric-card glass" id="m-disponible">
+                <div class="mc-top">
+                    <div class="mc-icon green">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="mc-num" id="cd">—</div>
+                    <div class="mc-label">Disponibles</div>
+                </div>
+                <canvas class="sparkline" id="sp-disponible" height="32"></canvas>
+            </div>
+            <div class="metric-card glass" id="m-mantenimiento">
+                <div class="mc-top">
+                    <div class="mc-icon amber">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="mc-num" id="cm">—</div>
+                    <div class="mc-label">Mantenimiento</div>
+                </div>
+                <canvas class="sparkline" id="sp-mantenimiento" height="32"></canvas>
             </div>
         </div>
 
-        <!-- CONFIG -->
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <div class="admin-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
-                <div class="admin-card-title">Configuración del sistema</div>
-            </div>
-            <p class="admin-card-sub">Ajusta los parámetros operativos del sistema.</p>
-
-            <div class="cfg-section">
-                <div class="card-row">
-                    <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
-                    <div style="flex:1;min-width:0">
-                        <div style="font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Valor de multa por día</div>
-                        <div style="font-size:0.65rem;color:var(--dim);margin-top:1px">Tasa vigente para retrasos</div>
+        <!-- CHARTS -->
+        <div class="bento-charts">
+            <div class="glass">
+                <h3>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z"/></svg>
+                    Distribución de Equipos
+                </h3>
+                <div class="chart-container">
+                    <canvas id="donutChart"></canvas>
+                    <div class="chart-empty" id="donutEmpty" style="display:none">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        <span>No hay equipos registrados</span>
                     </div>
                 </div>
             </div>
-
-            <div class="cfg-section">
-                <div class="cfg-row">
-                    <div class="cfg-label">
-                        <strong>Actualizar multa</strong>
-                        <span>Nuevo valor por día de retraso</span>
-                    </div>
-                    <div class="cfg-input-group">
-                        <span class="cfg-prefix">Gs.</span>
-                        <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
-                        <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
+            <div class="glass">
+                <h3>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    Préstamos por Mes
+                </h3>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                    <div class="chart-empty" id="barEmpty" style="display:none">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="6" width="4" height="14"/><rect x="17" y="9" width="4" height="11"/></svg>
+                        <span>No hay préstamos registrados</span>
                     </div>
                 </div>
             </div>
-
-            <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
         </div>
 
-    </div>
-</main>
+        <!-- QUICK ACTIONS -->
+        <p class="section-title">Acciones Rápidas</p>
+        <div class="bento-actions">
+            <div class="action-card glass" onclick="navegar('equipos')">
+                <div class="ac-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+                <span class="ac-label">Gestión de Equipos</span>
+            </div>
+            <div class="action-card glass" onclick="navegar('alumnos')">
+                <div class="ac-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+                <span class="ac-label">Alumnos</span>
+            </div>
+            <div class="action-card glass" onclick="navegar('prestamos')">
+                <div class="ac-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+                <span class="ac-label">Registrar Préstamo</span>
+            </div>
+            <div class="action-card glass" onclick="navegar('devoluciones')">
+                <div class="ac-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
+                <span class="ac-label">Recibir Devolución</span>
+            </div>
+            <div class="action-card glass" onclick="navegar('historial')">
+                <div class="ac-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+                <span class="ac-label">Historial</span>
+            </div>
+        </div>
+
+        <!-- ADMIN -->
+        <p class="section-title">Administración</p>
+        <div class="bento-admin">
+            <div class="glass">
+                <div class="admin-card-header">
+                    <div class="ac-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+                    <h3>Respaldo de información <span class="format-badge">XLSX</span></h3>
+                </div>
+                <p class="admin-card-sub">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
+                <div class="export-stats" id="exportStats">
+                    <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
+                    <div class="es-divider"></div>
+                    <div class="es-item"><span class="es-num" id="expReturns">—</span><span class="es-lbl">Devoluciones</span></div>
+                    <div class="es-divider"></div>
+                    <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
+                </div>
+                <button class="export-btn" id="exportBtn" onclick="exportarCSV()">
+                    <span class="eb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
+                    <span class="eb-label">
+                        <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
+                        <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
+                    </span>
+                    <svg class="eb-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span class="eb-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                </button>
+                <div class="export-info">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>Última exportación: <strong id="lastExport">—</strong></span>
+                    <span class="export-filesize" id="lastExportSize"></span>
+                </div>
+            </div>
+            <div class="glass">
+                <div class="admin-card-header">
+                    <div class="ac-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+                    <h3>Configuración del sistema</h3>
+                </div>
+                <p class="admin-card-sub">Ajusta los parámetros operativos del sistema.</p>
+                <div class="cfg-section">
+                    <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
+                        <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Valor de multa por día</div>
+                            <div style="font-size:0.65rem;color:var(--dim);margin-top:1px">Tasa vigente para retrasos</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cfg-section">
+                    <div class="cfg-row">
+                        <div class="cfg-label">
+                            <strong>Actualizar multa</strong>
+                            <span>Nuevo valor por día de retraso</span>
+                        </div>
+                        <div class="cfg-input-group">
+                            <span class="cfg-prefix">Gs.</span>
+                            <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
+                            <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
+                        </div>
+                    </div>
+                    <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </main>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -282,239 +312,470 @@
 <script>
 if(!localStorage.getItem('encargado')) window.location.href = '/';
 
-function ir(r){
-    document.body.style.transition='0.3s';
+let donutChartInstance = null;
+let barChartInstance = null;
+
+function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+function navegar(r){
+    document.body.style.transition='opacity 0.2s ease';
     document.body.style.opacity='0';
-    setTimeout(()=>window.location.href=`/${r}/${r}.html`,250);
+    setTimeout(function(){ window.location.href='/'+r+'/'+r+'.html'; },200);
 }
 
-async function exportarCSV(){
-    const btn=document.getElementById('exportBtn');
-    const bar=document.getElementById('progressBar');
-    const title=document.getElementById('exportBtnTitle');
-    const desc=document.getElementById('exportBtnDesc');
-    btn.disabled=true;btn.classList.add('exporting');
-    title.textContent='Exportando...';
-    desc.textContent='Preparando archivo Excel';
+function ir(r){ navegar(r); }
 
-    let progress=0;
-    const sim=setInterval(function(){
-        if(progress<90){
-            progress+=Math.random()*12+4;
-            if(progress>90)progress=90;
-            bar.style.width=Math.round(progress)+'%';
+// ---- CHARTS ----
+function crearDonut(labels, data, colors) {
+    var ctx = document.getElementById('donutChart').getContext('2d');
+    if (donutChartInstance) donutChartInstance.destroy();
+    document.getElementById('donutEmpty').style.display = 'none';
+    document.getElementById('donutChart').style.display = 'block';
+    donutChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 16,
+                        usePointStyle: true,
+                        pointStyleWidth: 8,
+                        boxWidth: 8,
+                        boxHeight: 8,
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff',
+                        font: { family: 'Plus Jakarta Sans, sans-serif', size: 11, weight: '600' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f',
+                    titleFont: { size: 12, weight: '700' },
+                    bodyFont: { size: 11 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(ctx){ return ' ' + ctx.label + ': ' + ctx.parsed + ' equipos'; }
+                    }
+                }
+            }
         }
-    },400);
-
-    try {
-        const r = await apiFetch('/exportar');
-        if (!r.ok) { st('Error al exportar','t-err');resetExportBtn();return; }
-
-        const loanCount=r.headers.get('X-Export-Loans');
-        const returnCount=r.headers.get('X-Export-Returns');
-        const studentCount=r.headers.get('X-Export-Students');
-
-        clearInterval(sim);
-        bar.style.width='100%';
-
-        const blob = await r.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const hoy=(new Date()).toISOString().slice(0,10);
-        a.download = 'smartloan_exportacion_' + hoy + '.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        const ahora=new Date();
-        const exportMeta={
-            iso:ahora.toISOString(),
-            prestamos:loanCount,
-            devoluciones:returnCount,
-            alumnos:studentCount
-        };
-        localStorage.setItem('ultimaExportacion',JSON.stringify(exportMeta));
-        actualizarInfoExportacion();
-
-        btn.classList.remove('exporting');
-        btn.classList.add('completed');
-        title.textContent='Exportacion completada';
-        desc.textContent='Archivo descargado exitosamente';
-        st('Exportacion completada');
-
-        setTimeout(function(){
-            btn.classList.remove('completed');
-            resetExportBtn();
-        },2500);
-    } catch(e) { st('Error de conexión','t-err');clearInterval(sim);resetExportBtn(); }
+    });
 }
 
-function resetExportBtn(){
-    var btn=document.getElementById('exportBtn');
-    var bar=document.getElementById('progressBar');
-    var title=document.getElementById('exportBtnTitle');
-    var desc=document.getElementById('exportBtnDesc');
-    btn.disabled=false;
-    btn.classList.remove('exporting','completed');
-    bar.style.width='0%';
-    title.textContent='Exportar ahora';
-    desc.textContent='Historial completo en .xlsx';
+function crearBarras(labels, data) {
+    var ctx = document.getElementById('barChart').getContext('2d');
+    if (barChartInstance) barChartInstance.destroy();
+    document.getElementById('barEmpty').style.display = 'none';
+    document.getElementById('barChart').style.display = 'block';
+    var grad = ctx.createLinearGradient(0, 0, 0, 200);
+    var primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2563eb';
+    grad.addColorStop(0, primary);
+    grad.addColorStop(1, primary + '33');
+    barChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Préstamos',
+                data: data,
+                backgroundColor: grad,
+                borderColor: primary,
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f',
+                    titleFont: { size: 12, weight: '700' },
+                    bodyFont: { size: 11 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(ctx){ return ' ' + ctx.parsed.y + ' préstamos'; }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#64748b',
+                        font: { size: 10 }
+                    },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                },
+                x: {
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#64748b',
+                        font: { size: 10, weight: '600' }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
 }
 
-function actualizarInfoExportacion(){
-    var raw=localStorage.getItem('ultimaExportacion');
-    if(!raw) return;
-    try{
-        var meta=JSON.parse(raw);
-        document.getElementById('lastExport').textContent=formatearTiempoRelativo(meta.iso);
-        var sizeEl=document.getElementById('lastExportSize');
-        if(meta.prestamos){
-            sizeEl.textContent=meta.prestamos+' prest. · '+meta.devoluciones+' dev. · '+meta.alumnos+' al.';
-            sizeEl.style.display='inline';
-        } else {
-            sizeEl.style.display='none';
-        }
-        if(meta.prestamos){
-            document.getElementById('expLoans').textContent=meta.prestamos;
-            document.getElementById('expReturns').textContent=meta.devoluciones;
-            document.getElementById('expStudents').textContent=meta.alumnos;
-        }
-    }catch(e){
-        // formato antiguo (string plano)
-        document.getElementById('lastExport').textContent=raw;
+function mostrarDonutVacio(){
+    document.getElementById('donutChart').style.display = 'none';
+    document.getElementById('donutEmpty').style.display = 'flex';
+}
+
+function mostrarBarraVacia(){
+    document.getElementById('barChart').style.display = 'none';
+    document.getElementById('barEmpty').style.display = 'flex';
+}
+
+// ---- SPARKLINES ----
+function dibujarSparkline(canvasId, valores, color) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas || !valores || valores.length < 2) return;
+    var ctx = canvas.getContext('2d');
+    var w = canvas.clientWidth || canvas.width;
+    var h = 32;
+    canvas.width = w * (window.devicePixelRatio || 1);
+    canvas.height = h * (window.devicePixelRatio || 1);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+    var max = Math.max.apply(null, valores);
+    var min = Math.min.apply(null, valores);
+    var r = max - min || 1;
+    var pad = 2;
+    var points = valores.map(function(v, i){
+        var x = pad + (i / (valores.length - 1)) * (w - pad * 2);
+        var y = h - pad - ((v - min) / r) * (h - pad * 2);
+        return { x: x, y: y };
+    });
+    ctx.clearRect(0, 0, w, h);
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (var i = 1; i < points.length - 1; i++) {
+        var xc = (points[i].x + points[i + 1].x) / 2;
+        var yc = (points[i].y + points[i + 1].y) / 2;
+        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
     }
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
+    ctx.lineTo(points[points.length - 1].x, h);
+    ctx.lineTo(points[0].x, h);
+    ctx.closePath();
+    var grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, color + '22');
+    grad.addColorStop(1, color + '04');
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(points[points.length - 1].x, points[points.length - 1].y, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
 }
 
-function formatearTiempoRelativo(iso){
-    var ahora=new Date();
-    var fecha=new Date(iso);
-    var diffMs=ahora-fecha;
-    var diffMin=Math.floor(diffMs/60000);
-    var diffHoras=Math.floor(diffMs/3600000);
-    var diffDias=Math.floor(diffMs/86400000);
-    if(diffMin<1) return 'hace unos segundos';
-    if(diffMin<60) return 'hace '+diffMin+' min';
-    if(diffHoras<24) return 'hace '+diffHoras+' h';
-    if(diffDias===1) return 'ayer';
-    if(diffDias<7) return 'hace '+diffDias+' días';
-    return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+function genSparkData(seed, len){
+    var d = [];
+    var v = Math.max(seed, 2);
+    for(var i = 0; i < len; i++){
+        var c = Math.sin(i * 0.8 + seed) * (v * 0.15) + Math.cos(i * 0.4) * (v * 0.1);
+        d.push(Math.max(0, Math.round(v + c)));
+    }
+    return d;
 }
 
-// Reloj
-function actualizarReloj(){
-    const ahora=new Date();
-    const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-    const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    document.getElementById('fecha-hoy').textContent=`${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()}`;
-    const h=String(ahora.getHours()).padStart(2,'0'),m=String(ahora.getMinutes()).padStart(2,'0');
-    document.getElementById('hora-ahora').textContent=`${h}:${m} hs`;
-}
-actualizarReloj();
-setInterval(actualizarReloj,60000);
+// ---- DATA LOADING ----
+var cacheData = { equipos: [], prestamos: [], alumnos: [] };
 
-// Metricas
-async function cargarMetricas(){
+async function cargarTodo(){
     try{
-        if (document.getElementById('ct').textContent === '\u2014') {
-            document.getElementById('ct').textContent = '...';
-            document.getElementById('cp').textContent = '...';
-            document.getElementById('cd').textContent = '...';
-            document.getElementById('cm').textContent = '...';
-        }
-        const r=await apiFetch('/equipos');
-        if(!r.ok){st('Error al cargar métricas','t-err');return;}
-        const eq=await safeJson(r);
-        animarNumero('ct', eq.length);
-        animarNumero('cp', eq.filter(e=>e.estado==='Prestado').length);
-        animarNumero('cd', eq.filter(e=>e.estado==='Disponible').length);
-        animarNumero('cm', eq.filter(e=>e.estado==='En mantenimiento').length);
-    }catch(e){st('Error de conexión al cargar métricas','t-err');}
+        var [er, pr, ar] = await Promise.all([
+            apiFetch('/equipos'),
+            apiFetch('/prestamos'),
+            apiFetch('/alumnos')
+        ]);
+        cacheData.equipos = er.ok ? await safeJson(er) : [];
+        cacheData.prestamos = pr.ok ? await safeJson(pr) : [];
+        cacheData.alumnos = ar.ok ? await safeJson(ar) : [];
+    } catch(e){
+        st('Error de conexión al cargar datos', 't-err');
+    }
+    actualizarUI();
+}
+
+function actualizarUI(){
+    var eq = cacheData.equipos;
+    var pr = cacheData.prestamos;
+    var al = cacheData.alumnos;
+    var total = eq.length;
+    var prestados = eq.filter(function(e){ return e.estado === 'Prestado'; }).length;
+    var disponibles = eq.filter(function(e){ return e.estado === 'Disponible'; }).length;
+    var mant = eq.filter(function(e){ return e.estado === 'En mantenimiento'; }).length;
+    var activos = pr.filter(function(p){ return p.estado === 'ACTIVO'; }).length;
+    var hoy = new Date();
+    var hoyStr = hoy.toISOString().slice(0, 10);
+    var devHoy = pr.filter(function(p){
+        return p.estado === 'DEVUELTO' && p.fecha_devolucion && p.fecha_devolucion.startsWith(hoyStr);
+    }).length;
+
+    animarNumero('ct', total);
+    animarNumero('cp', prestados);
+    animarNumero('cd', disponibles);
+    animarNumero('cm', mant);
+    animarNumero('h-prestamos', activos);
+    animarNumero('h-equipos', total);
+    animarNumero('h-alumnos', al.length);
+    animarNumero('h-devueltos', devHoy);
+
+    document.getElementById('badge-prestamos').textContent = activos;
+
+    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
+    // Donut
+    if(total > 0){
+        var donutLabels = ['Disponible', 'Prestado', 'Mantenimiento'];
+        var donutData = [disponibles, prestados, mant];
+        var donutColors = ['#22c55e', '#6366f1', '#f59e0b'];
+        crearDonut(donutLabels, donutData, donutColors);
+    } else { mostrarDonutVacio(); }
+
+    // Bar
+    var meses = [];
+    var mesesLabels = [];
+    var ahora = new Date();
+    for(var i = 5; i >= 0; i--){
+        var m = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
+        meses.push(m);
+        mesesLabels.push(m.toLocaleDateString('es-PY', { month: 'short', year: '2-digit' }));
+    }
+    var barData = meses.map(function(m){
+        var y = m.getFullYear();
+        var mo = m.getMonth();
+        return pr.filter(function(p){
+            if(!p.fecha_prestamo) return false;
+            var pd = new Date(p.fecha_prestamo);
+            return pd.getFullYear() === y && pd.getMonth() === mo;
+        }).length;
+    });
+    if(barData.some(function(v){ return v > 0; })){
+        crearBarras(mesesLabels, barData);
+    } else { mostrarBarraVacia(); }
+
+    // Sparklines
+    var spColors = { 'sp-total': '#6366f1', 'sp-prestado': '#f43f5e', 'sp-disponible': '#22c55e', 'sp-mantenimiento': '#f59e0b' };
+    Object.keys(spColors).forEach(function(id){
+        var val = id === 'sp-total' ? total : id === 'sp-prestado' ? prestados : id === 'sp-disponible' ? disponibles : mant;
+        dibujarSparkline(id, genSparkData(Math.max(val, 3), 12), spColors[id]);
+    });
 }
 
 function animarNumero(id, target) {
-    const el = document.getElementById(id);
-    const current = parseInt(el.textContent.replace(/\D/g,'')) || 0;
-    if (current === target) return;
-    const duration = 800;
-    const start = performance.now();
+    var el = document.getElementById(id);
+    if(!el) return;
+    var current = parseInt(el.textContent.replace(/\D/g,'')) || 0;
+    if (current === target) { el.textContent = target; return; }
+    var duration = 800, start = performance.now();
     function step(now) {
-        const p = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        const val = Math.round(current + (target - current) * eased);
+        var p = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var val = Math.round(current + (target - current) * eased);
         el.textContent = val;
         if (p < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
 }
 
-let refreshInterval;
-function startPolling() {
-  cargarMetricas();
-  refreshInterval = setInterval(cargarMetricas, 30000);
+// ---- EXPORT ----
+async function exportarCSV(){
+    var btn = document.getElementById('exportBtn');
+    var bar = document.getElementById('progressBar');
+    var title = document.getElementById('exportBtnTitle');
+    var desc = document.getElementById('exportBtnDesc');
+    btn.disabled = true; btn.classList.add('exporting');
+    title.textContent = 'Exportando...';
+    desc.textContent = 'Preparando archivo Excel';
+    var progress = 0;
+    var sim = setInterval(function(){
+        if(progress < 90){ progress += Math.random() * 12 + 4; if(progress > 90) progress = 90; bar.style.width = Math.round(progress) + '%'; }
+    }, 400);
+    try {
+        var r = await apiFetch('/exportar');
+        if(!r.ok){ st('Error al exportar', 't-err'); resetExportBtn(); return; }
+        var loanCount = r.headers.get('X-Export-Loans');
+        var returnCount = r.headers.get('X-Export-Returns');
+        var studentCount = r.headers.get('X-Export-Students');
+        clearInterval(sim);
+        bar.style.width = '100%';
+        var blob = await r.blob();
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        var hoy = (new Date()).toISOString().slice(0, 10);
+        a.download = 'smartloan_exportacion_' + hoy + '.xlsx';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        var ahora = new Date();
+        var exportMeta = { iso: ahora.toISOString(), prestamos: loanCount, devoluciones: returnCount, alumnos: studentCount };
+        localStorage.setItem('ultimaExportacion', JSON.stringify(exportMeta));
+        actualizarInfoExportacion();
+        btn.classList.remove('exporting'); btn.classList.add('completed');
+        title.textContent = 'Exportacion completada'; desc.textContent = 'Archivo descargado exitosamente';
+        st('Exportacion completada');
+        setTimeout(function(){ btn.classList.remove('completed'); resetExportBtn(); }, 2500);
+    } catch(e){ st('Error de conexión', 't-err'); clearInterval(sim); resetExportBtn(); }
 }
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden) {
-    if (refreshInterval) clearInterval(refreshInterval);
-  } else {
-    startPolling();
-  }
-});
-window.addEventListener('beforeunload', function() { if (refreshInterval) clearInterval(refreshInterval); });
-startPolling();
 
-// Config
+function resetExportBtn(){
+    var btn = document.getElementById('exportBtn');
+    var bar = document.getElementById('progressBar');
+    var title = document.getElementById('exportBtnTitle');
+    var desc = document.getElementById('exportBtnDesc');
+    btn.disabled = false; btn.classList.remove('exporting', 'completed');
+    bar.style.width = '0%'; title.textContent = 'Exportar ahora';
+    desc.textContent = 'Historial completo en .xlsx';
+}
+
+function actualizarInfoExportacion(){
+    var raw = localStorage.getItem('ultimaExportacion');
+    if(!raw) return;
+    try{
+        var meta = JSON.parse(raw);
+        document.getElementById('lastExport').textContent = formatearTiempoRelativo(meta.iso);
+        var sizeEl = document.getElementById('lastExportSize');
+        if(meta.prestamos){
+            sizeEl.textContent = meta.prestamos + ' prest. \u00B7 ' + meta.devoluciones + ' dev. \u00B7 ' + meta.alumnos + ' al.';
+            sizeEl.style.display = 'inline';
+            document.getElementById('expLoans').textContent = meta.prestamos;
+            document.getElementById('expReturns').textContent = meta.devoluciones;
+            document.getElementById('expStudents').textContent = meta.alumnos;
+        } else { sizeEl.style.display = 'none'; }
+    } catch(e){
+        document.getElementById('lastExport').textContent = raw;
+    }
+}
+
+function formatearTiempoRelativo(iso){
+    var ahora = new Date(), fecha = new Date(iso), diffMs = ahora - fecha, diffMin = Math.floor(diffMs / 60000), diffHoras = Math.floor(diffMs / 3600000), diffDias = Math.floor(diffMs / 86400000);
+    if(diffMin < 1) return 'hace unos segundos';
+    if(diffMin < 60) return 'hace ' + diffMin + ' min';
+    if(diffHoras < 24) return 'hace ' + diffHoras + ' h';
+    if(diffDias === 1) return 'ayer';
+    if(diffDias < 7) return 'hace ' + diffDias + ' d\u00EDas';
+    return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+// ---- CLOCK ----
+function actualizarReloj(){
+    var ahora = new Date();
+    var dias = ['Domingo','Lunes','Martes','Mi\u00E9rcoles','Jueves','Viernes','S\u00E1bado'];
+    var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    document.getElementById('hero-date').textContent = dias[ahora.getDay()] + ', ' + ahora.getDate() + ' de ' + meses[ahora.getMonth()] + ' de ' + ahora.getFullYear();
+    var h = String(ahora.getHours()).padStart(2,'0'), m = String(ahora.getMinutes()).padStart(2,'0');
+    document.getElementById('hero-time').textContent = h + ':' + m + ' hs';
+}
+actualizarReloj();
+setInterval(actualizarReloj, 60000);
+
+// ---- POLLING ----
+var refreshInterval;
+function startPolling(){ cargarTodo(); refreshInterval = setInterval(cargarTodo, 30000); }
+document.addEventListener('visibilitychange', function(){
+    if(document.hidden && refreshInterval) clearInterval(refreshInterval);
+    else startPolling();
+});
+window.addEventListener('beforeunload', function(){ if(refreshInterval) clearInterval(refreshInterval); });
+
+// ---- CONFIG ----
 function actualizarDisplayMulta(valor){
-    const display=document.getElementById('multaValor');
-    if(valor){display.textContent=fn(parseInt(valor));}
-    else{display.textContent='—';}
+    var display = document.getElementById('multaValor');
+    if(valor) display.textContent = fn(parseInt(valor));
+    else display.textContent = '\u2014';
 }
 
 async function cargarConfig(){
     try{
-        const r=await apiFetch('/configuracion');
-        if(!r.ok){st('Error al cargar configuración','t-err');return;}
-        const d=await safeJson(r);
-        const multa=d.find(x=>x.clave==='multa_por_dia');
+        var r = await apiFetch('/configuracion');
+        if(!r.ok){ return; }
+        var d = await safeJson(r);
+        var multa = d.find(function(x){ return x.clave === 'multa_por_dia'; });
         if(multa){
-            document.getElementById('multa-input').value=Number(multa.valor).toLocaleString('es-PY');
+            document.getElementById('multa-input').value = Number(multa.valor).toLocaleString('es-PY');
             actualizarDisplayMulta(multa.valor);
         }
-    }catch(e){st('Error al cargar configuración','t-err');}
+    } catch(e){ /* ignore */ }
 }
 
-function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}
+function fmtMonto(el){
+    var v = el.value.replace(/\./g,'').replace(/\D/g,'');
+    el.value = v ? Number(v).toLocaleString('es-PY') : '';
+}
+
 async function guardarMulta(){
-    const val=document.getElementById('multa-input').value.replace(/\./g,'').trim();
-    if(!val||isNaN(val)||parseInt(val)<0){st('Ingresa un valor válido mayor o igual a 0','t-err');return;}
-    const btn=document.getElementById('btnCfg');
-    btn.disabled=true;btn.textContent='Guardando...';
+    var val = document.getElementById('multa-input').value.replace(/\./g,'').trim();
+    if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor v\u00E1lido mayor o igual a 0','t-err'); return; }
+    var btn = document.getElementById('btnCfg');
+    btn.disabled = true; btn.textContent = 'Guardando...';
     try{
-        const r=await apiFetch('/configuracion/multa_por_dia',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({valor:val})});
+        var r = await apiFetch('/configuracion/multa_por_dia', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({valor:val}) });
         if(r.ok){
-            st('Multa actualizada correctamente');
-            btn.textContent='Guardado';btn.classList.add('saved');
+            st('Multa actualizada correctamente'); btn.textContent = 'Guardado'; btn.classList.add('saved');
             actualizarDisplayMulta(val);
-        }
-        else{st('Error al guardar','t-err');btn.textContent='Guardar';}
-    }catch(e){st('Error de conexión','t-err');btn.textContent='Guardar';}
-    setTimeout(()=>{btn.disabled=false;btn.textContent='Guardar';btn.classList.remove('saved');},2000);
+        } else { st('Error al guardar','t-err'); btn.textContent = 'Guardar'; }
+    } catch(e){ st('Error de conexi\u00F3n','t-err'); btn.textContent = 'Guardar'; }
+    setTimeout(function(){ btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('saved'); }, 2000);
 }
 
-window.onload=()=>{
-    const enc=JSON.parse(localStorage.getItem('encargado')||'{}');
+// ---- INIT ----
+window.onload = function(){
+    var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
     if(enc.nombre){
-        document.getElementById('uname').textContent=`${enc.nombre} ${enc.apellido}`;
-        document.getElementById('uav').textContent=enc.nombre[0].toUpperCase();
-        document.getElementById('urole').textContent=enc.cargo||'Encargado';
-        document.getElementById('welcome-msg').textContent=`Bienvenido, ${enc.nombre}`;
+        var inicial = enc.nombre[0].toUpperCase();
+        document.getElementById('s-avatar').textContent = inicial;
+        document.getElementById('s-name').textContent = enc.nombre + ' ' + (enc.apellido || '');
+        document.getElementById('s-role').textContent = enc.cargo || 'Encargado';
+        document.getElementById('welcome-msg').textContent = 'Bienvenido, ' + enc.nombre;
     }
     actualizarInfoExportacion();
-    cargarMetricas();
     cargarConfig();
     initTheme();
-    initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos tecnol\u00f3gicos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar nuevo pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}]);
+    startPolling();
+    initSpotlight([
+        {label:'Equipos',sub:'Gesti\u00F3n de activos tecnol\u00F3gicos',url:'/equipos/equipos.html'},
+        {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
+        {label:'Pr\u00E9stamos',sub:'Registrar nuevo pr\u00E9stamo',url:'/prestamos/prestamos.html'},
+        {label:'Devoluciones',sub:'Recibir devoluci\u00F3n',url:'/devoluciones/devoluciones.html'},
+        {label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}
+    ]);
+    // Re-draw charts on theme change (observing CSS variable changes)
+    var themeObserver = new MutationObserver(function(){
+        if(donutChartInstance || barChartInstance) cargarTodo();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 };
 </script>
 </body>

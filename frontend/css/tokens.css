@@ -25,6 +25,11 @@
   --border: rgba(255,255,255,0.08);
   --border-hover: rgba(255,255,255,0.15);
   --overlay: rgba(0,0,0,0.7);
+  --coral: #f43f5e;
+  --coral-bg: rgba(244,63,94,0.12);
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.06);
+  --sidebar-width: 240px;
 
   /* Typography */
   --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -97,6 +102,8 @@
     --border-hover: rgba(0,0,0,0.15);
     --overlay: rgba(0,0,0,0.4);
     --shadow-card: 0 8px 32px rgba(0,0,0,0.08);
+    --glass-bg: rgba(255,255,255,0.5);
+    --glass-border: rgba(0,0,0,0.06);
   }
 }
 
@@ -117,4 +124,8 @@
   --border-hover: rgba(0,0,0,0.15);
   --overlay: rgba(0,0,0,0.4);
   --shadow-card: 0 8px 32px rgba(0,0,0,0.08);
+  --coral: #e11d48;
+  --coral-bg: rgba(225,29,72,0.1);
+  --glass-bg: rgba(255,255,255,0.5);
+  --glass-border: rgba(0,0,0,0.06);
 }
