@@ -388,7 +388,7 @@ async function selec(id){
     await cargarPres(id);
 }
 async function buscar(){
-    const q=normalizeText(document.getElementById('idp').value);
+    const q=normalizeText(document.getElementById('idp').value).trim();
     if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
     const btn=document.getElementById('btnBuscar');btn.disabled=true;btn.textContent='Buscando...';
     try{

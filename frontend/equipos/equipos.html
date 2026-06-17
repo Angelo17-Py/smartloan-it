@@ -156,7 +156,7 @@ function validarNuevo(){
 let listaEquipos = [];
 
 function filtrar(){
-    const q = normalizeText(document.getElementById('busq').value);
+    const q = normalizeText(document.getElementById('busq').value).trim();
     if(!q){ render(listaEquipos); return; }
     const filtrados = listaEquipos.filter(e =>
         normalizeText(e.nombre).includes(q) ||

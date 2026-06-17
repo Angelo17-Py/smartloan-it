@@ -107,7 +107,7 @@ function getPrestFiltrados(){
     if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO';});
     if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
     if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
-    var q=normalizeText(document.getElementById('busq').value);
+    var q=normalizeText(document.getElementById('busq').value).trim();
     if(q){
         d=d.filter(function(p){
             return normalizeText(p.alumno_nombre||'').includes(q)||
@@ -129,7 +129,7 @@ function getPrestFiltrados(){
 }
 
 function getDevFiltrados(){
-    var q=normalizeText(document.getElementById('busq').value);
+    var q=normalizeText(document.getElementById('busq').value).trim();
     if(!q) return devs.slice();
     return devs.filter(function(d){
         return normalizeText(d.alumno_nombre||'').includes(q)||
