@@ -260,14 +260,11 @@ start http://localhost:3000
 
 ## Credenciales
 
-El sistema cuenta con dos roles de acceso:
-
 | Rol | Codigo | Contrasena | Permisos |
 |-----|--------|------------|----------|
-| Administrador | `1010`, `1020`, `1030`, `1040`, `1050` | `CREDENCIALES_BORRADAS` | Acceso completo: registrar, editar, eliminar, exportar y configurar |
-| Solo lectura | `0000` | `CREDENCIALES_BORRADAS` | Solo CREDENCIALES_BORRADAS listados y dashboard. No puede registrar, modificar ni eliminar datos |
+| Solo lectura | `0000` | `CREDENCIALES_BORRADAS` | Visualizar listados y dashboard. No puede registrar, modificar ni eliminar datos |
 
-> **Importante**: Cambiar las credenciales en produccion.
+> Los administradores tienen credenciales privadas asignadas internamente.
 
 ---
 
