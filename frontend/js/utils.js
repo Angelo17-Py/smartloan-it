@@ -129,7 +129,6 @@ function fadeOutNavigate(url) {
   if (!url || url === window.location.pathname) return;
   document.body.classList.add('page-exit');
   setTimeout(function () {
-    document.body.classList.remove('page-exit');
     window.location.href = url;
   }, 300);
 }
@@ -188,6 +187,7 @@ function closeConfirm() {
 
 /* Restore body styles on bfcache restore (fix back/forward navigation) */
 window.addEventListener('pageshow', function() {
+  document.body.classList.remove('page-exit');
   document.body.style.opacity = '';
   document.body.style.transform = '';
   document.body.style.transition = '';
