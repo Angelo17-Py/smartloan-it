@@ -119,6 +119,12 @@ function esc(t) {
   });
 }
 
+/* Auto-resize textarea as user types */
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
 function fadeOutNavigate(url) {
   if (!url || url === window.location.pathname) return;
   document.body.classList.add('page-exit');

@@ -40,6 +40,7 @@
         body.role-admin .admin-only{display:revert!important;}
         .mo .md{animation:fi var(--duration-normal) var(--ease-out);}
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+        .form-row-desc{margin-top:0;}.form-row-desc .ig-desc{flex:1 1 100%;min-width:100%;}.form-row-desc textarea{resize:none;min-height:44px;overflow:hidden;}
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
     </style>
 </head>
@@ -76,8 +77,10 @@
                 <select id="marca" onchange="clearF('marca');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
-            <div class="ig"><label>Descripción</label><textarea id="desc" placeholder="" maxlength="200" oninput="autoResize(this);clearF('desc');checkNuevoEquipo()" rows="2"></textarea><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
+        </div>
+        <div class="form-row form-row-desc">
+            <div class="ig ig-desc"><label>Descripción</label><textarea id="desc" placeholder="" maxlength="200" oninput="autoResize(this);clearF('desc');checkNuevoEquipo()" rows="2"></textarea><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
         </div>
     </div>
     <div class="search-bar">
