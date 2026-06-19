@@ -9,67 +9,230 @@
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <style>
-        /* Fondo con partículas flotantes */
-        .login-page{display:grid;place-items:center;min-height:100vh;overflow:hidden;background:var(--bg)}
-        .bg-glow{position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(600px circle at 30% 40%,rgba(37,99,235,0.1),transparent 70%)}
-        #canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
-        /* Animación que hace que el formulario aparezca desde abajo */
-        /* El cuadro blanco principal donde está todo el formulario */
-        .box{background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:22px;padding:40px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.4);text-align:center;animation:up 0.6s var(--ease-out) both;position:relative}
-        @keyframes up{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-        /* Animación para cuando la contraseña es incorrecta (tiembla) */
-        @keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-6px)}20%,40%,60%,80%{transform:translateX(6px)}}
-        .shake{animation:shake 0.4s ease}
-        /* Estilo del logo en el centro */
-        .logo{text-align:center;margin-bottom:24px}
-        .logo svg{width:48px;height:48px;background:var(--primary);border-radius:14px;padding:8px;color:#fff}
-        /* Título, subtítulo y badge de la universidad */
-        .box h2{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
-        .sub{font-size:13px;color:var(--dim);margin-bottom:8px}
-        .login-badge{display:inline-block;background:var(--primary-glow);color:var(--primary);padding:4px 14px;border-radius:100px;font-size:11px;font-weight:700;margin-bottom:24px}
-        /* Campos de texto donde el usuario escribe */
-        .field{text-align:left;margin-bottom:16px}
-        .field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:6px}
-        .field input{width:100%;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:border-color var(--duration-normal) var(--ease-out),box-shadow var(--duration-normal) var(--ease-out)}
-        .field input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
-        .field input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-bg)}
-        .field-err{display:none;font-size:10px;color:var(--danger);margin-top:4px;font-weight:600}
+        .login-page{
+            display:grid;place-items:center;min-height:100vh;overflow:hidden;
+            background:var(--bg);
+            position:relative;
+        }
+        /* Mesh gradient animado como fondo */
+        .mesh-bg{
+            position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+        }
+        .mesh-blob{
+            position:absolute;border-radius:50%;filter:blur(80px);opacity:0.5;
+            animation:blob 20s ease-in-out infinite;
+        }
+        .mesh-blob:nth-child(1){
+            width:500px;height:500px;background:var(--primary);opacity:0.2;
+            top:-10%;left:-10%;animation-delay:0s;
+        }
+        .mesh-blob:nth-child(2){
+            width:400px;height:400px;background:#7c3aed;opacity:0.15;
+            bottom:-15%;right:-10%;animation-delay:-7s;
+        }
+        .mesh-blob:nth-child(3){
+            width:350px;height:350px;background:#06b6d4;opacity:0.12;
+            bottom:30%;right:20%;animation-delay:-14s;
+        }
+        @keyframes blob{
+            0%,100%{transform:translate(0,0) scale(1)}
+            25%{transform:translate(40px,-50px) scale(1.1)}
+            50%{transform:translate(-20px,30px) scale(0.95)}
+            75%{transform:translate(30px,20px) scale(1.05)}
+        }
+        /* Grid overlay sutil */
+        .mesh-grid{
+            position:fixed;inset:0;z-index:0;pointer-events:none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+            background-size:60px 60px;
+        }
+        /* Partículas con canvas */
+        #canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+        /* Card principal */
+        .login-card{
+            position:relative;z-index:1;
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:var(--radius-xl);
+            padding:44px 40px 36px;
+            width:100%;max-width:420px;
+            box-shadow:0 25px 60px rgba(0,0,0,0.5);
+            animation:cardIn 0.7s var(--ease-out) both;
+        }
+        @keyframes cardIn{
+            from{opacity:0;transform:translateY(30px) scale(0.96)}
+            to{opacity:1;transform:translateY(0) scale(1)}
+        }
+        /* Brand */
+        .login-brand{
+            display:flex;flex-direction:column;align-items:center;gap:6px;
+            margin-bottom:32px;
+        }
+        .login-brand-icon{
+            width:52px;height:52px;border-radius:16px;
+            background:linear-gradient(135deg,var(--primary),#7c3aed);
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;margin-bottom:2px;
+            box-shadow:0 8px 24px rgba(37,99,235,0.3);
+            animation:iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse{
+            0%,100%{box-shadow:0 8px 24px rgba(37,99,235,0.3)}
+            50%{box-shadow:0 8px 32px rgba(37,99,235,0.5)}
+        }
+        .login-brand h1{
+            font-size:var(--text-xl);font-weight:800;letter-spacing:-0.5px;
+            margin:0;
+        }
+        .login-brand .sub{
+            font-size:var(--text-xs);color:var(--dim);font-weight:600;
+            margin:0;
+        }
+        .login-brand .badge{
+            display:inline-block;
+            background:var(--primary-glow);color:var(--primary);
+            padding:4px 14px;border-radius:var(--radius-full);
+            font-size:10px;font-weight:700;margin-top:4px;
+        }
+        /* Campos flotantes */
+        .field{
+            position:relative;margin-bottom:20px;
+        }
+        .field input{
+            width:100%;padding:16px 16px 8px;
+            background:var(--surface);border:1.5px solid var(--border);
+            border-radius:var(--radius-md);
+            color:var(--text);font-size:var(--text-sm);
+            font-family:var(--font);outline:none;
+            transition:border-color var(--duration-normal) var(--ease-out),
+                      box-shadow var(--duration-normal) var(--ease-out);
+        }
+        .field input:focus{
+            border-color:var(--primary);
+            box-shadow:0 0 0 3px var(--primary-glow);
+        }
+        .field input.error{
+            border-color:var(--danger);
+            box-shadow:0 0 0 3px var(--danger-bg);
+        }
+        .field label{
+            position:absolute;left:16px;top:16px;
+            font-size:var(--text-sm);color:var(--dim);font-weight:600;
+            pointer-events:none;
+            transition:all var(--duration-fast) var(--ease-out);
+        }
+        .field input:focus+label,
+        .field input:not(:placeholder-shown)+label{
+            top:6px;font-size:9px;font-weight:700;
+            color:var(--primary);text-transform:uppercase;letter-spacing:1px;
+        }
+        .field input.error+label{color:var(--danger)}
+        .field-err{
+            display:none;font-size:10px;color:var(--danger);
+            margin-top:4px;font-weight:600;
+        }
         .field-err.show{display:block}
-        /* Contenedor del campo de contraseña con el ojito adentro */
+        /* Password wrapper */
         .pass-wrap{position:relative}
         .pass-wrap input{padding-right:44px}
-        /* Botón para mostrar u ocultar la contraseña */
-        .eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;padding:6px;border-radius:6px;display:flex;transition:color var(--duration-fast) var(--ease-out)}
+        .eye{
+            position:absolute;right:10px;top:50%;transform:translateY(-50%);
+            background:none;border:none;color:var(--dim);cursor:pointer;
+            padding:6px;border-radius:6px;display:flex;
+            transition:color var(--duration-fast) var(--ease-out);
+        }
         .eye:hover{color:var(--text)}
-        /* Botón principal de acceder al sistema */
-        .box .btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all var(--duration-normal) var(--ease-out);margin-top:4px}
-        .box .btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3)}
-        .box .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
-        /* Mensaje de error que aparece cuando algo sale mal */
-        .err{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:12px;color:var(--danger);opacity:0;transition:opacity var(--duration-normal) var(--ease-out)}
-        /* Letras chiquitas del pie de página */
-        .footer{text-align:center;margin-top:20px;font-size:10px;color:var(--dim);opacity:0.4}
-        /* Cuando la pantalla es chica (celular) */
-        @media(max-width:480px){.box{padding:28px 20px;margin:16px;border-radius:16px}}
+        /* Botón */
+        .login-btn{
+            width:100%;padding:14px;border:none;border-radius:var(--radius-md);
+            background:linear-gradient(135deg,var(--primary),#4f46e5);
+            color:#fff;font-size:var(--text-sm);font-weight:800;
+            cursor:pointer;position:relative;overflow:hidden;
+            transition:all var(--duration-normal) var(--ease-out);
+            margin-top:4px;letter-spacing:0.5px;
+        }
+        .login-btn:hover:not(:disabled){
+            transform:translateY(-2px);
+            box-shadow:0 8px 24px rgba(37,99,235,0.4);
+        }
+        .login-btn:active:not(:disabled){transform:translateY(0)}
+        .login-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+        .login-btn .btn-shimmer{
+            position:absolute;inset:0;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+            transform:translateX(-100%);
+            transition:transform 0.6s;
+        }
+        .login-btn:hover:not(:disabled) .btn-shimmer{transform:translateX(100%)}
+        /* Spinner */
+        .spinner{
+            display:none;width:18px;height:18px;
+            border:2.5px solid rgba(255,255,255,0.3);
+            border-top-color:#fff;border-radius:50%;
+            animation:spin 0.6s linear infinite;
+            margin:0 auto;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .login-btn.loading .btn-text{display:none}
+        .login-btn.loading .spinner{display:block}
+        /* Error message */
+        .err{
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            margin-top:16px;font-size:var(--text-xs);color:var(--danger);
+            opacity:0;transition:opacity var(--duration-normal) var(--ease-out);
+            min-height:0;max-height:0;overflow:hidden;
+        }
+        .err.show{opacity:1;min-height:20px;max-height:40px}
+        /* Footer */
+        .login-footer{
+            text-align:center;margin-top:24px;
+            font-size:10px;color:var(--muted);
+        }
+        /* Shake */
+        @keyframes shake{
+            0%,100%{transform:translateX(0)}
+            10%,30%,50%,70%,90%{transform:translateX(-6px)}
+            20%,40%,60%,80%{transform:translateX(6px)}
+        }
+        .shake{animation:shake 0.4s var(--ease-out)}
+        /* Responsive */
+        @media(max-width:480px){
+            .login-card{padding:32px 24px 28px;margin:16px;border-radius:var(--radius-lg)}
+        }
     </style>
 </head>
 <body class="login-page">
+<div class="mesh-bg">
+    <div class="mesh-blob"></div>
+    <div class="mesh-blob"></div>
+    <div class="mesh-blob"></div>
+</div>
+<div class="mesh-grid"></div>
 <canvas id="canvas" aria-hidden="true"></canvas>
-<div class="bg-glow"></div>
-<div class="box" id="box">
-    <div class="logo"><svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-    <h2>SmartLoan IT</h2>
-    <p class="sub">Sistema de Gestión de Recursos Tecnológicos</p>
-    <div class="login-badge">Universidad Integración de las Américas</div>
+<div class="login-card" id="box">
+    <div class="login-brand">
+        <div class="login-brand-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
+        </div>
+        <h1>SmartLoan IT</h1>
+        <p class="sub">Gestión de Préstamos Tecnológicos</p>
+        <span class="badge">Universidad Integración de las Américas</span>
+    </div>
     <div class="field">
+        <input type="text" id="codigo" placeholder=" " maxlength="4" inputmode="numeric" autocomplete="off" aria-describedby="err-codigo">
         <label for="codigo">Código de encargado</label>
-        <input type="text" id="codigo" placeholder="Código" maxlength="4" inputmode="numeric" autocomplete="off" aria-describedby="err-codigo">
         <div class="field-err" id="err-codigo">Ingresá tu código de encargado</div>
     </div>
     <div class="field">
-        <label for="password">Contraseña</label>
         <div class="pass-wrap">
-            <input type="password" id="password" placeholder="••••••••" autocomplete="off" aria-describedby="err-pass">
+            <input type="password" id="password" placeholder=" " autocomplete="off" aria-describedby="err-pass">
+            <label for="password">Contraseña</label>
             <button class="eye" type="button" onclick="togglePass()" id="eyeBtn" aria-label="Ver contraseña">
                 <svg id="eye-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -79,53 +242,81 @@
         </div>
         <div class="field-err" id="err-pass">Ingresá tu contraseña</div>
     </div>
-    <button class="btn" id="btn" onclick="login()">Acceder al Sistema</button>
+    <button class="login-btn" id="btn" onclick="login()">
+        <span class="btn-shimmer"></span>
+        <span class="btn-text">Acceder al Sistema</span>
+        <span class="spinner"></span>
+    </button>
     <div class="err" id="err">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span id="errTxt"></span>
     </div>
     <div class="toast" id="toast"></div>
-    <p class="footer">© 2026 Angelo Caballero — Proyecto de Grado · Ing. en Informática</p>
+    <p class="login-footer">&copy; 2026 Angelo Caballero &mdash; Proyecto de Grado &middot; Ing. en Inform&aacute;tica</p>
 </div>
 <script src="/js/api.js"></script>
 <script>
-// Creamos un canvas (lienzo) para dibujar las partículas de fondo
-const cv=document.getElementById('canvas'),cx=cv.getContext('2d');let pp=[];
-// Inicializamos las partículas con posiciones y velocidades aleatorias
-function ip(){cv.width=innerWidth;cv.height=innerHeight;pp=[];for(let i=0;i<60;i++)pp.push({x:Math.random()*cv.width,y:Math.random()*cv.height,s:Math.random()*2+1,sx:(Math.random()-.5)*.5,sy:(Math.random()-.5)*.5,o:Math.random()*.5});}
-// Animamos las partículas: las movemos y las dibujamos en cada frame
-function ap(){cx.clearRect(0,0,cv.width,cv.height);pp.forEach(p=>{p.x+=p.sx;p.y+=p.sy;if(p.x<0||p.x>cv.width)p.sx*=-1;if(p.y<0||p.y>cv.height)p.sy*=-1;cx.fillStyle=`rgba(37,99,235,${p.o})`;cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);cx.fill();});requestAnimationFrame(ap);}
+// Canvas de partículas
+const cv=document.getElementById('canvas'),cx=cv.getContext('2d');let pp=[],mw,mh;
+function ip(){
+    mw=cv.width=innerWidth;mh=cv.height=innerHeight;pp=[];
+    const n=Math.min(80,Math.floor((mw*mh)/12000));
+    for(let i=0;i<n;i++)pp.push({
+        x:Math.random()*mw,y:Math.random()*mh,
+        r:Math.random()*2+1,
+        sx:(Math.random()-.5)*0.4,sy:(Math.random()-.5)*0.4,
+        o:Math.random()*0.4+0.1
+    });
+}
+function ap(){
+    cx.clearRect(0,0,mw,mh);
+    pp.forEach(p=>{
+        p.x+=p.sx;p.y+=p.sy;
+        if(p.x<0||p.x>mw)p.sx*=-1;
+        if(p.y<0||p.y>mh)p.sy*=-1;
+        cx.fillStyle=`rgba(37,99,235,${p.o})`;
+        cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fill();
+    });
+    // Conexiones
+    for(let i=0;i<pp.length;i++){
+        for(let j=i+1;j<pp.length;j++){
+            const dx=pp[i].x-pp[j].x,dy=pp[i].y-pp[j].y;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<120){
+                cx.strokeStyle=`rgba(37,99,235,${0.08*(1-dist/120)})`;
+                cx.lineWidth=0.5;cx.beginPath();
+                cx.moveTo(pp[i].x,pp[i].y);cx.lineTo(pp[j].x,pp[j].y);cx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(ap);
+}
 window.addEventListener('resize',ip);ip();ap();
 
-// Solo permitimos números en el campo de código
+// Solo números en código
 document.getElementById('codigo').addEventListener('input',function(){
     this.value=this.value.replace(/[^0-9]/g,'');
     clearErr('codigo');
 });
-// Limpiamos los mensajes de error cuando el usuario empieza a escribir de nuevo
-document.getElementById('password').addEventListener('input',function(){ clearErr('pass'); });
+document.getElementById('password').addEventListener('input',function(){clearErr('pass');});
 
-// Alternamos entre mostrar y ocultar la contraseña
 function togglePass(){
-    var inp = document.getElementById('password');
-    var svg = document.getElementById('eye-svg');
-    // Cambiamos el icono del ojito según si la contraseña está visible o no
-    if(inp.type === 'password'){
-        inp.type = 'text';
-        svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-    } else {
-        inp.type = 'password';
-        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    const inp=document.getElementById('password');
+    const svg=document.getElementById('eye-svg');
+    if(inp.type==='password'){
+        inp.type='text';
+        svg.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    }else{
+        inp.type='password';
+        svg.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     }
 }
 
-// Función que borra los mensajes de error y el borde rojo de un campo
 function clearErr(field){
     document.getElementById('err-'+field).classList.remove('show');
     document.getElementById(field==='pass'?'password':'codigo').classList.remove('error');
 }
 
-// Validamos que los campos no estén vacíos antes de enviar
 function validar(){
     let ok=true;
     const codigo=document.getElementById('codigo').value.trim();
@@ -135,45 +326,36 @@ function validar(){
     return ok;
 }
 
-// Función principal para iniciar sesión
 async function login(){
-    // Ocultamos el mensaje de error anterior
-    document.getElementById('err').style.opacity='0';
-    if(!validar()) return;
+    document.getElementById('err').classList.remove('show');
+    if(!validar())return;
     const codigo=document.getElementById('codigo').value.trim();
     const password=document.getElementById('password').value;
     const btn=document.getElementById('btn');
-    // Deshabilitamos el botón para que no envíe dos veces
-    btn.disabled=true; btn.textContent='Verificando...';
+    btn.disabled=true;btn.classList.add('loading');
     try{
         const res=await apiFetch('/encargados/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo,password})});
         const data=await safeJson(res);
         if(res.ok&&data.token){
-            // Guardamos el token y los datos del usuario en el navegador
             localStorage.setItem('token',data.token);
             localStorage.setItem('encargado',JSON.stringify(data.usuario));
             localStorage.setItem('rol',data.usuario.rol||'lectura');
-            // Hacemos una transición suave antes de ir al dashboard
             document.body.classList.add('page-exit');
             setTimeout(()=>window.location.href='/home/dashboard.html',300);
         }else{
-            // Si algo sale mal, mostramos el error y habilitamos el botón de nuevo
             document.getElementById('errTxt').textContent=data.mensaje||'Código o contraseña incorrectos';
-            document.getElementById('err').style.opacity='1';
-            btn.textContent='Reintentar'; btn.disabled=false;
+            document.getElementById('err').classList.add('show');
+            btn.disabled=false;btn.classList.remove('loading');
             const b=document.getElementById('box');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
         }
-        // Si el servidor no responde, mostramos error de conexión
     }catch(e){
         document.getElementById('errTxt').textContent='Error de conexión con el servidor';
-        document.getElementById('err').style.opacity='1';
-        btn.textContent='Reintentar'; btn.disabled=false;
+        document.getElementById('err').classList.add('show');
+        btn.disabled=false;btn.classList.remove('loading');
     }
 }
-// Atajos de teclado: Enter para pasar al siguiente campo o enviar
 document.getElementById('codigo').addEventListener('keypress',e=>{if(e.key==='Enter')document.getElementById('password').focus();});
 document.getElementById('password').addEventListener('keypress',e=>{if(e.key==='Enter')login();});
-// Al cargar la página, inicializamos el tema (oscuro/claro)
 document.addEventListener('DOMContentLoaded',initTheme);
 </script>
 </body>
