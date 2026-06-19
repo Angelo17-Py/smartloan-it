@@ -189,7 +189,6 @@
             </div>
             <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="margin-top:8px">Imprimir contrato</button>
             <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
         </div>
     </div>
@@ -427,18 +426,9 @@ function nuevoPrestamo(){
     showConfirm('\u00bfRegistrar un nuevo pr\u00e9stamo? Se perder\u00e1 el comprobante actual.',function(){
         document.getElementById('resultado').classList.remove('show');
         document.getElementById('formulario').style.display='';
-        document.getElementById('alumno').value='';
-        document.getElementById('equipo').value='';
-        document.getElementById('fecha_dev').value='';
-        document.getElementById('motivo').value='';
-        document.getElementById('accesorios').value='';
-        document.getElementById('obs').value='';
-        document.getElementById('contrato').checked=false;
-        document.getElementById('estado_ini').value='1';
-        document.getElementById('alu-info').classList.remove('show');
-        document.getElementById('resumen').classList.remove('show');
         document.getElementById('r-obs-section').style.display='none';
-        document.getElementById('btn').disabled=true;
+        formDirty = false;
+        cargar();
         window.scrollTo({top:0,behavior:'smooth'});
     });
 }
