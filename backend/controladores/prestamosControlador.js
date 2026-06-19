@@ -39,7 +39,7 @@ exports.crear = async (req, res) => {
       [id_alumno, id_equipo, req.encargado.id, fmt(new Date()), fmt(fecha_devolucion_estimada),
        estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase]
     );
-    res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()) });
+    res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()), multa_base: multaBase });
   } catch (err) {
     if (err.code === 'ER_SIGNAL_EXCEPTION') {
       return res.status(400).json({ mensaje: 'El equipo no está disponible para préstamo' });

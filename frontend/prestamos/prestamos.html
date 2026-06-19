@@ -57,6 +57,8 @@
         .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
         .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
         .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
+        .rsec-contract{background:var(--surface);border-radius:8px;padding:12px 16px;font-size:0.78rem;color:var(--dim);line-height:1.65;border:1px solid var(--border);}
+        .rsec-contract strong{color:var(--text);}
         .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
         .receipt-stamp{text-align:center;margin-bottom:14px;}
         .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:rgba(34,197,94,0.12);color:var(--success);border:1.5px solid rgba(34,197,94,0.25);}
@@ -93,9 +95,9 @@
             .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:8px 12px!important}
             .rsec-obs span{color:#555!important}
             .rsec-obs p{color:#333!important}
+            .rsec-contract{border:1px solid #ddd!important;background:#f9f9f9!important;padding:10px 14px!important;color:#333!important;font-size:9pt!important;line-height:1.5!important}
+            .rsec-contract strong{color:black!important}
             .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:16px 0 0!important}
-            .stamp-badge{border:1.5px solid #999!important;color:black!important;background:white!important;font-size:9pt!important}
-            .stamp-badge svg{display:none!important}
             .sig-field span{color:#555!important}
             .sig-field .sig-line{border-bottom-color:black!important;height:30px!important}
             .receipt-legal .rl-date{color:#555!important}
@@ -235,25 +237,32 @@
                         <div class="rg-item full"><span>Registrado por</span><strong id="r-enc">—</strong></div>
                     </div>
                 </div>
+                <div class="rsec">
+                    <div class="rsec-title">T&eacute;rminos y Condiciones</div>
+                    <div class="rsec-contract">
+                        <strong>El alumno se compromete a:</strong><br><br>
+                        1. Usar el equipo exclusivamente para fines acad&eacute;micos autorizados.<br>
+                        2. Devolver el equipo en la fecha acordada y en el mismo estado.<br>
+                        3. No ceder el equipo a terceros no autorizados.<br>
+                        4. Reportar inmediatamente cualquier da&ntilde;o, falla o p&eacute;rdida.<br>
+                        5. Asumir el costo de reparaci&oacute;n en caso de da&ntilde;o por mal uso.<br>
+                        6. Estar sujeto a una multa por cada d&iacute;a de retraso seg&uacute;n la tarifa vigente (Gs. <span id="r-multa">0</span>/d&iacute;a).<br>
+                        7. El incumplimiento puede resultar en suspensi&oacute;n del acceso al sistema.
+                    </div>
+                </div>
                 <div class="rsec-obs" id="r-obs-section" style="display:none">
                     <span>Observaciones</span>
                     <p id="r-obs-text">—</p>
                 </div>
             </div>
             <div class="receipt-footer">
-                <div class="receipt-stamp">
-                    <div class="stamp-badge" id="r-stamp">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        CONTRATO ACEPTADO
-                    </div>
-                </div>
                 <div class="sig-row">
                     <div class="sig-field"><span>Encargado</span><div class="sig-line"></div><small id="r-sig-enc">Firma</small></div>
                     <div class="sig-field"><span>Alumno</span><div class="sig-line"></div><small id="r-sig-alu">Firma</small></div>
                 </div>
                 <div class="receipt-legal">
                     <div class="rl-date" id="r-emision">—</div>
-                    <p>Este comprobante es v&aacute;lido como constancia de pr&eacute;stamo de equipos tecnol&oacute;gicos. El alumno se compromete a devolver el equipo en la fecha acordada y en el mismo estado.</p>
+                    <p>Este comprobante es v&aacute;lido como constancia de pr&eacute;stamo de equipos tecnol&oacute;gicos. Al firmar, el alumno acepta los t&eacute;rminos y condiciones del contrato de uso.</p>
                 </div>
             </div>
         </div>
@@ -398,6 +407,7 @@ async function registrar(){
             document.getElementById('r-fp').textContent=ff(d.fecha_prestamo);
             document.getElementById('r-fv').textContent=ff(fecha);
             document.getElementById('r-enc').textContent=enc.nombre&&enc.apellido?`${enc.nombre} ${enc.apellido}`:'—';
+            document.getElementById('r-multa').textContent=fn(d.multa_base||10000);
             const obsEl=document.getElementById('r-obs-section');
             if(obs){obsEl.style.display='block';document.getElementById('r-obs-text').textContent=obs;}
             document.getElementById('r-sig-enc').textContent=enc.nombre?`${enc.nombre} ${enc.apellido}`:'Firma';
