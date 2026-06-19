@@ -223,7 +223,10 @@
             </div>
             <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
-            <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" id="btnPrint" onclick="imprimir()" style="display:none">Imprimir comprobante</button>
+                <button type="button" class="btn btn-primary" id="btn" onclick="registrar()" style="flex:1">Confirmar y registrar préstamo</button>
+            </div>
         </div>
     </div>
 
@@ -309,7 +312,6 @@
         </div>
         <!-- Botones después del comprobante -->
         <div class="res-btns">
-            <button class="btn btn-secondary" onclick="imprimir()">Imprimir comprobante</button>
             <button class="btn btn-primary" onclick="nuevoPrestamo()">Nuevo pr&eacute;stamo</button>
         </div>
     </div>
@@ -449,8 +451,9 @@ async function registrar(){
         // Si el registro fue exitoso
         if(r.ok){
             formDirty = false;
-            // Ocultamos el formulario y mostramos el comprobante
-            document.getElementById('formulario').style.display='none';
+            // Ocultamos el botón de confirmar y mostramos el de imprimir
+            document.getElementById('btn').style.display='none';
+            document.getElementById('btnPrint').style.display='';
             // Llenamos el comprobante con todos los datos del préstamo
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -502,7 +505,8 @@ function imprimir(){
 function nuevoPrestamo(){
     showConfirm('\u00bfRegistrar un nuevo pr\u00e9stamo? Se perder\u00e1 el comprobante actual.',function(){
         document.getElementById('resultado').classList.remove('show');
-        document.getElementById('formulario').style.display='';
+        document.getElementById('btn').style.display='';
+        document.getElementById('btnPrint').style.display='none';
         document.getElementById('r-obs-section').style.display='none';
         formDirty = false;
         cargar();
