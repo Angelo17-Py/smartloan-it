@@ -121,9 +121,11 @@ function esc(t) {
 
 function fadeOutNavigate(url) {
   if (!url || url === window.location.pathname) return;
-  document.body.style.transition = 'opacity 0.25s ease';
-  document.body.style.opacity = '0';
-  setTimeout(function () { window.location.href = url; }, 250);
+  document.body.classList.add('page-exit');
+  setTimeout(function () {
+    document.body.classList.remove('page-exit');
+    window.location.href = url;
+  }, 300);
 }
 
 function logout() {
