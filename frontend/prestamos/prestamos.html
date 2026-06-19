@@ -35,9 +35,72 @@
         .check-row span{font-size:0.85rem;font-weight:600;color:var(--dim);line-height:1.5;}
         .aviso{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:0.82rem;color:var(--dim);font-weight:600;margin-top:6px;display:none;}
         .aviso.show{display:block;}
+        .receipt{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:0;overflow:hidden;}
+        .receipt-header{background:var(--surface);padding:24px 28px 20px;border-bottom:2px dashed var(--border);text-align:center;}
+        .receipt-header .rh-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
+        .receipt-header .rh-brand svg{color:var(--primary);flex-shrink:0;}
+        .receipt-header .rh-brand h2{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin:0;}
+        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;}
+        .receipt-title{margin-top:14px;}
+        .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
+        .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:rgba(99,102,241,0.08);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
+        .receipt-body{padding:20px 28px;}
+        .rsec{margin-bottom:20px;}
+        .rsec:last-child{margin-bottom:0;}
+        .rsec-title{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
+        .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
+        .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
+        .rg-item:last-child{border-bottom:none;}
+        .rg-item.full{grid-column:1/-1;}
+        .rg-item span{font-size:0.72rem;color:var(--dim);font-weight:600;}
+        .rg-item strong{font-size:0.82rem;font-weight:700;color:var(--text);text-align:right;}
+        .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
+        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
+        .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
+        .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
+        .receipt-stamp{text-align:center;margin-bottom:14px;}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:rgba(34,197,94,0.12);color:var(--success);border:1.5px solid rgba(34,197,94,0.25);}
+        .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
+        .sig-field{flex:1;max-width:200px;}
+        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .sig-field .sig-line{border-bottom:1.5px solid var(--text);height:24px;margin-bottom:2px;}
+        .sig-field small{font-size:0.62rem;color:var(--muted);}
+        .receipt-legal{text-align:center;}
+        .receipt-legal .rl-date{font-size:0.7rem;color:var(--dim);font-weight:600;}
+        .receipt-legal p{font-size:0.65rem;color:var(--muted);margin:4px 0 0;line-height:1.4;}
+        #resultado{display:none;}#resultado.show{display:block;max-width:480px;margin:0 auto;animation:slideUp 0.4s var(--ease-out) both;}
+        .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
-        @media print{nav,.btn-wrap,.toast,.btn-primary,.btn-secondary{display:none!important}body{background:#fff;color:#000}.contract-box{border:1px solid #000;padding:16px;border-radius:0}.check-row{display:none}.page-header{display:none}}
+        @media print {
+            @page{margin:12mm 15mm}
+            *{margin:0;padding:0;box-sizing:border-box;background:transparent!important}
+            html,body{background:white!important;color:black!important;font-size:11pt}
+            nav,.form-card,.page-header,.breadcrumbs,.no-access,.res-btns,.toast,.btn-wrap{display:none!important}
+            main{max-width:100%!important;padding:0!important;margin:0!important}
+            #resultado{display:block!important;max-width:100%!important;box-shadow:none!important}
+            .receipt{border:none!important;border-radius:0!important;background:white!important;box-shadow:none!important}
+            .receipt-header{border-bottom:2px dashed #999!important;background:white!important;padding:0 0 16px!important}
+            .receipt-header .rh-brand h2{color:black!important;font-size:14pt!important}
+            .receipt-header .rh-sub{color:#666!important}
+            .receipt-title h3{color:black!important;font-size:13pt!important}
+            .receipt-title .rt-number{color:black!important;background:#eee!important;border:1px solid #ccc!important}
+            .receipt-body{padding:16px 0!important}
+            .rsec-title{color:#666!important;border-bottom-color:#999!important;font-size:8pt!important}
+            .rg-item{border-bottom-color:#ddd!important}
+            .rg-item span{color:#555!important}
+            .rg-item strong{color:black!important}
+            .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:8px 12px!important}
+            .rsec-obs span{color:#555!important}
+            .rsec-obs p{color:#333!important}
+            .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:16px 0 0!important}
+            .stamp-badge{border:1.5px solid #999!important;color:black!important;background:white!important;font-size:9pt!important}
+            .stamp-badge svg{display:none!important}
+            .sig-field span{color:#555!important}
+            .sig-field .sig-line{border-bottom-color:black!important;height:30px!important}
+            .receipt-legal .rl-date{color:#555!important}
+            .receipt-legal p{color:#666!important;font-size:7pt!important}
+        }
         @media(max-width:600px){.g2{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
@@ -128,6 +191,76 @@
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="margin-top:8px">Imprimir contrato</button>
             <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
+        </div>
+    </div>
+
+    <div id="resultado">
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <div class="rh-brand">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    <h2>SmartLoan IT</h2>
+                </div>
+                <div class="rh-sub">Sistema de Gesti&oacute;n de Pr&eacute;stamos Tecnol&oacute;gicos</div>
+                <div class="receipt-title">
+                    <h3>COMPROBANTE DE PR&Eacute;STAMO</h3>
+                    <span class="rt-number" id="r-recibo">PRE-0000</span>
+                </div>
+            </div>
+            <div class="receipt-body">
+                <div class="rsec">
+                    <div class="rsec-title">Datos del Alumno</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item"><span>Nombre</span><strong id="r-alu">—</strong></div>
+                        <div class="rg-item"><span>C&oacute;digo</span><strong id="r-cod">—</strong></div>
+                        <div class="rg-item"><span>Carrera</span><strong id="r-car">—</strong></div>
+                        <div class="rg-item"><span>Curso</span><strong id="r-cur">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec">
+                    <div class="rsec-title">Datos del Equipo</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item full"><span>Equipo</span><strong id="r-eq">—</strong></div>
+                        <div class="rg-item"><span>Tipo</span><strong id="r-tipo">—</strong></div>
+                        <div class="rg-item"><span>Marca</span><strong id="r-marca">—</strong></div>
+                        <div class="rg-item"><span>Estado inicial</span><strong id="r-est">—</strong></div>
+                        <div class="rg-item full"><span>Accesorios</span><strong id="r-acc">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec">
+                    <div class="rsec-title">Detalle del Pr&eacute;stamo</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item full"><span>Motivo</span><strong id="r-mot">—</strong></div>
+                        <div class="rg-item"><span>Fecha pr&eacute;stamo</span><strong id="r-fp">—</strong></div>
+                        <div class="rg-item"><span>Devoluci&oacute;n estimada</span><strong id="r-fv">—</strong></div>
+                        <div class="rg-item full"><span>Registrado por</span><strong id="r-enc">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec-obs" id="r-obs-section" style="display:none">
+                    <span>Observaciones</span>
+                    <p id="r-obs-text">—</p>
+                </div>
+            </div>
+            <div class="receipt-footer">
+                <div class="receipt-stamp">
+                    <div class="stamp-badge" id="r-stamp">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        CONTRATO ACEPTADO
+                    </div>
+                </div>
+                <div class="sig-row">
+                    <div class="sig-field"><span>Encargado</span><div class="sig-line"></div><small id="r-sig-enc">Firma</small></div>
+                    <div class="sig-field"><span>Alumno</span><div class="sig-line"></div><small id="r-sig-alu">Firma</small></div>
+                </div>
+                <div class="receipt-legal">
+                    <div class="rl-date" id="r-emision">—</div>
+                    <p>Este comprobante es v&aacute;lido como constancia de pr&eacute;stamo de equipos tecnol&oacute;gicos. El alumno se compromete a devolver el equipo en la fecha acordada y en el mismo estado.</p>
+                </div>
+            </div>
+        </div>
+        <div class="res-btns">
+            <button class="btn btn-secondary" onclick="imprimir()">Imprimir comprobante</button>
+            <button class="btn btn-primary" onclick="nuevoPrestamo()">Nuevo pr&eacute;stamo</button>
         </div>
     </div>
 </main>
@@ -247,9 +380,33 @@ async function registrar(){
         const d = await safeJson(r);
         if(r.ok){
             formDirty = false;
-            st('Préstamo registrado correctamente','t-ok');
+            document.getElementById('formulario').style.display='none';
+            const ahora=new Date();
+            const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+            const numRec=String(d.id_prestamo).padStart(4,'0');
+            const estMap={'1':'Excelente','2':'Bueno','3':'Dañado'};
+            document.getElementById('r-recibo').textContent=`PRE-${numRec}`;
+            document.getElementById('r-alu').textContent=`${a.nombre} ${a.apellido}`;
+            document.getElementById('r-cod').textContent=a.codigo_alumno;
+            document.getElementById('r-car').textContent=a.carrera||'—';
+            document.getElementById('r-cur').textContent=a.curso||'—';
+            document.getElementById('r-eq').textContent=e.nombre;
+            document.getElementById('r-tipo').textContent=e.tipo;
+            document.getElementById('r-marca').textContent=e.marca;
+            document.getElementById('r-est').textContent=estMap[estado_ini]||'—';
+            document.getElementById('r-acc').textContent=accesorios||'Ninguno';
+            document.getElementById('r-mot').textContent=motivo;
+            document.getElementById('r-fp').textContent=ff(d.fecha_prestamo);
+            document.getElementById('r-fv').textContent=ff(fecha);
+            document.getElementById('r-enc').textContent=enc.nombre&&enc.apellido?`${enc.nombre} ${enc.apellido}`:'—';
+            const obsEl=document.getElementById('r-obs-section');
+            if(obs){obsEl.style.display='block';document.getElementById('r-obs-text').textContent=obs;}
+            document.getElementById('r-sig-enc').textContent=enc.nombre?`${enc.nombre} ${enc.apellido}`:'Firma';
+            document.getElementById('r-sig-alu').textContent=a.nombre?`${a.nombre} ${a.apellido}`:'Firma';
+            document.getElementById('r-emision').textContent=`Emitido: ${hoy}`;
+            document.getElementById('resultado').classList.add('show');
+            window.scrollTo({top:0,behavior:'smooth'});
             btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
-            setTimeout(()=>window.location.href='/home/dashboard.html',1500);
         } else {
             st(d.mensaje||'Error al registrar','t-err');
             btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
@@ -259,6 +416,30 @@ async function registrar(){
         btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
     }
     })();
+    });
+}
+
+function imprimir(){
+    window.print();
+}
+
+function nuevoPrestamo(){
+    showConfirm('\u00bfRegistrar un nuevo pr\u00e9stamo? Se perder\u00e1 el comprobante actual.',function(){
+        document.getElementById('resultado').classList.remove('show');
+        document.getElementById('formulario').style.display='';
+        document.getElementById('alumno').value='';
+        document.getElementById('equipo').value='';
+        document.getElementById('fecha_dev').value='';
+        document.getElementById('motivo').value='';
+        document.getElementById('accesorios').value='';
+        document.getElementById('obs').value='';
+        document.getElementById('contrato').checked=false;
+        document.getElementById('estado_ini').value='1';
+        document.getElementById('alu-info').classList.remove('show');
+        document.getElementById('resumen').classList.remove('show');
+        document.getElementById('r-obs-section').style.display='none';
+        document.getElementById('btn').disabled=true;
+        window.scrollTo({top:0,behavior:'smooth'});
     });
 }
 

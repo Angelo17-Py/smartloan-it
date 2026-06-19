@@ -76,7 +76,7 @@
                 <select id="marca" onchange="clearF('marca');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
-            <div class="ig"><label>Descripción</label><input id="desc" placeholder="" maxlength="200" oninput="clearF('desc');checkNuevoEquipo()"><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
+            <div class="ig"><label>Descripción</label><textarea id="desc" placeholder="" maxlength="200" oninput="autoResize(this);clearF('desc');checkNuevoEquipo()" rows="2"></textarea><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
         </div>
     </div>
