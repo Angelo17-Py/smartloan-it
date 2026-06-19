@@ -93,33 +93,38 @@
         body.role-admin .admin-only{display:revert!important;}
         /* Estilos de impresión */
         @media print {
-            @page{margin:12mm 15mm}
+            @page{margin:8mm 12mm}
             *{margin:0;padding:0;box-sizing:border-box;background:transparent!important}
-            html,body{background:white!important;color:black!important;font-size:11pt}
+            html,body{background:white!important;color:black!important;font-size:9pt}
             nav,.form-card,.page-header,.breadcrumbs,.no-access,.res-btns,.toast,.btn-wrap{display:none!important}
             main{max-width:100%!important;padding:0!important;margin:0!important}
             #resultado{display:block!important;max-width:100%!important;box-shadow:none!important}
             .receipt{border:none!important;border-radius:0!important;background:white!important;box-shadow:none!important}
-            .receipt-header{border-bottom:2px dashed #999!important;background:white!important;padding:0 0 16px!important}
-            .receipt-header .rh-brand h2{color:black!important;font-size:14pt!important}
-            .receipt-header .rh-sub{color:#666!important}
-            .receipt-title h3{color:black!important;font-size:13pt!important}
-            .receipt-title .rt-number{color:black!important;background:#eee!important;border:1px solid #ccc!important}
-            .receipt-body{padding:16px 0!important}
-            .rsec-title{color:#666!important;border-bottom-color:#999!important;font-size:8pt!important}
-            .rg-item{border-bottom-color:#ddd!important}
-            .rg-item span{color:#555!important}
-            .rg-item strong{color:black!important}
-            .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:8px 12px!important}
-            .rsec-obs span{color:#555!important}
-            .rsec-obs p{color:#333!important}
-            .rsec-contract{border:1px solid #ddd!important;background:#f9f9f9!important;padding:10px 14px!important;color:#333!important;font-size:9pt!important;line-height:1.5!important}
+            .receipt-header{border-bottom:2px dashed #999!important;background:white!important;padding:0 0 10px!important}
+            .receipt-header .rh-brand h2{color:black!important;font-size:12pt!important}
+            .receipt-header .rh-sub{color:#666!important;font-size:6.5pt!important}
+            .receipt-title{margin-top:8px!important}
+            .receipt-title h3{color:black!important;font-size:11pt!important}
+            .receipt-title .rt-number{color:black!important;background:#eee!important;border:1px solid #ccc!important;font-size:6.5pt!important}
+            .receipt-body{padding:10px 0!important}
+            .rsec{margin-bottom:10px!important}
+            .rsec-title{color:#666!important;border-bottom-color:#999!important;font-size:7pt!important;margin-bottom:6px!important;padding-bottom:4px!important}
+            .rsec-grid{gap:3px 12px!important}
+            .rg-item{padding:2px 0!important;border-bottom-color:#ddd!important}
+            .rg-item span{color:#555!important;font-size:6.5pt!important}
+            .rg-item strong{color:black!important;font-size:7.5pt!important}
+            .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:6px 10px!important;margin-top:8px!important}
+            .rsec-obs span{color:#555!important;font-size:6pt!important}
+            .rsec-obs p{color:#333!important;font-size:7pt!important}
+            .rsec-contract{border:1px solid #ddd!important;background:#f9f9f9!important;padding:8px 12px!important;color:#333!important;font-size:7.5pt!important;line-height:1.35!important}
             .rsec-contract strong{color:black!important}
-            .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:16px 0 0!important}
-            .sig-field span{color:#555!important}
-            .sig-field .sig-line{border-bottom-color:black!important;height:30px!important}
-            .receipt-legal .rl-date{color:#555!important}
-            .receipt-legal p{color:#666!important;font-size:7pt!important}
+            .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:10px 0 0!important;margin-top:8px!important}
+            .sig-row{gap:24px!important;margin-bottom:8px!important}
+            .sig-field span{color:#555!important;font-size:6.5pt!important}
+            .sig-field .sig-line{border-bottom-color:black!important;height:22px!important}
+            .sig-field small{font-size:6pt!important}
+            .receipt-legal .rl-date{color:#555!important;font-size:6.5pt!important}
+            .receipt-legal p{color:#666!important;font-size:6.5pt!important;line-height:1.3!important}
         }
         /* Responsive */
         @media(max-width:600px){.g2{grid-template-columns:1fr}main{padding:24px 16px}}
