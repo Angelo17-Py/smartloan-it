@@ -1,6 +1,7 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 
+// Formatea fechas a string MySQL (YYYY-MM-DD HH:MM:SS) en zona horaria de Paraguay
 const fmt = (d) => {
   if (!d) return null;
   if (typeof d === 'string') return d.replace('T', ' ').slice(0, 19);
@@ -8,6 +9,7 @@ const fmt = (d) => {
   return str.replace('T', ' ').slice(0, 19);
 };
 
+// Crea un nuevo préstamo: valida datos, calcula multa base y registra
 exports.crear = async (req, res) => {
   try {
     const { id_alumno, id_equipo, fecha_devolucion_estimada,
@@ -25,10 +27,12 @@ exports.crear = async (req, res) => {
     }
     const ahora = new Date();
     const devEst = new Date(fecha_devolucion_estimada);
+    // La fecha de devolución debe ser futura
     if (isNaN(devEst.getTime()) || devEst <= ahora) {
       return res.status(400).json({ mensaje: 'La fecha de devolución debe ser posterior a la fecha actual' });
     }
     const conn = await db;
+    // Obtenemos la multa por día desde configuración
     const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
     let multaBase = cfg.length ? parseFloat(cfg[0].valor) : 10000;
     if (multaBase == null || isNaN(multaBase) || multaBase < 0) multaBase = 10000;
@@ -41,6 +45,7 @@ exports.crear = async (req, res) => {
     );
     res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()), multa_base: multaBase });
   } catch (err) {
+    // Error lanzado por el trigger validar_prestamo si el equipo no está disponible
     if (err.code === 'ER_SIGNAL_EXCEPTION') {
       return res.status(400).json({ mensaje: 'El equipo no está disponible para préstamo' });
     }
@@ -49,6 +54,7 @@ exports.crear = async (req, res) => {
   }
 };
 
+// Lista todos los préstamos con datos del alumno, equipo y encargado
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -69,6 +75,7 @@ exports.listar = async (req, res) => {
   }
 };
 
+// Elimina un préstamo y su devolución asociada, libera el equipo si no tiene más préstamos activos
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
@@ -82,6 +89,7 @@ exports.eliminar = async (req, res) => {
       await tx.beginTransaction();
       await tx.query('DELETE FROM devoluciones WHERE id_prestamo = ?', [id]);
       await tx.query('DELETE FROM prestamos WHERE id_prestamo = ?', [id]);
+      // Si el equipo no tiene otros préstamos activos, lo devolvemos a Disponible
       const idEquipo = prestamos[0].id_equipo;
       const [activos] = await tx.query(
         'SELECT COUNT(*) AS c FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" AND id_prestamo != ?',
@@ -104,6 +112,7 @@ exports.eliminar = async (req, res) => {
   }
 };
 
+// Busca un préstamo activo por ID (para mostrar el comprobante)
 exports.buscar = async (req, res) => {
   try {
     const conn = await db;

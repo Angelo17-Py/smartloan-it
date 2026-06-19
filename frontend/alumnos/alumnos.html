@@ -9,22 +9,36 @@
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <style>
+        /* Le damos un ancho máximo al contenido y lo centramos */
         main{max-width:1200px;margin:0 auto;padding:40px 28px}
+        /* Estilos para la tarjeta del formulario de registro */
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:20px;}
+        /* Estilo del titulo del formulario */
         .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
+        /* Los campos del formulario se ponen uno al lado del otro */
         .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+        /* Cada campo ocupa el mismo espacio */
         .form-row .ig{flex:1;min-width:140px;}
+        /* Contenedor del botón */
         .btn-wrap{padding:0;display:flex;align-items:flex-end;}
+        /* Barra de búsqueda con lupa */
         .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
         .search-bar svg{color:var(--dim);flex-shrink:0;}
+        /* El input de búsqueda ocupa todo el espacio disponible */
         .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;padding:0;}
         .search-bar input::placeholder{color:var(--dim);}
+        /* Contenedor de la tabla con bordes redondeados */
         .table-wrap{border-radius:14px;overflow:hidden;}
+        /* Encabezado de la tabla con el titulo y el contador */
         .table-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
+        /* Contador de alumnos (circulito con número) */
         .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
+        /* La tabla ocupa todo el ancho y sin bordes separados */
         table{width:100%;border-collapse:collapse;}
+        /* Estilo de los encabezados de columna */
         th{padding:12px 16px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+        /* Ancho de cada columna */
         th:nth-child(1){width:40px;}
         th:nth-child(2){width:100px;}
         th:nth-child(3){width:auto;max-width:320px}
@@ -32,38 +46,56 @@
         th:nth-child(4){width:130px;}
         th:nth-child(5){width:115px;}
         th:nth-child(6){width:auto;min-width:130px}
+        /* Estilo de las celdas de la tabla */
         td{padding:12px 16px;font-size:0.88rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+        /* Número de fila */
         .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
+        /* Fila vacía cuando no hay alumnos */
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
+        /* Botones de acción (editar/eliminar) */
         .ac{display:flex;gap:6px;justify-content:center;white-space:nowrap;}
+        /* Por defecto ocultamos lo que solo ve el admin */
         .admin-only{display:none!important;}
+        /* Si el usuario es admin, mostramos los elementos admin-only */
         body.role-admin .admin-only{display:revert!important;}
+        /* Modal de edición con dos columnas */
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+        /* Animación del modal */
         .mo .md{animation:fi var(--duration-normal) var(--ease-out);}
+        /* En pantallas chicas los formularios se apilan verticalmente */
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
     </style>
 </head>
 <body>
+<!-- Barra de navegación superior -->
 <nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
     <div class="nav-right">
+        <!-- Datos del usuario logeado -->
         <div class="nav-user" id="navUser" style="display:none">
             <div class="avatar" id="navAvatar">A</div>
             <span class="nav-user-name" id="navName">Cargando...</span>
         </div>
+        <!-- Botón para cambiar entre tema claro y oscuro -->
         <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
+        <!-- Botón para cerrar sesión -->
         <button class="btn-logout" onclick="logout()" title="Salir" aria-label="Salir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+        <!-- Link para volver al dashboard -->
         <a href="/home/dashboard.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Dashboard</a>
     </div>
 </nav>
+<!-- Contenido principal de la página -->
 <main>
+    <!-- Migas de pan para saber dónde estamos -->
     <div class="breadcrumbs"><a href="/home/dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Alumnos</span></div>
+    <!-- Encabezado de la página con icono y descripción -->
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
         <div><h1>Gestión de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
     </div>
+    <!-- Formulario para registrar un nuevo alumno (solo visible para admin) -->
     <div class="form-card admin-only">
         <div class="form-card-title">Registrar nuevo alumno</div>
         <div class="form-row">
@@ -80,10 +112,12 @@
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
         </div>
     </div>
+    <!-- Barra de búsqueda para filtrar alumnos -->
     <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por nombre, apellido o codigo..." oninput="filtrar()">
     </div>
+    <!-- Tabla que muestra la lista de alumnos -->
     <div class="table-wrap">
         <div class="table-header"><span>Lista de alumnos</span><span class="table-count" id="count">0 alumnos</span></div>
         <table><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Carrera</th><th scope="col">Curso</th><th scope="col" style="text-align:center">Acciones</th></tr></thead>
@@ -91,36 +125,47 @@
     </div>
 </main>
 
+<!-- Modal para editar un alumno existente -->
 <div class="mo" id="mo-edit">
     <div class="md">
         <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
+            <!-- Campos de nombre y apellido en dos columnas -->
             <div class="g2m">
                 <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" maxlength="100" oninput="clearFE('nombre','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
                 <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" maxlength="100" oninput="clearFE('apellido','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
+            <!-- Selector de carrera -->
             <div class="ig"><label>Carrera</label>
                 <select id="edit-carrera" onchange="clearFE('carrera','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingeniería en Informática</option><option>Ingeniería Industrial</option><option>Ingeniería Civil</option><option>Administración de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
                 <div class="ferr" id="ferr-edit-carrera">Selecciona la carrera</div>
             </div>
+            <!-- Selector de curso -->
             <div class="ig"><label>Curso / Año</label>
                 <select id="edit-curso" onchange="clearFE('curso','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
             </div>
+            <!-- Botón para guardar los cambios -->
             <button type="button" class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
         </div>
     </div>
 </div>
 
+<!-- Mensaje que aparece temporalmente (toast) -->
 <div class="toast" id="toast"></div>
 <script src="/js/api.js"></script>
 <script>
+// Verificamos si el usuario inició sesión, si no lo mandamos al login
 if(!localStorage.getItem('encargado')) window.location.href = '/';
 
+// Esta variable guarda todos los alumnos que vienen del servidor
 let todos = [];
+// Guarda el id del alumno que estamos editando
 let alumnoEditandoId = null;
+// Controla si el formulario tiene cambios sin guardar
 var formDirty = false;
 
+// Cuando el usuario cierra o recarga la página, preguntamos si está seguro
 window.onbeforeunload = function(e){
     if(formDirty){
         e.preventDefault();
@@ -128,10 +173,12 @@ window.onbeforeunload = function(e){
     }
 };
 
+// Si el usuario escribe algo en el formulario, marcamos que hay cambios
 document.querySelectorAll('.form-card input, .form-card select, .form-card textarea').forEach(function(el){
     el.addEventListener('input', function(){ formDirty = true; });
 });
 
+// Revisamos si los campos del formulario están llenos para habilitar el botón de registro
 function checkNuevoAlumno(){
     const nombre=document.getElementById('nombre').value.trim();
     const apellido=document.getElementById('apellido').value.trim();
@@ -140,6 +187,7 @@ function checkNuevoAlumno(){
     document.getElementById('btnAdd').disabled=!(nombre&&apellido&&carrera&&curso);
 }
 
+// Revisamos si los campos del formulario de edición están completos
 function checkEditAlumno(){
     const nombre=document.getElementById('edit-nombre').value.trim();
     const apellido=document.getElementById('edit-apellido').value.trim();
@@ -148,6 +196,7 @@ function checkEditAlumno(){
     document.getElementById('btnGuardarAlu').disabled=!(nombre&&apellido&&carrera&&curso);
 }
 
+// Validamos que ningún campo esté vacío antes de enviar
 function validarNuevo(){
     let ok = true;
     ['nombre','apellido','carrera','curso'].forEach(f => {
@@ -161,6 +210,7 @@ function validarNuevo(){
     return ok;
 }
 
+// Cargamos la lista de alumnos desde el servidor
 async function cargar(){
     document.getElementById('tb').innerHTML = '<tr><td colspan="6"><div style="padding:20px"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></td></tr>';
     try {
@@ -173,9 +223,11 @@ async function cargar(){
     }
 }
 
+// Mostramos los alumnos en la tabla, uno por uno
 function render(data){
     document.getElementById('count').textContent = `${data.length} alumno${data.length!==1?'s':''}`;
     const tb = document.getElementById('tb');
+    // Si no hay alumnos, mostramos un mensaje
     if(!data.length){
         tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
@@ -193,9 +245,11 @@ function render(data){
         </tr>`;}).join('');
 }
 
+// Buscamos alumnos mientras el usuario escribe en el buscador
 function filtrar(){
     const q = normalizeText(document.getElementById('busq').value).trim();
     if(!q){ render(todos); return; }
+    // Filtramos los alumnos que coinciden con lo que se buscó
     const filtrados = todos.filter(a =>
         normalizeText(a.nombre).includes(q) ||
         normalizeText(a.apellido).includes(q) ||
@@ -207,6 +261,7 @@ function filtrar(){
     render(filtrados);
 }
 
+// Enviamos los datos del nuevo alumno al servidor
 async function crear(){
     if(!validarNuevo()) return;
     const btn = document.getElementById('btnAdd');
@@ -225,6 +280,7 @@ async function crear(){
         const d = await safeJson(r);
         if (r.ok) {
             formDirty = false;
+            // Limpiamos el formulario después de registrar
             document.getElementById('nombre').value = '';
             document.getElementById('apellido').value = '';
             document.getElementById('carrera').value = '';
@@ -240,12 +296,14 @@ async function crear(){
     btn.disabled = false; btn.textContent = '+ Registrar alumno';
 }
 
+// Confirmamos antes de eliminar un alumno
 function confirmarEliminar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
     showConfirm('Eliminar al alumno "'+a.nombre+' '+a.apellido+'"\n\nSi tiene historial de pr\u00e9stamos tambi\u00e9n se eliminar\u00e1. Esta acci\u00f3n no se puede deshacer.',function(){ eliminar(id); });
 }
 
+// Le decimos al servidor que elimine el alumno
 async function eliminar(id){
     try {
         const r = await apiFetch(`/alumnos/${id}`, {method:'DELETE'});
@@ -257,6 +315,7 @@ async function eliminar(id){
     }
 }
 
+// Abrimos el modal para editar los datos del alumno
 function abrirEditar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
@@ -275,18 +334,22 @@ function abrirEditar(id){
     document.getElementById('mo-edit').classList.add('show');
 }
 
+// Cerramos el modal de edición
 function cerrarEdit(){
     document.getElementById('mo-edit').classList.remove('show');
     alumnoEditandoId = null;
 }
 
+// Si el usuario hace click fuera del modal, se cierra
 document.getElementById('mo-edit').addEventListener('click', function(e){
     if(e.target === this) cerrarEdit();
 });
+// Tecla Escape cierra el modal
 document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && document.getElementById('mo-edit').classList.contains('show')) cerrarEdit();
 });
 
+// Guardamos los cambios del alumno en el servidor
 async function guardarAlumno(){
     const n  = document.getElementById('edit-nombre').value.trim();
     const ap = document.getElementById('edit-apellido').value.trim();
@@ -322,6 +385,7 @@ async function guardarAlumno(){
     }
 }
 
+// Configuramos todo cuando la página termina de cargar
 window.onload = function(){
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
     var _enc = JSON.parse(localStorage.getItem('encargado') || '{}');
@@ -330,7 +394,8 @@ window.onload = function(){
         document.getElementById('navName').textContent = _enc.nombre + ' ' + (_enc.apellido || '');
         document.getElementById('navUser').style.display = 'flex';
     }
-    cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+    cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
+};
 </script>
 </body>
 </html>

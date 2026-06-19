@@ -1,6 +1,7 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 
+// Lista todos los alumnos activos, ordenados por código
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -12,6 +13,7 @@ exports.listar = async (req, res) => {
     }
 };
 
+// Lista alumnos que NO tienen un préstamo activo (para poder asignarles uno nuevo)
 exports.disponibles = async (req, res) => {
   try {
     const conn = await db;
@@ -30,12 +32,14 @@ exports.disponibles = async (req, res) => {
     }
 };
 
+// Crea un alumno generando un código correlativo (ALU001, ALU002…)
 exports.crear = async (req, res) => {
   const { nombre, apellido, carrera, curso } = req.body;
   if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Nombre y apellido requeridos' });
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
+    // Buscamos el número más alto existente para generar el siguiente código
     const [maxRow] = await conn.query('SELECT MAX(CAST(SUBSTRING(codigo_alumno, 4) AS UNSIGNED)) AS max_num FROM alumnos FOR UPDATE');
     const maxNum = maxRow[0].max_num || 0;
     const codigo_alumno = 'ALU' + String(maxNum + 1).padStart(3, '0');
@@ -54,12 +58,14 @@ exports.crear = async (req, res) => {
   }
 };
 
+// Elimina un alumno (y sus préstamos/devoluciones asociados) si no tiene préstamos activos
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
+      // Verificamos que no tenga préstamos activos antes de borrar
       const [prestamosActivos] = await tx.query(
         'SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
       );
@@ -84,6 +90,7 @@ exports.eliminar = async (req, res) => {
     }
 };
 
+// Obtiene el historial completo de préstamos de un alumno
 exports.historial = async (req, res) => {
   try {
     const conn = await db;
@@ -108,6 +115,7 @@ exports.historial = async (req, res) => {
     }
 };
 
+// Actualiza los datos de un alumno existente
 exports.editar = async (req, res) => {
   try {
     const { nombre, apellido, carrera, curso } = req.body;

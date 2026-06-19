@@ -9,18 +9,25 @@
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <style>
+        /* Fondo con partículas flotantes */
         .login-page{display:grid;place-items:center;min-height:100vh;overflow:hidden;background:var(--bg)}
         .bg-glow{position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(600px circle at 30% 40%,rgba(37,99,235,0.1),transparent 70%)}
         #canvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
+        /* Animación que hace que el formulario aparezca desde abajo */
+        /* El cuadro blanco principal donde está todo el formulario */
         .box{background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:22px;padding:40px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.4);text-align:center;animation:up 0.6s var(--ease-out) both;position:relative}
         @keyframes up{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        /* Animación para cuando la contraseña es incorrecta (tiembla) */
         @keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-6px)}20%,40%,60%,80%{transform:translateX(6px)}}
         .shake{animation:shake 0.4s ease}
+        /* Estilo del logo en el centro */
         .logo{text-align:center;margin-bottom:24px}
         .logo svg{width:48px;height:48px;background:var(--primary);border-radius:14px;padding:8px;color:#fff}
+        /* Título, subtítulo y badge de la universidad */
         .box h2{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
         .sub{font-size:13px;color:var(--dim);margin-bottom:8px}
         .login-badge{display:inline-block;background:var(--primary-glow);color:var(--primary);padding:4px 14px;border-radius:100px;font-size:11px;font-weight:700;margin-bottom:24px}
+        /* Campos de texto donde el usuario escribe */
         .field{text-align:left;margin-bottom:16px}
         .field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--dim);margin-bottom:6px}
         .field input{width:100%;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:border-color var(--duration-normal) var(--ease-out),box-shadow var(--duration-normal) var(--ease-out)}
@@ -28,15 +35,21 @@
         .field input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-bg)}
         .field-err{display:none;font-size:10px;color:var(--danger);margin-top:4px;font-weight:600}
         .field-err.show{display:block}
+        /* Contenedor del campo de contraseña con el ojito adentro */
         .pass-wrap{position:relative}
         .pass-wrap input{padding-right:44px}
+        /* Botón para mostrar u ocultar la contraseña */
         .eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;padding:6px;border-radius:6px;display:flex;transition:color var(--duration-fast) var(--ease-out)}
         .eye:hover{color:var(--text)}
+        /* Botón principal de acceder al sistema */
         .box .btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--primary);color:#fff;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all var(--duration-normal) var(--ease-out);margin-top:4px}
         .box .btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3)}
         .box .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+        /* Mensaje de error que aparece cuando algo sale mal */
         .err{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;font-size:12px;color:var(--danger);opacity:0;transition:opacity var(--duration-normal) var(--ease-out)}
+        /* Letras chiquitas del pie de página */
         .footer{text-align:center;margin-top:20px;font-size:10px;color:var(--dim);opacity:0.4}
+        /* Cuando la pantalla es chica (celular) */
         @media(max-width:480px){.box{padding:28px 20px;margin:16px;border-radius:16px}}
     </style>
 </head>
@@ -76,20 +89,27 @@
 </div>
 <script src="/js/api.js"></script>
 <script>
+// Creamos un canvas (lienzo) para dibujar las partículas de fondo
 const cv=document.getElementById('canvas'),cx=cv.getContext('2d');let pp=[];
+// Inicializamos las partículas con posiciones y velocidades aleatorias
 function ip(){cv.width=innerWidth;cv.height=innerHeight;pp=[];for(let i=0;i<60;i++)pp.push({x:Math.random()*cv.width,y:Math.random()*cv.height,s:Math.random()*2+1,sx:(Math.random()-.5)*.5,sy:(Math.random()-.5)*.5,o:Math.random()*.5});}
+// Animamos las partículas: las movemos y las dibujamos en cada frame
 function ap(){cx.clearRect(0,0,cv.width,cv.height);pp.forEach(p=>{p.x+=p.sx;p.y+=p.sy;if(p.x<0||p.x>cv.width)p.sx*=-1;if(p.y<0||p.y>cv.height)p.sy*=-1;cx.fillStyle=`rgba(37,99,235,${p.o})`;cx.beginPath();cx.arc(p.x,p.y,p.s,0,Math.PI*2);cx.fill();});requestAnimationFrame(ap);}
 window.addEventListener('resize',ip);ip();ap();
 
+// Solo permitimos números en el campo de código
 document.getElementById('codigo').addEventListener('input',function(){
     this.value=this.value.replace(/[^0-9]/g,'');
     clearErr('codigo');
 });
+// Limpiamos los mensajes de error cuando el usuario empieza a escribir de nuevo
 document.getElementById('password').addEventListener('input',function(){ clearErr('pass'); });
 
+// Alternamos entre mostrar y ocultar la contraseña
 function togglePass(){
     var inp = document.getElementById('password');
     var svg = document.getElementById('eye-svg');
+    // Cambiamos el icono del ojito según si la contraseña está visible o no
     if(inp.type === 'password'){
         inp.type = 'text';
         svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
@@ -99,11 +119,13 @@ function togglePass(){
     }
 }
 
+// Función que borra los mensajes de error y el borde rojo de un campo
 function clearErr(field){
     document.getElementById('err-'+field).classList.remove('show');
     document.getElementById(field==='pass'?'password':'codigo').classList.remove('error');
 }
 
+// Validamos que los campos no estén vacíos antes de enviar
 function validar(){
     let ok=true;
     const codigo=document.getElementById('codigo').value.trim();
@@ -113,36 +135,45 @@ function validar(){
     return ok;
 }
 
+// Función principal para iniciar sesión
 async function login(){
+    // Ocultamos el mensaje de error anterior
     document.getElementById('err').style.opacity='0';
     if(!validar()) return;
     const codigo=document.getElementById('codigo').value.trim();
     const password=document.getElementById('password').value;
     const btn=document.getElementById('btn');
+    // Deshabilitamos el botón para que no envíe dos veces
     btn.disabled=true; btn.textContent='Verificando...';
     try{
         const res=await apiFetch('/encargados/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo,password})});
         const data=await safeJson(res);
         if(res.ok&&data.token){
+            // Guardamos el token y los datos del usuario en el navegador
             localStorage.setItem('token',data.token);
             localStorage.setItem('encargado',JSON.stringify(data.usuario));
             localStorage.setItem('rol',data.usuario.rol||'lectura');
+            // Hacemos una transición suave antes de ir al dashboard
             document.body.classList.add('page-exit');
             setTimeout(()=>window.location.href='/home/dashboard.html',300);
         }else{
+            // Si algo sale mal, mostramos el error y habilitamos el botón de nuevo
             document.getElementById('errTxt').textContent=data.mensaje||'Código o contraseña incorrectos';
             document.getElementById('err').style.opacity='1';
             btn.textContent='Reintentar'; btn.disabled=false;
             const b=document.getElementById('box');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
         }
+        // Si el servidor no responde, mostramos error de conexión
     }catch(e){
         document.getElementById('errTxt').textContent='Error de conexión con el servidor';
         document.getElementById('err').style.opacity='1';
         btn.textContent='Reintentar'; btn.disabled=false;
     }
 }
+// Atajos de teclado: Enter para pasar al siguiente campo o enviar
 document.getElementById('codigo').addEventListener('keypress',e=>{if(e.key==='Enter')document.getElementById('password').focus();});
 document.getElementById('password').addEventListener('keypress',e=>{if(e.key==='Enter')login();});
+// Al cargar la página, inicializamos el tema (oscuro/claro)
 document.addEventListener('DOMContentLoaded',initTheme);
 </script>
 </body>

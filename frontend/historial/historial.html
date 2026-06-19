@@ -9,36 +9,54 @@
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <style>
+        /* Estilos del historial */
+        /* Contenedor principal de la página */
         main{max-width:1400px;margin:0 auto;padding:40px 28px}
+        /* Barra de herramientas */
         .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+        /* Pestañas (préstamos/devoluciones) */
         .tabs{display:flex;gap:3px;background:var(--surface);padding:4px;border-radius:10px}
         .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif}
         .tab.active{background:var(--primary);color:white}
+        /* Filtros de estado */
         .filters{display:flex;gap:6px;flex-wrap:wrap}
+        /* Botón individual de filtro */
         .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:0.75rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);font-family:'Plus Jakarta Sans',sans-serif}
         .fb.active{background:var(--primary);color:white;border-color:var(--primary)}
         .fb:hover:not(.active){background:var(--surface);color:var(--text);}
+        /* Barra de búsqueda */
         .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
         .search-bar svg{color:var(--dim);flex-shrink:0;}
         .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;padding:0;}
         .search-bar input::placeholder{color:var(--dim);}
         .search-count{font-size:0.75rem;color:var(--dim);white-space:nowrap;font-weight:700;}
+        /* Tabla de resultados */
         .table-wrap{border-radius:14px;overflow:hidden;}
         .table-header{padding:14px 22px;display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
         .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
+        /* Estilo de encabezados de tabla */
         th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+        /* Estilo de celdas de tabla */
         td{padding:12px 18px;font-size:0.86rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+        /* Código ID del registro */
         .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:monospace;color:var(--text);white-space:nowrap;}
+        /* Texto secundario (debajo del principal) */
         .sub-text{font-size:0.75rem;color:var(--dim);margin-top:2px;}
+        /* Mensaje cuando no hay resultados */
         .em{text-align:center;padding:40px;color:var(--dim);font-size:0.88rem;}
+        /* Resaltado del texto buscado */
         .highlight{background:rgba(99,102,241,0.15);border-radius:3px;padding:0 2px;}
+        /* Botón para eliminar una fila */
         .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:all var(--duration-fast) var(--ease-out);font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
         .btn-del-row:hover{background:rgba(239,68,68,0.1);}
+        /* Columna de acciones (botón eliminar) */
         th.ac{width:52px;}
     </style>
 </head>
 <body>
+<!-- Cuerpo de la página -->
+<!-- Barra de navegación principal -->
 <nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
     <div class="nav-right">
@@ -54,11 +72,14 @@
     </div>
 </nav>
 <main>
+    <!-- Migas de pan (ruta de navegación) -->
     <div class="breadcrumbs"><a href="/home/dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Historial</span></div>
+    <!-- Encabezado de la página -->
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <div><h1>Historial y Trazabilidad</h1><p>Registro completo de todos los movimientos del sistema</p></div>
     </div>
+    <!-- Barra de herramientas con pestañas y filtros -->
     <div class="toolbar">
         <div class="tabs">
             <button class="tab active" onclick="setTab('p',this)">Préstamos</button>
@@ -71,27 +92,37 @@
             <button class="fb" onclick="setF('devueltos',this)">Devueltos</button>
         </div>
     </div>
+    <!-- Buscador de registros -->
     <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por alumno, equipo, código, motivo..." oninput="buscar()">
         <span class="search-count" id="search-count"></span>
     </div>
+    <!-- Tabla de préstamos -->
     <div id="tp" class="table-wrap"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
+    <!-- Tabla de devoluciones -->
     <div id="td" class="table-wrap" style="display:none"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
 </main>
+<!-- Notificación toast para mensajes -->
 <div class="toast" id="toast"></div>
+<!-- Script de funciones de API -->
 <script src="/js/api.js"></script>
 <script>
+// Verificamos si el usuario inició sesión
 if(!localStorage.getItem('encargado')) window.location.href='/';
+// Guardamos todos los préstamos y devoluciones que vienen del servidor
 let prestamos=[],devs=[];
+// Controlamos qué pestaña está activa y qué filtro
 let tabAct='p',filtAct='todos';
 
+// Resaltamos el texto que el usuario buscó dentro de los resultados
 function resaltar(texto,q){
     if(!q||!texto) return esc(texto)||'—';
     var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
     return esc(texto).replace(re,'<span class="highlight">$1</span>');
 }
 
+// Cargamos los préstamos y devoluciones desde el servidor
 async function cargar(){
     try{
         let pr=await apiFetch('/prestamos');
@@ -106,12 +137,14 @@ async function cargar(){
     }
 }
 
+// Filtramos los préstamos según la pestaña activa (todos/activos/vencidos/devueltos)
 function getPrestFiltrados(){
     var ahora=new Date();
     var d=prestamos.slice();
     if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO';});
     if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
     if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
+    // También filtramos por lo que el usuario escribió en el buscador
     var q=normalizeText(document.getElementById('busq').value).trim();
     if(q){
         d=d.filter(function(p){
@@ -133,6 +166,7 @@ function getPrestFiltrados(){
     return d;
 }
 
+// Filtramos las devoluciones por el texto de búsqueda
 function getDevFiltrados(){
     var q=normalizeText(document.getElementById('busq').value).trim();
     if(!q) return devs.slice();
@@ -157,6 +191,7 @@ function getDevFiltrados(){
     });
 }
 
+// Mostramos la tabla de préstamos
 function renderP(){
     var ahora=new Date();
     var d=getPrestFiltrados();
@@ -167,6 +202,7 @@ function renderP(){
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     var html=header+'<table><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th><th scope="col" class="ac"></th></tr></thead><tbody>';
     d.forEach(function(p,i){
+        // Calculamos si cada préstamo está vencido
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
         var sc='animate-fi-'+Math.min(i+1,10);
@@ -186,6 +222,7 @@ function renderP(){
     w.innerHTML=html;
 }
 
+// Mostramos la tabla de devoluciones
 function renderD(){
     var d=getDevFiltrados();
     var q=document.getElementById('busq').value.trim();
@@ -217,15 +254,18 @@ function renderD(){
     w.innerHTML=html;
 }
 
+// Ejecutamos la búsqueda cada vez que el usuario escribe
 function buscar(){
     if(tabAct==='p') renderP();
     else renderD();
 }
 
+// Cambiamos entre la pestaña de préstamos y la de devoluciones
 function setTab(t,el){
     tabAct=t;
     document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
     el.classList.add('active');
+    // Mostramos la taba correspondiente y ocultamos la otra
     var tp=document.getElementById('tp'),td=document.getElementById('td');
     tp.style.display=t==='p'?'block':'none';
     td.style.display=t==='d'?'block':'none';
@@ -235,6 +275,7 @@ function setTab(t,el){
     if(t==='p') renderP(); else renderD();
 }
 
+// Cambiamos el filtro (todos, activos, vencidos, devueltos)
 function setF(f,el){
     filtAct=f;
     document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
@@ -242,6 +283,7 @@ function setF(f,el){
     renderP();
 }
 
+// Confirmamos y eliminamos un préstamo
 function eliminarPrestamo(id){
     showConfirm('Eliminar el pr\u00e9stamo #'+id+'\n\nSe borrar\u00e1n todos los datos asociados (incluyendo devoluci\u00f3n si existe).\nEsta acci\u00f3n no se puede deshacer.',function(){
     apiFetch('/prestamos/'+id,{method:'DELETE'}).then(function(r){
@@ -250,6 +292,7 @@ function eliminarPrestamo(id){
     }).catch(function(){st('Error de conexión','t-err');});
     });
 }
+// Confirmamos y eliminamos una devolución
 function eliminarDevolucion(id){
     showConfirm('Eliminar la devoluci\u00f3n #'+id+'\n\nEl pr\u00e9stamo se reactivar\u00e1 y el equipo volver\u00e1 a estar disponible.\nEsta acci\u00f3n no se puede deshacer.',function(){
     apiFetch('/devoluciones/'+id,{method:'DELETE'}).then(function(r){
@@ -258,6 +301,7 @@ function eliminarDevolucion(id){
     }).catch(function(){st('Error de conexión','t-err');});
     });
 }
+// Inicializamos todo cuando la página carga
 window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); var _enc=JSON.parse(localStorage.getItem('encargado')||'{}');if(_enc.nombre){document.getElementById('navAvatar').textContent=_enc.nombre[0].toUpperCase();document.getElementById('navName').textContent=_enc.nombre+' '+(_enc.apellido||'');document.getElementById('navUser').style.display='flex';} };
 </script>
 </body>

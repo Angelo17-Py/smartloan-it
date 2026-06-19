@@ -1,7 +1,9 @@
 /* ============================================
-   SmartLoan IT — Shared Utilities
+   SmartLoan IT — Utilidades compartidas
+   Usadas en todas las páginas del frontend
    ============================================ */
 
+// Muestra un toast (notificación flotante) con mensaje y tipo (t-ok, t-err, t-warn)
 function st(msg, t) {
   t = t || 't-ok';
   var e = document.getElementById('toast');
@@ -20,6 +22,7 @@ function st(msg, t) {
   e._t = setTimeout(function () { e.className = 'toast'; }, 3200);
 }
 
+// Limpia el estado de error de un campo del formulario
 function clearF(f) {
   var el = document.getElementById(f);
   if (el) el.classList.remove('err');
@@ -27,6 +30,7 @@ function clearF(f) {
   if (fer) fer.classList.remove('show');
 }
 
+// Limpia error de campos en modales (con prefijo tipo "edit-")
 function clearFE(f, prefix) {
   prefix = prefix || '';
   var el = document.getElementById(prefix + f);
@@ -35,6 +39,7 @@ function clearFE(f, prefix) {
   if (fer) fer.classList.remove('show');
 }
 
+// Formatea una fecha para mostrar en pantalla (dd/mm/aaaa hh:mm)
 function ff(d) {
   if (!d) return '\u2014';
   return new Date(d).toLocaleString('es-PY', {
@@ -43,11 +48,13 @@ function ff(d) {
   });
 }
 
+// Formatea un número con separador de miles (estilo Paraguay)
 function fn(n) {
   if (n == null || isNaN(n)) return '0';
   return Number(n).toLocaleString('es-PY');
 }
 
+// Muestra un mensaje de error con opción de reintentar
 function showError(container, opts) {
   opts = opts || {};
   var msg = opts.message || 'Ocurri\u00f3 un error al cargar los datos.';
@@ -67,6 +74,7 @@ function showError(container, opts) {
   el.innerHTML = html;
 }
 
+// Inicializa el tema oscuro/claro según preferencia guardada o del sistema
 function initTheme() {
   var saved = localStorage.getItem('theme');
   if (saved === 'light') {
@@ -83,6 +91,7 @@ function initTheme() {
   }
 }
 
+// Alterna entre tema claro y oscuro manualmente
 function toggleTheme() {
   document.documentElement.classList.toggle('light');
   if (document.documentElement.classList.contains('light')) {
@@ -93,10 +102,12 @@ function toggleTheme() {
   localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }
 
+// Verifica si el usuario autenticado tiene rol de administrador
 function esAdmin() {
   return localStorage.getItem('rol') === 'admin';
 }
 
+// Parsea una respuesta HTTP a JSON, manejando errores silenciosamente
 async function safeJson(r) {
   if (r.status === 204) return {};
   if (!r) return {};
@@ -108,11 +119,13 @@ async function safeJson(r) {
   }
 }
 
+// Normaliza texto para búsqueda: quita acentos y pasa a minúsculas
 function normalizeText(s) {
   if (!s) return '';
   return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
+// Escapa caracteres HTML para evitar XSS
 function esc(t) {
   return String(t).replace(/[&<>"']/g, function (m) {
     return m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m === '"' ? '&quot;' : '&#39;';
@@ -125,6 +138,7 @@ function autoResize(el) {
   el.style.height = el.scrollHeight + 'px';
 }
 
+// Transición suave al navegar entre páginas con fade-out
 function fadeOutNavigate(url) {
   if (!url || url === window.location.pathname) return;
   document.body.classList.add('page-exit');
@@ -133,6 +147,7 @@ function fadeOutNavigate(url) {
   }, 300);
 }
 
+// Cierra la sesión del usuario actual
 function logout() {
   showConfirm('Cerrar sesi\u00f3n del sistema?', function () {
     localStorage.removeItem('encargado');
@@ -141,7 +156,7 @@ function logout() {
   });
 }
 
-/* Confirm modal (replaces native confirm()) */
+/* Modal de confirmación personalizado (reemplaza al confirm() nativo) */
 function showConfirm(msg, onConfirm) {
   var overlay = document.getElementById('confirm-modal');
   if (!overlay) {
@@ -170,6 +185,7 @@ function showConfirm(msg, onConfirm) {
   };
   okBtn.focus();
 
+  // Cerrar con tecla Escape
   function keyHandler(e) {
     if (e.key === 'Escape') { closeConfirm(); document.removeEventListener('keydown', keyHandler); }
   }
@@ -185,7 +201,7 @@ function closeConfirm() {
   if (overlay) overlay.classList.remove('show');
 }
 
-/* Restore body styles on bfcache restore (fix back/forward navigation) */
+/* Restaura estilos del body al volver con el botón atrás (bfcache) */
 window.addEventListener('pageshow', function() {
   document.body.classList.remove('page-exit');
   document.body.style.opacity = '';
@@ -193,7 +209,7 @@ window.addEventListener('pageshow', function() {
   document.body.style.transition = '';
 });
 
-/* Spotlight search system */
+/* Sistema de búsqueda tipo Spotlight (similar a macOS) */
 function initSpotlight(pages) {
   pages = pages || [];
   var overlay = document.createElement('div');
@@ -226,6 +242,7 @@ function initSpotlight(pages) {
     setTimeout(function () { input.focus(); }, 100);
   }
 
+  // Navegación por resultados con flechas
   function navigate(dir) {
     var items = results.querySelectorAll('.spotlight-item');
     if (!items.length) return;
@@ -240,6 +257,7 @@ function initSpotlight(pages) {
     if (idx >= 0 && items[idx]) items[idx].click();
   }
 
+  // Caché para no recargar alumnos y equipos en cada búsqueda
   var spotlightCache = { alumnos: null, equipos: null };
 
   async function search(q) {
@@ -248,6 +266,7 @@ function initSpotlight(pages) {
     idx = -1;
     var nq = normalizeText(q);
     var allPages = pages.slice();
+    // Si hay al menos 2 caracteres, buscamos en alumnos y equipos del backend
     if (nq.length >= 2) {
       if (!spotlightCache.alumnos) {
         try { var r1 = await apiFetch('/alumnos'); if (r1.ok) spotlightCache.alumnos = await r1.json(); } catch (e) {}
@@ -289,6 +308,7 @@ function initSpotlight(pages) {
     }).join('');
   }
 
+  // Búsqueda con debounce para no saturar el backend
   var debounceTimer;
   input.addEventListener('input', function () {
     clearTimeout(debounceTimer);
@@ -301,6 +321,7 @@ function initSpotlight(pages) {
     else if (e.key === 'Enter') { e.preventDefault(); selectActive(); }
   });
   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeSpotlight(); });
+  // Atajo de teclado: Ctrl+K o Cmd+K para abrir spotlight
   document.addEventListener('keydown', function (e) {
     if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && e.target === document.body)) {
       e.preventDefault(); openSpotlight();
@@ -308,7 +329,7 @@ function initSpotlight(pages) {
   });
 }
 
-/* Smooth fade-out on navigation */
+/* Intercepta clicks en enlaces internos para hacer transición suave */
 document.addEventListener('click', function (e) {
   var el = e.target.closest('a[href]');
   if (!el || !el.href) return;

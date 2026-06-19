@@ -1,3 +1,4 @@
+// Punto de entrada del servidor Express de SmartLoan IT
 console.log('Iniciando SmartLoan IT...');
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const express = require('express');
@@ -10,6 +11,7 @@ const { verificarToken } = require('./middleware/auth');
 const requireAdmin = require('./middleware/requireAdmin');
 const initDatabase = require('./initDb');
 
+// Atrapa promesas no manejadas para que no tumben el servidor
 process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Rejection:', reason);
 });
@@ -17,30 +19,37 @@ process.on('unhandledRejection', (reason) => {
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 
+// Configuración de CORS para permitir peticiones del frontend
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json());
+
+// Sirve los archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// Ruta raíz redirige al login
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/login/login.html'));
 });
 
+// Endpoint de salud para monitoreo
 app.get('/health', (req, res) => {
   res.json({ estado: 'ok', servicio: 'SmartLoan IT', timestamp: new Date().toISOString() });
 });
 
+// Montaje de las rutas de la API
 app.use('/encargados',   require('./rutas/encargados'));
 app.use('/alumnos',      require('./rutas/alumnos'));
 app.use('/equipos',      require('./rutas/equipos'));
 app.use('/prestamos',    require('./rutas/prestamos'));
 app.use('/devoluciones', require('./rutas/devoluciones'));
-
 app.use('/configuracion', require('./rutas/configuracion'));
 
+// Endpoint de exportación a Excel — requiere autenticación y rol admin
 app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
   try {
     const conn = await db;
+    // Trae todos los préstamos con datos relacionados (alumno, equipo, encargado, devolución)
     const [rows] = await conn.query(`
       SELECT
         p.id_prestamo,
@@ -83,6 +92,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
     wb.creator = 'SmartLoan IT';
     wb.created = new Date();
 
+    // Formatea fechas al estilo paraguayo (dd/mm/aaaa)
     const fmtFecha = function(v) {
       if (!v) return '';
       const d = new Date(v);
@@ -93,6 +103,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
       return dia + '/' + mes + '/' + anio;
     };
 
+    // Formatea montos en guaraníes
     const fmtMoneda = function(v) {
       if (v === null || v === undefined) return '';
       const num = Number(v);
@@ -100,6 +111,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
       return 'Gs. ' + num.toLocaleString('es-PY');
     };
 
+    // Construye una hoja de Excel con encabezados estilizados y formato de filas
     function buildSheet(ws, columns, headers, data, fmtRow) {
       ws.columns = columns;
       const hr = ws.getRow(1);
@@ -141,12 +153,13 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
         row.height = 20;
       });
 
+      // Filtro automático y congelar la primera fila (encabezados)
       ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: columns.length } };
       ws.views = [{ state: 'frozen', ySplit: 1 }];
     }
 
     // ============================================================
-    // HOJA 1: PRESTAMOS
+    // HOJA 1: TODOS LOS PRÉSTAMOS
     // ============================================================
     const ws1 = wb.addWorksheet('Prestamos');
     buildSheet(ws1,
@@ -162,6 +175,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
         const ret = parseInt(r.dias_retraso) > 0;
         const dev = r.estado_prestamo === 'DEVUELTO';
         let bg = ri % 2 === 0 ? 'FFFFFFFF' : 'FFF8FAFC';
+        // Colores de fila según estado: rojo si retraso, verde si devuelto
         if (ret) bg = 'FFFEF2F2';
         else if (dev) bg = 'FFF0FDF4';
 
@@ -193,7 +207,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
     );
 
     // ============================================================
-    // HOJA 2: DEVOLUCIONES
+    // HOJA 2: SOLO DEVOLUCIONES (registros que tienen devolución)
     // ============================================================
     const devRows = rows.filter(function(r) { return r.id_devolucion; });
     const ws2 = wb.addWorksheet('Devoluciones');
@@ -230,6 +244,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
       }
     );
 
+    // Estadísticas para los headers de respuesta
     const loanCount = rows.length;
     const returnCount = devRows.length;
     const studentSet = new Set(rows.map(function(r) { return r.codigo_alumno; }));
@@ -250,12 +265,14 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
   }
 });
 
+// Ruta comodín para capturar endpoints inexistentes
 app.use((req, res) => {
   res.status(404).json({ mensaje: 'Ruta no encontrada' });
 });
 
 app.use(errorHandler);
 
+// Función que arranca el servidor: primero inicializa BD, luego escucha
 async function start() {
   try {
     await initDatabase();
@@ -268,6 +285,7 @@ async function start() {
     console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
   });
 
+  // Cierre graceful: libera recursos al recibir señal de terminación
   function shutdown(signal) {
     console.log(`\n${signal} recibido. Cerrando servidor...`);
     server.close(() => {

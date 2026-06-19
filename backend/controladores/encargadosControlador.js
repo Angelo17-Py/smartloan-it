@@ -2,6 +2,7 @@ const db = require('../db');
 const bcrypt = require('bcryptjs');
 const { generarToken } = require('../middleware/auth');
 
+// Inicio de sesión: verifica código y contraseña, devuelve token JWT
 exports.login = async (req, res) => {
   try {
     const { codigo, password } = req.body;
@@ -18,9 +19,11 @@ exports.login = async (req, res) => {
     }
     const encargado = rows[0];
     let passwordValida = false;
+    // Si la contraseña está hasheada con bcrypt, comparamos con bcrypt
     if (encargado.password && encargado.password.startsWith('$2')) {
       passwordValida = await bcrypt.compare(password, encargado.password);
     } else {
+      // Si todavía está en texto plano, comparamos directamente y la hasheamos
       passwordValida = (password === encargado.password);
       if (passwordValida) {
         const hash = await bcrypt.hash(encargado.password, 10);
@@ -39,6 +42,7 @@ exports.login = async (req, res) => {
   }
 };
 
+// Lista todos los encargados activos (sin contraseña)
 exports.listar = async (req, res) => {
   try {
     const conn = await db;

@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <style>
+        /* Estilos específicos de devoluciones */
         main{max-width:780px;margin:0 auto;padding:40px 28px}
+        /* Indicador de pasos */
         .ds{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;}
         .dstep{display:flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
         .dstep.active{color:var(--text);}.dstep.done{color:var(--success);}
@@ -19,6 +21,7 @@
         .sl{width:32px;height:2px;background:var(--border);margin:0 6px;}
         .sl.done{background:var(--success);}
 
+        /* Lista de préstamos activos */
         .section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;}
         .pres-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);}
         .pres-item:hover{border-color:var(--primary);transform:translateX(3px);}
@@ -31,12 +34,14 @@
         .pi-late{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);animation:pulse-glow 2s ease-in-out infinite}
         .em{text-align:center;color:var(--dim);padding:16px;font-size:0.85rem;}
 
+        /* Barra de búsqueda */
         .search-row{display:flex;gap:10px;}
         .si{flex:1;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:0.85rem;outline:none;transition:border-color var(--duration-fast) var(--ease-out);font-family:'Plus Jakarta Sans',sans-serif;}
         .si:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
         .btn-buscar{background:var(--primary);color:white;border:none;padding:0 18px;border-radius:10px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
         .btn-buscar:hover{opacity:0.9;}
 
+        /* Banner informativo del préstamo */
         #ps{display:none;}#ps.show{display:block;animation:slideUp 0.35s var(--ease-out) both;}
         .info-banner{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
         .info-banner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
@@ -46,26 +51,31 @@
         .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;}
         .if span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:1px;font-weight:700;}
         .if strong{font-size:0.84rem;font-weight:700;color:var(--text);}
+        /* Alerta de retraso */
         .retraso-alerta{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.18);border-radius:9px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:8px;}
         .retraso-alerta strong{color:var(--danger);font-size:0.82rem;}
 
+        /* Formulario de devolución */
         #fd{display:none;}#fd.show{display:block;animation:slideUp 0.35s var(--ease-out) both;}
         #fd .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
         .sep{border:none;border-top:1px solid var(--border);margin:16px 0;}
         .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 
+        /* Verificación de accesorios */
         .acc-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;}
         .acc-box h4{font-size:0.66rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
         .check-row{display:flex;align-items:flex-start;gap:9px;cursor:pointer;margin-bottom:5px;}
         .check-row input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--primary);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;margin-top:2px;}
         .check-row span{font-size:0.82rem;font-weight:600;color:var(--dim);}
 
+        /* Sección de daños */
         .dano-toggle{display:flex;align-items:center;gap:9px;cursor:pointer;margin-bottom:10px;}
         .dano-toggle input[type=checkbox]{width:17px;height:17px;cursor:pointer;accent-color:var(--danger);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;}
         .dano-toggle span{font-weight:700;font-size:0.85rem;color:var(--text);}
         .dano-section{display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
         .dano-section.show{display:block;}
 
+        /* Resumen de cobros */
         .cobros-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;display:none;}
         .cobros-card.show{display:block;}
         .cobros-title{font-size:0.66rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
@@ -81,6 +91,7 @@
         .btn-procesar:hover{opacity:0.9;}
         .btn-procesar:disabled{opacity:0.5;cursor:not-allowed;}
 
+        /* Comprobante de devolución */
         #resultado{display:none;}#resultado.show{display:block;max-width:480px;margin:0 auto;animation:slideUp var(--duration-slow) var(--ease-out) both;}
         .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
 
@@ -133,6 +144,7 @@
         .receipt-legal .rl-date{font-size:0.7rem;color:var(--dim);font-weight:600;}
         .receipt-legal p{font-size:0.65rem;color:var(--muted);margin:4px 0 0;line-height:1.4;}
 
+        /* Estilos de impresión */
         @media print {
             @page{margin:12mm 15mm;}
             *{margin:0;padding:0;box-sizing:border-box;background:transparent!important;}
@@ -170,10 +182,12 @@
         }
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
+        /* Responsive */
         @media(max-width:600px){.g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:24px 16px}}
     </style>
 </head>
 <body>
+<!-- Barra de navegación principal -->
 <nav class="nav">
     <div class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>SmartLoan IT</div>
     <div class="nav-right">
@@ -189,12 +203,14 @@
     </div>
 </nav>
 <main>
+    <!-- Encabezado de la página -->
     <div class="breadcrumbs"><a href="/home/dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Devoluciones</span></div>
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
         <div><h1>Recibir Devolución</h1><p>Registro de retorno de equipos con control de daños y multas</p></div>
     </div>
 
+    <!-- Indicador de pasos del wizard (1: Seleccionar, 2: Registrar, 3: Completado) -->
     <div class="ds">
         <div class="dstep active" id="s1"><div class="sn">1</div><span>Seleccionar</span></div>
         <div class="sl" id="l12"></div>
@@ -203,12 +219,14 @@
         <div class="dstep" id="s3"><div class="sn">3</div><span>Completado</span></div>
     </div>
 
+    <!-- Paso 1: Seleccionar préstamo -->
     <div id="p1">
         <div class="card">
             <div class="section-title">Préstamos activos - selecciona uno para procesar</div>
             <div id="lista"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div></div></div>
         </div>
         <div class="card">
+            <!-- Búsqueda por nombre de alumno -->
             <div class="section-title">O busca por nombre del alumno</div>
             <div class="search-row">
                 <input type="text" class="si" id="idp" placeholder="Nombre, apellido o codigo...">
@@ -217,6 +235,7 @@
         </div>
     </div>
 
+    <!-- Paso 2: Registrar devolución -->
     <div id="ps">
         <div class="info-banner">
             <div class="info-banner-header"><h3>Préstamo seleccionado</h3><button class="btn-change" onclick="volver()">Cambiar</button></div>
@@ -231,7 +250,8 @@
         <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--text)">Acceso restringido</h2>
         <p style="font-size:0.88rem;max-width:360px;margin:0 auto">Solo los administradores pueden procesar devoluciones. Contactá al encargado del sistema si necesitas realizar esta operación.</p>
     </div>
-    <div id="fd" class="admin-only">
+            <!-- Formulario de devolución (solo administradores) -->
+            <div id="fd" class="admin-only">
             <div class="card">
                 <div class="section-title">Estado del equipo al retorno</div>
                 <div class="g2">
@@ -247,6 +267,7 @@
                     <div class="ferr" id="ferr-accesorios">Confirma la devolución de accesorios</div>
                 </div>
             </div>
+            <!-- Sección de daños del equipo -->
             <div class="card">
                 <div class="section-title">Registro de daños</div>
                 <label class="dano-toggle"><input type="checkbox" id="dano" onchange="togDano()"><span>El equipo presenta daños al momento de la devolución</span></label>
@@ -258,6 +279,7 @@
                     <div class="ig"><label>Descripción del daño</label><textarea id="odano" placeholder="Descripción detallada del daño..." maxlength="300" oninput="clearFD('odano');checkFormComplete()"></textarea><div class="ferr" id="ferr-odano">Describe el daño en detalle</div></div>
                 </div>
             </div>
+            <!-- Resumen de cobros (multa por retraso + costo por daños) -->
             <div class="cobros-card" id="cobros">
                 <div class="cobros-title">Resumen de cobros</div>
                 <div class="cobro-row"><span>Multa por dia</span><strong id="rmpd" style="color:var(--primary)">Gs. 0</strong></div>
@@ -266,6 +288,7 @@
                 <div class="cobro-row"><span>Costo por daños</span><strong id="rda" style="color:var(--danger)">Gs. 0</strong></div>
                 <div class="cobro-row"><span>Total a cobrar</span><strong id="rt">Gs. 0</strong></div>
             </div>
+            <!-- Conformidad del encargado antes de procesar -->
             <div class="conf-box">
                 <h4>Conformidad del encargado</h4>
                 <label class="check-row"><input type="checkbox" id="conf" onchange="clearFD('conf');checkFormComplete()"><span>Confirmo que la información ingresada es correcta y el equipo fue recibido según las condiciones indicadas</span></label>
@@ -275,6 +298,7 @@
         </div>
     </div>
 
+    <!-- Paso 3: Comprobante de devolución -->
     <div id="resultado">
         <div class="receipt" id="receipt">
             <div class="receipt-header">
@@ -340,6 +364,7 @@
                 </div>
             </div>
         </div>
+        <!-- Botones: imprimir comprobante o nueva devolución -->
         <div class="res-btns">
             <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
             <button class="btn btn-primary" onclick="nueva()">Nueva devolución</button>
@@ -349,9 +374,12 @@
 <div class="toast" id="toast"></div>
 <script src="/js/api.js"></script>
 <script>
+// Verificamos si el usuario inició sesión, si no lo redirigimos al login
 if(!localStorage.getItem('encargado')) window.location.href='/';
+// Valor por defecto de la multa por día (Gs. 10,000)
 var MULTA=10000;
 
+// Cargamos el valor de la multa desde la configuración del sistema
 async function cargarMulta(){
     try{
         var r=await apiFetch('/configuracion');
@@ -361,9 +389,12 @@ async function cargarMulta(){
         if(cfg) MULTA=parseInt(cfg.valor)||10000;
     }catch(e){ MULTA=10000; }
 }
+// Guardamos el préstamo que estamos procesando actualmente
 let pActual=null;
+// Limpiamos los mensajes de error del formulario
 function clearFD(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
 
+// Cargamos la lista de préstamos activos del servidor
 async function cargarActivos(){
     const lista=document.getElementById('lista');
     try{
@@ -371,6 +402,7 @@ async function cargarActivos(){
         if(!r.ok){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';return;}
         const activos=(await r.json()).filter(p=>p.estado==='ACTIVO');
         if(!activos.length){lista.innerHTML='<p class="em">No hay préstamos activos pendientes de devolución</p>';return;}
+        // Calculamos si cada préstamo está vencido
         const ahora=new Date();
         lista.innerHTML=activos.map((p,i)=>{
             const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
@@ -387,11 +419,13 @@ async function cargarActivos(){
     }catch(e){lista.innerHTML='<p class="em">Error al conectar con el servidor</p>';}
 }
 
+// Cuando el usuario hace click en un préstamo, lo seleccionamos
 async function selec(id){
     document.querySelectorAll('.pres-item').forEach(el=>el.classList.remove('sel'));
     document.getElementById(`item-${id}`)?.classList.add('sel');
     await cargarPres(id);
 }
+// Buscamos préstamos por nombre del alumno
 async function buscar(){
     const q=normalizeText(document.getElementById('idp').value).trim();
     if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
@@ -410,6 +444,7 @@ async function buscar(){
             );
         });
         if(!activos.length){st('No se encontró ningún préstamo activo para ese alumno');return;}
+        // Si la búsqueda encuentra un solo resultado, lo seleccionamos directo
         if(activos.length===1){
             await cargarPres(activos[0].id_prestamo);
         } else {
@@ -432,6 +467,7 @@ async function buscar(){
     }catch(e){st('Error de conexión');}
     finally{btn.disabled=false;btn.textContent='Buscar';}
 }
+// Cargamos los detalles del préstamo seleccionado desde el servidor
 async function cargarPres(id){
     try{
         const r=await apiFetch(`/prestamos/${id}`);
@@ -440,8 +476,10 @@ async function cargarPres(id){
     }catch(e){st('Error de conexión');}
 }
 
+// Mostramos los datos del préstamo y el formulario de devolución
 function mostrar(){
     const p=pActual,ahora=new Date(),v=new Date(p.fecha_devolucion_estimada);
+    // Calculamos los días de retraso y la multa
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     document.getElementById('ig').innerHTML=`
         <div class="if"><span>Pr\u00e9stamo</span><strong>#${p.id_prestamo}</strong></div>
@@ -467,6 +505,7 @@ function mostrar(){
     setStep(2);updRes();checkFormComplete();
 }
 
+// Volvemos a la pantalla de selección de préstamos
 function volver(){
     pActual=null;
     document.getElementById('p1').style.display='block';
@@ -477,11 +516,13 @@ function volver(){
     setStep(1);resetForm();
 }
 
+// Cuando cambia el estado del equipo, verificamos si hay daños
 function onEstado(){
     if(document.getElementById('estado').value==='3'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
     updRes();
     checkFormComplete();
 }
+// Mostramos u ocultamos la sección de daños
 function togDano(){
     const c=document.getElementById('dano').checked;
     document.getElementById('ds').classList.toggle('show',c);
@@ -489,8 +530,10 @@ function togDano(){
     updRes();
     checkFormComplete();
 }
+// Formateamos el monto con puntos cada mil
 function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}
 function _rv(id){return document.getElementById(id).value.replace(/\./g,'');}
+// Actualizamos el resumen de cobros (multa + daños)
 function updRes(){
     if(!pActual)return;
     const v=new Date(pActual.fecha_devolucion_estimada),ahora=new Date();
@@ -505,6 +548,7 @@ function updRes(){
     document.getElementById('cobros').classList.add('show');
 }
 
+// Revisamos si el formulario está completo para habilitar el botón
 function checkFormComplete(){
     const btn=document.getElementById('btn');
     if(!pActual){btn.disabled=true;return;}
@@ -521,6 +565,7 @@ function checkFormComplete(){
     btn.disabled=false;
 }
 
+// Validamos los campos antes de enviar
 function validarDev(){
     let ok=true;
     const dano=document.getElementById('dano').checked;
@@ -540,6 +585,7 @@ function validarDev(){
     return ok;
 }
 
+// Enviamos la devolución al servidor
 async function procesar(){
     if(!pActual||!validarDev())return;
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
@@ -549,6 +595,7 @@ async function procesar(){
         const r=await apiFetch('/devoluciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_prestamo:pActual.id_prestamo,estado_equipo:document.getElementById('estado').value,tiene_dano:dano,tipo_dano:document.getElementById('tdano').value.trim(),observacion_dano:document.getElementById('odano').value.trim(),monto_dano:parseFloat(_rv('mdano'))||0,observacion:document.getElementById('obs').value.trim()})});
         const d = await safeJson(r);
         if(r.ok){
+            // Mostramos el comprobante con todos los detalles
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
             const numRec=String(pActual.id_prestamo).padStart(4,'0');
@@ -595,6 +642,7 @@ async function procesar(){
     }catch(e){st('Error de conexión');btn.disabled=false;btn.textContent='Procesar devolución';}
 }
 
+// Reiniciamos para procesar otra devolución
 function nueva(){
     showConfirm('\u00bfRegistrar una nueva devoluci\u00f3n? Se perder\u00e1 el comprobante actual.',function(){
     pActual=null;
@@ -604,6 +652,7 @@ function nueva(){
     setStep(1);resetForm();cargarActivos();
     });
 }
+// Reseteamos los campos del formulario
 function resetForm(){
     document.getElementById('estado').value='1';document.getElementById('obs').value='';
     document.getElementById('dano').checked=false;document.getElementById('ds').classList.remove('show');
@@ -612,12 +661,15 @@ function resetForm(){
     document.getElementById('btn').textContent='Procesar devolución';checkFormComplete();
     ['tdano','mdano','odano','conf','accesorios'].forEach(f=>clearFD(f));
 }
+// Controlamos los pasos del wizard (1, 2, 3)
 function setStep(n){
     for(let i=1;i<=3;i++){const s=document.getElementById(`s${i}`);s.classList.remove('active','done');if(i<n)s.classList.add('done');else if(i===n)s.classList.add('active');}
     document.getElementById('l12').classList.toggle('done',n>1);
     document.getElementById('l23').classList.toggle('done',n>2);
 }
+// Atajo de teclado para buscar al presionar Enter
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
+// Inicialización cuando la página carga
 window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); else document.querySelector('.no-access').style.display='block'; cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); var _enc = JSON.parse(localStorage.getItem('encargado') || '{}'); if(_enc.nombre){ document.getElementById('navAvatar').textContent = _enc.nombre[0].toUpperCase(); document.getElementById('navName').textContent = _enc.nombre + ' ' + (_enc.apellido || ''); document.getElementById('navUser').style.display = 'flex'; } };
 </script>
 </body>

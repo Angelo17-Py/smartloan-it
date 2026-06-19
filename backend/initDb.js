@@ -1,6 +1,8 @@
+// Inicialización de la base de datos: crea tablas, migraciones, triggers y datos de ejemplo
 const db = require('./db');
 const bcrypt = require('bcryptjs');
 
+// Espera a que MySQL esté disponible (útil cuando los contenedores arrancan juntos)
 async function esperarMySQL(intentos = 30, intervalo = 2000) {
   for (let i = 1; i <= intentos; i++) {
     try {
@@ -21,6 +23,11 @@ async function initDatabase() {
   const conn = await db;
   console.log('Inicializando base de datos...');
 
+  // =============================================================
+  // TABLAS PRINCIPALES
+  // =============================================================
+
+  // Tabla de encargados (usuarios del sistema)
   await conn.query(`
     CREATE TABLE IF NOT EXISTS encargados (
       id_encargado   INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,6 +41,7 @@ async function initDatabase() {
     )
   `);
 
+  // Tabla de alumnos (personas que solicitan préstamos)
   await conn.query(`
     CREATE TABLE IF NOT EXISTS alumnos (
       id_alumno      INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,6 +55,7 @@ async function initDatabase() {
     )
   `);
 
+  // Tabla de equipos (activos tecnológicos disponibles para préstamo)
   await conn.query(`
     CREATE TABLE IF NOT EXISTS equipos (
       id_equipo      INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,6 +68,7 @@ async function initDatabase() {
     )
   `);
 
+  // Tabla de préstamos (registro de salida de equipos)
   await conn.query(`
     CREATE TABLE IF NOT EXISTS prestamos (
       id_prestamo               INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,6 +90,7 @@ async function initDatabase() {
     )
   `);
 
+  // Tabla de devoluciones (registro de entrega de equipos)
   await conn.query(`
     CREATE TABLE IF NOT EXISTS devoluciones (
       id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
@@ -98,6 +109,7 @@ async function initDatabase() {
     )
   `);
 
+  // Tabla de configuración (valores del sistema como multa por día)
   await conn.query(`
     CREATE TABLE IF NOT EXISTS configuracion (
       id_config  INT AUTO_INCREMENT PRIMARY KEY,
@@ -107,7 +119,10 @@ async function initDatabase() {
     )
   `);
 
-  // Migraciones para bases de datos existentes
+  // =============================================================
+  // MIGRACIONES PARA BASES DE DATOS EXISTENTES
+  // Cada una envuelta en try/catch para no romper si ya se aplicaron
+  // =============================================================
   try { await conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 1 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"); } catch (e) { console.error('Migracion 2 fallo (no critico):', e.message); }
   try { await conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 3 fallo (no critico):', e.message); }
@@ -121,6 +136,11 @@ async function initDatabase() {
   try { await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)"); } catch (e) { console.error('Migracion 12 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo"); } catch (e) { console.error('Migracion 13 fallo (no critico):', e.message); }
 
+  // =============================================================
+  // TRIGGERS
+  // =============================================================
+
+  // Evita prestar un equipo que no esté disponible
   await conn.query('DROP TRIGGER IF EXISTS validar_prestamo');
   await conn.query(`
     CREATE TRIGGER validar_prestamo
@@ -136,6 +156,7 @@ async function initDatabase() {
     END
   `);
 
+  // Al crear un préstamo, marca el equipo como "Prestado"
   await conn.query('DROP TRIGGER IF EXISTS actualizar_estado_prestamo');
   await conn.query(`
     CREATE TRIGGER actualizar_estado_prestamo
@@ -146,6 +167,7 @@ async function initDatabase() {
     END
   `);
 
+  // Al devolver, actualiza el estado del equipo según si tiene daños o no
   await conn.query('DROP TRIGGER IF EXISTS actualizar_estado_devolucion');
   await conn.query(`
     CREATE TRIGGER actualizar_estado_devolucion
@@ -162,6 +184,10 @@ async function initDatabase() {
       UPDATE prestamos SET estado = 'DEVUELTO' WHERE id_prestamo = NEW.id_prestamo;
     END
   `);
+
+  // =============================================================
+  // USUARIOS POR DEFECTO
+  // =============================================================
 
   const hash = await bcrypt.hash('Adm1n2026', 10);
   const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
@@ -183,12 +209,19 @@ async function initDatabase() {
   }
   console.log('Encargados sincronizados');
 
+  // =============================================================
+  // CONFIGURACIÓN INICIAL
+  // =============================================================
+
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",
     ['multa_por_dia', '10000', 'Monto en guaraníes por día de retraso']
   );
 
-  // Seed data de ejemplo
+  // =============================================================
+  // DATOS DE EJEMPLO (solo si las tablas están vacías)
+  // =============================================================
+
   const [aluCount] = await conn.query('SELECT COUNT(*) AS c FROM alumnos');
   if (aluCount[0].c === 0) {
     await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU001','Maria','Gonzalez','Ingenieria en Informatica','3er año')");

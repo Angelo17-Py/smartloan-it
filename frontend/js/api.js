@@ -1,11 +1,14 @@
+// URL base de la API (mismo origen del frontend)
 const API = window.location.origin;
 
+// Función principal para hacer peticiones al backend con autenticación y timeout
 async function apiFetch(url, options = {}) {
   const token = localStorage.getItem('token');
   if (!options.headers) options.headers = {};
   if (token) {
     options.headers['Authorization'] = 'Bearer ' + token;
   }
+  // Timeout de 15 segundos para evitar peticiones colgadas
   const controller = new AbortController();
   const timeout = setTimeout(function () { controller.abort(); }, 15000);
   options.signal = controller.signal;
@@ -20,6 +23,7 @@ async function apiFetch(url, options = {}) {
     throw new Error('Error de conexión con el servidor');
   }
   clearTimeout(timeout);
+  // Si el token expiró, redirigimos al login (excepto en llamadas de fondo)
   if (res.status === 401 && !options.skipAuthRedirect) {
     localStorage.removeItem('encargado');
     localStorage.removeItem('token');
@@ -28,6 +32,7 @@ async function apiFetch(url, options = {}) {
   return res;
 }
 
+// Versión silenciosa de apiFetch para usarse en segundo plano sin redirigir al login
 async function apiFetchBackground(url, options = {}) {
   options.skipAuthRedirect = true;
   try {

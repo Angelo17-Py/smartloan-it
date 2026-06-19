@@ -1,6 +1,7 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 
+// Lista todos los equipos, ordenados por ID
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -12,6 +13,7 @@ exports.listar = async (req, res) => {
     }
 };
 
+// Crea un nuevo equipo en la base de datos
 exports.crear = async (req, res) => {
   try {
     const { nombre, tipo, marca, descripcion } = req.body;
@@ -27,12 +29,14 @@ exports.crear = async (req, res) => {
     }
 };
 
+// Elimina un equipo y sus registros relacionados, si no tiene préstamos activos
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
+      // Verificamos que no tenga préstamos activos antes de eliminar
       const [prestamosActivos] = await tx.query(
         'SELECT id_prestamo FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
       );
@@ -57,6 +61,7 @@ exports.eliminar = async (req, res) => {
   }
 };
 
+// Cambia el estado manual de un equipo solo permite: Disponible ↔ En mantenimiento
 exports.cambiarEstado = async (req, res) => {
   try {
     const estadoMap = {1:'Disponible', 2:'Prestado', 3:'En mantenimiento'};
@@ -70,6 +75,7 @@ exports.cambiarEstado = async (req, res) => {
       return res.status(404).json({ mensaje: 'Equipo no encontrado' });
     }
     const actual = equipos[0].estado;
+    // Solo se permite cambiar manualmente entre Disponible y En mantenimiento
     const permitidas = {
       'Disponible':       ['En mantenimiento'],
       'En mantenimiento': ['Disponible'],
@@ -86,6 +92,7 @@ exports.cambiarEstado = async (req, res) => {
     }
 };
 
+// Historial de préstamos de un equipo específico
 exports.historial = async (req, res) => {
   try {
     const conn = await db;
@@ -109,6 +116,7 @@ exports.historial = async (req, res) => {
     }
 };
 
+// Actualiza los datos de un equipo existente
 exports.editar = async (req, res) => {
   try {
     const { nombre, tipo, marca, descripcion } = req.body;

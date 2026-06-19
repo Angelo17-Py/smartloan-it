@@ -1,9 +1,11 @@
 const db = require('../db');
 
+// Registra una nueva devolución: calcula días de retraso, multas y total a cobrar
 exports.crear = async (req, res) => {
   try {
     const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
             observacion_dano, monto_dano, observacion } = req.body;
+    // Mapeo de estados numéricos del formulario a texto
     const estadoEqMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
     const estadoEq = estadoEqMap[estado_equipo];
     if (!id_prestamo || !estadoEq) {
@@ -12,6 +14,7 @@ exports.crear = async (req, res) => {
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
+      // Bloqueamos el préstamo para evitar devoluciones duplicadas
       const [prestamos] = await tx.query(
         'SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO" FOR UPDATE', [id_prestamo]
       );
@@ -20,6 +23,7 @@ exports.crear = async (req, res) => {
         return res.status(404).json({ mensaje: 'Préstamo no encontrado o ya devuelto' });
       }
 
+      // Calculamos la multa: primero usamos la del préstamo, sino la de configuración
       let MULTA = prestamos[0].multa_base != null ? parseFloat(prestamos[0].multa_base) : null;
       if (MULTA == null || isNaN(MULTA)) {
         const [cfg] = await tx.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
@@ -28,6 +32,7 @@ exports.crear = async (req, res) => {
       }
       const ahora = new Date();
       const venc = new Date(prestamos[0].fecha_devolucion_estimada);
+      // Días de retraso (si corresponde)
       const dias = ahora > venc ? Math.ceil((ahora - venc) / (1000 * 60 * 60 * 24)) : 0;
       const multa = dias * MULTA;
       const dano = tiene_dano ? (parseFloat(monto_dano) || 0) : 0;
@@ -55,6 +60,7 @@ exports.crear = async (req, res) => {
   }
 };
 
+// Elimina una devolución y reactiva el préstamo como ACTIVO
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
@@ -74,6 +80,7 @@ exports.eliminar = async (req, res) => {
       );
       await tx.query('DELETE FROM devoluciones WHERE id_devolucion = ?', [id]);
       await tx.query("UPDATE prestamos SET estado = 'ACTIVO' WHERE id_prestamo = ?", [idPrestamo]);
+      // Si el equipo no tiene otros préstamos activos, lo devolvemos a Disponible
       if (eq.length > 0) {
         const [activos] = await tx.query(
           'SELECT COUNT(*) AS c FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" AND id_prestamo != ?',
@@ -97,6 +104,7 @@ exports.eliminar = async (req, res) => {
   }
 };
 
+// Lista todas las devoluciones con datos del préstamo, alumno, equipo y encargados
 exports.listar = async (req, res) => {
   try {
     const conn = await db;

@@ -1,3 +1,5 @@
+// Conexión a MySQL usando un pool de conexiones para manejar varias solicitudes simultáneas
+// Soporta múltiples nombres de variables de entorno para flexibilidad en distintos entornos
 const mysql = require('mysql2/promise');
 
 const host     = process.env.MYSQLHOST     || process.env.MYSQL_HOST     || process.env.DB_HOST     || 'localhost';
@@ -16,12 +18,13 @@ const pool = mysql.createPool({
   user,
   password,
   database,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  dateStrings: true
+  waitForConnections: true,  // Espera si todas las conexiones están ocupadas
+  connectionLimit: 10,        // Máximo 10 conexiones simultáneas
+  queueLimit: 0,              // Sin límite de cola
+  dateStrings: true           // Las fechas llegan como string en vez de objeto Date
 });
 
+// Verificamos la conexión al arrancar
 pool.getConnection().then(conn => {
   console.log('MySQL conectado en ' + host + ':' + port);
   conn.release();
