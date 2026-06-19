@@ -225,10 +225,8 @@
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
             <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
         </div>
-    </div>
-
-    <!-- Comprobante de préstamo (se muestra después de registrar) -->
-    <div id="resultado">
+        <!-- Comprobante de préstamo (se muestra después de registrar) -->
+        <div id="resultado">
         <div class="receipt" id="receipt">
             <!-- Encabezado del comprobante -->
             <div class="receipt-header">
@@ -314,7 +312,6 @@
         </div>
     </div>
 </main>
-<!-- Mensajes de notificación -->
 <div class="toast" id="toast"></div>
 <script src="/js/api.js"></script>
 <!-- JavaScript del formulario de préstamos -->
@@ -449,11 +446,9 @@ async function registrar(){
         // Si el registro fue exitoso
         if(r.ok){
             formDirty = false;
-            // Ocultamos la cabecera y el formulario, mostramos el comprobante
-            document.querySelector('.breadcrumbs').style.display='none';
-            document.querySelector('.page-header').style.display='none';
-            document.querySelector('.no-access').style.display='none';
-            document.getElementById('formulario').style.display='none';
+            // Ocultamos el formulario y mostramos el comprobante
+            document.querySelector('.form-card').style.display='none';
+            document.getElementById('resultado').classList.add('show');
             // Llenamos el comprobante con todos los datos del préstamo
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
@@ -505,9 +500,7 @@ function imprimir(){
 function nuevoPrestamo(){
     showConfirm('\u00bfRegistrar un nuevo pr\u00e9stamo? Se perder\u00e1 el comprobante actual.',function(){
         document.getElementById('resultado').classList.remove('show');
-        document.querySelector('.breadcrumbs').style.display='';
-        document.querySelector('.page-header').style.display='';
-        document.getElementById('formulario').style.display='';
+        document.querySelector('.form-card').style.display='';
         document.getElementById('r-obs-section').style.display='none';
         formDirty = false;
         cargar();
