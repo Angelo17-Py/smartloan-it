@@ -476,9 +476,8 @@ async function registrar(){
             document.getElementById('r-sig-enc').textContent=enc.nombre?`${enc.nombre} ${enc.apellido}`:'Firma';
             document.getElementById('r-sig-alu').textContent=a.nombre?`${a.nombre} ${a.apellido}`:'Firma';
             document.getElementById('r-emision').textContent=`Emitido: ${hoy}`;
-            // Mostramos el comprobante y abrimos diálogo de impresión
+            // Mostramos el comprobante
             document.getElementById('resultado').classList.add('show');
-            window.print();
             window.scrollTo({top:0,behavior:'smooth'});
             btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
         } else {
