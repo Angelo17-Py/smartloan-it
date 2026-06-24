@@ -16,18 +16,18 @@
         .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px}
         /* Pestañas (préstamos/devoluciones) */
         .tabs{display:flex;gap:3px;background:var(--surface);padding:4px;border-radius:10px}
-        .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif}
+        .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none}
         .tab.active{background:var(--primary);color:white}
         /* Filtros de estado */
         .filters{display:flex;gap:6px;flex-wrap:wrap}
         /* Botón individual de filtro */
-        .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:0.75rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);font-family:'Plus Jakarta Sans',sans-serif}
+        .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:0.75rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
         .fb.active{background:var(--primary);color:white;border-color:var(--primary)}
         .fb:hover:not(.active){background:var(--surface);color:var(--text);}
         /* Barra de búsqueda */
         .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
         .search-bar svg{color:var(--dim);flex-shrink:0;}
-        .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;font-family:'Plus Jakarta Sans',sans-serif;padding:0;}
+        .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;padding:0;}
         .search-bar input::placeholder{color:var(--dim);}
         .search-count{font-size:0.75rem;color:var(--dim);white-space:nowrap;font-weight:700;}
         /* Tabla de resultados */
@@ -48,7 +48,7 @@
         /* Resaltado del texto buscado */
         .highlight{background:rgba(99,102,241,0.15);border-radius:3px;padding:0 2px;}
         /* Botón para eliminar una fila */
-        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:all var(--duration-fast) var(--ease-out);font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
+        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
         .btn-del-row:hover{background:rgba(239,68,68,0.1);}
         /* Columna de acciones (botón eliminar) */
         th.ac{width:52px;}
@@ -71,7 +71,7 @@
 <!-- Cuerpo de la página -->
 <!-- Barra de navegación principal -->
 <nav class="nav">
-    <a href="/home/dashboard.html" class="brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 100 100" fill="none"><rect x="4" y="4" width="92" height="92" rx="22" fill="currentColor"/><rect x="20" y="24" width="60" height="40" rx="6" fill="none" stroke="white" stroke-width="7"/><path d="M42 64 L42 72 L58 72 L58 64" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round" opacity="0.5"/><path d="M30 44 L42 34 L52 40 L64 28 L72 34" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>SmartLoan IT</a>
+    <a href="/home/dashboard.html" class="brand"><div class="brand-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none"><rect x="8" y="14" width="84" height="56" rx="10" fill="none" stroke="white" stroke-width="6"/><path d="M38 70 L38 82 L62 82 L62 70" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round" opacity="0.6"/><rect x="34" y="82" width="32" height="5" rx="2.5" fill="white" opacity="0.4"/><path d="M24 44 L38 32 L52 40 L66 26 L78 34" fill="none" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="78" cy="34" r="4" fill="white"/></svg></div>SmartLoan IT</a>
     <div class="nav-right">
         <div class="nav-user" id="navUser" style="display:none">
             <div class="avatar" id="navAvatar">A</div>
