@@ -1,42 +1,38 @@
 /* ============================================
    SmartLoan IT — Tokens de diseño (variables CSS)
-   Sistema de tema oscuro/claro con glassmorphism, tipografía moderna
+   Tema oscuro profesional con acento azul marino
    ============================================ */
 
-/* Fuente principal: Inter — geométrica, audaz, moderna */
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap');
 
 :root {
-  /*
-   * ==========================================
-   * TEMA OSCURO — Paleta EMBER (por defecto)
-   * ==========================================
-   */
+  /* ==========================================
+   * TEMA OSCURO — Paleta NAVY (por defecto)
+   * ========================================== */
 
-  /* Paleta de colores principal — ámbar/dorado cálido */
-  --primary: #d97706;
-  --primary-hover: #f59e0b;
-  --primary-glow: rgba(217,119,6,0.18);
-  --bg: #070605;
-  --bg-alt: #0c0908;
-  --card: rgba(20,16,12,0.75);
-  --card-hover: rgba(26,22,18,0.85);
-  --surface: #1c1813;
-  --text: #fef3c7;
-  --text-secondary: #fde68a;
-  --dim: #a08870;
-  --muted: #7a6b5a;
-  --success: #34d399;
-  --success-bg: rgba(52,211,153,0.10);
+  --primary: #2563eb;
+  --primary-hover: #3b82f6;
+  --primary-glow: rgba(37,99,235,0.12);
+  --bg: #080b12;
+  --bg-alt: #0d1117;
+  --card: rgba(13,17,23,0.75);
+  --card-hover: rgba(17,22,30,0.85);
+  --surface: #111827;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --dim: #64748b;
+  --muted: #475569;
+  --success: #10b981;
+  --success-bg: rgba(16,185,129,0.10);
   --danger: #ef4444;
   --danger-bg: rgba(239,68,68,0.10);
   --warn: #f59e0b;
   --warn-bg: rgba(245,158,11,0.10);
-  --info: #22d3ee;
-  --info-bg: rgba(34,211,238,0.10);
-  --border: rgba(251,191,36,0.07);
-  --border-hover: rgba(251,191,36,0.18);
-  --border-glow: rgba(217,119,6,0.15);
+  --info: #06b6d4;
+  --info-bg: rgba(6,182,212,0.10);
+  --border: rgba(59,130,246,0.06);
+  --border-hover: rgba(59,130,246,0.14);
+  --border-glow: rgba(37,99,235,0.10);
   --overlay: rgba(0,0,0,0.80);
   --coral: #f97316;
   --coral-bg: rgba(249,115,22,0.10);
@@ -44,24 +40,20 @@
   --ember-dark: #b45309;
   --sidebar-width: 240px;
 
-  /*
-   * ==========================================
+  /* ==========================================
    * GLASSMORPHISM
-   * ==========================================
-   */
+   * ========================================== */
 
-  --glass-bg: rgba(20,16,12,0.60);
-  --glass-border: rgba(251,191,36,0.06);
+  --glass-bg: rgba(13,17,23,0.60);
+  --glass-border: rgba(59,130,246,0.05);
   --glass-blur: 16px;
-  --glass-saturate: 1.4;
-  --glass-highlight: rgba(251,191,36,0.03);
-  --card-border: rgba(251,191,36,0.07);
+  --glass-saturate: 1.3;
+  --glass-highlight: rgba(59,130,246,0.02);
+  --card-border: rgba(59,130,246,0.06);
 
-  /*
-   * ==========================================
-   * TIPOGRAFÍA — Inter (geométrica, audaz)
-   * ==========================================
-   */
+  /* ==========================================
+   * TIPOGRAFÍA
+   * ========================================== */
 
   --font: 'Inter', system-ui, -apple-system, sans-serif;
   --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
@@ -70,7 +62,6 @@
   --letter-space-wide: -0.02em;
   --letter-space-tight: -0.04em;
 
-  /* Tamaños de texto fluidos (clamp) */
   --text-xs: clamp(0.65rem, 0.8vw, 0.70rem);
   --text-sm: clamp(0.78rem, 0.9vw, 0.80rem);
   --text-base: clamp(0.88rem, 1vw, 0.90rem);
@@ -80,11 +71,9 @@
   --text-3xl: clamp(2rem, 4vw, 2.6rem);
   --text-4xl: clamp(2.6rem, 6vw, 3.6rem);
 
-  /*
-   * ==========================================
+  /* ==========================================
    * ESPACIADO
-   * ==========================================
-   */
+   * ========================================== */
 
   --space-1: 4px;
   --space-2: 8px;
@@ -97,11 +86,9 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  /*
-   * ==========================================
+  /* ==========================================
    * LAYOUT
-   * ==========================================
-   */
+   * ========================================== */
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -113,24 +100,20 @@
   --max-width-wide: 1400px;
   --nav-height: 64px;
 
-  /*
-   * ==========================================
+  /* ==========================================
    * SOMBRAS
-   * ==========================================
-   */
+   * ========================================== */
 
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
   --shadow-md: 0 8px 24px rgba(0,0,0,0.35);
   --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
   --shadow-card: 0 8px 32px rgba(0,0,0,0.3);
-  --shadow-glow: 0 0 30px rgba(217,119,6,0.08);
-  --shadow-glow-strong: 0 0 40px rgba(217,119,6,0.15);
+  --shadow-glow: 0 0 30px rgba(37,99,235,0.06);
+  --shadow-glow-strong: 0 0 40px rgba(37,99,235,0.10);
 
-  /*
-   * ==========================================
+  /* ==========================================
    * ANIMACIONES
-   * ==========================================
-   */
+   * ========================================== */
 
   --ease-out: cubic-bezier(0.16,1,0.3,1);
   --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
@@ -143,36 +126,34 @@
   --duration-2xl: 1200ms;
 }
 
-/*
- * ==========================================
- * TEMA CLARO (preferencia del sistema)
- * ==========================================
- */
+/* ==========================================
+ * TEMA CLARO
+ * ========================================== */
 
 @media (prefers-color-scheme: light) {
   :root:not(.dark) {
-    --primary: #b45309;
-    --primary-hover: #d97706;
-    --primary-glow: rgba(180,83,9,0.12);
-    --bg: #f5f0e8;
-    --bg-alt: #efe8dc;
+    --primary: #2563eb;
+    --primary-hover: #3b82f6;
+    --primary-glow: rgba(37,99,235,0.08);
+    --bg: #f8fafc;
+    --bg-alt: #f1f5f9;
     --card: rgba(255,255,255,0.80);
     --card-hover: rgba(255,255,255,0.92);
-    --surface: #f5f0e8;
-    --text: #1c1917;
-    --text-secondary: #292524;
-    --dim: #8c7a6a;
-    --muted: #a89888;
-    --border: rgba(0,0,0,0.06);
-    --border-hover: rgba(0,0,0,0.12);
-    --border-glow: rgba(217,119,6,0.08);
+    --surface: #f1f5f9;
+    --text: #0f172a;
+    --text-secondary: #1e293b;
+    --dim: #64748b;
+    --muted: #94a3b8;
+    --border: rgba(37,99,235,0.06);
+    --border-hover: rgba(37,99,235,0.12);
+    --border-glow: rgba(37,99,235,0.06);
     --overlay: rgba(0,0,0,0.4);
-    --shadow-card: 0 8px 32px rgba(0,0,0,0.05);
-    --shadow-glow: 0 0 30px rgba(180,83,9,0.05);
+    --shadow-card: 0 8px 32px rgba(0,0,0,0.04);
+    --shadow-glow: 0 0 30px rgba(37,99,235,0.04);
     --glass-bg: rgba(255,255,255,0.55);
-    --glass-border: rgba(0,0,0,0.04);
+    --glass-border: rgba(0,0,0,0.03);
     --glass-highlight: rgba(255,255,255,0.6);
-    --card-border: rgba(0,0,0,0.05);
+    --card-border: rgba(0,0,0,0.04);
     --coral: #ea580c;
     --coral-bg: rgba(234,88,12,0.08);
     --ember-light: #f59e0b;
@@ -180,35 +161,29 @@
   }
 }
 
-/*
- * ==========================================
- * TEMA CLARO (selección manual)
- * ==========================================
- */
-
 :root.light {
-  --primary: #b45309;
-  --primary-hover: #d97706;
-  --primary-glow: rgba(180,83,9,0.12);
-  --bg: #f5f0e8;
-  --bg-alt: #efe8dc;
+  --primary: #2563eb;
+  --primary-hover: #3b82f6;
+  --primary-glow: rgba(37,99,235,0.08);
+  --bg: #f8fafc;
+  --bg-alt: #f1f5f9;
   --card: rgba(255,255,255,0.80);
   --card-hover: rgba(255,255,255,0.92);
-  --surface: #f5f0e8;
-  --text: #1c1917;
-  --text-secondary: #292524;
-  --dim: #8c7a6a;
-  --muted: #a89888;
-  --border: rgba(0,0,0,0.06);
-  --border-hover: rgba(0,0,0,0.12);
-  --border-glow: rgba(217,119,6,0.08);
+  --surface: #f1f5f9;
+  --text: #0f172a;
+  --text-secondary: #1e293b;
+  --dim: #64748b;
+  --muted: #94a3b8;
+  --border: rgba(37,99,235,0.06);
+  --border-hover: rgba(37,99,235,0.12);
+  --border-glow: rgba(37,99,235,0.06);
   --overlay: rgba(0,0,0,0.4);
-  --shadow-card: 0 8px 32px rgba(0,0,0,0.05);
-  --shadow-glow: 0 0 30px rgba(180,83,9,0.05);
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.04);
+  --shadow-glow: 0 0 30px rgba(37,99,235,0.04);
   --glass-bg: rgba(255,255,255,0.55);
-  --glass-border: rgba(0,0,0,0.04);
+  --glass-border: rgba(0,0,0,0.03);
   --glass-highlight: rgba(255,255,255,0.6);
-  --card-border: rgba(0,0,0,0.05);
+  --card-border: rgba(0,0,0,0.04);
   --coral: #ea580c;
   --coral-bg: rgba(234,88,12,0.08);
   --ember-light: #f59e0b;
