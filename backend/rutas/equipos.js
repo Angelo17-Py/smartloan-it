@@ -8,6 +8,8 @@ const { apiLimiter } = require('../middleware/rateLimiters');
 
 // Lista todos los equipos
 router.get('/',              verificarToken, c.listar);
+// Lista solo equipos disponibles para préstamo
+router.get('/disponibles',   verificarToken, c.disponibles);
 // Crea un equipo nuevo (solo admin)
 router.post('/',             verificarToken, requireAdmin, apiLimiter, c.crear);
 // Elimina un equipo (solo admin)

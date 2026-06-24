@@ -13,6 +13,18 @@ exports.listar = async (req, res) => {
     }
 };
 
+// Lista solo equipos disponibles para préstamo
+exports.disponibles = async (req, res) => {
+  try {
+    const conn = await db;
+    const [rows] = await conn.query("SELECT * FROM equipos WHERE estado = 'Disponible' ORDER BY id_equipo");
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 // Crea un nuevo equipo en la base de datos
 exports.crear = async (req, res) => {
   try {
