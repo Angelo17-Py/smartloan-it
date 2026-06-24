@@ -120,6 +120,21 @@
   --duration-normal: 250ms;
   --duration-slow: 400ms;
   --duration-spring: 500ms;
+  --duration-xl: 800ms;
+  --duration-2xl: 1200ms;
+
+  /* Dock sidebar dimensions */
+  --dock-width: 64px;
+  --dock-expanded: 220px;
+
+  /* Pulse section */
+  --pulse-ring-size: 220px;
+
+  /* Island colors */
+  --island-primary: var(--primary);
+  --island-coral: var(--coral);
+  --island-green: var(--success);
+  --island-amber: var(--warn);
 }
 
 /*

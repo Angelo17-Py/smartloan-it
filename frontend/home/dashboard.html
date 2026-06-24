@@ -10,102 +10,89 @@
     <script src="/js/utils.js" defer></script>
     <script src="/js/vendor/chart.umd.min.js"></script>
     <style>
-        /* Estilos específicos del dashboard */
         .main-content{display:flex;flex-direction:column}
-        /* Esqueletos de carga - animación de pulso mientras se cargan los datos */
         .skeleton-pulse{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--border) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:skeleton 1.5s ease-in-out infinite;border-radius:6px}
         @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
-        /* Contenedor para los gráficos de Chart.js (donut y barras) */
-        .chart-container{position:relative;width:100%}
-        .chart-container canvas{width:100%!important}
-        .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
-        .hero-stat-label.skeleton-pulse{width:80px;height:12px;display:inline-block;margin-top:4px}
-        /* Ocultamos las secciones de administración por defecto, solo se ven si el usuario es admin */
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
-        body.role-admin .bento-admin.admin-only{display:grid!important;}
-        /* Texto que indica cuándo se actualizaron los datos por última vez */
+        body.role-admin .admin-panorama.admin-only{display:grid!important;}
         .last-updated{font-size:var(--text-xs);color:var(--dim);text-align:right;margin-top:var(--space-2);margin-bottom:var(--space-4)}
-        /* Botón flotante para volver al inicio de la página */
         .scroll-top{position:fixed;bottom:var(--space-8);right:var(--space-8);z-index:100;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--dim);cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transition:all var(--duration-normal) var(--ease-out);box-shadow:var(--shadow-lg)}
         .scroll-top.show{opacity:1;pointer-events:all}
         .scroll-top:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-2px)}
-        /* Ajustes responsivos para pantallas chicas (menos de 768px) */
+        .pulse-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
+        .island-value.skeleton-pulse{width:80px;height:36px;display:inline-block}
         @media(max-width:768px){
-          .hero-glass{padding:var(--space-5)}
-          .hero-inner{flex-direction:column}
-          .hero-right{text-align:left;width:100%}
+          .pulse{flex-direction:column;text-align:center;padding:var(--space-5)}
+          .pulse-extra{justify-content:center}
+          .pulse-sidebar{align-items:center}
+          .pulse-clock{align-items:center}
         }
     </style>
 </head>
 <body>
 
-<!-- Contenedor principal con layout de sidebar + contenido -->
 <div class="layout" id="layout">
-    <!-- SUPERPOSICIÓN OSCURA cuando la sidebar se abre en celular -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- BARRA LATERAL con el menú de navegación -->
-    <aside class="sidebar" id="sidebar">
-        <!-- Logo y nombre de la aplicación -->
+    <!-- DOCK SIDEBAR — compacta, se expande al hover -->
+    <aside class="sidebar dashboard-sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="sidebar-brand-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
-            <span class="sidebar-brand-text">SmartLoan IT</span>
+            <span class="sidebar-brand-text dock-hide">SmartLoan IT</span>
         </div>
 
-        <!-- Datos del encargado que inició sesión -->
         <div class="sidebar-user">
             <div class="sidebar-avatar" id="s-avatar">A</div>
-            <div class="sidebar-user-info">
+            <div class="sidebar-user-info dock-hide">
                 <div class="sidebar-user-name" id="s-name">Cargando...</div>
                 <div class="sidebar-user-role" id="s-role">Encargado</div>
             </div>
         </div>
 
-        <!-- Menú de navegación principal -->
         <nav class="sidebar-nav" id="sidebarNav">
-            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard">
+            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard" title="Dashboard">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                Dashboard
+                <span class="dock-hide">Dashboard</span>
             </a>
-            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos">
+            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos" title="Equipos">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                Equipos
+                <span class="dock-hide">Equipos</span>
             </a>
-            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos">
+            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos" title="Alumnos">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                Alumnos
+                <span class="dock-hide">Alumnos</span>
             </a>
-            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos">
+            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos" title="Préstamos">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                Préstamos
-                <span class="ni-badge" id="badge-prestamos">0</span>
+                <span class="dock-hide">Préstamos</span>
+                <span class="ni-badge dock-hide" id="badge-prestamos">0</span>
             </a>
-            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones">
+            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones" title="Devoluciones">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-                Devoluciones
+                <span class="dock-hide">Devoluciones</span>
             </a>
-            <a href="/historial/historial.html" class="nav-item" data-page="historial">
+            <a href="/historial/historial.html" class="nav-item" data-page="historial" title="Historial">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                Historial
+                <span class="dock-hide">Historial</span>
             </a>
         </nav>
 
-        <!-- Botones para cambiar tema y cerrar sesión -->
         <div class="sidebar-footer">
             <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Cambiar tema">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                Tema
+                <span class="dock-hide">Tema</span>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
+            <button class="btn btn-danger btn-sm" onclick="logout()" title="Salir">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span class="dock-hide">Salir</span>
+            </button>
         </div>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL del dashboard -->
     <main class="main">
-        <!-- BARRA SUPERIOR que se ve solo en celulares -->
         <div class="topbar">
             <button class="hamburger" onclick="toggleSidebar()" aria-label="Menú">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
@@ -118,227 +105,235 @@
 
         <div class="main-content">
 
-        <!-- SECCIÓN DE BIENVENIDA con las estadísticas principales -->
-        <section class="hero-glass">
-            <div class="hero-inner">
-                <div class="hero-left">
-                    <h1 id="welcome-msg">Bienvenido</h1>
-                    <p>Panel de control del sistema de gestión de recursos tecnológicos</p>
-                </div>
-                <div class="hero-right">
-                    <div class="hero-date" id="hero-date"></div>
-                    <div class="hero-time" id="hero-time"></div>
-                </div>
+            <!-- GREETING COMPACTO -->
+            <div class="greeting reveal">
+                <div class="greeting-avatar" id="s-avatar-small">A</div>
+                <div class="greeting-text" id="welcome-msg">Bienvenido</div>
             </div>
-            <!-- Tarjetas con números resumen (préstamos activos, equipos totales, etc.) -->
-            <div class="hero-stats" id="heroStats">
-                <div class="hero-stat">
-                    <span class="hero-stat-value" id="h-prestamos">—</span>
-                    <span class="hero-stat-label">Préstamos activos</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value" id="h-equipos">—</span>
-                    <span class="hero-stat-label">Equipos totales</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value" id="h-alumnos">—</span>
-                    <span class="hero-stat-label">Alumnos registrados</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value" id="h-devueltos">—</span>
-                    <span class="hero-stat-label">Devueltos hoy</span>
-                </div>
-            </div>
-        </section>
 
-        <!-- TARJETAS DE MÉTRICAS con gráficos chiquitos -->
-        <div class="bento-metrics">
-            <div class="metric-card glass" id="m-total">
-                <div class="mc-top">
-                    <div class="mc-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <!-- PULSO DEL SISTEMA -->
+            <section class="pulse reveal">
+                <div class="pulse-visual">
+                    <svg class="pulse-ring-svg" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="ringGradPan" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="var(--primary)" />
+                                <stop offset="100%" stop-color="var(--coral)" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="pulse-ring-outer" cx="100" cy="100" r="88" fill="none" stroke="var(--border)" stroke-width="2" />
+                        <circle class="pulse-ring-inner" cx="100" cy="100" r="88" fill="none" stroke="url(#ringGradPan)" stroke-width="3" stroke-dasharray="553" stroke-linecap="round" />
+                        <circle class="pulse-ring-glow" cx="100" cy="100" r="88" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="553" />
+                    </svg>
+                    <div class="pulse-center">
+                        <div class="pulse-value" id="h-prestamos">—</div>
+                        <div class="pulse-label">activos</div>
                     </div>
                 </div>
-                <div>
-                    <div class="mc-num" id="ct">—</div>
-                    <div class="mc-label">Equipos Totales</div>
-                </div>
-                <canvas class="sparkline" id="sp-total" height="32"></canvas>
-            </div>
-            <div class="metric-card glass" id="m-prestado">
-                <div class="mc-top">
-                    <div class="mc-icon red">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <div class="pulse-sidebar">
+                    <div class="pulse-clock">
+                        <div class="pulse-date" id="hero-date"></div>
+                        <div class="pulse-time" id="hero-time"></div>
                     </div>
-                </div>
-                <div>
-                    <div class="mc-num" id="cp">—</div>
-                    <div class="mc-label">En Préstamo</div>
-                </div>
-                <canvas class="sparkline" id="sp-prestado" height="32"></canvas>
-            </div>
-            <div class="metric-card glass" id="m-disponible">
-                <div class="mc-top">
-                    <div class="mc-icon green">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>
-                    </div>
-                </div>
-                <div>
-                    <div class="mc-num" id="cd">—</div>
-                    <div class="mc-label">Disponibles</div>
-                </div>
-                <canvas class="sparkline" id="sp-disponible" height="32"></canvas>
-            </div>
-            <div class="metric-card glass" id="m-mantenimiento">
-                <div class="mc-top">
-                    <div class="mc-icon amber">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-                    </div>
-                </div>
-                <div>
-                    <div class="mc-num" id="cm">—</div>
-                    <div class="mc-label">Mantenimiento</div>
-                </div>
-                <canvas class="sparkline" id="sp-mantenimiento" height="32"></canvas>
-            </div>
-        </div>
-
-        <!-- GRÁFICOS: distribución de equipos y préstamos por mes -->
-        <div class="bento-charts">
-            <div class="glass">
-                <h3>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z"/></svg>
-                    Distribución de Equipos
-                </h3>
-                <!-- Gráfico de donut (torta) que muestra la distribución de equipos por estado -->
-                <div class="chart-container">
-                    <canvas id="donutChart"></canvas>
-                    <div class="chart-empty" id="donutEmpty" style="display:none">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                        <span>No hay equipos registrados</span>
-                    </div>
-                </div>
-            </div>
-            <div class="glass">
-                <h3>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                    Préstamos por Mes
-                </h3>
-                <!-- Gráfico de barras que muestra los préstamos de los últimos 6 meses -->
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                    <div class="chart-empty" id="barEmpty" style="display:none">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="6" width="4" height="14"/><rect x="17" y="9" width="4" height="11"/></svg>
-                        <span>No hay préstamos registrados</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="last-updated" id="lastUpdated"></div>
-
-        <!-- SECCIÓN DE ADMINISTRACIÓN (solo visible para admins) -->
-        <p class="section-title">Administración</p>
-        <div class="bento-admin admin-only">
-            <!-- Tarjeta de exportación de datos a Excel -->
-            <div class="glass">
-                <div class="admin-card-header">
-                    <div class="ac-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-                    <h3>Respaldo de información <span class="format-badge">XLSX</span></h3>
-                </div>
-                <p class="admin-card-sub">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
-                <div class="export-stats" id="exportStats">
-                    <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
-                    <div class="es-divider"></div>
-                    <div class="es-item"><span class="es-num" id="expReturns">—</span><span class="es-lbl">Devoluciones</span></div>
-                    <div class="es-divider"></div>
-                    <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
-                </div>
-                <button class="export-btn" id="exportBtn" onclick="exportarExcel()">
-                    <span class="eb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-                    <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
-                    <span class="eb-label">
-                        <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
-                        <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
-                    </span>
-                    <svg class="eb-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    <span class="eb-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-                </button>
-                <div class="export-info">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>Última exportación: <strong id="lastExport">—</strong></span>
-                    <span class="export-filesize" id="lastExportSize"></span>
-                </div>
-            </div>
-            <!-- Tarjeta de configuración del sistema (valor de la multa por día) -->
-            <div class="glass">
-                <div class="admin-card-header">
-                    <div class="ac-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
-                    <h3>Configuración del sistema</h3>
-                </div>
-                <p class="admin-card-sub">Ajusta los parámetros operativos del sistema.</p>
-                <div class="cfg-section">
-                    <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
-                        <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
-                        <div style="flex:1;min-width:0">
-                            <div style="font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Valor de multa por día</div>
-                            <div style="font-size:0.65rem;color:var(--dim);margin-top:1px">Tasa vigente para retrasos</div>
+                    <div class="pulse-extra">
+                        <div class="pulse-stat">
+                            <span class="pulse-stat-value" id="h-equipos">—</span>
+                            <span class="pulse-stat-label">Equipos</span>
+                        </div>
+                        <div class="pulse-extra-sep"></div>
+                        <div class="pulse-stat">
+                            <span class="pulse-stat-value" id="h-alumnos">—</span>
+                            <span class="pulse-stat-label">Alumnos</span>
+                        </div>
+                        <div class="pulse-extra-sep"></div>
+                        <div class="pulse-stat">
+                            <span class="pulse-stat-value" id="h-devueltos">—</span>
+                            <span class="pulse-stat-label">Devueltos hoy</span>
                         </div>
                     </div>
                 </div>
-                <div class="cfg-section">
-                    <div class="cfg-row">
-                        <div class="cfg-label">
-                            <strong>Actualizar multa</strong>
-                            <span>Nuevo valor por día de retraso</span>
-                        </div>
-                        <div class="cfg-input-group">
-                            <span class="cfg-prefix">Gs.</span>
-                            <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
-                            <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
+            </section>
+
+            <!-- ISLAS DE MÉTRICAS -->
+            <section class="islands reveal">
+                <div class="island" data-color="primary">
+                    <div class="island-body">
+                        <div class="island-value" id="ct">—</div>
+                        <div class="island-label">Equipos Totales</div>
+                    </div>
+                    <div class="island-bar">
+                        <div class="island-bar-fill" id="bar-ct" style="width:100%"></div>
+                    </div>
+                </div>
+                <div class="island" data-color="coral">
+                    <div class="island-body">
+                        <div class="island-value" id="cp">—</div>
+                        <div class="island-label">En Préstamo</div>
+                    </div>
+                    <div class="island-bar">
+                        <div class="island-bar-fill" id="bar-cp" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="island" data-color="green">
+                    <div class="island-body">
+                        <div class="island-value" id="cd">—</div>
+                        <div class="island-label">Disponibles</div>
+                    </div>
+                    <div class="island-bar">
+                        <div class="island-bar-fill" id="bar-cd" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="island" data-color="amber">
+                    <div class="island-body">
+                        <div class="island-value" id="cm">—</div>
+                        <div class="island-label">Mantenimiento</div>
+                    </div>
+                    <div class="island-bar">
+                        <div class="island-bar-fill" id="bar-cm" style="width:0%"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GRÁFICOS PANORAMA -->
+            <section class="charts-panorama reveal">
+                <div class="chart-block chart-donut-block">
+                    <div class="chart-block-header">
+                        <h3>Distribución de Equipos</h3>
+                        <span class="chart-block-badge">Estado actual</span>
+                    </div>
+                    <div class="chart-block-body">
+                        <div class="chart-container">
+                            <canvas id="donutChart"></canvas>
+                            <div class="chart-empty" id="donutEmpty" style="display:none">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <span>No hay equipos registrados</span>
+                            </div>
                         </div>
                     </div>
-                    <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
+                </div>
+                <div class="chart-block chart-bar-block">
+                    <div class="chart-block-header">
+                        <h3>Préstamos por Mes</h3>
+                        <span class="chart-block-badge">Últimos 6 meses</span>
+                    </div>
+                    <div class="chart-block-body">
+                        <div class="chart-container">
+                            <canvas id="barChart"></canvas>
+                            <div class="chart-empty" id="barEmpty" style="display:none">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="6" width="4" height="14"/><rect x="17" y="9" width="4" height="11"/></svg>
+                                <span>No hay préstamos registrados</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="last-updated" id="lastUpdated"></div>
+
+            <!-- ADMINISTRACIÓN -->
+            <p class="section-title">Administración</p>
+            <div class="admin-panorama admin-only">
+                <div class="chart-block">
+                    <div class="chart-block-header">
+                        <div style="display:flex;align-items:center;gap:var(--space-3)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Respaldo de información <span class="format-badge">XLSX</span></h3>
+                        </div>
+                    </div>
+                    <div class="chart-block-body">
+                        <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
+                        <div class="export-stats" id="exportStats">
+                            <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
+                            <div class="es-divider"></div>
+                            <div class="es-item"><span class="es-num" id="expReturns">—</span><span class="es-lbl">Devoluciones</span></div>
+                            <div class="es-divider"></div>
+                            <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
+                        </div>
+                        <button class="export-btn" id="exportBtn" onclick="exportarExcel()">
+                            <span class="eb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                            <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
+                            <span class="eb-label">
+                                <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
+                                <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
+                            </span>
+                            <svg class="eb-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <span class="eb-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                        </button>
+                        <div class="export-info">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span>Última exportación: <strong id="lastExport">—</strong></span>
+                            <span class="export-filesize" id="lastExportSize"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-block">
+                    <div class="chart-block-header">
+                        <div style="display:flex;align-items:center;gap:var(--space-3)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                            <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Configuración del sistema</h3>
+                        </div>
+                    </div>
+                    <div class="chart-block-body">
+                        <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Ajusta los parámetros operativos del sistema.</p>
+                        <div class="cfg-section">
+                            <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
+                                <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
+                                <div style="flex:1;min-width:0">
+                                    <div style="font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Valor de multa por día</div>
+                                    <div style="font-size:0.65rem;color:var(--dim);margin-top:1px">Tasa vigente para retrasos</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cfg-section">
+                            <div class="cfg-row">
+                                <div class="cfg-label">
+                                    <strong>Actualizar multa</strong>
+                                    <span>Nuevo valor por día de retraso</span>
+                                </div>
+                                <div class="cfg-input-group">
+                                    <span class="cfg-prefix">Gs.</span>
+                                    <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
+                                    <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
+                                </div>
+                            </div>
+                            <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
         </div>
     </main>
 </div>
 
-<!-- Notificaciones emergentes (toast) que aparecen y desaparecen solas -->
 <div class="toast" id="toast"></div>
 
-<!-- BOTÓN PARA VOLVER ARRIBA -->
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver arriba">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
 </button>
 
 <script src="/js/api.js"></script>
 <script>
-// Verificamos si el usuario inició sesión, si no lo redirigimos al login
-if(!localStorage.getItem('encargado')) window.location.href = '/';
+var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
+if(!enc.nombre) window.location.href = '/';
 
-// Guardamos las referencias a los gráficos para poder actualizarlos o destruirlos después
-let donutChartInstance = null;
-let barChartInstance = null;
+var donutChartInstance = null;
+var barChartInstance = null;
 
-// Abrimos o cerramos la sidebar cuando el usuario toca el menú hamburguesa
 function toggleSidebar(){
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebarOverlay').classList.toggle('show');
 }
 
-
-
 // ---- GRÁFICOS ----
-// Creamos el gráfico de donut (la rosquilla) con los estados de los equipos
 function crearDonut(labels, data, colors) {
     var ctx = document.getElementById('donutChart').getContext('2d');
-    // Destruimos el gráfico anterior si ya existía para no duplicarlo
     if (donutChartInstance) donutChartInstance.destroy();
     document.getElementById('donutEmpty').style.display = 'none';
     document.getElementById('donutChart').style.display = 'block';
+    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
+    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f';
     donutChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -347,28 +342,29 @@ function crearDonut(labels, data, colors) {
                 data: data,
                 backgroundColor: colors,
                 borderWidth: 0,
-                hoverOffset: 8
+                hoverOffset: 12,
+                spacing: 4
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            cutout: '70%',
+            cutout: '78%',
             plugins: {
                 legend: {
                     position: 'bottom',
                     labels: {
-                        padding: 16,
+                        padding: 18,
                         usePointStyle: true,
-                        pointStyleWidth: 8,
-                        boxWidth: 8,
-                        boxHeight: 8,
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff',
+                        pointStyleWidth: 10,
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        color: textColor,
                         font: { family: 'Plus Jakarta Sans, sans-serif', size: 11, weight: '600' }
                     }
                 },
                 tooltip: {
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f',
+                    backgroundColor: cardColor,
                     titleFont: { size: 12, weight: '700' },
                     bodyFont: { size: 11 },
                     padding: 12,
@@ -378,22 +374,47 @@ function crearDonut(labels, data, colors) {
                         label: function(ctx){ return ' ' + ctx.label + ': ' + ctx.parsed + ' equipos'; }
                     }
                 }
+            },
+            animation: {
+                animateRotate: true,
+                duration: 1200,
+                easing: 'easeOutQuart'
             }
-        }
+        },
+        plugins: [{
+            id: 'centerText',
+            beforeDraw: function(chart) {
+                var w = chart.width, h = chart.height, c = chart.ctx;
+                c.save();
+                var total = chart.data.datasets[0].data.reduce(function(a,b){return a+b},0);
+                c.textAlign = 'center';
+                c.textBaseline = 'middle';
+                c.font = '700 ' + (w > 200 ? 24 : 18) + 'px "Plus Jakarta Sans", sans-serif';
+                c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
+                c.fillText(total, w/2, h/2 - 6);
+                c.font = '600 11px "Plus Jakarta Sans", sans-serif';
+                c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--dim').trim() || '#7e8a9e';
+                c.fillText('equipos', w/2, h/2 + 18);
+                c.restore();
+            }
+        }]
     });
 }
 
-// Creamos el gráfico de barras con los préstamos de cada mes
 function crearBarras(labels, data) {
     var ctx = document.getElementById('barChart').getContext('2d');
     if (barChartInstance) barChartInstance.destroy();
     document.getElementById('barEmpty').style.display = 'none';
     document.getElementById('barChart').style.display = 'block';
-    // Usamos un degradado para que se vea más lindo
-    var grad = ctx.createLinearGradient(0, 0, 0, 200);
     var primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2563eb';
+    var coral = getComputedStyle(document.documentElement).getPropertyValue('--coral').trim() || '#f43f5e';
+    var grad = ctx.createLinearGradient(0, 0, 0, 250);
     grad.addColorStop(0, primary);
-    grad.addColorStop(1, primary + '33');
+    grad.addColorStop(0.6, primary + 'aa');
+    grad.addColorStop(1, primary + '11');
+    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
+    var mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#64748b';
+    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f';
     barChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -403,9 +424,11 @@ function crearBarras(labels, data) {
                 data: data,
                 backgroundColor: grad,
                 borderColor: primary,
-                borderWidth: 1,
-                borderRadius: 4,
-                barPercentage: 0.6
+                borderWidth: 0,
+                borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+                borderSkipped: false,
+                barPercentage: 0.5,
+                categoryPercentage: 0.7
             }]
         },
         options: {
@@ -414,7 +437,7 @@ function crearBarras(labels, data) {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f',
+                    backgroundColor: cardColor,
                     titleFont: { size: 12, weight: '700' },
                     bodyFont: { size: 11 },
                     padding: 12,
@@ -429,106 +452,60 @@ function crearBarras(labels, data) {
                     beginAtZero: true,
                     ticks: {
                         stepSize: 1,
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#64748b',
+                        color: mutedColor,
                         font: { size: 10 }
                     },
                     grid: { color: 'rgba(255,255,255,0.04)' }
                 },
                 x: {
                     ticks: {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#64748b',
+                        color: mutedColor,
                         font: { size: 10, weight: '600' }
                     },
                     grid: { display: false }
                 }
+            },
+            animation: {
+                duration: 1200,
+                easing: 'easeOutQuart'
             }
-        }
+        },
+        plugins: [{
+            id: 'barDots',
+            afterDraw: function(chart) {
+                var c = chart.ctx, meta = chart.getDatasetMeta(0);
+                c.save();
+                meta.data.forEach(function(bar, i) {
+                    if(chart.data.datasets[0].data[i] > 0){
+                        c.beginPath();
+                        c.arc(bar.x, bar.y, 3.5, 0, Math.PI * 2);
+                        c.fillStyle = primary;
+                        c.fill();
+                        c.beginPath();
+                        c.arc(bar.x, bar.y, 6, 0, Math.PI * 2);
+                        c.fillStyle = primary + '22';
+                        c.fill();
+                    }
+                });
+                c.restore();
+            }
+        }]
     });
 }
 
-// Mostramos el cartel de "no hay datos" cuando no hay equipos registrados
 function mostrarDonutVacio(){
     document.getElementById('donutChart').style.display = 'none';
     document.getElementById('donutEmpty').style.display = 'flex';
 }
 
-// Mostramos el cartel de "no hay datos" cuando no hay préstamos registrados
 function mostrarBarraVacia(){
     document.getElementById('barChart').style.display = 'none';
     document.getElementById('barEmpty').style.display = 'flex';
 }
 
-// ---- MINIGRÁFICOS (SPARKLINES) ----
-// Dibujamos los mini gráficos (sparklines) debajo de cada métrica
-function dibujarSparkline(canvasId, valores, color) {
-    var canvas = document.getElementById(canvasId);
-    if (!canvas || !valores || valores.length < 2) return;
-    var ctx = canvas.getContext('2d');
-    var w = canvas.clientWidth || canvas.width;
-    var h = 32;
-    // Ajustamos la resolución del canvas para que se vea nítido en pantallas retina
-    canvas.width = w * (window.devicePixelRatio || 1);
-    canvas.height = h * (window.devicePixelRatio || 1);
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
-    var max = Math.max.apply(null, valores);
-    var min = Math.min.apply(null, valores);
-    var r = max - min || 1;
-    var pad = 2;
-    var points = valores.map(function(v, i){
-        var x = pad + (i / (valores.length - 1)) * (w - pad * 2);
-        var y = h - pad - ((v - min) / r) * (h - pad * 2);
-        return { x: x, y: y };
-    });
-    ctx.clearRect(0, 0, w, h);
-    // Dibujamos la línea curva que conecta los puntos
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (var i = 1; i < points.length - 1; i++) {
-        var xc = (points[i].x + points[i + 1].x) / 2;
-        var yc = (points[i].y + points[i + 1].y) / 2;
-        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
-    }
-    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.stroke();
-    // Rellenamos el área debajo de la línea con un color suave
-    ctx.beginPath();
-    ctx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
-    ctx.lineTo(points[points.length - 1].x, h);
-    ctx.lineTo(points[0].x, h);
-    ctx.closePath();
-    var grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, color + '22');
-    grad.addColorStop(1, color + '04');
-    ctx.fillStyle = grad;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(points[points.length - 1].x, points[points.length - 1].y, 2.5, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-}
-
-// Generamos datos de ejemplo para los sparklines
-function genSparkData(seed, len){
-    var d = [];
-    var v = Math.max(seed, 2);
-    for(var i = 0; i < len; i++){
-        var c = Math.sin(i * 0.8 + seed) * (v * 0.15) + Math.cos(i * 0.4) * (v * 0.1);
-        d.push(Math.max(0, Math.round(v + c)));
-    }
-    return d;
-}
-
 // ---- CARGA DE DATOS ----
-// Guardamos los datos en caché para no tener que pedirlos todo el tiempo
 var cacheData = { equipos: [], prestamos: [], alumnos: [] };
 
-// Cargamos todos los datos del servidor (equipos, préstamos, alumnos)
 async function cargarTodo(){
     var [er, pr, ar] = await Promise.all([
         apiFetchBackground('/equipos'),
@@ -536,7 +513,7 @@ async function cargarTodo(){
         apiFetchBackground('/alumnos')
     ]);
     if(!er && !pr && !ar){
-        document.getElementById('heroStats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
+        document.querySelector('.pulse-extra').innerHTML = '<div style="text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
         return;
     }
     cacheData.equipos = er ? await safeJson(er) : [];
@@ -545,13 +522,11 @@ async function cargarTodo(){
     actualizarUI();
 }
 
-// Actualiza toda la interfaz con datos nuevos
 function actualizarUI(){
     var eq = cacheData.equipos;
     var pr = cacheData.prestamos;
     var al = cacheData.alumnos;
     var total = eq.length;
-    // Filtramos los equipos por estado (Disponible, Prestado, Mantenimiento)
     var prestados = eq.filter(function(e){ return e.estado === 'Prestado'; }).length;
     var disponibles = eq.filter(function(e){ return e.estado === 'Disponible'; }).length;
     var mant = eq.filter(function(e){ return e.estado === 'En mantenimiento'; }).length;
@@ -562,27 +537,29 @@ function actualizarUI(){
         return p.estado === 'DEVUELTO' && p.fecha_devolucion && p.fecha_devolucion.startsWith(hoyStr);
     }).length;
 
-    animarNumero('ct', total);
-    animarNumero('cp', prestados);
-    animarNumero('cd', disponibles);
-    animarNumero('cm', mant);
     animarNumero('h-prestamos', activos);
     animarNumero('h-equipos', total);
     animarNumero('h-alumnos', al.length);
     animarNumero('h-devueltos', devHoy);
+    animarNumero('ct', total);
+    animarNumero('cp', prestados);
+    animarNumero('cd', disponibles);
+    animarNumero('cm', mant);
+
+    // Barras proporcionales en las islas
+    var maxIsland = Math.max(total, 1);
+    document.getElementById('bar-ct').style.width = '100%';
+    document.getElementById('bar-cp').style.width = (prestados / maxIsland * 100) + '%';
+    document.getElementById('bar-cd').style.width = (disponibles / maxIsland * 100) + '%';
+    document.getElementById('bar-cm').style.width = (mant / maxIsland * 100) + '%';
 
     document.getElementById('badge-prestamos').textContent = activos;
 
     var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
-    // Donut
     if(total > 0){
-        var donutLabels = ['Disponible', 'Prestado', 'Mantenimiento'];
-        var donutData = [disponibles, prestados, mant];
-        var donutColors = ['#22c55e', '#6366f1', '#f59e0b'];
-        crearDonut(donutLabels, donutData, donutColors);
+        crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#22c55e', '#6366f1', '#f59e0b']);
     } else { mostrarDonutVacio(); }
 
-    // Filtramos los préstamos del mes actual y los 5 meses anteriores para el gráfico de barras
     var meses = [];
     var mesesLabels = [];
     var ahora = new Date();
@@ -604,17 +581,10 @@ function actualizarUI(){
         crearBarras(mesesLabels, barData);
     } else { mostrarBarraVacia(); }
 
-    // Dibujamos los sparklines debajo de cada tarjeta de métrica
-    var spColors = { 'sp-total': '#6366f1', 'sp-prestado': '#f43f5e', 'sp-disponible': '#22c55e', 'sp-mantenimiento': '#f59e0b' };
-    Object.keys(spColors).forEach(function(id){
-        var val = id === 'sp-total' ? total : id === 'sp-prestado' ? prestados : id === 'sp-disponible' ? disponibles : mant;
-        dibujarSparkline(id, genSparkData(Math.max(val, 3), 12), spColors[id]);
-    });
     var lu = document.getElementById('lastUpdated');
     if(lu) lu.textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-PY', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
-// Animamos los números para que suban suavemente (efecto de conteo)
 function animarNumero(id, target) {
     var el = document.getElementById(id);
     if(!el) return;
@@ -632,7 +602,6 @@ function animarNumero(id, target) {
 }
 
 // ---- EXPORTACIÓN ----
-// Exportamos los datos a Excel
 async function exportarExcel(){
     var btn = document.getElementById('exportBtn');
     var bar = document.getElementById('progressBar');
@@ -642,7 +611,6 @@ async function exportarExcel(){
     title.textContent = 'Exportando...';
     desc.textContent = 'Preparando archivo Excel';
     var progress = 0;
-    // Simulamos una barra de progreso mientras se genera el archivo
     var sim = setInterval(function(){
         if(progress < 90){ progress += Math.random() * 12 + 4; if(progress > 90) progress = 90; bar.style.width = Math.round(progress) + '%'; }
     }, 400);
@@ -655,7 +623,6 @@ async function exportarExcel(){
         clearInterval(sim);
         bar.style.width = '100%';
         var blob = await r.blob();
-        // Descargamos el archivo Excel en el navegador
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
@@ -664,7 +631,6 @@ async function exportarExcel(){
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
         var ahora = new Date();
-        // Guardamos la información de la última exportación en el navegador
         var exportMeta = { iso: ahora.toISOString(), prestamos: loanCount, devoluciones: returnCount, alumnos: studentCount };
         localStorage.setItem('ultimaExportacion', JSON.stringify(exportMeta));
         actualizarInfoExportacion();
@@ -685,7 +651,6 @@ function resetExportBtn(){
     desc.textContent = 'Historial completo en .xlsx';
 }
 
-// Mostramos cuándo fue la última exportación y los detalles
 function actualizarInfoExportacion(){
     var raw = localStorage.getItem('ultimaExportacion');
     if(!raw) return;
@@ -705,7 +670,6 @@ function actualizarInfoExportacion(){
     }
 }
 
-// Calculamos si fue hace minutos, horas o días y mostramos un texto amigable
 function formatearTiempoRelativo(iso){
     var ahora = new Date(), fecha = new Date(iso), diffMs = ahora - fecha, diffMin = Math.floor(diffMs / 60000), diffHoras = Math.floor(diffMs / 3600000), diffDias = Math.floor(diffMs / 86400000);
     if(diffMin < 1) return 'hace unos segundos';
@@ -717,7 +681,6 @@ function formatearTiempoRelativo(iso){
 }
 
 // ---- RELOJ ----
-// Actualizamos el reloj en vivo cada minuto
 function actualizarReloj(){
     var ahora = new Date();
     var dias = ['Domingo','Lunes','Martes','Mi\u00E9rcoles','Jueves','Viernes','S\u00E1bado'];
@@ -731,31 +694,25 @@ setInterval(actualizarReloj, 60000);
 
 // ---- ACTUALIZACIÓN PERIÓDICA ----
 var refreshInterval;
-// Recargamos los datos cada 30 segundos para mantenerlos actualizados
 function startPolling(){ cargarTodo(); refreshInterval = setInterval(cargarTodo, 30000); }
-// Si el usuario cambia de pestaña, pausamos la recarga para ahorrar recursos
 document.addEventListener('visibilitychange', function(){
     if(document.hidden && refreshInterval) clearInterval(refreshInterval);
     else startPolling();
 });
-// Limpiamos el intervalo cuando el usuario cierra o recarga la página
 window.addEventListener('beforeunload', function(){ if(refreshInterval) clearInterval(refreshInterval); });
 
-// Mostramos u ocultamos el botón para volver arriba según la posición del scroll
 window.addEventListener('scroll', function(){
     var st = document.getElementById('scrollTop');
     if(st) st.classList.toggle('show', window.scrollY > 400);
 });
 
 // ---- CONFIGURACIÓN ----
-// Actualiza el texto que muestra el valor actual de la multa
 function actualizarDisplayMulta(valor){
     var display = document.getElementById('multaValor');
     if(valor) display.textContent = fn(parseInt(valor));
     else display.textContent = '\u2014';
 }
 
-// Cargamos la configuración del sistema (valor de la multa por día)
 async function cargarConfig(){
     try{
         var r = await apiFetch('/configuracion');
@@ -774,7 +731,6 @@ function fmtMonto(el){
     el.value = v ? Number(v).toLocaleString('es-PY') : '';
 }
 
-// Guardamos el nuevo valor de multa en el servidor
 async function guardarMulta(){
     var val = document.getElementById('multa-input').value.replace(/\./g,'').trim();
     if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor v\u00E1lido mayor o igual a 0','t-err'); return; }
@@ -791,7 +747,6 @@ async function guardarMulta(){
 }
 
 // ---- INICIALIZACIÓN ----
-// Inicializamos todo cuando la página carga
 window.onload = function(){
     var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
     var rol = localStorage.getItem('rol');
@@ -801,12 +756,14 @@ window.onload = function(){
         document.getElementById('s-avatar').textContent = inicial;
         document.getElementById('s-name').textContent = enc.nombre + ' ' + (enc.apellido || '');
         document.getElementById('s-role').textContent = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
-        document.getElementById('welcome-msg').textContent = 'Bienvenido, ' + enc.nombre;
+        document.getElementById('welcome-msg').innerHTML = '<strong>' + enc.nombre + '</strong> · Panel de Control';
+        document.getElementById('s-avatar-small').textContent = inicial;
     }
     actualizarInfoExportacion();
     cargarConfig();
     initTheme();
     startPolling();
+    initScrollReveal();
     initSpotlight([
         {label:'Equipos',sub:'Gesti\u00F3n de activos tecnol\u00F3gicos',url:'/equipos/equipos.html'},
         {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
@@ -814,7 +771,6 @@ window.onload = function(){
         {label:'Devoluciones',sub:'Recibir devoluci\u00F3n',url:'/devoluciones/devoluciones.html'},
         {label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}
     ]);
-    // Observamos si cambia el tema (claro/oscuro) para redibujar los gráficos con los nuevos colores
     var themeObserver = new MutationObserver(function(){
         if(donutChartInstance || barChartInstance) cargarTodo();
     });
