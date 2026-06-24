@@ -52,7 +52,7 @@ img{max-width:100%;display:block}
   border-bottom:1px solid var(--border);
   transition:background var(--duration-normal) var(--ease-out);
 }
-.brand{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-lg);font-weight:800;color:var(--text);cursor:default}
+.brand{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-lg);font-weight:800;color:var(--text);text-decoration:none;transition:opacity var(--duration-fast)}
 .brand-icon{width:34px;height:34px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 20px var(--primary-glow)}
 .nav-brand{
   display:flex;align-items:center;gap:var(--space-3);
@@ -241,7 +241,7 @@ img{max-width:100%;display:block}
 /* ---- TABLAS ---- */
 .table-wrap{overflow-x:auto;border-radius:var(--radius-xl);background:var(--card);border:1px solid var(--border)}
 .table-wrap table{width:100%;border-collapse:collapse}
-.table-wrap td:last-child{white-space:nowrap}
+.table-wrap td:last-child{white-space:nowrap;text-align:center}
 .table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
 .table th{
   text-align:left;padding:var(--space-3) var(--space-4);
@@ -253,7 +253,8 @@ img{max-width:100%;display:block}
 .table tr:last-child td{border-bottom:none}
 .table tr:hover td{background:rgba(255,255,255,0.02)}
 .table .actions{display:flex;gap:var(--space-2);align-items:center}
-.ac{display:flex;gap:var(--space-2);align-items:center;justify-content:center}
+th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
+.ac .btn-sm,.ac .btn-del{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-1)}
 .table-empty td{text-align:center;padding:var(--space-10) var(--space-4);color:var(--dim);font-size:var(--text-sm)}
 
 /* ---- MODAL PERSONALIZADO ---- */
