@@ -234,54 +234,6 @@
                 </div>
             </section>
 
-            <!-- METRIC CARDS — equipment breakdown -->
-            <section class="metrics-grid">
-                <div class="metric-card" data-accent="primary">
-                    <div class="metric-body">
-                        <div class="metric-icon-wrap">
-                            <div class="metric-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                            </div>
-                        </div>
-                        <div class="metric-num" id="ct">—</div>
-                        <div class="metric-label">Equipos Totales</div>
-                    </div>
-                </div>
-                <div class="metric-card" data-accent="coral">
-                    <div class="metric-body">
-                        <div class="metric-icon-wrap">
-                            <div class="metric-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                            </div>
-                        </div>
-                        <div class="metric-num" id="cp">—</div>
-                        <div class="metric-label">En Préstamo</div>
-                    </div>
-                </div>
-                <div class="metric-card" data-accent="green">
-                    <div class="metric-body">
-                        <div class="metric-icon-wrap">
-                            <div class="metric-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>
-                            </div>
-                        </div>
-                        <div class="metric-num" id="cd">—</div>
-                        <div class="metric-label">Disponibles</div>
-                    </div>
-                </div>
-                <div class="metric-card" data-accent="warn">
-                    <div class="metric-body">
-                        <div class="metric-icon-wrap">
-                            <div class="metric-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-                            </div>
-                        </div>
-                        <div class="metric-num" id="cm">—</div>
-                        <div class="metric-label">Mantenimiento</div>
-                    </div>
-                </div>
-            </section>
-
             <!-- CHARTS -->
             <section class="charts-grid">
                 <div class="chart-card">
@@ -590,10 +542,7 @@ function actualizarUI(){
     animarNumero('h-equipos', total);
     animarNumero('h-alumnos', al.length);
     animarNumero('h-devueltos', devHoy);
-    animarNumero('ct', total);
-    animarNumero('cp', prestados);
-    animarNumero('cd', disponibles);
-    animarNumero('cm', mant);
+
 
     document.getElementById('badge-prestamos').textContent = activos;
 
