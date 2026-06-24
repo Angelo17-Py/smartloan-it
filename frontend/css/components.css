@@ -655,7 +655,7 @@ main{animation:fi 0.6s var(--ease-out) both}
   .btn span,.btn-sm span{font-size:var(--text-xs)}
   main{padding:var(--space-3)!important}
   .main{padding:var(--space-3)!important}
-  .table-wrap{font-size:var(--text-xs)}
+  .table-wrap{font-size:var(--text-xs);border-radius:var(--radius-md)!important}
   .table-wrap table thead{display:none}
   .table-wrap table tbody tr{display:block;padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:var(--space-3);background:var(--card)}
   .table-wrap table tbody td{display:flex;justify-content:space-between;align-items:center;padding:var(--space-2) 0;border:none;gap:var(--space-2);text-align:right;flex-wrap:wrap}
@@ -663,6 +663,7 @@ main{animation:fi 0.6s var(--ease-out) both}
   .table-wrap table tbody td:not(:last-child){border-bottom:1px solid var(--border)}
   .table-wrap table tbody tr:hover{background:var(--card-hover)}
   .table-wrap table tbody td .btn-icon,.table-wrap table tbody td .btn-del{width:36px;height:36px;min-width:36px;min-height:36px}
+  .table-wrap table tbody td .ac{justify-content:flex-end;flex-wrap:wrap;gap:4px}
   .g2{grid-template-columns:1fr!important}
   input,select,textarea,.field input{font-size:16px!important}
   .form-row,.form-row-3{grid-template-columns:1fr!important}
@@ -680,6 +681,20 @@ main{animation:fi 0.6s var(--ease-out) both}
   .sticky-header{position:relative!important}
   .pagination{flex-wrap:wrap;justify-content:center;gap:var(--space-1)}
   .pagination .page-btn{min-width:36px;min-height:36px;font-size:var(--text-xs)}
+  .breadcrumbs{font-size:var(--text-xs);padding:var(--space-2) 0;gap:var(--space-1)}
+  .breadcrumbs .sep{margin:0 var(--space-1)}
+  .page-header{gap:var(--space-3);padding-bottom:var(--space-3)}
+  .page-header .page-icon{width:36px;height:36px}
+  .page-header .page-icon svg{width:16px;height:16px}
+  .page-header h1{font-size:var(--text-lg)}
+  .page-header p{font-size:var(--text-xs)}
+  .page-header .page-icon{display:none}
+  .brand{font-size:var(--text-base)!important;gap:var(--space-2)}
+  .brand-icon{width:30px;height:30px}
+  .brand-icon svg{width:14px;height:14px}
+  .nav{padding:0 var(--space-3)!important}
+  .nav-right{gap:var(--space-2)}
+  .nav-link{padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
 }
 
 @media(max-width:400px){

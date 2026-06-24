@@ -188,7 +188,32 @@
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
         /* Responsive */
-        @media(max-width:600px){.g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:var(--space-3)!important}.receipt-wrap{width:100%!important}.stamp-badge{font-size:0.65rem;padding:4px 10px}}
+        @media(max-width:600px){
+            .g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:var(--space-3)!important}.receipt-wrap{width:100%!important}.stamp-badge{font-size:0.65rem;padding:4px 10px}
+            .ds{gap:4px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start}
+            .dstep{flex-shrink:0;font-size:0.6rem}
+            .dstep span{display:none}
+            .dstep.active span,.dstep.done span{display:inline}
+            .sl{width:16px}
+            .pres-item{flex-direction:column;align-items:flex-start;gap:8px}
+            .pi-badge{align-self:flex-start}
+            .search-row{flex-direction:column}
+            .btn-buscar{width:100%;padding:10px}
+            .info-grid{grid-template-columns:1fr 1fr}
+            .info-banner{padding:12px 14px}
+            .info-banner-header h3{font-size:0.82rem}
+            .cobro-row{padding:7px 10px;font-size:0.78rem}
+            .receipt-header{padding:18px 16px 16px}
+            .receipt-body{padding:14px 16px}
+            .rsec-grid{grid-template-columns:1fr}
+            .rg-item.full{grid-column:1}
+            .receipt-footer{padding:14px 16px 18px}
+            .sig-row{flex-direction:column;gap:14px;align-items:stretch}
+            .sig-field{max-width:100%}
+            .res-btns{flex-direction:column}
+            .res-btns .btn{width:100%}
+            #resultado.show{max-width:100%}
+        }
     </style>
 </head>
 <body>

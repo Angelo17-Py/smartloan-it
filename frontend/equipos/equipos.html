@@ -52,7 +52,7 @@
         .form-row-desc{margin-top:0;}.form-row-desc .ig-desc{flex:1 1 100%;min-width:100%;}.form-row-desc textarea{resize:none;min-height:44px;overflow:hidden;}
         /* Responsive */
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
-        @media(max-width:600px){main{padding:var(--space-3)!important}.g2m .field input{font-size:16px!important}}
+        @media(max-width:600px){main{padding:var(--space-3)!important}.g2m .field input{font-size:16px!important}.form-card{padding:16px 18px}.search-bar{padding:var(--space-2) var(--space-3)}.search-bar input{font-size:16px!important}.page-header .page-icon{display:none}}
     </style>
 </head>
 <body>
@@ -245,11 +245,11 @@ function render(data){
                     btn = `<button class="btn-sm" disabled>En préstamo</button>`;
             }
             var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
-                <td><span class="num">${i+1}</span></td>
-                <td><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
-                <td style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
-                <td>${bE(e.estado)}</td>
-                <td>${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+e.id_equipo+')">Editar</button>'+btn+(e.estado!=='Prestado'?'<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>':'')+'</div>' : ''}</td>
+                <td data-label="#"><span class="num">${i+1}</span></td>
+                <td data-label="Equipo"><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
+                <td data-label="Tipo / Marca" style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
+                <td data-label="Estado">${bE(e.estado)}</td>
+                <td data-label="">${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+e.id_equipo+')">Editar</button>'+btn+(e.estado!=='Prestado'?'<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>':'')+'</div>' : ''}</td>
             </tr>`;
         }).join('');
 }

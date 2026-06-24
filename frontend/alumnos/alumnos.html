@@ -64,7 +64,7 @@
         .mo .md{animation:fi var(--duration-normal) var(--ease-out);}
         /* En pantallas chicas los formularios se apilan verticalmente */
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
-        @media(max-width:600px){main{padding:var(--space-3)!important}.g2m .field input{font-size:16px!important}}
+        @media(max-width:600px){main{padding:var(--space-3)!important}.g2m .field input{font-size:16px!important}.form-card{padding:16px 18px}.search-bar{padding:var(--space-2) var(--space-3)}.search-bar input{font-size:16px!important}.page-header .page-icon{display:none}}
     </style>
 </head>
 <body>
@@ -237,12 +237,12 @@ function render(data){
     tb.innerHTML = data.map((a,i) => {
         var sc='animate-fi-'+(Math.min(i+1,10));return `
         <tr class="${sc}">
-            <td><span class="num">${i+1}</span></td>
-            <td><span class="code-chip">${esc(a.codigo_alumno)}</span></td>
-            <td><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
-            <td style="color:var(--dim);font-size:0.85rem">${esc(a.carrera||'—')}</td>
-            <td style="color:var(--dim);font-size:0.85rem">${esc(a.curso||'—')}</td>
-            <td>${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+a.id_alumno+')">Editar</button><button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button></div>' : ''}</td>
+            <td data-label="#"><span class="num">${i+1}</span></td>
+            <td data-label="Código"><span class="code-chip">${esc(a.codigo_alumno)}</span></td>
+            <td data-label="Alumno"><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
+            <td data-label="Carrera" style="color:var(--dim);font-size:0.85rem">${esc(a.carrera||'—')}</td>
+            <td data-label="Curso" style="color:var(--dim);font-size:0.85rem">${esc(a.curso||'—')}</td>
+            <td data-label="">${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+a.id_alumno+')">Editar</button><button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button></div>' : ''}</td>
         </tr>`;}).join('');
 }
 
