@@ -34,7 +34,7 @@
         .table-wrap{border-radius:14px;overflow:hidden;}
         .table-header{padding:14px 22px;display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
-        .table-count{background:rgba(99,102,241,0.08);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
+        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
         /* Estilo de encabezados de tabla */
         th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
         /* Estilo de celdas de tabla */
@@ -46,10 +46,10 @@
         /* Mensaje cuando no hay resultados */
         .em{text-align:center;padding:40px;color:var(--dim);font-size:0.88rem;}
         /* Resaltado del texto buscado */
-        .highlight{background:rgba(99,102,241,0.15);border-radius:3px;padding:0 2px;}
+        .highlight{background:var(--primary-glow);border-radius:3px;padding:0 2px;}
         /* Botón para eliminar una fila */
         .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
-        .btn-del-row:hover{background:rgba(239,68,68,0.1);}
+        .btn-del-row:hover{background:var(--danger-bg);}
         /* Columna de acciones (botón eliminar) */
         th.ac{width:52px;}
         @media(max-width:600px){

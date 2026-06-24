@@ -25,19 +25,19 @@
         .section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;}
         .pres-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);}
         .pres-item:hover{border-color:var(--primary);transform:translateX(3px);}
-        .pres-item.sel{border-color:var(--primary);background:rgba(99,102,241,0.05);}
+        .pres-item.sel{border-color:var(--primary);background:var(--primary-glow);}
         .pres-item:last-child{margin-bottom:0;}
         .pi-left h4{font-weight:700;font-size:0.85rem;margin-bottom:1px;color:var(--text);}
         .pi-left p{font-size:0.75rem;color:var(--dim);}
         .pi-badge{font-weight:700;font-size:0.7rem;padding:4px 10px;border-radius:7px;white-space:nowrap;}
-        .pi-ok{background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2);}
-        .pi-late{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);animation:pulse-glow 2s ease-in-out infinite}
+        .pi-ok{background:var(--success-bg);color:var(--success);border:1px solid rgba(5,150,105,0.2);}
+        .pi-late{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(229,62,62,0.2);animation:pulse-glow 2s ease-in-out infinite}
         .em{text-align:center;color:var(--dim);padding:16px;font-size:0.85rem;}
 
         /* Barra de búsqueda */
         .search-row{display:flex;gap:10px;}
         .si{flex:1;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:0.85rem;outline:none;transition:border-color var(--duration-fast) var(--ease-out);}
-        .si:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
+        .si:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);}
         .btn-buscar{background:var(--primary);color:white;border:none;padding:0 18px;border-radius:10px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
         .btn-buscar:hover{opacity:0.9;}
 
@@ -47,12 +47,12 @@
         .info-banner-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
         .info-banner-header h3{font-size:0.92rem;font-weight:800;color:var(--text);}
         .btn-change{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:0.72rem;font-weight:700;color:var(--dim);cursor:pointer;transition:all var(--duration-fast) var(--ease-out);}
-        .btn-change:hover{background:rgba(99,102,241,0.08);color:var(--primary);}
+        .btn-change:hover{background:var(--primary-glow);color:var(--primary);}
         .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;}
         .if span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:1px;font-weight:700;}
         .if strong{font-size:0.84rem;font-weight:700;color:var(--text);}
         /* Alerta de retraso */
-        .retraso-alerta{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.18);border-radius:9px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:8px;}
+        .retraso-alerta{background:var(--danger-bg);border:1px solid rgba(229,62,62,0.18);border-radius:9px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:8px;}
         .retraso-alerta strong{color:var(--danger);font-size:0.82rem;}
 
         /* Formulario de devolución */
@@ -80,7 +80,7 @@
         .cobros-card.show{display:block;}
         .cobros-title{font-size:0.66rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
         .cobro-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:8px;font-size:0.85rem;margin-bottom:3px;}
-        .cobro-row:last-child{margin-bottom:0;font-weight:800;font-size:0.95rem;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);}
+        .cobro-row:last-child{margin-bottom:0;font-weight:800;font-size:0.95rem;background:var(--primary-glow);border:1px solid var(--border);}
         .cobro-row strong{font-size:0.9rem;font-weight:700;}
         .cobro-row:last-child strong{font-size:1rem;}
 
@@ -103,7 +103,7 @@
         .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;}
         .receipt-title{margin-top:14px;}
         .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
-        .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:rgba(99,102,241,0.08);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
+        .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:var(--primary-glow);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
 
         .receipt-body{padding:20px 28px;}
         .rsec{margin-bottom:20px;}
@@ -132,9 +132,9 @@
 
         .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
         .receipt-stamp{text-align:center;margin-bottom:14px;}
-        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:rgba(34,197,94,0.12);color:var(--success);border:1.5px solid rgba(34,197,94,0.25);}
-        .stamp-badge.late{background:rgba(239,68,68,0.1);color:var(--danger);border-color:rgba(239,68,68,0.2);}
-        .stamp-badge.damage{background:var(--warn-bg);color:var(--warn);border-color:rgba(234,179,8,0.25);}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:var(--success-bg);color:var(--success);border:1.5px solid rgba(5,150,105,0.25);}
+        .stamp-badge.late{background:var(--danger-bg);color:var(--danger);border-color:rgba(229,62,62,0.2);}
+        .stamp-badge.damage{background:var(--warn-bg);color:var(--warn);border-color:rgba(217,119,6,0.25);}
         .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
         .sig-field{flex:1;max-width:200px;}
         .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}

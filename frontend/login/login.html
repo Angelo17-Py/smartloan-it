@@ -13,14 +13,14 @@
         body,html{height:100%;overflow:hidden}
         @media(max-width:860px){html{overflow-y:auto}body{overflow-y:auto}}
         .login-page{
-            display:flex;min-height:100vh;background:#080b12;
+            display:flex;min-height:100vh;background:var(--bg);
             position:relative;font-family:var(--font);
         }
         /* Ambient background glow */
         .login-page::before{
             content:'';position:fixed;top:-30%;left:-10%;
             width:800px;height:800px;border-radius:50%;
-            background:radial-gradient(circle,rgba(37,99,235,0.08),transparent 70%);
+            background:radial-gradient(circle,var(--primary-glow),transparent 70%);
             pointer-events:none;animation:ambientA 12s ease-in-out infinite alternate;
         }
         .login-page::after{
@@ -54,29 +54,29 @@
         .brand-logo{display:flex;align-items:center;gap:16px;margin-bottom:36px}
         .brand-logo-icon{
             width:60px;height:60px;border-radius:16px;
-            background:linear-gradient(135deg,#2563eb,#3b82f6);
+            background:linear-gradient(135deg,var(--primary),var(--accent-light));
             display:flex;align-items:center;justify-content:center;
-            box-shadow:0 0 40px rgba(37,99,235,0.3);
+            box-shadow:0 0 40px var(--primary-glow);
             flex-shrink:0;
         }
         .brand-logo-icon svg{width:32px;height:32px}
         .brand-logo-text{display:flex;flex-direction:column}
         .brand-logo-text .bl-name{
-            font-size:var(--text-2xl);font-weight:900;color:#f1f5f9;
+            font-size:var(--text-2xl);font-weight:900;color:var(--text);
             letter-spacing:-0.8px;line-height:1.05;
         }
         .brand-logo-text .bl-sub{
-            font-size:var(--text-xs);color:rgba(148,163,184,0.6);
+            font-size:var(--text-xs);color:var(--muted);
             font-weight:700;text-transform:uppercase;letter-spacing:3px;
             margin-top:2px;
         }
 
         .brand-badge{
             display:inline-flex;align-items:center;gap:8px;
-            background:rgba(59,130,246,0.1);color:#3b82f6;
+            background:var(--primary-glow);color:var(--primary-hover);
             padding:6px 16px;border-radius:100px;
             font-size:var(--text-xs);font-weight:700;margin-bottom:24px;
-            border:1px solid rgba(59,130,246,0.15);
+            border:1px solid var(--border);
             animation:fadeSlide 0.7s var(--ease-out) both;
         }
         @keyframes fadeSlide{
@@ -86,16 +86,16 @@
         .brand-content h1{
             font-size:clamp(2.2rem,5vw,3.2rem);font-weight:900;
             letter-spacing:-1.5px;line-height:1.05;
-            margin-bottom:16px;color:#f1f5f9;
+            margin-bottom:16px;color:var(--text);
             animation:fadeSlide 0.7s var(--ease-out) 0.1s both;
         }
         .brand-content h1 span{
-            background:linear-gradient(135deg,#60a5fa,#2563eb);
+            background:linear-gradient(135deg,var(--accent-light),var(--primary));
             -webkit-background-clip:text;-webkit-text-fill-color:transparent;
             background-clip:text;
         }
         .brand-content .tagline{
-            font-size:var(--text-lg);color:rgba(148,163,184,0.5);
+            font-size:var(--text-lg);color:var(--muted);
             line-height:1.6;margin-bottom:36px;max-width:420px;
             font-weight:500;
             animation:fadeSlide 0.7s var(--ease-out) 0.2s both;
@@ -108,11 +108,11 @@
         .feature-pills .pill{
             display:inline-flex;align-items:center;gap:8px;
             padding:8px 16px;border-radius:100px;
-            background:#0d1117;
-            border:1px solid rgba(59,130,246,0.08);
-            font-size:11px;font-weight:600;color:rgba(148,163,184,0.6);
+            background:var(--bg-alt);
+            border:1px solid var(--border);
+            font-size:11px;font-weight:600;color:var(--muted);
         }
-        .feature-pills .pill svg{color:#3b82f6;flex-shrink:0}
+        .feature-pills .pill svg{color:var(--primary-hover);flex-shrink:0}
 
         /* Decorative glass orbs */
         .glass-orbs{position:absolute;right:0;top:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0}
@@ -120,19 +120,19 @@
             position:absolute;border-radius:50%;
             backdrop-filter:blur(40px);border:1px solid rgba(59,130,246,0.06);
         }
-        .gorb-1{width:300px;height:300px;right:-60px;top:10%;background:radial-gradient(circle,rgba(37,99,235,0.04),transparent 70%)}
+        .gorb-1{width:300px;height:300px;right:-60px;top:10%;background:radial-gradient(circle,var(--primary-glow),transparent 70%)}
         .gorb-2{width:200px;height:200px;right:20%;bottom:15%;background:radial-gradient(circle,rgba(59,130,246,0.03),transparent 70%)}
-        .gorb-3{width:150px;height:150px;left:5%;top:50%;background:radial-gradient(circle,rgba(30,64,175,0.03),transparent 70%)}
+        .gorb-3{width:150px;height:150px;left:5%;top:50%;background:radial-gradient(circle,rgba(59,130,246,0.02),transparent 70%)}
 
         /* ===== RIGHT PANEL — FORM ===== */
         .form-panel{
             display:flex;flex-direction:column;justify-content:center;
             padding:48px;position:relative;
-            background:#0d1117;
-            border-left:1px solid rgba(59,130,246,0.08);
+            background:var(--bg-alt);
+            border-left:1px solid var(--border);
         }
         @media(max-width:860px){
-            .form-panel{border-left:none;border-top:1px solid rgba(59,130,246,0.06);padding:32px}
+            .form-panel{border-left:none;border-top:1px solid var(--border);padding:32px}
         }
 
         .form-inner{max-width:360px;width:100%;margin:0 auto;position:relative;z-index:1}
@@ -140,41 +140,41 @@
         .form-header{margin-bottom:28px;text-align:center}
         .form-header .fh-icon{
             width:52px;height:52px;border-radius:14px;
-            background:#2563eb;
+            background:var(--primary);
             display:flex;align-items:center;justify-content:center;
-            color:#f1f5f9;margin:0 auto 16px;
+            color:white;margin:0 auto 16px;
         }
         .form-header .fh-icon svg{width:24px;height:24px}
         .form-header h2{
-            font-size:var(--text-xl);font-weight:800;color:#f1f5f9;
+            font-size:var(--text-xl);font-weight:800;color:var(--text);
             letter-spacing:-0.3px;margin-bottom:4px;
         }
         .form-header p{
-            font-size:var(--text-sm);color:rgba(148,163,184,0.5);
+            font-size:var(--text-sm);color:var(--muted);
             font-weight:500;
         }
 
         /* Campos de texto */
         .field{margin-bottom:16px}
         .field label{
-            display:block;font-size:var(--text-xs);font-weight:700;color:#94a3b8;
+            display:block;font-size:var(--text-xs);font-weight:700;color:var(--dim);
             text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;
         }
         .field .input-wrap{
             position:relative;border-radius:10px;
-            background:#161b22;
-            border:1.5px solid rgba(59,130,246,0.1);
+            background:var(--surface);
+            border:1.5px solid var(--border);
             transition:border-color var(--duration-fast) var(--ease-out);
         }
         .field .input-wrap:focus-within{
-            border-color:#3b82f6;
-            box-shadow:0 0 0 3px rgba(59,130,246,0.1);
+            border-color:var(--primary);
+            box-shadow:0 0 0 3px var(--primary-glow);
         }
-        .field .input-wrap.error{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,0.1)}
+        .field .input-wrap.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-bg)}
         .field input{
             width:100%;padding:12px 14px;
             background:transparent;border:none;outline:none;
-            color:#f1f5f9;font-size:var(--text-sm);
+            color:var(--text);font-size:var(--text-sm);
             font-family:var(--font);font-weight:500;
         }
         .field input:-webkit-autofill,
@@ -182,13 +182,13 @@
         .field input:-webkit-autofill:focus,
         .field input:-webkit-autofill:active{
             -webkit-background-clip:text;
-            -webkit-text-fill-color:#f1f5f9;
+            -webkit-text-fill-color:var(--text);
             transition:background-color 5000s ease-in-out 0s;
-            box-shadow:inset 0 0 0 1000px #161b22;
+            box-shadow:inset 0 0 0 1000px var(--surface);
         }
-        .field input::placeholder{color:rgba(148,163,184,0.3);font-weight:500}
+        .field input::placeholder{color:var(--muted);font-weight:500}
         .field-err{
-            display:none;font-size:10px;color:#ef4444;
+            display:none;font-size:10px;color:var(--danger);
             margin-top:4px;font-weight:600;padding-left:4px;
         }
         .field-err.show{display:block}
@@ -197,27 +197,27 @@
         .pass-wrap input{padding-right:44px}
         .eye{
             position:absolute;right:8px;top:50%;transform:translateY(-50%);
-            background:none;border:none;color:rgba(148,163,184,0.4);cursor:pointer;
+            background:none;border:none;color:var(--muted);cursor:pointer;
             padding:6px;border-radius:8px;display:flex;
             transition:color var(--duration-fast);
         }
-        .eye:hover{color:rgba(148,163,184,0.7)}
+        .eye:hover{color:var(--dim)}
 
         /* Botón */
         .login-btn{
             width:100%;padding:16px;border:none;border-radius:12px;
-            background:#2563eb;
-            color:#f1f5f9;font-size:var(--text-base);font-weight:800;
+            background:var(--primary);
+            color:white;font-size:var(--text-base);font-weight:800;
             cursor:pointer;margin-top:6px;letter-spacing:0.5px;
-            transition:opacity var(--duration-fast) var(--ease-out);
+            transition:all var(--duration-fast) var(--ease-out);
         }
-        .login-btn:hover:not(:disabled){opacity:0.85}
-        .login-btn:active:not(:disabled){opacity:0.7}
+        .login-btn:hover:not(:disabled){opacity:0.9;transform:translateY(-1px)}
+        .login-btn:active:not(:disabled){transform:scale(0.98)}
         .login-btn:disabled{opacity:0.4;cursor:not-allowed}
         .spinner{
             display:none;width:18px;height:18px;
-            border:2.5px solid rgba(148,163,184,0.2);
-            border-top-color:#f1f5f9;border-radius:50%;
+            border:2.5px solid var(--border);
+            border-top-color:var(--text);border-radius:50%;
             animation:spin 0.6s linear infinite;margin:0 auto;
         }
         @keyframes spin{to{transform:rotate(360deg)}}
@@ -227,7 +227,7 @@
         /* Error toast */
         .err{
             display:flex;align-items:center;justify-content:center;gap:8px;
-            margin-top:14px;font-size:11px;color:#ef4444;
+            margin-top:14px;font-size:11px;color:var(--danger);
             opacity:0;max-height:0;overflow:hidden;
             transition:all var(--duration-normal) var(--ease-out);
         }
@@ -235,8 +235,8 @@
 
         .form-footer{
             margin-top:28px;padding-top:16px;
-            border-top:1px solid rgba(59,130,246,0.06);
-            font-size:10px;color:rgba(148,163,184,0.3);text-align:center;
+            border-top:1px solid var(--border);
+            font-size:10px;color:var(--muted);text-align:center;
         }
         @keyframes shake{
             0%,100%{transform:translateX(0)}
