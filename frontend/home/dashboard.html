@@ -82,11 +82,11 @@
         .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
         @media(max-width:600px){
             .hero-section{padding:var(--space-4)!important}
-            .hero-left{gap:var(--space-2)}
-            .hero-avatar{width:36px;height:36px;font-size:var(--text-base)}
-            .hero-left h1{font-size:var(--text-base)}
-            .hero-stats{gap:var(--space-2)}
-            .hero-stat .hero-value{font-size:var(--text-base)}
+            .hero-section-left{gap:var(--space-2)}
+            .hero-section-avatar{width:36px;height:36px;font-size:var(--text-base)}
+            .hero-section-left h1{font-size:var(--text-base)}
+            .hero-section-stats{gap:var(--space-2)}
+            .hero-section-stat .hero-section-value{font-size:var(--text-base)}
             .metric-card{padding:var(--space-3)}
             .metric-body{padding:var(--space-3)!important}
             .metric-num{font-size:var(--text-xl)}
@@ -171,35 +171,35 @@
 
             <!-- HERO EMBER -->
             <section class="hero-section">
-                <div class="hero-top">
-                    <div class="hero-left">
-                        <div class="hero-avatar" id="s-avatar-small">A</div>
+                <div class="hero-section-top">
+                    <div class="hero-section-left">
+                        <div class="hero-section-avatar" id="s-avatar-small">A</div>
                         <div>
                             <h1 id="welcome-msg">Bienvenido</h1>
                             <p>Panel de Control · SmartLoan IT</p>
                         </div>
                     </div>
-                    <div class="hero-right">
+                    <div class="hero-section-right">
                         <div class="hero-date" id="hero-date"></div>
                         <div class="hero-time" id="hero-time"></div>
                     </div>
                 </div>
-                <div class="hero-stats">
-                    <div class="hero-stat">
-                        <span class="hero-value" id="h-prestamos">—</span>
-                        <span class="hero-label">Préstamos activos</span>
+                <div class="hero-section-stats">
+                    <div class="hero-section-stat">
+                        <span class="hero-section-value" id="h-prestamos">—</span>
+                        <span class="hero-section-label">Préstamos activos</span>
                     </div>
-                    <div class="hero-stat">
-                        <span class="hero-value" id="h-equipos">—</span>
-                        <span class="hero-label">Equipos totales</span>
+                    <div class="hero-section-stat">
+                        <span class="hero-section-value" id="h-equipos">—</span>
+                        <span class="hero-section-label">Equipos totales</span>
                     </div>
-                    <div class="hero-stat">
-                        <span class="hero-value" id="h-alumnos">—</span>
-                        <span class="hero-label">Alumnos registrados</span>
+                    <div class="hero-section-stat">
+                        <span class="hero-section-value" id="h-alumnos">—</span>
+                        <span class="hero-section-label">Alumnos registrados</span>
                     </div>
-                    <div class="hero-stat">
-                        <span class="hero-value" id="h-devueltos">—</span>
-                        <span class="hero-label">Devueltos hoy</span>
+                    <div class="hero-section-stat">
+                        <span class="hero-section-value" id="h-devueltos">—</span>
+                        <span class="hero-section-label">Devueltos hoy</span>
                     </div>
                 </div>
             </section>
