@@ -1,13 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
     </linearGradient>
+    <linearGradient id="h" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(28,25,23,0.9)"/>
+      <stop offset="100%" stop-color="rgba(28,25,23,0.5)"/>
+    </linearGradient>
+    <filter id="s">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#d97706" flood-opacity="0.3"/>
+    </filter>
   </defs>
-  <rect width="100" height="100" rx="22" fill="url(#fg)"/>
-  <path d="M50 24 L24 38 L50 52 L76 38 Z" fill="#1c1917" opacity="0.85"/>
-  <path d="M24 52 L50 66 L76 52" fill="none" stroke="#1c1917" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-  <path d="M24 64 L50 78 L76 64" fill="none" stroke="#1c1917" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
-  <circle cx="50" cy="38" r="6" fill="#1c1917" opacity="0.9"/>
+  <!-- Hexágono exterior con glow -->
+  <path d="M50 4 L88 27 L88 73 L50 96 L12 73 L12 27 Z" fill="url(#g)" filter="url(#s)"/>
+  <!-- Hexágono interior oscuro -->
+  <path d="M50 16 L78 33 L78 67 L50 84 L22 67 L22 33 Z" fill="url(#h)" opacity="0.85"/>
+  <!-- Icono de préstamo/layers (3 líneas ascendentes) -->
+  <path d="M37 58 L50 46 L63 58" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 65 L50 50 L68 65" fill="none" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+  <path d="M27 72 L50 54 L73 72" fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <!-- Punto focal -->
+  <circle cx="50" cy="46" r="4" fill="#fbbf24" opacity="0.9"/>
 </svg>
