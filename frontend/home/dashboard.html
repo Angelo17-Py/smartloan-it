@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SmartLoan IT - Panel de control del sistema de gestión de préstamos de recursos tecnológicos.">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23d97706'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Panel de Control</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -13,21 +13,73 @@
         .main-content{display:flex;flex-direction:column}
         .skeleton-pulse{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--border) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:skeleton 1.5s ease-in-out infinite;border-radius:6px}
         @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
-        .admin-only{display:none!important;}
-        body.role-admin .admin-only{display:revert!important;}
-        body.role-admin .admin-panorama.admin-only{display:grid!important;}
+        .admin-only{display:none!important}
+        body.role-admin .admin-only{display:revert!important}
+        body.role-admin .admin-ember.admin-only{display:grid!important}
         .last-updated{font-size:var(--text-xs);color:var(--dim);text-align:right;margin-top:var(--space-2);margin-bottom:var(--space-4)}
         .scroll-top{position:fixed;bottom:var(--space-8);right:var(--space-8);z-index:100;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--dim);cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transition:all var(--duration-normal) var(--ease-out);box-shadow:var(--shadow-lg)}
         .scroll-top.show{opacity:1;pointer-events:all}
         .scroll-top:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-2px)}
-        .pulse-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
-        .island-value.skeleton-pulse{width:80px;height:36px;display:inline-block}
-        @media(max-width:768px){
-          .pulse{flex-direction:column;text-align:center;padding:var(--space-5)}
-          .pulse-extra{justify-content:center}
-          .pulse-sidebar{align-items:center}
-          .pulse-clock{align-items:center}
+
+        /* ===== HERO EMBER ===== */
+        .hero-ember{position:relative;overflow:hidden;padding:var(--space-6) var(--space-6);margin-bottom:var(--space-6);border-radius:var(--radius-xl);background:linear-gradient(135deg,var(--card),rgba(217,119,6,0.06));border:1px solid var(--border)}
+        .hero-ember::before{content:'';position:absolute;top:-60%;right:-20%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(217,119,6,0.08),transparent 60%);pointer-events:none}
+        .hero-ember::after{content:'';position:absolute;bottom:-40%;left:-10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,0.05),transparent 60%);pointer-events:none}
+        .hero-ember-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-6);flex-wrap:wrap;margin-bottom:var(--space-5)}
+        .hero-ember-left{display:flex;align-items:center;gap:var(--space-4)}
+        .hero-ember-avatar{width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),var(--ember-light));color:#1c1917;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:var(--text-lg);flex-shrink:0;box-shadow:0 0 20px var(--primary-glow)}
+        .hero-ember-left h1{font-size:var(--text-xl);font-weight:800;color:var(--text);line-height:1.2;letter-spacing:-0.3px}
+        .hero-ember-left p{font-size:var(--text-xs);color:var(--dim);font-weight:500}
+        .hero-ember-right{text-align:right;flex-shrink:0}
+        .hero-ember-right .hero-date{font-size:var(--text-sm);font-weight:600;color:var(--text)}
+        .hero-ember-right .hero-time{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)}
+        .hero-ember-stats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3);padding-top:var(--space-4);border-top:1px solid var(--border)}
+        .hero-ember-stat{display:flex;flex-direction:column;gap:2px}
+        .hero-ember-stat .hero-ember-value{font-size:var(--text-lg);font-weight:800;color:var(--ember-light);line-height:1;font-variant-numeric:tabular-nums}
+        .hero-ember-stat .hero-ember-label{font-size:var(--text-xs);color:var(--muted);font-weight:600}
+        @media(max-width:700px){
+          .hero-ember-stats{grid-template-columns:repeat(2,1fr)}
+          .hero-ember-top{flex-direction:column}
+          .hero-ember-right{text-align:left;width:100%}
         }
+
+        /* ===== METRICS EMBER ===== */
+        .metrics-ember{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-6)}
+        .metric-ember{position:relative;border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all var(--duration-normal) var(--ease-out);cursor:default}
+        .metric-ember:hover{transform:translateY(-2px);border-color:var(--border-hover);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+        .metric-ember::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--bar-color,var(--primary));border-radius:0 0 3px 3px}
+        .metric-ember[data-accent=primary]{--bar-color:var(--primary)}
+        .metric-ember[data-accent=coral]{--bar-color:var(--coral)}
+        .metric-ember[data-accent=green]{--bar-color:var(--success)}
+        .metric-ember[data-accent=amber]{--bar-color:var(--warn)}
+        .metric-ember-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,var(--bar-color),transparent 70%);opacity:0.08;pointer-events:none}
+        .metric-ebody{padding:var(--space-4) var(--space-4) var(--space-4);position:relative;z-index:1}
+        .metric-eicon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--bar-color);background:rgba(var(--bar-color),0.1);margin-bottom:var(--space-3)}
+        .metric-eicon svg{width:18px;height:18px}
+        .metric-enum{font-size:var(--text-2xl);font-weight:800;color:var(--text);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;margin-bottom:var(--space-1)}
+        .metric-elabel{font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+        @media(max-width:900px){.metrics-ember{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:500px){.metrics-ember{grid-template-columns:1fr}}
+
+        /* ===== CHARTS EMBER ===== */
+        .charts-ember{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-6)}
+        .chart-ecard{border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all var(--duration-normal) var(--ease-out)}
+        .chart-ecard:hover{border-color:var(--border-hover);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+        .chart-eheader{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border)}
+        .chart-eheader h3{font-size:var(--text-sm);font-weight:700;color:var(--text);flex:1}
+        .chart-etag{font-size:0.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;padding:2px 8px;border-radius:var(--radius-full);background:var(--glass-bg);border:1px solid var(--border);white-space:nowrap}
+        .chart-ebody{padding:var(--space-4) var(--space-5)}
+        .chart-ebody .chart-container{width:100%}
+        .chart-ebody .chart-container canvas{width:100%!important;max-height:210px}
+        .chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-10);color:var(--dim);font-size:var(--text-sm);gap:var(--space-3)}
+        @media(max-width:768px){.charts-ember{grid-template-columns:1fr}}
+
+        /* ===== ADMIN EMBER ===== */
+        .admin-ember{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)}
+        @media(max-width:700px){.admin-ember{grid-template-columns:1fr}}
+
+        /* Barra de progreso de islas (ya no usada, pero legacy) */
+        .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
     </style>
 </head>
 <body>
@@ -35,60 +87,57 @@
 <div class="layout" id="layout">
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- DOCK SIDEBAR — compacta, se expande al hover -->
-    <aside class="sidebar dashboard-sidebar" id="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="sidebar-brand-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
-            <span class="sidebar-brand-text dock-hide">SmartLoan IT</span>
+            <span class="sidebar-brand-text">SmartLoan IT</span>
         </div>
 
         <div class="sidebar-user">
             <div class="sidebar-avatar" id="s-avatar">A</div>
-            <div class="sidebar-user-info dock-hide">
+            <div class="sidebar-user-info">
                 <div class="sidebar-user-name" id="s-name">Cargando...</div>
                 <div class="sidebar-user-role" id="s-role">Encargado</div>
             </div>
         </div>
 
         <nav class="sidebar-nav" id="sidebarNav">
-            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard" title="Dashboard">
+            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                <span class="dock-hide">Dashboard</span>
+                Dashboard
             </a>
-            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos" title="Equipos">
+            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                <span class="dock-hide">Equipos</span>
+                Equipos
             </a>
-            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos" title="Alumnos">
+            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                <span class="dock-hide">Alumnos</span>
+                Alumnos
             </a>
-            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos" title="Préstamos">
+            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                <span class="dock-hide">Préstamos</span>
-                <span class="ni-badge dock-hide" id="badge-prestamos">0</span>
+                Préstamos
+                <span class="ni-badge" id="badge-prestamos">0</span>
             </a>
-            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones" title="Devoluciones">
+            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-                <span class="dock-hide">Devoluciones</span>
+                Devoluciones
             </a>
-            <a href="/historial/historial.html" class="nav-item" data-page="historial" title="Historial">
+            <a href="/historial/historial.html" class="nav-item" data-page="historial">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                <span class="dock-hide">Historial</span>
+                Historial
             </a>
         </nav>
 
         <div class="sidebar-footer">
             <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Cambiar tema">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                <span class="dock-hide">Tema</span>
+                Tema
             </button>
-            <button class="btn btn-danger btn-sm" onclick="logout()" title="Salir">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span class="dock-hide">Salir</span>
-            </button>
+            <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
         </div>
     </aside>
 
@@ -105,103 +154,93 @@
 
         <div class="main-content">
 
-            <!-- GREETING COMPACTO -->
-            <div class="greeting reveal">
-                <div class="greeting-avatar" id="s-avatar-small">A</div>
-                <div class="greeting-text" id="welcome-msg">Bienvenido</div>
-            </div>
-
-            <!-- PULSO DEL SISTEMA -->
-            <section class="pulse reveal">
-                <div class="pulse-visual">
-                    <svg class="pulse-ring-svg" viewBox="0 0 200 200">
-                        <defs>
-                            <linearGradient id="ringGradPan" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="var(--primary)" />
-                                <stop offset="100%" stop-color="var(--coral)" />
-                            </linearGradient>
-                        </defs>
-                        <circle class="pulse-ring-outer" cx="100" cy="100" r="88" fill="none" stroke="var(--border)" stroke-width="2" />
-                        <circle class="pulse-ring-inner" cx="100" cy="100" r="88" fill="none" stroke="url(#ringGradPan)" stroke-width="3" stroke-dasharray="553" stroke-linecap="round" />
-                        <circle class="pulse-ring-glow" cx="100" cy="100" r="88" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="553" />
-                    </svg>
-                    <div class="pulse-center">
-                        <div class="pulse-value" id="h-prestamos">—</div>
-                        <div class="pulse-label">activos</div>
+            <!-- HERO EMBER -->
+            <section class="hero-ember">
+                <div class="hero-ember-top">
+                    <div class="hero-ember-left">
+                        <div class="hero-ember-avatar" id="s-avatar-small">A</div>
+                        <div>
+                            <h1 id="welcome-msg">Bienvenido</h1>
+                            <p>Panel de Control · SmartLoan IT</p>
+                        </div>
+                    </div>
+                    <div class="hero-ember-right">
+                        <div class="hero-date" id="hero-date"></div>
+                        <div class="hero-time" id="hero-time"></div>
                     </div>
                 </div>
-                <div class="pulse-sidebar">
-                    <div class="pulse-clock">
-                        <div class="pulse-date" id="hero-date"></div>
-                        <div class="pulse-time" id="hero-time"></div>
+                <div class="hero-ember-stats">
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-prestamos">—</span>
+                        <span class="hero-ember-label">Préstamos activos</span>
                     </div>
-                    <div class="pulse-extra">
-                        <div class="pulse-stat">
-                            <span class="pulse-stat-value" id="h-equipos">—</span>
-                            <span class="pulse-stat-label">Equipos</span>
-                        </div>
-                        <div class="pulse-extra-sep"></div>
-                        <div class="pulse-stat">
-                            <span class="pulse-stat-value" id="h-alumnos">—</span>
-                            <span class="pulse-stat-label">Alumnos</span>
-                        </div>
-                        <div class="pulse-extra-sep"></div>
-                        <div class="pulse-stat">
-                            <span class="pulse-stat-value" id="h-devueltos">—</span>
-                            <span class="pulse-stat-label">Devueltos hoy</span>
-                        </div>
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-equipos">—</span>
+                        <span class="hero-ember-label">Equipos totales</span>
+                    </div>
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-alumnos">—</span>
+                        <span class="hero-ember-label">Alumnos registrados</span>
+                    </div>
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-devueltos">—</span>
+                        <span class="hero-ember-label">Devueltos hoy</span>
                     </div>
                 </div>
             </section>
 
-            <!-- ISLAS DE MÉTRICAS -->
-            <section class="islands reveal">
-                <div class="island" data-color="primary">
-                    <div class="island-body">
-                        <div class="island-value" id="ct">—</div>
-                        <div class="island-label">Equipos Totales</div>
-                    </div>
-                    <div class="island-bar">
-                        <div class="island-bar-fill" id="bar-ct" style="width:100%"></div>
-                    </div>
-                </div>
-                <div class="island" data-color="coral">
-                    <div class="island-body">
-                        <div class="island-value" id="cp">—</div>
-                        <div class="island-label">En Préstamo</div>
-                    </div>
-                    <div class="island-bar">
-                        <div class="island-bar-fill" id="bar-cp" style="width:0%"></div>
+            <!-- METRIC CARDS -->
+            <section class="metrics-ember">
+                <div class="metric-ember" data-accent="primary">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                        </div>
+                        <div class="metric-enum" id="ct">—</div>
+                        <div class="metric-elabel">Equipos Totales</div>
                     </div>
                 </div>
-                <div class="island" data-color="green">
-                    <div class="island-body">
-                        <div class="island-value" id="cd">—</div>
-                        <div class="island-label">Disponibles</div>
-                    </div>
-                    <div class="island-bar">
-                        <div class="island-bar-fill" id="bar-cd" style="width:0%"></div>
+                <div class="metric-ember" data-accent="coral">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </div>
+                        <div class="metric-enum" id="cp">—</div>
+                        <div class="metric-elabel">En Préstamo</div>
                     </div>
                 </div>
-                <div class="island" data-color="amber">
-                    <div class="island-body">
-                        <div class="island-value" id="cm">—</div>
-                        <div class="island-label">Mantenimiento</div>
+                <div class="metric-ember" data-accent="green">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                        <div class="metric-enum" id="cd">—</div>
+                        <div class="metric-elabel">Disponibles</div>
                     </div>
-                    <div class="island-bar">
-                        <div class="island-bar-fill" id="bar-cm" style="width:0%"></div>
+                </div>
+                <div class="metric-ember" data-accent="amber">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                        </div>
+                        <div class="metric-enum" id="cm">—</div>
+                        <div class="metric-elabel">Mantenimiento</div>
                     </div>
                 </div>
             </section>
 
-            <!-- GRÁFICOS PANORAMA -->
-            <section class="charts-panorama reveal">
-                <div class="chart-block chart-donut-block">
-                    <div class="chart-block-header">
+            <!-- CHARTS -->
+            <section class="charts-ember">
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
                         <h3>Distribución de Equipos</h3>
-                        <span class="chart-block-badge">Estado actual</span>
+                        <span class="chart-etag">Estado actual</span>
                     </div>
-                    <div class="chart-block-body">
+                    <div class="chart-ebody">
                         <div class="chart-container">
                             <canvas id="donutChart"></canvas>
                             <div class="chart-empty" id="donutEmpty" style="display:none">
@@ -211,12 +250,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="chart-block chart-bar-block">
-                    <div class="chart-block-header">
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
                         <h3>Préstamos por Mes</h3>
-                        <span class="chart-block-badge">Últimos 6 meses</span>
+                        <span class="chart-etag">Últimos 6 meses</span>
                     </div>
-                    <div class="chart-block-body">
+                    <div class="chart-ebody">
                         <div class="chart-container">
                             <canvas id="barChart"></canvas>
                             <div class="chart-empty" id="barEmpty" style="display:none">
@@ -230,17 +269,17 @@
 
             <div class="last-updated" id="lastUpdated"></div>
 
-            <!-- ADMINISTRACIÓN -->
+            <!-- ADMIN -->
             <p class="section-title">Administración</p>
-            <div class="admin-panorama admin-only">
-                <div class="chart-block">
-                    <div class="chart-block-header">
+            <div class="admin-ember admin-only">
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
                         <div style="display:flex;align-items:center;gap:var(--space-3)">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                             <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Respaldo de información <span class="format-badge">XLSX</span></h3>
                         </div>
                     </div>
-                    <div class="chart-block-body">
+                    <div class="chart-ebody">
                         <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
                         <div class="export-stats" id="exportStats">
                             <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
@@ -267,14 +306,14 @@
                     </div>
                 </div>
 
-                <div class="chart-block">
-                    <div class="chart-block-header">
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
                         <div style="display:flex;align-items:center;gap:var(--space-3)">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
                             <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Configuración del sistema</h3>
                         </div>
                     </div>
-                    <div class="chart-block-body">
+                    <div class="chart-ebody">
                         <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Ajusta los parámetros operativos del sistema.</p>
                         <div class="cfg-section">
                             <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
@@ -326,14 +365,14 @@ function toggleSidebar(){
     document.getElementById('sidebarOverlay').classList.toggle('show');
 }
 
-// ---- GRÁFICOS ----
+// ---------- CHARTS ----------
 function crearDonut(labels, data, colors) {
     var ctx = document.getElementById('donutChart').getContext('2d');
     if (donutChartInstance) donutChartInstance.destroy();
     document.getElementById('donutEmpty').style.display = 'none';
     document.getElementById('donutChart').style.display = 'block';
-    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
-    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f';
+    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fef3c7';
+    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14100c';
     donutChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -349,7 +388,7 @@ function crearDonut(labels, data, colors) {
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            cutout: '78%',
+            cutout: '75%',
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -377,27 +416,10 @@ function crearDonut(labels, data, colors) {
             },
             animation: {
                 animateRotate: true,
-                duration: 1200,
+                duration: 1000,
                 easing: 'easeOutQuart'
             }
-        },
-        plugins: [{
-            id: 'centerText',
-            beforeDraw: function(chart) {
-                var w = chart.width, h = chart.height, c = chart.ctx;
-                c.save();
-                var total = chart.data.datasets[0].data.reduce(function(a,b){return a+b},0);
-                c.textAlign = 'center';
-                c.textBaseline = 'middle';
-                c.font = '700 ' + (w > 200 ? 24 : 18) + 'px "Plus Jakarta Sans", sans-serif';
-                c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
-                c.fillText(total, w/2, h/2 - 6);
-                c.font = '600 11px "Plus Jakarta Sans", sans-serif';
-                c.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--dim').trim() || '#7e8a9e';
-                c.fillText('equipos', w/2, h/2 + 18);
-                c.restore();
-            }
-        }]
+        }
     });
 }
 
@@ -406,15 +428,13 @@ function crearBarras(labels, data) {
     if (barChartInstance) barChartInstance.destroy();
     document.getElementById('barEmpty').style.display = 'none';
     document.getElementById('barChart').style.display = 'block';
-    var primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2563eb';
-    var coral = getComputedStyle(document.documentElement).getPropertyValue('--coral').trim() || '#f43f5e';
+    var primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#d97706';
     var grad = ctx.createLinearGradient(0, 0, 0, 250);
     grad.addColorStop(0, primary);
-    grad.addColorStop(0.6, primary + 'aa');
-    grad.addColorStop(1, primary + '11');
-    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
-    var mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#64748b';
-    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14141f';
+    grad.addColorStop(0.5, primary + 'aa');
+    grad.addColorStop(1, primary + '08');
+    var mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#7a6b5a';
+    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14100c';
     barChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -425,9 +445,9 @@ function crearBarras(labels, data) {
                 backgroundColor: grad,
                 borderColor: primary,
                 borderWidth: 0,
-                borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+                borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
                 borderSkipped: false,
-                barPercentage: 0.5,
+                barPercentage: 0.55,
                 categoryPercentage: 0.7
             }]
         },
@@ -455,7 +475,7 @@ function crearBarras(labels, data) {
                         color: mutedColor,
                         font: { size: 10 }
                     },
-                    grid: { color: 'rgba(255,255,255,0.04)' }
+                    grid: { color: 'rgba(251,191,36,0.04)' }
                 },
                 x: {
                     ticks: {
@@ -466,30 +486,10 @@ function crearBarras(labels, data) {
                 }
             },
             animation: {
-                duration: 1200,
+                duration: 1000,
                 easing: 'easeOutQuart'
             }
-        },
-        plugins: [{
-            id: 'barDots',
-            afterDraw: function(chart) {
-                var c = chart.ctx, meta = chart.getDatasetMeta(0);
-                c.save();
-                meta.data.forEach(function(bar, i) {
-                    if(chart.data.datasets[0].data[i] > 0){
-                        c.beginPath();
-                        c.arc(bar.x, bar.y, 3.5, 0, Math.PI * 2);
-                        c.fillStyle = primary;
-                        c.fill();
-                        c.beginPath();
-                        c.arc(bar.x, bar.y, 6, 0, Math.PI * 2);
-                        c.fillStyle = primary + '22';
-                        c.fill();
-                    }
-                });
-                c.restore();
-            }
-        }]
+        }
     });
 }
 
@@ -503,7 +503,7 @@ function mostrarBarraVacia(){
     document.getElementById('barEmpty').style.display = 'flex';
 }
 
-// ---- CARGA DE DATOS ----
+// ---------- DATA ----------
 var cacheData = { equipos: [], prestamos: [], alumnos: [] };
 
 async function cargarTodo(){
@@ -513,7 +513,7 @@ async function cargarTodo(){
         apiFetchBackground('/alumnos')
     ]);
     if(!er && !pr && !ar){
-        document.querySelector('.pulse-extra').innerHTML = '<div style="text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
+        document.querySelector('.hero-ember-stats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
         return;
     }
     cacheData.equipos = er ? await safeJson(er) : [];
@@ -546,18 +546,10 @@ function actualizarUI(){
     animarNumero('cd', disponibles);
     animarNumero('cm', mant);
 
-    // Barras proporcionales en las islas
-    var maxIsland = Math.max(total, 1);
-    document.getElementById('bar-ct').style.width = '100%';
-    document.getElementById('bar-cp').style.width = (prestados / maxIsland * 100) + '%';
-    document.getElementById('bar-cd').style.width = (disponibles / maxIsland * 100) + '%';
-    document.getElementById('bar-cm').style.width = (mant / maxIsland * 100) + '%';
-
     document.getElementById('badge-prestamos').textContent = activos;
 
-    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fff';
     if(total > 0){
-        crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#22c55e', '#6366f1', '#f59e0b']);
+        crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#34d399', '#f59e0b', '#f97316']);
     } else { mostrarDonutVacio(); }
 
     var meses = [];
@@ -601,7 +593,7 @@ function animarNumero(id, target) {
     requestAnimationFrame(step);
 }
 
-// ---- EXPORTACIÓN ----
+// ---------- EXPORT ----------
 async function exportarExcel(){
     var btn = document.getElementById('exportBtn');
     var bar = document.getElementById('progressBar');
@@ -680,7 +672,7 @@ function formatearTiempoRelativo(iso){
     return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
-// ---- RELOJ ----
+// ---------- CLOCK ----------
 function actualizarReloj(){
     var ahora = new Date();
     var dias = ['Domingo','Lunes','Martes','Mi\u00E9rcoles','Jueves','Viernes','S\u00E1bado'];
@@ -692,7 +684,7 @@ function actualizarReloj(){
 actualizarReloj();
 setInterval(actualizarReloj, 60000);
 
-// ---- ACTUALIZACIÓN PERIÓDICA ----
+// ---------- POLLING ----------
 var refreshInterval;
 function startPolling(){ cargarTodo(); refreshInterval = setInterval(cargarTodo, 30000); }
 document.addEventListener('visibilitychange', function(){
@@ -706,7 +698,7 @@ window.addEventListener('scroll', function(){
     if(st) st.classList.toggle('show', window.scrollY > 400);
 });
 
-// ---- CONFIGURACIÓN ----
+// ---------- CONFIG ----------
 function actualizarDisplayMulta(valor){
     var display = document.getElementById('multaValor');
     if(valor) display.textContent = fn(parseInt(valor));
@@ -746,7 +738,7 @@ async function guardarMulta(){
     setTimeout(function(){ btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('saved'); }, 2000);
 }
 
-// ---- INICIALIZACIÓN ----
+// ---------- INIT ----------
 window.onload = function(){
     var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
     var rol = localStorage.getItem('rol');
@@ -756,7 +748,7 @@ window.onload = function(){
         document.getElementById('s-avatar').textContent = inicial;
         document.getElementById('s-name').textContent = enc.nombre + ' ' + (enc.apellido || '');
         document.getElementById('s-role').textContent = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
-        document.getElementById('welcome-msg').innerHTML = '<strong>' + enc.nombre + '</strong> · Panel de Control';
+        document.getElementById('welcome-msg').textContent = 'Bienvenido, ' + enc.nombre;
         document.getElementById('s-avatar-small').textContent = inicial;
     }
     actualizarInfoExportacion();
