@@ -2,142 +2,92 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SmartLoan IT - Panel de control">
-    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <meta name="description" content="SmartLoan IT - Panel de control del sistema de gestión de préstamos de recursos tecnológicos.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23d97706'/><path d='M50 20 L20 35 L50 50 L80 35 Z' fill='white'/><path d='M20 50 L50 65 L80 50' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M20 63 L50 78 L80 63' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/></svg>">
     <title>SmartLoan IT | Panel de Control</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <script src="/js/vendor/chart.umd.min.js"></script>
-    <script src="/js/vendor/sortable.min.js"></script>
     <style>
-        .main-content{display:flex;flex-direction:column;gap:24px;padding-top:8px}
-        .skeleton-pulse{background:rgba(251,191,36,0.04);border-radius:4px;animation:skeleton 1.4s ease-in-out infinite}
-        @keyframes skeleton{0%{opacity:0.3}50%{opacity:0.6}100%{opacity:0.3}}
+        .main-content{display:flex;flex-direction:column}
+        .skeleton-pulse{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--border) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:skeleton 1.5s ease-in-out infinite;border-radius:6px}
+        @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .admin-only{display:none!important}
         body.role-admin .admin-only{display:revert!important}
-        .last-updated{font-size:11px;color:rgba(251,191,36,0.15);text-align:right}
-        .scroll-top{position:fixed;bottom:32px;right:32px;z-index:100;width:36px;height:36px;border-radius:8px;border:1px solid rgba(251,191,36,0.06);background:rgba(20,16,12,0.5);color:rgba(251,191,36,0.2);cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transition:all 0.3s}
+        body.role-admin .admin-ember.admin-only{display:grid!important}
+        .last-updated{font-size:var(--text-xs);color:var(--dim);text-align:right;margin-top:var(--space-2);margin-bottom:var(--space-4)}
+        .scroll-top{position:fixed;bottom:var(--space-8);right:var(--space-8);z-index:100;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--dim);cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transition:all var(--duration-normal) var(--ease-out);box-shadow:var(--shadow-lg)}
         .scroll-top.show{opacity:1;pointer-events:all}
-        .scroll-top:hover{color:rgba(251,191,36,0.5);border-color:rgba(251,191,36,0.12)}
-        .sortable-section{position:relative}
-        .drag-handle{position:absolute;top:0;right:0;z-index:10;width:28px;height:28px;border-radius:6px;border:1px solid transparent;color:rgba(251,191,36,0.08);cursor:grab;display:flex;align-items:center;justify-content:center;opacity:0;transition:all 0.25s}
-        .sortable-section:hover .drag-handle{opacity:0.3}
-        .drag-handle:hover{opacity:1!important;color:rgba(251,191,36,0.4);border-color:rgba(251,191,36,0.1)!important}
-        .sortable-ghost{opacity:0.08;background:rgba(217,119,6,0.03)!important;border:1.5px dashed rgba(217,119,6,0.12)!important;border-radius:12px!important}
-        .sortable-chosen{opacity:0.95!important}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-        .fade-slide{animation:fadeUp 0.5s var(--ease-out) both}
+        .scroll-top:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-2px)}
 
-        /* ===== HERO BENTO ===== */
-        .bento-hero{display:grid;grid-template-columns:1.6fr 1fr;gap:24px}
-        @media(max-width:800px){.bento-hero{grid-template-columns:1fr;gap:16px}}
-
-        .hero-main{position:relative;padding:32px}
-        .hero-main::after{content:'';position:absolute;inset:0;border:1px solid rgba(251,191,36,0.04);border-radius:16px;pointer-events:none}
-        .hero-num{font-size:88px;font-weight:900;color:#fbbf24;line-height:0.9;letter-spacing:-3px;font-variant-numeric:tabular-nums;margin-bottom:6px}
-        .hero-label{font-size:15px;color:rgba(251,191,36,0.25);font-weight:600;letter-spacing:-0.2px}
-        .hero-delta{font-size:13px;font-weight:600;color:rgba(52,211,153,0.4);margin-top:12px;display:flex;align-items:center;gap:4px}
-        .hero-delta::before{content:'▲';font-size:10px}
-        .hero-panel{display:flex;flex-direction:column;justify-content:center;padding:32px;position:relative;gap:6px}
-        .hero-panel::after{content:'';position:absolute;inset:0;border:1px solid rgba(251,191,36,0.04);border-radius:16px;pointer-events:none}
-        .hp-row{display:flex;align-items:baseline;gap:10px}
-        .hp-row .hp-num{font-size:32px;font-weight:800;color:#fef3c7;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-1px}
-        .hp-row .hp-label{font-size:12px;color:rgba(251,191,36,0.2);font-weight:600}
-        .hp-meta{font-size:11px;color:rgba(251,191,36,0.12);margin-top:2px;padding-left:2px}
-        .hp-sep{width:100%;height:1px;background:rgba(251,191,36,0.04);margin:6px 0}
-
-        /* ===== STATS ROW ===== */
-        .bento-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-        @media(max-width:700px){.bento-stats{grid-template-columns:1fr;gap:12px}}
-        .stat-block{position:relative;padding:24px 28px;cursor:pointer;transition:background 0.2s}
-        .stat-block::after{content:'';position:absolute;inset:0;border:1px solid rgba(251,191,36,0.04);border-radius:14px;pointer-events:none}
-        .stat-block:hover{background:rgba(251,191,36,0.01)}
-        .stat-num{font-size:30px;font-weight:800;color:#fef3c7;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-1px}
-        .stat-label{font-size:12px;color:rgba(251,191,36,0.2);font-weight:600;margin-top:3px}
-
-        .stat-block .sb-drill{display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(251,191,36,0.03)}
-        .stat-block .sb-drill.open{display:block;animation:drillIn 0.2s ease-out}
-        @keyframes drillIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-        .sd-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-        .sd-item{display:flex;flex-direction:column;gap:1px}
-        .sd-item .sd-value{font-size:15px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;line-height:1}
-        .sd-item .sd-label{font-size:10px;color:rgba(251,191,36,0.15);font-weight:600}
-        .sd-item[data-color=green] .sd-value{color:rgba(52,211,153,0.7)}
-        .sd-item[data-color=coral] .sd-value{color:rgba(249,115,22,0.7)}
-        .sd-item[data-color=amber] .sd-value{color:rgba(245,158,11,0.7)}
-        .sd-item[data-color=primary] .sd-value{color:rgba(217,119,6,0.7)}
-        @media(max-width:500px){.sd-grid{grid-template-columns:1fr;gap:6px}}
-        .stat-block .sc-hint{font-size:9px;color:rgba(251,191,36,0.06);margin-top:6px}
-
-        /* ===== CHARTS BENTO ===== */
-        .bento-charts{display:grid;grid-template-columns:1fr 1.4fr;gap:24px}
-        @media(max-width:800px){.bento-charts{grid-template-columns:1fr;gap:16px}}
-        .chart-box{position:relative;padding:24px}
-        .chart-box::after{content:'';position:absolute;inset:0;border:1px solid rgba(251,191,36,0.04);border-radius:14px;pointer-events:none}
-        .chart-box h3{font-size:13px;font-weight:700;color:rgba(251,191,36,0.15);margin-bottom:16px;letter-spacing:-0.2px}
-        .chart-box canvas{width:100%!important;max-height:190px}
-        .chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;color:rgba(251,191,36,0.1);font-size:13px;gap:12px}
-
-        /* ===== ADMIN ===== */
-        .bento-admin{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-        @media(max-width:700px){.bento-admin{grid-template-columns:1fr;gap:12px}}
-        .admin-box{position:relative;padding:24px}
-        .admin-box::after{content:'';position:absolute;inset:0;border:1px solid rgba(251,191,36,0.04);border-radius:14px;pointer-events:none}
-        .admin-box h3{font-size:13px;font-weight:700;color:rgba(251,191,36,0.15);margin-bottom:12px;letter-spacing:-0.2px;display:flex;align-items:center;gap:8px}
-        .admin-box h3 svg{opacity:0.15}
-        .admin-box p{font-size:12px;color:rgba(251,191,36,0.1);line-height:1.5;margin-bottom:16px}
-        .export-stats{display:flex;align-items:center;gap:16px;margin-bottom:16px}
-        .es-item{flex:1;text-align:center}
-        .es-num{display:block;font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
-        .es-lbl{font-size:10px;color:rgba(251,191,36,0.12);font-weight:600}
-        .es-divider{width:1px;height:20px;background:rgba(251,191,36,0.04)}
-        .export-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;border:none;border-radius:8px;background:rgba(217,119,6,0.02);border:1px solid rgba(217,119,6,0.04);color:var(--text);cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;text-align:left}
-        .export-btn:hover{background:rgba(217,119,6,0.04);border-color:rgba(217,119,6,0.08)}
-        .export-btn .eb-icon{width:26px;height:26px;border-radius:6px;background:rgba(217,119,6,0.04);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:rgba(217,119,6,0.3)}
-        .eb-progress-wrap{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.05)}
-        .eb-progress-bar{height:100%;width:0%;background:rgba(217,119,6,0.2);transition:width 0.3s}
-        .eb-label{flex:1;min-width:0}
-        .eb-title{display:block;font-size:12px;font-weight:700;color:var(--text)}
-        .eb-desc{display:block;font-size:9px;color:rgba(251,191,36,0.1);margin-top:1px}
-        .eb-arrow{flex-shrink:0;color:rgba(251,191,36,0.08);transition:transform 0.2s}
-        .export-btn:hover .eb-arrow{transform:translateX(3px);color:rgba(217,119,6,0.2)}
-        .eb-check{position:absolute;right:14px;top:50%;transform:translateY(-50%) scale(0);color:rgba(52,211,153,0.6);transition:transform 0.3s}
-        .export-btn.completed .eb-check{transform:translateY(-50%) scale(1)}
-        .export-btn.completed .eb-arrow{opacity:0}
-        .export-info{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:10px;color:rgba(251,191,36,0.1)}
-        .export-info strong{color:var(--text)}
-        .multa-value{display:flex;align-items:baseline;gap:4px;font-size:22px;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums}
-        .multa-value .cur{font-size:12px;color:rgba(251,191,36,0.2);font-weight:700}
-        .cfg-group{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
-        .cfg-group label{font-size:11px;color:rgba(251,191,36,0.12);font-weight:600}
-        .cfg-input{width:90px;padding:7px 10px;border-radius:6px;border:1px solid rgba(251,191,36,0.04);background:rgba(0,0,0,0.1);color:var(--text);font-size:12px;font-family:var(--font);font-weight:600;outline:none;transition:border-color 0.2s}
-        .cfg-input:focus{border-color:rgba(217,119,6,0.1)}
-        .btn-cfg-save{padding:7px 12px;border:none;border-radius:6px;background:rgba(217,119,6,0.04);color:rgba(217,119,6,0.4);font-size:10px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap}
-        .btn-cfg-save:hover{background:rgba(217,119,6,0.08);color:rgba(217,119,6,0.6)}
-        .btn-cfg-save:disabled{opacity:0.3;cursor:not-allowed}
-        .btn-cfg-save.saved{background:rgba(52,211,153,0.04);color:rgba(52,211,153,0.5)}
-
-        /* ===== GREETING ROW ===== */
-        .greeting{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-        .greeting h1{font-size:20px;font-weight:800;color:#fef3c7;letter-spacing:-0.5px}
-        .greeting p{font-size:12px;color:rgba(251,191,36,0.12);font-weight:500}
-        .greeting-right{text-align:right}
-        .greeting-date{font-size:12px;color:rgba(251,191,36,0.12);font-weight:600}
-        .greeting-time{font-size:10px;color:rgba(251,191,36,0.08);font-family:var(--mono);margin-top:1px}
-        @media(max-width:600px){
-            .greeting{flex-direction:column;gap:4px}
-            .greeting-right{text-align:left}
+        /* ===== HERO EMBER ===== */
+        .hero-ember{position:relative;overflow:hidden;padding:var(--space-6) var(--space-6);margin-bottom:var(--space-6);border-radius:var(--radius-xl);background:linear-gradient(135deg,var(--card),rgba(217,119,6,0.06));border:1px solid var(--border)}
+        .hero-ember::before{content:'';position:absolute;top:-60%;right:-20%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(217,119,6,0.08),transparent 60%);pointer-events:none}
+        .hero-ember::after{content:'';position:absolute;bottom:-40%;left:-10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,0.05),transparent 60%);pointer-events:none}
+        .hero-ember-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-6);flex-wrap:wrap;margin-bottom:var(--space-5)}
+        .hero-ember-left{display:flex;align-items:center;gap:var(--space-4)}
+        .hero-ember-avatar{width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),var(--ember-light));color:#1c1917;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:var(--text-lg);flex-shrink:0;box-shadow:0 0 20px var(--primary-glow)}
+        .hero-ember-left h1{font-size:var(--text-xl);font-weight:800;color:var(--text);line-height:1.2;letter-spacing:-0.3px}
+        .hero-ember-left p{font-size:var(--text-xs);color:var(--dim);font-weight:500}
+        .hero-ember-right{text-align:right;flex-shrink:0}
+        .hero-ember-right .hero-date{font-size:var(--text-sm);font-weight:600;color:var(--text)}
+        .hero-ember-right .hero-time{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)}
+        .hero-ember-stats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3);padding-top:var(--space-4);border-top:1px solid var(--border)}
+        .hero-ember-stat{display:flex;flex-direction:column;gap:2px}
+        .hero-ember-stat .hero-ember-value{font-size:var(--text-lg);font-weight:800;color:var(--ember-light);line-height:1;font-variant-numeric:tabular-nums}
+        .hero-ember-stat .hero-ember-label{font-size:var(--text-xs);color:var(--muted);font-weight:600}
+        @media(max-width:700px){
+          .hero-ember-stats{grid-template-columns:repeat(2,1fr)}
+          .hero-ember-top{flex-direction:column}
+          .hero-ember-right{text-align:left;width:100%}
         }
+
+        /* ===== METRICS EMBER ===== */
+        .metrics-ember{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-6)}
+        .metric-ember{position:relative;border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all var(--duration-normal) var(--ease-out);cursor:default}
+        .metric-ember:hover{transform:translateY(-2px);border-color:var(--border-hover);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+        .metric-ember::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--bar-color,var(--primary));border-radius:0 0 3px 3px}
+        .metric-ember[data-accent=primary]{--bar-color:var(--primary)}
+        .metric-ember[data-accent=coral]{--bar-color:var(--coral)}
+        .metric-ember[data-accent=green]{--bar-color:var(--success)}
+        .metric-ember[data-accent=amber]{--bar-color:var(--warn)}
+        .metric-ember-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,var(--bar-color),transparent 70%);opacity:0.08;pointer-events:none}
+        .metric-ebody{padding:var(--space-4) var(--space-4) var(--space-4);position:relative;z-index:1}
+        .metric-eicon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--bar-color);background:rgba(var(--bar-color),0.1);margin-bottom:var(--space-3)}
+        .metric-eicon svg{width:18px;height:18px}
+        .metric-enum{font-size:var(--text-2xl);font-weight:800;color:var(--text);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;margin-bottom:var(--space-1)}
+        .metric-elabel{font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+        @media(max-width:900px){.metrics-ember{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:500px){.metrics-ember{grid-template-columns:1fr}}
+
+        /* ===== CHARTS EMBER ===== */
+        .charts-ember{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-6)}
+        .chart-ecard{border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all var(--duration-normal) var(--ease-out)}
+        .chart-ecard:hover{border-color:var(--border-hover);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+        .chart-eheader{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border)}
+        .chart-eheader h3{font-size:var(--text-sm);font-weight:700;color:var(--text);flex:1}
+        .chart-etag{font-size:0.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;padding:2px 8px;border-radius:var(--radius-full);background:var(--glass-bg);border:1px solid var(--border);white-space:nowrap}
+        .chart-ebody{padding:var(--space-4) var(--space-5)}
+        .chart-ebody .chart-container{width:100%}
+        .chart-ebody .chart-container canvas{width:100%!important;max-height:210px}
+        .chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-10);color:var(--dim);font-size:var(--text-sm);gap:var(--space-3)}
+        @media(max-width:768px){.charts-ember{grid-template-columns:1fr}}
+
+        /* ===== ADMIN EMBER ===== */
+        .admin-ember{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)}
+        @media(max-width:700px){.admin-ember{grid-template-columns:1fr}}
+
+        /* Barra de progreso de islas (ya no usada, pero legacy) */
+        .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
     </style>
 </head>
 <body>
+
 <div class="layout" id="layout">
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="sidebar-brand-icon">
@@ -145,6 +95,7 @@
             </div>
             <span class="sidebar-brand-text">SmartLoan IT</span>
         </div>
+
         <div class="sidebar-user">
             <div class="sidebar-avatar" id="s-avatar">A</div>
             <div class="sidebar-user-info">
@@ -152,144 +103,184 @@
                 <div class="sidebar-user-role" id="s-role">Encargado</div>
             </div>
         </div>
+
         <nav class="sidebar-nav" id="sidebarNav">
-            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
-            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Equipos</a>
-            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Alumnos</a>
-            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Préstamos<span class="ni-badge" id="badge-prestamos">0</span></a>
-            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>Devoluciones</a>
-            <a href="/historial/historial.html" class="nav-item" data-page="historial"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Historial</a>
+            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
+            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                Equipos
+            </a>
+            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                Alumnos
+            </a>
+            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Préstamos
+                <span class="ni-badge" id="badge-prestamos">0</span>
+            </a>
+            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                Devoluciones
+            </a>
+            <a href="/historial/historial.html" class="nav-item" data-page="historial">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Historial
+            </a>
         </nav>
+
         <div class="sidebar-footer">
-            <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Cambiar tema"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Tema</button>
+            <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Cambiar tema">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                Tema
+            </button>
             <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
         </div>
     </aside>
 
     <main class="main">
         <div class="topbar">
-            <button class="hamburger" onclick="toggleSidebar()" aria-label="Menú"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+            <button class="hamburger" onclick="toggleSidebar()" aria-label="Menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+            </button>
             <span class="topbar-brand">SmartLoan IT</span>
-            <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+            <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
         </div>
 
         <div class="main-content">
 
-            <!-- GREETING -->
-            <div class="greeting">
-                <div>
-                    <h1 id="welcome-msg">Bienvenido</h1>
+            <!-- HERO EMBER -->
+            <section class="hero-ember">
+                <div class="hero-ember-top">
+                    <div class="hero-ember-left">
+                        <div class="hero-ember-avatar" id="s-avatar-small">A</div>
+                        <div>
+                            <h1 id="welcome-msg">Bienvenido</h1>
+                            <p>Panel de Control · SmartLoan IT</p>
+                        </div>
+                    </div>
+                    <div class="hero-ember-right">
+                        <div class="hero-date" id="hero-date"></div>
+                        <div class="hero-time" id="hero-time"></div>
+                    </div>
                 </div>
-                <div class="greeting-right">
-                    <div class="greeting-date" id="hero-date"></div>
-                    <div class="greeting-time" id="hero-time"></div>
+                <div class="hero-ember-stats">
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-prestamos">—</span>
+                        <span class="hero-ember-label">Préstamos activos</span>
+                    </div>
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-equipos">—</span>
+                        <span class="hero-ember-label">Equipos totales</span>
+                    </div>
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-alumnos">—</span>
+                        <span class="hero-ember-label">Alumnos registrados</span>
+                    </div>
+                    <div class="hero-ember-stat">
+                        <span class="hero-ember-value" id="h-devueltos">—</span>
+                        <span class="hero-ember-label">Devueltos hoy</span>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- HERO BENTO -->
-            <div class="sortable-section" id="sec-hero">
-                <div class="drag-handle" title="Arrastrar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="19" r="2"/><circle cx="15" cy="19" r="2"/></svg></div>
-                <div class="bento-hero">
-                    <div class="hero-main" onclick="toggleHeroDrilldown()" style="cursor:pointer">
-                        <div class="hero-num" id="h-prestamos">—</div>
-                        <div class="hero-label">préstamos activos</div>
-                        <div class="hero-delta" id="hero-delta"></div>
-                        <div class="gauge-drilldown" id="hero-drilldown" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(251,191,36,0.03)">
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                                <div><span style="font-size:20px;font-weight:800;color:rgba(249,115,22,0.6);font-variant-numeric:tabular-nums" id="dd-vencidos">—</span><div style="font-size:10px;color:rgba(251,191,36,0.1);font-weight:600;margin-top:1px">Vencidos</div></div>
-                                <div><span style="font-size:20px;font-weight:800;color:rgba(52,211,153,0.6);font-variant-numeric:tabular-nums" id="dd-dev-hoy">—</span><div style="font-size:10px;color:rgba(251,191,36,0.1);font-weight:600;margin-top:1px">Devueltos hoy</div></div>
-                            </div>
+            <!-- METRIC CARDS -->
+            <section class="metrics-ember">
+                <div class="metric-ember" data-accent="primary">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
                         </div>
-                    </div>
-                    <div class="hero-panel">
-                        <div class="hp-row"><span class="hp-num" id="h-equipos">—</span><span class="hp-label">equipos totales</span></div>
-                        <div class="hp-row"><span class="hp-num" id="h-alumnos">—</span><span class="hp-label">alumnos registrados</span></div>
-                        <div class="hp-sep"></div>
-                        <div class="hp-row"><span class="hp-num" id="h-devueltos">—</span><span class="hp-label">devueltos hoy</span></div>
-                        <div class="hp-meta">actualizado automáticamente</div>
+                        <div class="metric-enum" id="ct">—</div>
+                        <div class="metric-elabel">Equipos Totales</div>
                     </div>
                 </div>
-            </div>
+                <div class="metric-ember" data-accent="coral">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </div>
+                        <div class="metric-enum" id="cp">—</div>
+                        <div class="metric-elabel">En Préstamo</div>
+                    </div>
+                </div>
+                <div class="metric-ember" data-accent="green">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                        <div class="metric-enum" id="cd">—</div>
+                        <div class="metric-elabel">Disponibles</div>
+                    </div>
+                </div>
+                <div class="metric-ember" data-accent="amber">
+                    <div class="metric-ember-glow"></div>
+                    <div class="metric-ebody">
+                        <div class="metric-eicon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                        </div>
+                        <div class="metric-enum" id="cm">—</div>
+                        <div class="metric-elabel">Mantenimiento</div>
+                    </div>
+                </div>
+            </section>
 
-            <!-- STATS BENTO -->
-            <div class="sortable-section" id="sec-metrics">
-                <div class="drag-handle" title="Arrastrar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="19" r="2"/><circle cx="15" cy="19" r="2"/></svg></div>
-                <div class="bento-stats" id="stats-grid">
-                    <div class="stat-block" onclick="toggleMetricDrilldown(this)">
-                        <div class="stat-num" id="ct">—</div>
-                        <div class="stat-label">equipos totales</div>
-                        <div class="sb-drill" style="display:none">
-                            <div class="sd-grid">
-                                <div class="sd-item" data-color="green"><span class="sd-value" id="dd-ct-disponibles">—</span><span class="sd-label">Disponibles</span></div>
-                                <div class="sd-item" data-color="coral"><span class="sd-value" id="dd-ct-prestados">—</span><span class="sd-label">Prestados</span></div>
-                                <div class="sd-item" data-color="amber"><span class="sd-value" id="dd-ct-mant">—</span><span class="sd-label">Mantenimiento</span></div>
-                                <div class="sd-item" data-color="primary"><span class="sd-value" id="dd-ct-tipos">—</span><span class="sd-label">Tipos</span></div>
-                            </div>
-                        </div>
-                        <div class="sc-hint" style="display:none">&#x24D8; clic para detalle</div>
+            <!-- CHARTS -->
+            <section class="charts-ember">
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
+                        <h3>Distribución de Equipos</h3>
+                        <span class="chart-etag">Estado actual</span>
                     </div>
-                    <div class="stat-block" onclick="toggleMetricDrilldown(this)">
-                        <div class="stat-num" id="cp">—</div>
-                        <div class="stat-label">en préstamo</div>
-                        <div class="sb-drill" style="display:none">
-                            <div class="sd-grid">
-                                <div class="sd-item" data-color="coral"><span class="sd-value" id="dd-cp-activos">—</span><span class="sd-label">Activos</span></div>
-                                <div class="sd-item" data-color="amber"><span class="sd-value" id="dd-cp-vencidos">—</span><span class="sd-label">Vencidos</span></div>
+                    <div class="chart-ebody">
+                        <div class="chart-container">
+                            <canvas id="donutChart"></canvas>
+                            <div class="chart-empty" id="donutEmpty" style="display:none">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <span>No hay equipos registrados</span>
                             </div>
                         </div>
-                        <div class="sc-hint" style="display:none">&#x24D8; clic para detalle</div>
-                    </div>
-                    <div class="stat-block" onclick="toggleMetricDrilldown(this)">
-                        <div class="stat-num" id="cd">—</div>
-                        <div class="stat-label">disponibles</div>
-                        <div class="sb-drill" style="display:none">
-                            <div class="sd-grid">
-                                <div class="sd-item" data-color="green"><span class="sd-value" id="dd-cd-porcentaje">—</span><span class="sd-label">% del total</span></div>
-                                <div class="sd-item" data-color="primary"><span class="sd-value" id="dd-cd-otros">—</span><span class="sd-label">Sin estado</span></div>
-                            </div>
-                        </div>
-                        <div class="sc-hint" style="display:none">&#x24D8; clic para detalle</div>
-                    </div>
-                    <div class="stat-block" onclick="toggleMetricDrilldown(this)">
-                        <div class="stat-num" id="cm">—</div>
-                        <div class="stat-label">mantenimiento</div>
-                        <div class="sb-drill" style="display:none">
-                            <div class="sd-grid">
-                                <div class="sd-item" data-color="amber"><span class="sd-value" id="dd-cm-pendientes">—</span><span class="sd-label">Pendientes</span></div>
-                                <div class="sd-item" data-color="coral"><span class="sd-value" id="dd-cm-largo">—</span><span class="sd-label">&gt;7 días</span></div>
-                            </div>
-                        </div>
-                        <div class="sc-hint" style="display:none">&#x24D8; clic para detalle</div>
                     </div>
                 </div>
-            </div>
-
-            <!-- CHARTS BENTO -->
-            <div class="sortable-section" id="sec-charts">
-                <div class="drag-handle" title="Arrastrar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="19" r="2"/><circle cx="15" cy="19" r="2"/></svg></div>
-                <div class="bento-charts" id="charts-grid">
-                    <div class="chart-box">
-                        <h3>Distribución de equipos</h3>
-                        <canvas id="donutChart"></canvas>
-                        <div class="chart-empty" id="donutEmpty" style="display:none"><span>No hay equipos registrados</span></div>
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
+                        <h3>Préstamos por Mes</h3>
+                        <span class="chart-etag">Últimos 6 meses</span>
                     </div>
-                    <div class="chart-box">
-                        <h3>Préstamos por mes</h3>
-                        <canvas id="barChart"></canvas>
-                        <div class="chart-empty" id="barEmpty" style="display:none"><span>No hay préstamos registrados</span></div>
+                    <div class="chart-ebody">
+                        <div class="chart-container">
+                            <canvas id="barChart"></canvas>
+                            <div class="chart-empty" id="barEmpty" style="display:none">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="6" width="4" height="14"/><rect x="17" y="9" width="4" height="11"/></svg>
+                                <span>No hay préstamos registrados</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             <div class="last-updated" id="lastUpdated"></div>
 
             <!-- ADMIN -->
-            <div class="sortable-section" id="sec-admin">
-                <div class="drag-handle" title="Arrastrar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="19" r="2"/><circle cx="15" cy="19" r="2"/></svg></div>
-                <div class="bento-admin admin-only" id="admin-grid">
-                    <div class="admin-box">
-                        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Respaldo de información</h3>
-                        <p>Exportá todos los préstamos y devoluciones en Excel.</p>
+            <p class="section-title">Administración</p>
+            <div class="admin-ember admin-only">
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
+                        <div style="display:flex;align-items:center;gap:var(--space-3)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Respaldo de información <span class="format-badge">XLSX</span></h3>
+                        </div>
+                    </div>
+                    <div class="chart-ebody">
+                        <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
                         <div class="export-stats" id="exportStats">
                             <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
                             <div class="es-divider"></div>
@@ -298,23 +289,55 @@
                             <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
                         </div>
                         <button class="export-btn" id="exportBtn" onclick="exportarExcel()">
-                            <span class="eb-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                            <span class="eb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
                             <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
-                            <span class="eb-label"><span class="eb-title" id="exportBtnTitle">Exportar ahora</span><span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span></span>
-                            <svg class="eb-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                            <span class="eb-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                            <span class="eb-label">
+                                <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
+                                <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
+                            </span>
+                            <svg class="eb-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                            <span class="eb-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
                         </button>
-                        <div class="export-info"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Última exportación: <strong id="lastExport">—</strong></span><span class="export-filesize" id="lastExportSize"></span></div>
-                    </div>
-                    <div class="admin-box">
-                        <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Configuración</h3>
-                        <p>Parámetros operativos del sistema.</p>
-                        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
-                            <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
-                            <div style="font-size:11px;color:rgba(251,191,36,0.1);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">multa por día</div>
+                        <div class="export-info">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span>Última exportación: <strong id="lastExport">—</strong></span>
+                            <span class="export-filesize" id="lastExportSize"></span>
                         </div>
-                        <div style="font-size:11px;color:rgba(251,191,36,0.08);margin-bottom:12px">Equipos en mantenimiento &gt;7 días: <strong id="dd-cm-largo-display" style="color:rgba(249,115,22,0.5)">—</strong></div>
-                        <div class="cfg-group"><label>Actualizar multa</label><span style="font-size:11px;color:rgba(251,191,36,0.1);font-weight:700">Gs.</span><input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)"><button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button></div>
+                    </div>
+                </div>
+
+                <div class="chart-ecard">
+                    <div class="chart-eheader">
+                        <div style="display:flex;align-items:center;gap:var(--space-3)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                            <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Configuración del sistema</h3>
+                        </div>
+                    </div>
+                    <div class="chart-ebody">
+                        <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Ajusta los parámetros operativos del sistema.</p>
+                        <div class="cfg-section">
+                            <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
+                                <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
+                                <div style="flex:1;min-width:0">
+                                    <div style="font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Valor de multa por día</div>
+                                    <div style="font-size:0.65rem;color:var(--dim);margin-top:1px">Tasa vigente para retrasos</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cfg-section">
+                            <div class="cfg-row">
+                                <div class="cfg-label">
+                                    <strong>Actualizar multa</strong>
+                                    <span>Nuevo valor por día de retraso</span>
+                                </div>
+                                <div class="cfg-input-group">
+                                    <span class="cfg-prefix">Gs.</span>
+                                    <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
+                                    <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
+                                </div>
+                            </div>
+                            <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -324,11 +347,10 @@
 </div>
 
 <div class="toast" id="toast"></div>
-<div class="custom-tooltip" id="customTooltip" style="position:fixed;z-index:500;background:rgba(12,9,8,0.95);border:1px solid rgba(251,191,36,0.06);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text);pointer-events:none;opacity:0;transition:opacity 0.2s;max-width:240px;line-height:1.4">
-    <div class="tt-title" style="font-weight:800;color:#fbbf24;margin-bottom:3px;font-size:12px"></div>
-    <div class="tt-body" style="color:rgba(251,191,36,0.2);font-size:11px"></div>
-</div>
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver arriba"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver arriba">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 
 <script src="/js/api.js"></script>
 <script>
@@ -343,110 +365,155 @@ function toggleSidebar(){
     document.getElementById('sidebarOverlay').classList.toggle('show');
 }
 
-/* ========== DRILL-DOWN ========== */
-var heroDrilldownOpen = false;
-
-function toggleHeroDrilldown(){
-    var dd = document.getElementById('hero-drilldown');
-    heroDrilldownOpen = !heroDrilldownOpen;
-    dd.style.display = heroDrilldownOpen ? 'block' : 'none';
-}
-
-function toggleMetricDrilldown(card){
-    var dd = card.querySelector('.sb-drill');
-    if(!dd) return;
-    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-}
-
-/* ========== TOOLTIP ========== */
-var tooltipEl = document.getElementById('customTooltip');
-
-function showTooltip(el, title, body){
-    if(!tooltipEl) return;
-    tooltipEl.innerHTML = '<div class="tt-title">' + title + '</div><div class="tt-body">' + body + '</div>';
-    tooltipEl.style.opacity = '1';
-    var rect = el.getBoundingClientRect();
-    var top = rect.bottom + 8;
-    var left = rect.left + rect.width / 2 - tooltipEl.offsetWidth / 2;
-    if(left < 8) left = 8;
-    if(left + tooltipEl.offsetWidth > window.innerWidth - 8) left = window.innerWidth - tooltipEl.offsetWidth - 8;
-    tooltipEl.style.top = top + 'px';
-    tooltipEl.style.left = left + 'px';
-}
-
-function hideTooltip(){
-    tooltipEl.style.opacity = '0';
-}
-
-/* ========== COUNTER ========== */
-function animarNumero(id, target){
-    var el = document.getElementById(id);
-    if(!el) return;
-    var current = parseInt(el.textContent.replace(/\D/g,'')) || 0;
-    if(current === target){ el.textContent = target; return; }
-    var duration = 900, start = performance.now();
-    function step(now){
-        var p = Math.min((now - start) / duration, 1);
-        var eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(current + (target - current) * eased);
-        if(p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-}
-
-/* ========== CHARTS ========== */
-function crearDonut(labels, data, colors){
+// ---------- CHARTS ----------
+function crearDonut(labels, data, colors) {
     var ctx = document.getElementById('donutChart').getContext('2d');
-    if(donutChartInstance) donutChartInstance.destroy();
+    if (donutChartInstance) donutChartInstance.destroy();
     document.getElementById('donutEmpty').style.display = 'none';
     document.getElementById('donutChart').style.display = 'block';
-    var t = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fef3c7';
-    var c = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14100c';
+    var textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#fef3c7';
+    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14100c';
     donutChartInstance = new Chart(ctx, {
         type: 'doughnut',
-        data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, borderWidth: 0, hoverOffset: 14, spacing: 6 }] },
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 0,
+                hoverOffset: 12,
+                spacing: 4
+            }]
+        },
         options: {
-            responsive: true, maintainAspectRatio: true, cutout: '78%',
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '75%',
             plugins: {
-                legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, boxWidth: 10, boxHeight: 10, color: t, font: { family: 'Inter, system-ui, sans-serif', size: 11, weight: '600' } } },
-                tooltip: { backgroundColor: c, titleFont: { size: 12, weight: '700' }, bodyFont: { size: 11 }, padding: 12, cornerRadius: 8, displayColors: true, callbacks: { label: function(ctx){ return ' ' + ctx.label + ': ' + ctx.parsed + ' equipos'; } } }
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 18,
+                        usePointStyle: true,
+                        pointStyleWidth: 10,
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        color: textColor,
+                        font: { family: 'Plus Jakarta Sans, sans-serif', size: 11, weight: '600' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: cardColor,
+                    titleFont: { size: 12, weight: '700' },
+                    bodyFont: { size: 11 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(ctx){ return ' ' + ctx.label + ': ' + ctx.parsed + ' equipos'; }
+                    }
+                }
             },
-            animation: { animateRotate: true, duration: 1200, easing: 'easeOutQuart' }
+            animation: {
+                animateRotate: true,
+                duration: 1000,
+                easing: 'easeOutQuart'
+            }
         }
     });
 }
 
-function crearBarras(labels, data){
+function crearBarras(labels, data) {
     var ctx = document.getElementById('barChart').getContext('2d');
-    if(barChartInstance) barChartInstance.destroy();
+    if (barChartInstance) barChartInstance.destroy();
     document.getElementById('barEmpty').style.display = 'none';
     document.getElementById('barChart').style.display = 'block';
-    var p = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#d97706';
-    var g = ctx.createLinearGradient(0, 0, 0, 250);
-    g.addColorStop(0, p); g.addColorStop(0.5, p + 'aa'); g.addColorStop(1, p + '08');
-    var m = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#7a6b5a';
-    var c = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14100c';
+    var primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#d97706';
+    var grad = ctx.createLinearGradient(0, 0, 0, 250);
+    grad.addColorStop(0, primary);
+    grad.addColorStop(0.5, primary + 'aa');
+    grad.addColorStop(1, primary + '08');
+    var mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#7a6b5a';
+    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#14100c';
     barChartInstance = new Chart(ctx, {
         type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Préstamos', data: data, backgroundColor: g, borderColor: p, borderWidth: 0, borderRadius: { topLeft: 6, topRight: 6 }, borderSkipped: false, barPercentage: 0.55, categoryPercentage: 0.7 }] },
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Préstamos',
+                data: data,
+                backgroundColor: grad,
+                borderColor: primary,
+                borderWidth: 0,
+                borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
+                borderSkipped: false,
+                barPercentage: 0.55,
+                categoryPercentage: 0.7
+            }]
+        },
         options: {
-            responsive: true, maintainAspectRatio: true,
-            plugins: { legend: { display: false }, tooltip: { backgroundColor: c, titleFont: { size: 12, weight: '700' }, bodyFont: { size: 11 }, padding: 12, cornerRadius: 8, callbacks: { label: function(ctx){ return ' ' + ctx.parsed.y + ' préstamos'; } } } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: m, font: { size: 10, family: 'Inter, system-ui, sans-serif' } }, grid: { color: 'rgba(251,191,36,0.03)' } }, x: { ticks: { color: m, font: { size: 10, weight: '600', family: 'Inter, system-ui, sans-serif' } }, grid: { display: false } } },
-            animation: { duration: 1200, easing: 'easeOutQuart' }
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: cardColor,
+                    titleFont: { size: 12, weight: '700' },
+                    bodyFont: { size: 11 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(ctx){ return ' ' + ctx.parsed.y + ' préstamos'; }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: mutedColor,
+                        font: { size: 10 }
+                    },
+                    grid: { color: 'rgba(251,191,36,0.04)' }
+                },
+                x: {
+                    ticks: {
+                        color: mutedColor,
+                        font: { size: 10, weight: '600' }
+                    },
+                    grid: { display: false }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            }
         }
     });
 }
 
-function mostrarDonutVacio(){ document.getElementById('donutChart').style.display = 'none'; document.getElementById('donutEmpty').style.display = 'flex'; }
-function mostrarBarraVacia(){ document.getElementById('barChart').style.display = 'none'; document.getElementById('barEmpty').style.display = 'flex'; }
+function mostrarDonutVacio(){
+    document.getElementById('donutChart').style.display = 'none';
+    document.getElementById('donutEmpty').style.display = 'flex';
+}
 
+function mostrarBarraVacia(){
+    document.getElementById('barChart').style.display = 'none';
+    document.getElementById('barEmpty').style.display = 'flex';
+}
+
+// ---------- DATA ----------
 var cacheData = { equipos: [], prestamos: [], alumnos: [] };
 
 async function cargarTodo(){
-    var [er, pr, ar] = await Promise.all([apiFetchBackground('/equipos'), apiFetchBackground('/prestamos'), apiFetchBackground('/alumnos')]);
+    var [er, pr, ar] = await Promise.all([
+        apiFetchBackground('/equipos'),
+        apiFetchBackground('/prestamos'),
+        apiFetchBackground('/alumnos')
+    ]);
     if(!er && !pr && !ar){
-        document.querySelector('.hero-main').innerHTML = '<div style="color:rgba(251,191,36,0.15);font-size:13px">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px;background:rgba(217,119,6,0.04);border:1px solid rgba(217,119,6,0.06);border-radius:6px;padding:4px 10px;color:rgba(217,119,6,0.4);font-weight:600;font-size:10px;cursor:pointer">Reintentar</button></div>';
+        document.querySelector('.hero-ember-stats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
         return;
     }
     cacheData.equipos = er ? await safeJson(er) : [];
@@ -455,26 +522,20 @@ async function cargarTodo(){
     actualizarUI();
 }
 
-function contarTiposEquipo(eq){
-    var tipos = {};
-    eq.forEach(function(e){ var t = e.tipo || 'Sin tipo'; if(!tipos[t]) tipos[t] = 0; tipos[t]++; });
-    return Object.keys(tipos).length;
-}
-
 function actualizarUI(){
-    var eq = cacheData.equipos, pr = cacheData.prestamos, al = cacheData.alumnos;
+    var eq = cacheData.equipos;
+    var pr = cacheData.prestamos;
+    var al = cacheData.alumnos;
     var total = eq.length;
     var prestados = eq.filter(function(e){ return e.estado === 'Prestado'; }).length;
     var disponibles = eq.filter(function(e){ return e.estado === 'Disponible'; }).length;
     var mant = eq.filter(function(e){ return e.estado === 'En mantenimiento'; }).length;
     var activos = pr.filter(function(p){ return p.estado === 'ACTIVO'; }).length;
-    var hoy = new Date(), hoyStr = hoy.toISOString().slice(0, 10);
-    var devHoy = pr.filter(function(p){ return p.estado === 'DEVUELTO' && p.fecha_devolucion && p.fecha_devolucion.startsWith(hoyStr); }).length;
-    var vencidos = pr.filter(function(p){ return p.estado === 'ACTIVO' && p.fecha_fin && p.fecha_fin < hoyStr; }).length;
-    var mantLargo = eq.filter(function(e){ if(e.estado !== 'En mantenimiento' || !e.fecha_mantenimiento) return false; var fd = new Date(e.fecha_mantenimiento); return (hoy - fd) / 86400000 > 7; }).length;
-    var tiposCount = contarTiposEquipo(eq);
-    var porcDisponibles = total > 0 ? Math.round(disponibles / total * 100) + '%' : '—';
-    var sinEstado = total - disponibles - prestados - mant;
+    var hoy = new Date();
+    var hoyStr = hoy.toISOString().slice(0, 10);
+    var devHoy = pr.filter(function(p){
+        return p.estado === 'DEVUELTO' && p.fecha_devolucion && p.fecha_devolucion.startsWith(hoyStr);
+    }).length;
 
     animarNumero('h-prestamos', activos);
     animarNumero('h-equipos', total);
@@ -484,71 +545,85 @@ function actualizarUI(){
     animarNumero('cp', prestados);
     animarNumero('cd', disponibles);
     animarNumero('cm', mant);
+
     document.getElementById('badge-prestamos').textContent = activos;
-    animarNumero('dd-vencidos', vencidos);
-    animarNumero('dd-dev-hoy', devHoy);
-    animarNumero('dd-ct-disponibles', disponibles);
-    animarNumero('dd-ct-prestados', prestados);
-    animarNumero('dd-ct-mant', mant);
-    animarNumero('dd-ct-tipos', tiposCount);
-    animarNumero('dd-cp-activos', activos);
-    animarNumero('dd-cp-vencidos', vencidos);
-    animarNumero('dd-cd-porcentaje', porcDisponibles);
-    animarNumero('dd-cd-otros', sinEstado < 0 ? 0 : sinEstado);
-    animarNumero('dd-cm-pendientes', mant);
-    animarNumero('dd-cm-largo', mantLargo);
 
-    var deltaEl = document.getElementById('hero-delta');
-    if(deltaEl){
-        if(devHoy > 0) deltaEl.textContent = devHoy + ' devueltos hoy';
-        else deltaEl.textContent = 'sin devoluciones hoy';
+    if(total > 0){
+        crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#34d399', '#f59e0b', '#f97316']);
+    } else { mostrarDonutVacio(); }
+
+    var meses = [];
+    var mesesLabels = [];
+    var ahora = new Date();
+    for(var i = 5; i >= 0; i--){
+        var m = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
+        meses.push(m);
+        mesesLabels.push(m.toLocaleDateString('es-PY', { month: 'short', year: '2-digit' }));
     }
-
-    document.getElementById('dd-cm-largo-display').textContent = mantLargo;
-
-    if(total > 0){ crearDonut(['Disponible','Prestado','Mantenimiento'], [disponibles, prestados, mant], ['#34d399','#f59e0b','#f97316']); }
-    else { mostrarDonutVacio(); }
-
-    var meses = [], mesesLabels = [], ahora = new Date();
-    for(var i = 5; i >= 0; i--){ var m = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1); meses.push(m); mesesLabels.push(m.toLocaleDateString('es-PY', { month: 'short', year: '2-digit' })); }
-    var barData = meses.map(function(m){ var y = m.getFullYear(), mo = m.getMonth(); return pr.filter(function(p){ if(!p.fecha_prestamo) return false; var pd = new Date(p.fecha_prestamo); return pd.getFullYear() === y && pd.getMonth() === mo; }).length; });
-    if(barData.some(function(v){ return v > 0; })){ crearBarras(mesesLabels, barData); }
-    else { mostrarBarraVacia(); }
+    var barData = meses.map(function(m){
+        var y = m.getFullYear();
+        var mo = m.getMonth();
+        return pr.filter(function(p){
+            if(!p.fecha_prestamo) return false;
+            var pd = new Date(p.fecha_prestamo);
+            return pd.getFullYear() === y && pd.getMonth() === mo;
+        }).length;
+    });
+    if(barData.some(function(v){ return v > 0; })){
+        crearBarras(mesesLabels, barData);
+    } else { mostrarBarraVacia(); }
 
     var lu = document.getElementById('lastUpdated');
     if(lu) lu.textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-PY', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-    var tipMap = {
-        'ct': { title: 'Equipos Totales', body: '<strong>' + total + '</strong> equipos · <strong>' + tiposCount + '</strong> tipos' },
-        'cp': { title: 'En Préstamo', body: '<strong>' + prestados + '</strong> prestados · <strong>' + vencidos + '</strong> vencidos' },
-        'cd': { title: 'Disponibles', body: '<strong>' + disponibles + '</strong> disponibles · ' + porcDisponibles + ' del total' },
-        'cm': { title: 'Mantenimiento', body: '<strong>' + mant + '</strong> en mantenimiento · <strong>' + mantLargo + '</strong> con más de 7 días' }
-    };
-    Object.keys(tipMap).forEach(function(id){
-        var el = document.getElementById(id);
-        if(!el) return;
-        var info = tipMap[id];
-        el.addEventListener('mouseenter', function(){ showTooltip(el, info.title, info.body); });
-        el.addEventListener('mouseleave', hideTooltip);
-    });
 }
 
-/* ========== EXPORT ========== */
+function animarNumero(id, target) {
+    var el = document.getElementById(id);
+    if(!el) return;
+    var current = parseInt(el.textContent.replace(/\D/g,'')) || 0;
+    if (current === target) { el.textContent = target; return; }
+    var duration = 800, start = performance.now();
+    function step(now) {
+        var p = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var val = Math.round(current + (target - current) * eased);
+        el.textContent = val;
+        if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+// ---------- EXPORT ----------
 async function exportarExcel(){
-    var btn = document.getElementById('exportBtn'), bar = document.getElementById('progressBar'), title = document.getElementById('exportBtnTitle'), desc = document.getElementById('exportBtnDesc');
+    var btn = document.getElementById('exportBtn');
+    var bar = document.getElementById('progressBar');
+    var title = document.getElementById('exportBtnTitle');
+    var desc = document.getElementById('exportBtnDesc');
     btn.disabled = true; btn.classList.add('exporting');
-    title.textContent = 'Exportando...'; desc.textContent = 'Preparando archivo Excel';
+    title.textContent = 'Exportando...';
+    desc.textContent = 'Preparando archivo Excel';
     var progress = 0;
-    var sim = setInterval(function(){ if(progress < 90){ progress += Math.random() * 12 + 4; if(progress > 90) progress = 90; bar.style.width = Math.round(progress) + '%'; } }, 400);
+    var sim = setInterval(function(){
+        if(progress < 90){ progress += Math.random() * 12 + 4; if(progress > 90) progress = 90; bar.style.width = Math.round(progress) + '%'; }
+    }, 400);
     try {
         var r = await apiFetch('/exportar');
         if(!r.ok){ st('Error al exportar', 't-err'); resetExportBtn(); return; }
-        var loanCount = r.headers.get('X-Export-Loans'), returnCount = r.headers.get('X-Export-Returns'), studentCount = r.headers.get('X-Export-Students');
-        clearInterval(sim); bar.style.width = '100%';
-        var blob = await r.blob(), url = URL.createObjectURL(blob), a = document.createElement('a');
-        a.href = url; a.download = 'smartloan_exportacion_' + (new Date()).toISOString().slice(0, 10) + '.xlsx';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-        var ahora = new Date(), exportMeta = { iso: ahora.toISOString(), prestamos: loanCount, devoluciones: returnCount, alumnos: studentCount };
+        var loanCount = r.headers.get('X-Export-Loans');
+        var returnCount = r.headers.get('X-Export-Returns');
+        var studentCount = r.headers.get('X-Export-Students');
+        clearInterval(sim);
+        bar.style.width = '100%';
+        var blob = await r.blob();
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        var hoy = (new Date()).toISOString().slice(0, 10);
+        a.download = 'smartloan_exportacion_' + hoy + '.xlsx';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        var ahora = new Date();
+        var exportMeta = { iso: ahora.toISOString(), prestamos: loanCount, devoluciones: returnCount, alumnos: studentCount };
         localStorage.setItem('ultimaExportacion', JSON.stringify(exportMeta));
         actualizarInfoExportacion();
         btn.classList.remove('exporting'); btn.classList.add('completed');
@@ -559,9 +634,13 @@ async function exportarExcel(){
 }
 
 function resetExportBtn(){
-    var btn = document.getElementById('exportBtn'), bar = document.getElementById('progressBar'), title = document.getElementById('exportBtnTitle'), desc = document.getElementById('exportBtnDesc');
+    var btn = document.getElementById('exportBtn');
+    var bar = document.getElementById('progressBar');
+    var title = document.getElementById('exportBtnTitle');
+    var desc = document.getElementById('exportBtnDesc');
     btn.disabled = false; btn.classList.remove('exporting', 'completed');
-    bar.style.width = '0%'; title.textContent = 'Exportar ahora'; desc.textContent = 'Historial completo en .xlsx';
+    bar.style.width = '0%'; title.textContent = 'Exportar ahora';
+    desc.textContent = 'Historial completo en .xlsx';
 }
 
 function actualizarInfoExportacion(){
@@ -578,7 +657,9 @@ function actualizarInfoExportacion(){
             document.getElementById('expReturns').textContent = meta.devoluciones;
             document.getElementById('expStudents').textContent = meta.alumnos;
         } else { sizeEl.style.display = 'none'; }
-    } catch(e){ document.getElementById('lastExport').textContent = raw; }
+    } catch(e){
+        document.getElementById('lastExport').textContent = raw;
+    }
 }
 
 function formatearTiempoRelativo(iso){
@@ -591,22 +672,33 @@ function formatearTiempoRelativo(iso){
     return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
+// ---------- CLOCK ----------
 function actualizarReloj(){
     var ahora = new Date();
     var dias = ['Domingo','Lunes','Martes','Mi\u00E9rcoles','Jueves','Viernes','S\u00E1bado'];
     var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
     document.getElementById('hero-date').textContent = dias[ahora.getDay()] + ', ' + ahora.getDate() + ' de ' + meses[ahora.getMonth()] + ' de ' + ahora.getFullYear();
-    document.getElementById('hero-time').textContent = String(ahora.getHours()).padStart(2,'0') + ':' + String(ahora.getMinutes()).padStart(2,'0') + ' hs';
+    var h = String(ahora.getHours()).padStart(2,'0'), m = String(ahora.getMinutes()).padStart(2,'0');
+    document.getElementById('hero-time').textContent = h + ':' + m + ' hs';
 }
 actualizarReloj();
 setInterval(actualizarReloj, 60000);
 
+// ---------- POLLING ----------
 var refreshInterval;
 function startPolling(){ cargarTodo(); refreshInterval = setInterval(cargarTodo, 30000); }
-document.addEventListener('visibilitychange', function(){ if(document.hidden && refreshInterval) clearInterval(refreshInterval); else startPolling(); });
+document.addEventListener('visibilitychange', function(){
+    if(document.hidden && refreshInterval) clearInterval(refreshInterval);
+    else startPolling();
+});
 window.addEventListener('beforeunload', function(){ if(refreshInterval) clearInterval(refreshInterval); });
-window.addEventListener('scroll', function(){ var st = document.getElementById('scrollTop'); if(st) st.classList.toggle('show', window.scrollY > 400); });
 
+window.addEventListener('scroll', function(){
+    var st = document.getElementById('scrollTop');
+    if(st) st.classList.toggle('show', window.scrollY > 400);
+});
+
+// ---------- CONFIG ----------
 function actualizarDisplayMulta(valor){
     var display = document.getElementById('multaValor');
     if(valor) display.textContent = fn(parseInt(valor));
@@ -616,11 +708,14 @@ function actualizarDisplayMulta(valor){
 async function cargarConfig(){
     try{
         var r = await apiFetch('/configuracion');
-        if(!r.ok) return;
+        if(!r.ok){ return; }
         var d = await safeJson(r);
         var multa = d.find(function(x){ return x.clave === 'multa_por_dia'; });
-        if(multa){ document.getElementById('multa-input').value = Number(multa.valor).toLocaleString('es-PY'); actualizarDisplayMulta(multa.valor); }
-    } catch(e){}
+        if(multa){
+            document.getElementById('multa-input').value = Number(multa.valor).toLocaleString('es-PY');
+            actualizarDisplayMulta(multa.valor);
+        }
+    } catch(e){ /* ignore */ }
 }
 
 function fmtMonto(el){
@@ -630,42 +725,20 @@ function fmtMonto(el){
 
 async function guardarMulta(){
     var val = document.getElementById('multa-input').value.replace(/\./g,'').trim();
-    if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor v\u00E1lido','t-err'); return; }
+    if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor v\u00E1lido mayor o igual a 0','t-err'); return; }
     var btn = document.getElementById('btnCfg');
     btn.disabled = true; btn.textContent = 'Guardando...';
     try{
         var r = await apiFetch('/configuracion/multa_por_dia', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({valor:val}) });
-        if(r.ok){ st('Multa actualizada'); btn.textContent = 'Guardado'; btn.classList.add('saved'); actualizarDisplayMulta(val); }
-        else { st('Error al guardar','t-err'); btn.textContent = 'Guardar'; }
+        if(r.ok){
+            st('Multa actualizada correctamente'); btn.textContent = 'Guardado'; btn.classList.add('saved');
+            actualizarDisplayMulta(val);
+        } else { st('Error al guardar','t-err'); btn.textContent = 'Guardar'; }
     } catch(e){ st('Error de conexi\u00F3n','t-err'); btn.textContent = 'Guardar'; }
     setTimeout(function(){ btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('saved'); }, 2000);
 }
 
-function initDragDrop(){
-    var containers = document.querySelectorAll('#sec-hero, #sec-metrics, #sec-charts, #sec-admin');
-    var orderKey = 'dashboard-section-order';
-    containers.forEach(function(el){
-        if(typeof Sortable === 'undefined') return;
-        Sortable.create(el, {
-            animation: 350, easing: 'cubic-bezier(0.34,1.56,0.64,1)', handle: '.drag-handle',
-            ghostClass: 'sortable-ghost', chosenClass: 'sortable-chosen', dragClass: 'sortable-drag',
-            delay: 150, delayOnTouchOnly: true, touchStartThreshold: 3,
-            onEnd: function(){
-                var order = [];
-                document.querySelectorAll('.main-content > .sortable-section').forEach(function(sec){ order.push(sec.id); });
-                try { localStorage.setItem(orderKey, JSON.stringify(order)); } catch(e){}
-            }
-        });
-    });
-    try {
-        var saved = JSON.parse(localStorage.getItem(orderKey));
-        if(saved && Array.isArray(saved) && saved.length > 0){
-            var parent = document.querySelector('.main-content');
-            saved.forEach(function(id){ var el = document.getElementById(id); if(el && el.parentNode === parent) parent.appendChild(el); });
-        }
-    } catch(e){}
-}
-
+// ---------- INIT ----------
 window.onload = function(){
     var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
     var rol = localStorage.getItem('rol');
@@ -676,13 +749,13 @@ window.onload = function(){
         document.getElementById('s-name').textContent = enc.nombre + ' ' + (enc.apellido || '');
         document.getElementById('s-role').textContent = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
         document.getElementById('welcome-msg').textContent = 'Bienvenido, ' + enc.nombre;
+        document.getElementById('s-avatar-small').textContent = inicial;
     }
     actualizarInfoExportacion();
     cargarConfig();
     initTheme();
     startPolling();
     initScrollReveal();
-    initDragDrop();
     initSpotlight([
         {label:'Equipos',sub:'Gesti\u00F3n de activos tecnol\u00F3gicos',url:'/equipos/equipos.html'},
         {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
@@ -690,7 +763,9 @@ window.onload = function(){
         {label:'Devoluciones',sub:'Recibir devoluci\u00F3n',url:'/devoluciones/devoluciones.html'},
         {label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}
     ]);
-    var themeObserver = new MutationObserver(function(){ if(donutChartInstance || barChartInstance) cargarTodo(); });
+    var themeObserver = new MutationObserver(function(){
+        if(donutChartInstance || barChartInstance) cargarTodo();
+    });
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 };
 </script>
