@@ -52,7 +52,20 @@
         .btn-del-row:hover{background:rgba(239,68,68,0.1);}
         /* Columna de acciones (botón eliminar) */
         th.ac{width:52px;}
-    </style>
+        @media(max-width:600px){
+            main{padding:var(--space-3)!important}
+            .toolbar{flex-direction:column;align-items:stretch}
+            .tabs{justify-content:center;overflow-x:auto;-webkit-overflow-scrolling:touch}
+            .tab{padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
+            .filters{gap:4px}
+            .fb{flex:1;text-align:center;padding:var(--space-2) var(--space-2);font-size:0.65rem}
+            .search-bar{padding:var(--space-2) var(--space-3);gap:var(--space-2)}
+            .search-bar input{font-size:16px!important}
+            .breadcrumbs{font-size:var(--text-xs)}
+            .page-header{gap:var(--space-3);padding-bottom:var(--space-3)}
+            .page-header h1{font-size:var(--text-lg)}
+            .page-header p{font-size:var(--text-xs)}
+        }
 </head>
 <body>
 <!-- Cuerpo de la página -->
@@ -207,15 +220,15 @@ function renderP(){
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
-        html+='<td><span class="code">#'+p.id_prestamo+'</span></td>';
-        html+='<td><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
-        html+='<td><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
-        html+='<td>'+ff(p.fecha_prestamo)+'</td>';
-        html+='<td style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
-        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((p.encargado_nombre||'')+' '+(p.encargado_apellido||''),q)+'</td>';
-        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
-        html+='<td>'+badge+'</td>';
-        html+='<td>'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button>':'')+'</td>';
+        html+=        html+='<td data-label="#"><span class="code">#'+p.id_prestamo+'</span></td>';
+        html+='<td data-label="Alumno"><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
+        html+='<td data-label="Equipo"><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
+        html+='<td data-label="Préstamo">'+ff(p.fecha_prestamo)+'</td>';
+        html+='<td data-label="Vence" style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
+        html+='<td data-label="Encargado" style="color:var(--dim);font-size:0.82rem">'+resaltar((p.encargado_nombre||'')+' '+(p.encargado_apellido||''),q)+'</td>';
+        html+='<td data-label="Motivo" style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
+        html+='<td data-label="Estado">'+badge+'</td>';
+        html+='<td data-label="">'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button>':'')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -236,18 +249,18 @@ function renderD(){
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
-        html+='<td><span class="code">#'+dv.id_devolucion+'</span></td>';
-        html+='<td><span class="code">#'+dv.id_prestamo+'</span></td>';
-        html+='<td><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
-        html+='<td><strong>'+resaltar(dv.equipo,q)+'</strong><div class="sub-text">'+dv.tipo+'</div></td>';
-        html+='<td>'+ff(dv.fecha_devolucion)+'</td>';
-        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_prestamo_nombre||'')+' '+(dv.enc_prestamo_apellido||''),q)+'</td>';
-        html+='<td style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_devolucion_nombre||'')+' '+(dv.enc_devolucion_apellido||''),q)+'</td>';
-        html+='<td>'+dv.estado_equipo+'</td>';
-        html+='<td>'+danoCell+'</td>';
-        html+='<td style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
-        html+='<td style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
-        html+='<td>'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarDevolucion('+dv.id_devolucion+')" title="Eliminar devolución">✕</button>':'')+'</td>';
+        html+='<td data-label="#Dev"><span class="code">#'+dv.id_devolucion+'</span></td>';
+        html+='<td data-label="#Pres"><span class="code">#'+dv.id_prestamo+'</span></td>';
+        html+='<td data-label="Alumno"><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
+        html+='<td data-label="Equipo"><strong>'+resaltar(dv.equipo,q)+'</strong><div class="sub-text">'+dv.tipo+'</div></td>';
+        html+='<td data-label="Devuelto">'+ff(dv.fecha_devolucion)+'</td>';
+        html+='<td data-label="Registró" style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_prestamo_nombre||'')+' '+(dv.enc_prestamo_apellido||''),q)+'</td>';
+        html+='<td data-label="Recibió" style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_devolucion_nombre||'')+' '+(dv.enc_devolucion_apellido||''),q)+'</td>';
+        html+='<td data-label="Estado">'+dv.estado_equipo+'</td>';
+        html+='<td data-label="Daño">'+danoCell+'</td>';
+        html+='<td data-label="Multa" style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
+        html+='<td data-label="Total" style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
+        html+='<td data-label="">'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarDevolucion('+dv.id_devolucion+')" title="Eliminar devolución">✕</button>':'')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';

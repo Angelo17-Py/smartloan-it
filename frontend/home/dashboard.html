@@ -80,6 +80,21 @@
 
         /* Barra de progreso de islas (ya no usada, pero legacy) */
         .hero-stat-value.skeleton-pulse{width:60px;height:28px;display:inline-block}
+        @media(max-width:600px){
+            .hero-section{padding:var(--space-4)!important}
+            .hero-left{gap:var(--space-2)}
+            .hero-avatar{width:36px;height:36px;font-size:var(--text-base)}
+            .hero-left h1{font-size:var(--text-base)}
+            .hero-stats{gap:var(--space-2)}
+            .hero-stat .hero-value{font-size:var(--text-base)}
+            .metric-card{padding:var(--space-3)}
+            .metric-body{padding:var(--space-3)!important}
+            .metric-num{font-size:var(--text-xl)}
+            .chart-body{padding:var(--space-3)!important}
+            .chart-header{padding:var(--space-3) var(--space-3)!important}
+            .chart-body .chart-container canvas{max-height:160px!important}
+            .admin-grid{gap:var(--space-3)}
+        }
     </style>
 </head>
 <body>
