@@ -51,6 +51,7 @@ img{max-width:100%;display:block}
   background:var(--card);
   border-bottom:1px solid var(--border);
   transition:background var(--duration-normal) var(--ease-out);
+  gap:var(--space-4);
 }
 .brand{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-xl);font-weight:900;color:var(--text);text-decoration:none;transition:opacity var(--duration-fast);letter-spacing:-0.3px}
 .brand-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--accent-light));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 20px var(--primary-glow)}
@@ -79,6 +80,7 @@ img{max-width:100%;display:block}
   border:1px solid var(--border);
   color:var(--dim);font-size:var(--text-sm);font-weight:600;
   transition:all var(--duration-fast) var(--ease-out);
+  text-decoration:none;
 }
 .nav-link:hover{
   border-color:var(--primary);color:var(--primary);
@@ -86,8 +88,11 @@ img{max-width:100%;display:block}
   transform:translateY(-1px);
 }
 @media (max-width:600px){
-  .nav{padding:0 var(--space-4)}
+  .nav{padding:0 var(--space-4);height:48px}
   .nav-user .nav-user-name{display:none}
+  .brand .brand-icon{width:30px;height:30px}
+  .brand .brand-icon svg{width:14px;height:14px}
+  .brand{font-size:var(--text-base)!important;gap:var(--space-2)}
 }
 
 /* ---- TARJETAS (CARDS) con glassmorphism ---- */
