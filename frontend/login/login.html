@@ -16,20 +16,20 @@
         body,html{height:100%;overflow:hidden}
         @media(max-width:860px){html{overflow-y:auto}body{overflow-y:auto}}
         .login-page{
-            display:flex;min-height:100vh;background:#0a0807;
+            display:flex;min-height:100vh;background:#080b12;
             font-family:'Inter',system-ui,sans-serif;position:relative;
         }
         /* Ambient background glow */
         .login-page::before{
             content:'';position:fixed;top:-30%;left:-10%;
             width:800px;height:800px;border-radius:50%;
-            background:radial-gradient(circle,rgba(217,119,6,0.08),transparent 70%);
+            background:radial-gradient(circle,rgba(37,99,235,0.08),transparent 70%);
             pointer-events:none;animation:ambientA 12s ease-in-out infinite alternate;
         }
         .login-page::after{
             content:'';position:fixed;bottom:-20%;right:-10%;
             width:600px;height:600px;border-radius:50%;
-            background:radial-gradient(circle,rgba(251,191,36,0.06),transparent 70%);
+            background:radial-gradient(circle,rgba(59,130,246,0.06),transparent 70%);
             pointer-events:none;animation:ambientB 10s ease-in-out infinite alternate;
         }
         @keyframes ambientA{0%{transform:translate(0,0) scale(1)}100%{transform:translate(60px,40px) scale(1.15)}}
@@ -57,27 +57,27 @@
         .brand-logo{display:flex;align-items:center;gap:14px;margin-bottom:32px}
         .brand-logo-icon{
             width:52px;height:52px;border-radius:14px;
-            background:linear-gradient(135deg,#d97706,#fbbf24);
+            background:linear-gradient(135deg,#2563eb,#3b82f6);
             display:flex;align-items:center;justify-content:center;
-            box-shadow:0 0 30px rgba(217,119,6,0.25);
+            box-shadow:0 0 30px rgba(37,99,235,0.25);
             flex-shrink:0;
         }
         .brand-logo-text{display:flex;flex-direction:column}
         .brand-logo-text .bl-name{
-            font-size:var(--text-lg);font-weight:900;color:#fef3c7;
+            font-size:var(--text-lg);font-weight:900;color:#f1f5f9;
             letter-spacing:-0.5px;line-height:1.1;
         }
         .brand-logo-text .bl-sub{
-            font-size:10px;color:rgba(251,191,36,0.5);
+            font-size:10px;color:rgba(148,163,184,0.6);
             font-weight:600;text-transform:uppercase;letter-spacing:2px;
         }
 
         .brand-badge{
             display:inline-flex;align-items:center;gap:8px;
-            background:rgba(217,119,6,0.1);color:#d97706;
+            background:rgba(59,130,246,0.1);color:#3b82f6;
             padding:5px 14px;border-radius:100px;
             font-size:11px;font-weight:700;margin-bottom:20px;
-            backdrop-filter:blur(8px);border:1px solid rgba(217,119,6,0.15);
+            backdrop-filter:blur(8px);border:1px solid rgba(59,130,246,0.15);
             animation:fadeSlide 0.7s var(--ease-out) both;
         }
         @keyframes fadeSlide{
@@ -87,16 +87,16 @@
         .brand-content h1{
             font-size:clamp(2rem,4vw,3rem);font-weight:900;
             letter-spacing:-1.5px;line-height:1.1;
-            margin-bottom:14px;color:#fef3c7;
+            margin-bottom:14px;color:#f1f5f9;
             animation:fadeSlide 0.7s var(--ease-out) 0.1s both;
         }
         .brand-content h1 span{
-            background:linear-gradient(135deg,#fbbf24,#d97706);
+            background:linear-gradient(135deg,#60a5fa,#2563eb);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent;
             background-clip:text;
         }
         .brand-content .tagline{
-            font-size:var(--text-base);color:rgba(251,191,36,0.4);
+            font-size:var(--text-base);color:rgba(148,163,184,0.5);
             line-height:1.6;margin-bottom:36px;max-width:400px;
             font-weight:500;
             animation:fadeSlide 0.7s var(--ease-out) 0.2s both;
@@ -109,44 +109,44 @@
         .feature-pills .pill{
             display:inline-flex;align-items:center;gap:8px;
             padding:7px 14px;border-radius:100px;
-            background:rgba(28,25,23,0.6);
+            background:rgba(13,17,23,0.6);
             backdrop-filter:blur(12px);
-            border:1px solid rgba(251,191,36,0.08);
-            font-size:11px;font-weight:600;color:rgba(251,191,36,0.5);
+            border:1px solid rgba(59,130,246,0.08);
+            font-size:11px;font-weight:600;color:rgba(148,163,184,0.6);
             transition:all var(--duration-fast) var(--ease-out);
         }
-        .feature-pills .pill svg{color:#d97706;flex-shrink:0}
+        .feature-pills .pill svg{color:#3b82f6;flex-shrink:0}
         .feature-pills .pill:hover{
-            border-color:rgba(217,119,6,0.3);color:rgba(251,191,36,0.8);
-            background:rgba(217,119,6,0.08);transform:translateY(-2px);
+            border-color:rgba(59,130,246,0.3);color:rgba(148,163,184,0.9);
+            background:rgba(59,130,246,0.08);transform:translateY(-2px);
         }
 
         /* Decorative glass orbs */
         .glass-orbs{position:absolute;right:0;top:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:0}
         .gorb{
             position:absolute;border-radius:50%;
-            backdrop-filter:blur(40px);border:1px solid rgba(217,119,6,0.06);
+            backdrop-filter:blur(40px);border:1px solid rgba(59,130,246,0.06);
         }
-        .gorb-1{width:300px;height:300px;right:-60px;top:10%;background:radial-gradient(circle,rgba(217,119,6,0.04),transparent 70%)}
-        .gorb-2{width:200px;height:200px;right:20%;bottom:15%;background:radial-gradient(circle,rgba(251,191,36,0.03),transparent 70%)}
-        .gorb-3{width:150px;height:150px;left:5%;top:50%;background:radial-gradient(circle,rgba(180,83,9,0.03),transparent 70%)}
+        .gorb-1{width:300px;height:300px;right:-60px;top:10%;background:radial-gradient(circle,rgba(37,99,235,0.04),transparent 70%)}
+        .gorb-2{width:200px;height:200px;right:20%;bottom:15%;background:radial-gradient(circle,rgba(59,130,246,0.03),transparent 70%)}
+        .gorb-3{width:150px;height:150px;left:5%;top:50%;background:radial-gradient(circle,rgba(30,64,175,0.03),transparent 70%)}
 
         /* ===== RIGHT PANEL — FORM ===== */
         .form-panel{
             display:flex;flex-direction:column;justify-content:center;
             padding:48px;position:relative;
-            background:rgba(20,16,12,0.35);
+            background:rgba(13,17,23,0.35);
             backdrop-filter:blur(24px);
             -webkit-backdrop-filter:blur(24px);
-            border-left:1px solid rgba(251,191,36,0.06);
+            border-left:1px solid rgba(59,130,246,0.06);
         }
         .form-panel::before{
             content:'';position:absolute;inset:0;
-            background:linear-gradient(180deg,rgba(217,119,6,0.02),transparent 40%,rgba(180,83,9,0.02));
+            background:linear-gradient(180deg,rgba(37,99,235,0.02),transparent 40%,rgba(30,64,175,0.02));
             pointer-events:none;
         }
         @media(max-width:860px){
-            .form-panel{border-left:none;border-top:1px solid rgba(251,191,36,0.06);padding:32px}
+            .form-panel{border-left:none;border-top:1px solid rgba(59,130,246,0.06);padding:32px}
         }
 
         .form-inner{max-width:360px;width:100%;margin:0 auto;position:relative;z-index:1}
@@ -154,45 +154,45 @@
         .form-header{margin-bottom:28px;text-align:center}
         .form-header .fh-icon{
             width:48px;height:48px;border-radius:14px;
-            background:linear-gradient(135deg,#d97706,#fbbf24);
+            background:linear-gradient(135deg,#2563eb,#3b82f6);
             display:flex;align-items:center;justify-content:center;
-            color:#1c1917;margin:0 auto 14px;
-            box-shadow:0 0 24px rgba(217,119,6,0.2);
+            color:#f1f5f9;margin:0 auto 14px;
+            box-shadow:0 0 24px rgba(37,99,235,0.2);
         }
         .form-header h2{
-            font-size:var(--text-lg);font-weight:800;color:#fef3c7;
+            font-size:var(--text-lg);font-weight:800;color:#f1f5f9;
             letter-spacing:-0.3px;margin-bottom:4px;
         }
         .form-header p{
-            font-size:var(--text-xs);color:rgba(251,191,36,0.4);
+            font-size:var(--text-xs);color:rgba(148,163,184,0.5);
             font-weight:500;
         }
 
         /* Campos glass */
         .field{margin-bottom:16px}
         .field label{
-            display:block;font-size:10px;font-weight:700;color:rgba(251,191,36,0.5);
+            display:block;font-size:10px;font-weight:700;color:rgba(148,163,184,0.7);
             text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;
         }
         .field .input-wrap{
             position:relative;border-radius:12px;
-            background:rgba(28,25,23,0.6);
+            background:rgba(13,17,23,0.6);
             backdrop-filter:blur(8px);
-            border:1.5px solid rgba(251,191,36,0.08);
+            border:1.5px solid rgba(59,130,246,0.08);
             transition:all var(--duration-normal) var(--ease-out);
         }
         .field .input-wrap:focus-within{
-            border-color:rgba(217,119,6,0.4);
-            box-shadow:0 0 0 4px rgba(217,119,6,0.06),inset 0 0 0 1px rgba(217,119,6,0.15);
+            border-color:rgba(59,130,246,0.4);
+            box-shadow:0 0 0 4px rgba(59,130,246,0.06),inset 0 0 0 1px rgba(59,130,246,0.15);
         }
         .field .input-wrap.error{border-color:rgba(239,68,68,0.4);box-shadow:0 0 0 4px rgba(239,68,68,0.06)}
         .field input{
             width:100%;padding:14px 16px;
             background:transparent;border:none;outline:none;
-            color:#fef3c7;font-size:var(--text-sm);
+            color:#f1f5f9;font-size:var(--text-sm);
             font-family:'Inter',system-ui,sans-serif;font-weight:500;
         }
-        .field input::placeholder{color:rgba(251,191,36,0.2);font-weight:500}
+        .field input::placeholder{color:rgba(148,163,184,0.3);font-weight:500}
         .field-err{
             display:none;font-size:10px;color:#ef4444;
             margin-top:4px;font-weight:600;padding-left:4px;
@@ -203,35 +203,35 @@
         .pass-wrap input{padding-right:44px}
         .eye{
             position:absolute;right:8px;top:50%;transform:translateY(-50%);
-            background:none;border:none;color:rgba(251,191,36,0.3);cursor:pointer;
+            background:none;border:none;color:rgba(148,163,184,0.4);cursor:pointer;
             padding:6px;border-radius:8px;display:flex;
             transition:color var(--duration-fast);
         }
-        .eye:hover{color:rgba(251,191,36,0.6)}
+        .eye:hover{color:rgba(148,163,184,0.7)}
 
         /* Botón glass */
         .login-btn{
             width:100%;padding:14px;border:none;border-radius:12px;
-            background:linear-gradient(135deg,#d97706,#fbbf24);
-            color:#1c1917;font-size:var(--text-sm);font-weight:800;
+            background:linear-gradient(135deg,#2563eb,#3b82f6);
+            color:#f1f5f9;font-size:var(--text-sm);font-weight:800;
             cursor:pointer;margin-top:4px;letter-spacing:0.3px;
             transition:all var(--duration-fast) var(--ease-out);
             position:relative;overflow:hidden;
         }
         .login-btn::before{
             content:'';position:absolute;inset:0;border-radius:inherit;
-            background:linear-gradient(135deg,#b45309,#d97706);
+            background:linear-gradient(135deg,#1e40af,#2563eb);
             opacity:0;transition:opacity var(--duration-fast) var(--ease-out);
         }
         .login-btn:hover:not(:disabled)::before{opacity:1}
-        .login-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 30px rgba(217,119,6,0.3)}
+        .login-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 30px rgba(37,99,235,0.3)}
         .login-btn:active:not(:disabled){transform:translateY(0)}
         .login-btn span{position:relative;z-index:1}
         .login-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
         .spinner{
             display:none;width:18px;height:18px;
-            border:2.5px solid rgba(28,25,23,0.2);
-            border-top-color:#1c1917;border-radius:50%;
+            border:2.5px solid rgba(148,163,184,0.2);
+            border-top-color:#f1f5f9;border-radius:50%;
             animation:spin 0.6s linear infinite;margin:0 auto;
         }
         @keyframes spin{to{transform:rotate(360deg)}}
@@ -249,8 +249,8 @@
 
         .form-footer{
             margin-top:28px;padding-top:16px;
-            border-top:1px solid rgba(251,191,36,0.06);
-            font-size:10px;color:rgba(251,191,36,0.2);text-align:center;
+            border-top:1px solid rgba(59,130,246,0.06);
+            font-size:10px;color:rgba(148,163,184,0.3);text-align:center;
         }
         @keyframes shake{
             0%,100%{transform:translateX(0)}
@@ -272,10 +272,10 @@
             <div class="brand-logo">
                 <div class="brand-logo-icon">
                     <svg width="26" height="26" viewBox="0 0 100 100" fill="none">
-                        <path d="M50 12 L76 28 L76 60 L50 76 L24 60 L24 28 Z" fill="#1c1917" opacity="0.85"/>
-                        <path d="M38 56 L50 44 L62 56" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M33 62 L50 48 L67 62" stroke="#1c1917" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-                        <circle cx="50" cy="44" r="3.5" fill="#1c1917"/>
+                        <path d="M50 12 L76 28 L76 60 L50 76 L24 60 L24 28 Z" fill="#f1f5f9" opacity="0.85"/>
+                        <path d="M38 56 L50 44 L62 56" stroke="#f1f5f9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M33 62 L50 48 L67 62" stroke="#f1f5f9" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+                        <circle cx="50" cy="44" r="3.5" fill="#f1f5f9"/>
                     </svg>
                 </div>
                 <div class="brand-logo-text">

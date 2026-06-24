@@ -188,7 +188,7 @@ img{max-width:100%;display:block}
   transition:all var(--duration-fast) var(--ease-out);
 }
 .btn-sm:hover,.btn-edit:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-glow)}
-.btn-mant{color:var(--warn);border-color:rgba(245,158,11,0.3)}
+.btn-mant{color:var(--warn);border-color:var(--warn-bg)}
 .btn-mant:hover{background:var(--warn-bg);border-color:var(--warn)}
 .btn-avail{color:var(--success);border-color:rgba(34,197,94,0.3)}
 .btn-avail:hover{background:var(--success-bg);border-color:var(--success)}
@@ -281,7 +281,7 @@ img{max-width:100%;display:block}
 .toast:not(.show){opacity:0;transform:translateX(-50%) translateY(20px)}
 .t-ok{background:#16a34a}
 .t-err{background:#dc2626}
-.t-warn{background:#d97706}
+.t-warn{background:var(--warn)}
 .toast[role="alert"]{pointer-events:all}
 @media (max-width:600px){
   .toast{left:var(--space-4);right:var(--space-4);transform:none;text-align:center;
@@ -501,8 +501,8 @@ main{animation:fi 0.6s var(--ease-out) both}
 }
 
 /* ---- BARRA LATERAL (SIDEBAR) glassmorphism ---- */
-.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-width);height:100vh;z-index:200;display:flex;flex-direction:column;background:rgba(12,9,8,0.85);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-right:1px solid var(--glass-border);transition:transform var(--duration-normal) var(--ease-out);will-change:transform}
-:root.light .sidebar{background:rgba(245,240,232,0.88)}
+.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-width);height:100vh;z-index:200;display:flex;flex-direction:column;background:rgba(13,17,23,0.85);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-right:1px solid var(--glass-border);transition:transform var(--duration-normal) var(--ease-out);will-change:transform}
+:root.light .sidebar{background:rgba(248,250,252,0.88)}
 .sidebar-brand{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-5) var(--space-4);border-bottom:1px solid var(--glass-border)}
 .sidebar-brand-icon{width:34px;height:34px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 20px var(--primary-glow)}
 .sidebar-brand-text{font-size:var(--text-base);font-weight:800;color:var(--text);letter-spacing:-0.3px}
