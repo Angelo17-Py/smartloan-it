@@ -202,11 +202,20 @@ function closeConfirm() {
 }
 
 /* Restaura estilos del body al volver con el botón atrás (bfcache) */
-window.addEventListener('pageshow', function() {
+window.addEventListener('pageshow', function(e) {
   document.body.classList.remove('page-exit');
   document.body.style.opacity = '';
   document.body.style.transform = '';
   document.body.style.transition = '';
+  // Si viene del bfcache (back/forward), re-dispara la animación de entrada
+  if(e.persisted){
+    document.body.classList.remove('page-loaded');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        document.body.classList.add('page-loaded');
+      });
+    });
+  }
 });
 
 /* Sistema de búsqueda tipo Spotlight (similar a macOS) */
