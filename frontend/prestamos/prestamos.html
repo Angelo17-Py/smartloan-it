@@ -87,6 +87,9 @@
         .receipt-legal p{font-size:0.65rem;color:var(--muted);margin:4px 0 0;line-height:1.4;}
         /* Contenedor del comprobante */
         #resultado{display:none;}#resultado.show{display:block;max-width:480px;margin:0 auto;animation:slideUp var(--duration-slow) var(--ease-out) both;}
+        #resultado.solo-btns .receipt{display:none}
+        #resultado.solo-btns{padding:40px 0;text-align:center}
+        #resultado.solo-btns .res-btns{justify-content:center}
         .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
         /* Oculta el formulario a usuarios que no son administradores */
         .admin-only{display:none!important;}
@@ -97,6 +100,8 @@
             *{margin:0;padding:0;box-sizing:border-box;background:transparent!important}
             html,body{background:white!important;color:black!important;font-size:9pt}
             nav,.form-card,.page-header,.breadcrumbs,.no-access,.res-btns,.toast,.btn-wrap{display:none!important}
+            #resultado.solo-btns .receipt{display:block!important}
+            #resultado.solo-btns{padding:0;text-align:left}
             main{max-width:100%!important;padding:0!important;margin:0!important}
             #resultado{display:block!important;max-width:100%!important;box-shadow:none!important}
             .receipt{border:none!important;border-radius:0!important;background:white!important;box-shadow:none!important}
@@ -569,6 +574,7 @@ async function registrar(){
             // Ocultamos el formulario y mostramos el comprobante
             document.querySelector('.form-card').style.display='none';
             document.getElementById('resultado').classList.add('show');
+            document.getElementById('resultado').classList.add('solo-btns');
             // Llenamos el comprobante con todos los datos del préstamo
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
