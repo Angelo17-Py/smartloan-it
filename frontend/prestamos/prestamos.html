@@ -401,8 +401,9 @@ async function cargar(){
         avisoEq.classList.remove('show');
         equipos.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
     }
-    crearSelectBusqueda('alumno');
-    crearSelectBusqueda('equipo');
+    try{crearSelectBusqueda('alumno')}catch(e){console.warn('ss alumno',e)}
+    try{crearSelectBusqueda('equipo')}catch(e){console.warn('ss equipo',e)}
+    console.log('ss: alumno=',!!document.querySelector('#alumno+.ss-wrap'),'equipo=',!!document.querySelector('#equipo+.ss-wrap'));
     checkFormComplete();
 }
 
