@@ -230,7 +230,7 @@
                             </div>
                             <div class="dash-stat-body">
                                 <span class="dash-stat-num" id="h-equipos">—</span>
-                                <span class="dash-stat-label">Equipos totales</span>
+                                <span class="dash-stat-label">Equipos disponibles</span>
                             </div>
                         </div>
                         <div class="dash-stat magnify">
@@ -456,7 +456,7 @@ function actualizarUI(){
     var activos = pr.filter(function(p){ return p.estado === 'ACTIVO'; }).length;
 
     animarNumero('h-prestamos', activos);
-    animarNumero('h-equipos', total);
+    animarNumero('h-equipos', disponibles);
     animarNumero('h-alumnos', al.length);
     animarNumero('h-mantenimiento', mant);
 
