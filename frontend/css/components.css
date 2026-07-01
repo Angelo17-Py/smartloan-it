@@ -454,6 +454,7 @@ body.page-loaded .dash-stats .dash-stat:nth-child(1){animation-delay:0.06s}
 body.page-loaded .dash-stats .dash-stat:nth-child(2){animation-delay:0.10s}
 body.page-loaded .dash-stats .dash-stat:nth-child(3){animation-delay:0.14s}
 body.page-loaded .dash-stats .dash-stat:nth-child(4){animation-delay:0.18s}
+body.page-loaded .dash-stats .dash-stat:nth-child(5){animation-delay:0.22s}
 
 /* ---- ENTRANCE STAGGER PARA ACTION CARDS ---- */
 body.page-loaded .bento-actions .action-card{animation:fi-up 0.4s var(--ease-out) both}
