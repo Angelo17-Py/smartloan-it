@@ -2,331 +2,347 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SmartLoan IT - Panel de control del sistema de gestión de préstamos de recursos tecnológicos.">
+    <meta name="description" content="SmartLoan IT - Consola Profesional de Gestión de Recursos Tecnológicos.">
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
-    <title>SmartLoan IT | Panel de Control</title>
+    <title>SmartLoan IT | Consola</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <script src="/js/vendor/chart.umd.min.js"></script>
     <style>
-        .main-content{display:flex;flex-direction:column}
+        .dashboard-layout{display:block!important}
+        .dashboard-layout .main{margin-left:0!important}
+        .dashboard-layout .topbar{display:none!important}
+        .dashboard-layout .main{padding:32px max(32px,calc((100vw - 1440px)/2)) 48px}
+        .main-content{display:flex;flex-direction:column;max-width:1440px;width:100%;margin:0 auto}
         .skeleton-pulse{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--border) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:skeleton 1.5s ease-in-out infinite;border-radius:6px}
         @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
-        .admin-only{display:none!important}
-        body.role-admin .admin-only{display:revert!important}
-        body.role-admin .admin-grid.admin-only{display:grid!important}
         .last-updated{font-size:var(--text-xs);color:var(--dim);text-align:right;margin-top:var(--space-2);margin-bottom:var(--space-4)}
 
-        /* ===== TOPBAR COMPACT ===== */
-        .topbar{height:48px!important;padding:0 var(--space-4)!important}
+        /* ===== DASHBOARD HEADER ===== */
+        .dash-header{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding-bottom:var(--space-8);margin-bottom:var(--space-8);border-bottom:1px solid var(--border)}
+        .dash-profile{display:flex;align-items:center;gap:var(--space-4)}
+        .dash-avatar{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:var(--text-base);flex-shrink:0}
+        .dash-greeting{font-size:var(--text-lg);font-weight:800;color:var(--text);letter-spacing:-0.3px}
+        .dash-role{font-size:var(--text-xs);color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+        .dash-header-right{display:flex;align-items:center;gap:var(--space-3);flex-shrink:0}
+        .dash-clock{display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--dim);font-weight:600}
+        .dash-clock-sep{color:var(--muted)}
 
-        /* ===== WELCOME HERO — centered minimal ===== */
-        .welcome{position:relative;overflow:hidden;margin-bottom:var(--space-6);border-radius:var(--radius-xl);background:linear-gradient(135deg,var(--card),rgba(59,130,246,0.05));border:1px solid var(--border);padding:var(--space-8) var(--space-8);z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-        .welcome::before{content:'';position:absolute;top:-40%;right:-10%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.08),transparent 60%);pointer-events:none}
-        .welcome-title{font-size:var(--text-2xl);font-weight:800;color:var(--text);line-height:1.2;letter-spacing:-0.5px}
-        .welcome-meta{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-size:var(--text-sm);color:var(--muted)}
+        /* ===== ACTION GRID ===== */
+        .af-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-4);margin-bottom:var(--space-10)}
+        .af-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-3);padding:var(--space-5) var(--space-3);background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);text-decoration:none;color:inherit;transition:all var(--duration-normal) var(--ease-out);cursor:pointer;text-align:center;min-height:110px}
+        .af-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-glow)}
+        .af-card-icon{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform var(--duration-normal) var(--ease-out)}
+        .af-card-icon svg{width:20px;height:20px}
+        .af-card:hover .af-card-icon{transform:scale(1.1)}
+        .af-card-icon.indigo{background:var(--primary-glow);color:var(--primary)}
+        .af-card-icon.green{background:var(--success-bg);color:var(--success)}
+        .af-card-icon.sky{background:var(--info-bg);color:var(--info)}
+        .af-card-icon.slate{background:var(--surface);color:var(--dim)}
+        .af-card-label{font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);line-height:1.2}
+        .af-card:hover .af-card-label{color:var(--text)}
 
-        /* ===== MINI STATS ROW (replaces hero stats) ===== */
-        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3);margin-bottom:var(--space-6)}
-        .stat-chip{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-4) var(--space-4);display:flex;align-items:center;gap:var(--space-3);transition:all var(--duration-normal) var(--ease-out);cursor:default}
-        .stat-chip:hover{border-color:var(--border-hover);box-shadow:0 4px 16px rgba(0,0,0,0.2);transform:translateY(-1px)}
-        .stat-chip-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--primary);background:var(--primary-glow)}
-        .stat-chip-icon.green{color:var(--success);background:var(--success-bg)}
-        .stat-chip-icon.amber{color:var(--warn);background:var(--warn-bg)}
-        .stat-chip-icon.coral{color:var(--coral);background:var(--coral-bg)}
-        .stat-chip-icon svg{width:16px;height:16px}
-        .stat-chip-info{flex:1;min-width:0}
-        .stat-chip-num{font-size:var(--text-lg);font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
-        .stat-chip-label{font-size:var(--text-xs);color:var(--dim);font-weight:600;margin-top:1px}
-        @media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:450px){.stats-row{grid-template-columns:1fr}}
+        /* ===== WORKSPACE LAYOUT ===== */
+        .dash-workspace{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--space-10);align-items:start}
+        .dash-left{display:flex;flex-direction:column;gap:var(--space-8)}
 
-        /* ===== METRIC CARDS — Vercel inspired ===== */
-        .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-6)}
-        .metric-card{position:relative;border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all var(--duration-normal) var(--ease-out);cursor:default;padding:var(--space-5)}
-        .metric-card:hover{transform:translateY(-3px);border-color:var(--border-hover);box-shadow:0 12px 32px rgba(0,0,0,0.35)}
-        .metric-card[data-accent=primary]{--mc-accent:var(--primary);--mc-glow:rgba(59,130,246,0.06)}
-        .metric-card[data-accent=coral]{--mc-accent:var(--coral);--mc-glow:rgba(234,88,12,0.06)}
-        .metric-card[data-accent=green]{--mc-accent:var(--success);--mc-glow:rgba(5,150,105,0.06)}
-        .metric-card[data-accent=warn]{--mc-accent:var(--warn);--mc-glow:rgba(217,119,6,0.06)}
-        .metric-card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,var(--mc-glow),transparent 60%);pointer-events:none;opacity:0;transition:opacity var(--duration-normal) var(--ease-out)}
-        .metric-card:hover::before{opacity:1}
-        .metric-body{position:relative;z-index:1;display:flex;flex-direction:column;gap:var(--space-3)}
-        .metric-icon-wrap{display:flex;align-items:center;justify-content:space-between}
-        .metric-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--mc-accent,var(--primary));background:var(--mc-glow,var(--primary-glow));transition:all var(--duration-normal) var(--ease-out)}
-        .metric-card:hover .metric-icon{transform:scale(1.05);box-shadow:0 0 20px var(--mc-glow)}
-        .metric-icon svg{width:18px;height:18px}
-        .metric-num{font-size:var(--text-2xl);font-weight:800;color:var(--text);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
-        .metric-label{font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-        .metric-change{font-size:var(--text-xs);font-weight:700;color:var(--mc-accent,var(--primary));margin-top:auto;display:flex;align-items:center;gap:4px}
-        @media(max-width:1024px){.metrics-grid{grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:500px){.metrics-grid{grid-template-columns:1fr}}
+        /* ===== STATS ROW ===== */
+        .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-5)}
+        .dash-stat{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-5);background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);transition:border-color var(--duration-fast) var(--ease-out)}
+        .dash-stat:hover{border-color:var(--border-hover)}
+        .dash-stat-icon{width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .dash-stat-icon svg{width:20px;height:20px}
+        .dash-stat-icon.blue{background:var(--primary-glow);color:var(--primary)}
+        .dash-stat-icon.green{background:var(--success-bg);color:var(--success)}
+        .dash-stat-icon.amber{background:var(--warn-bg);color:var(--warn)}
+        .dash-stat-icon.purple{background:#1e1b4b;color:#a78bfa}
+        .dash-stat-body{display:flex;flex-direction:column;min-width:0}
+        .dash-stat-num{font-size:var(--text-lg);font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
+        .dash-stat-label{font-size:var(--text-xs);color:var(--dim);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 
-        /* ===== CHARTS ===== */
-        .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-6)}
-        .chart-card{border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all var(--duration-normal) var(--ease-out)}
-        .chart-card:hover{border-color:var(--border-hover);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
-        .chart-header{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border)}
-        .chart-header h3{font-size:var(--text-sm);font-weight:700;color:var(--text);flex:1}
-        .chart-tag{font-size:0.6rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;padding:2px 8px;border-radius:var(--radius-full);background:var(--glass-bg);border:1px solid var(--border);white-space:nowrap}
-        .chart-body{padding:var(--space-4) var(--space-5)}
-        .chart-body .chart-container{width:100%}
-        .chart-body .chart-container canvas{width:100%!important;max-height:210px}
-        .chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-10);color:var(--dim);font-size:var(--text-sm);gap:var(--space-3)}
-        @media(max-width:768px){.charts-grid{grid-template-columns:1fr}}
+        /* ===== SECTION HEADER ===== */
+        .section-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:var(--space-5);border-bottom:1px solid var(--border);margin-bottom:var(--space-5)}
+        .section-header h2{font-size:var(--text-sm);font-weight:700;color:var(--text);display:flex;align-items:center;gap:var(--space-2)}
+        .section-header .live-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse-glow 2s ease-in-out infinite}
+        .section-header .section-tag{font-size:var(--text-xs);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
 
-        /* ===== ADMIN ===== */
-        .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)}
-        @media(max-width:700px){.admin-grid{grid-template-columns:1fr}}
+        /* ===== ACTIVITY FEED ===== */
+        .activity-feed .af-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)}
+        .activity-feed .af-top h3{font-size:var(--text-xs);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px}
+        .activity-feed .af-top a{font-size:var(--text-xs);color:var(--primary);font-weight:600;text-decoration:none;display:flex;align-items:center;gap:4px}
+        .activity-feed .af-top a:hover{text-decoration:underline}
+        .feed-list{display:flex;flex-direction:column;gap:var(--space-3)}
+        .feed-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);transition:border-color var(--duration-fast) var(--ease-out)}
+        .feed-item:hover{border-color:var(--border-hover)}
+        .feed-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+        .feed-info{flex:1;min-width:0}
+        .feed-title{display:block;font-size:var(--text-sm);font-weight:600;color:var(--text);line-height:1.3}
+        .feed-desc{display:block;font-size:var(--text-xs);color:var(--dim);margin-top:1px}
+        .feed-desc strong{color:var(--text-secondary);font-weight:600}
+        .feed-time{font-size:var(--text-xs);color:var(--muted);white-space:nowrap;flex-shrink:0}
+        .feed-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-8);color:var(--dim);font-size:var(--text-sm);gap:var(--space-3);text-align:center}
+
+        /* ===== RIGHT COLUMN ===== */
+        .dash-right{display:flex;flex-direction:column;gap:var(--space-4)}
+        .rc-card{border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);overflow:hidden}
+        .rc-card .rc-header{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-6);border-bottom:1px solid var(--border)}
+        .rc-card .rc-header h3{font-size:var(--text-sm);font-weight:700;color:var(--text);flex:1}
+        .rc-card .rc-header .rc-tag{font-size:var(--text-xs);font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;padding:2px 8px;border-radius:var(--radius-full);background:var(--glass-bg);border:1px solid var(--border);white-space:nowrap}
+        .rc-card .rc-body{padding:var(--space-5) var(--space-6)}
+        .rc-card .rc-body canvas{max-height:180px;width:100%}
+
+        .cfg-display{display:flex;align-items:center;justify-content:space-between}
+        .cfg-display-label{display:flex;flex-direction:column}
+        .cfg-display-label span:first-child{font-size:var(--text-xs);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+        .cfg-display-label span:last-child{font-size:var(--text-xs);color:var(--dim);margin-top:2px}
+        .cfg-display-value{font-size:var(--text-lg);font-weight:800;color:var(--text)}
+        .cfg-display-value .cur{font-size:var(--text-xs);font-weight:600;color:var(--dim)}
+        .cfg-input-section{padding-top:var(--space-4);margin-top:var(--space-4);border-top:1px solid var(--border)}
+        .cfg-input-section label{display:block;font-size:var(--text-xs);font-weight:600;color:var(--dim);margin-bottom:var(--space-2)}
+        .cfg-input-group{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;transition:border-color var(--duration-fast) var(--ease-out)}
+        .cfg-input-group:focus-within{border-color:var(--primary)}
+        .cfg-input-group .cfg-prefix{padding:0 0 0 var(--space-3);font-size:var(--text-xs);color:var(--muted);font-weight:700}
+        .cfg-input-group input{width:100%;padding:var(--space-2) var(--space-3) var(--space-2) 4px;background:var(--surface);border:none;color:var(--text);font-size:var(--text-sm);outline:none;font-family:var(--font);text-align:right}
+        .cfg-input-group .btn-cfg-save{background:var(--primary);color:white;border:none;padding:var(--space-2) var(--space-3);font-weight:600;font-size:var(--text-xs);cursor:pointer;font-family:var(--font);transition:background var(--duration-fast) var(--ease-out);white-space:nowrap}
+        .cfg-input-group .btn-cfg-save:hover{background:var(--primary-hover)}
+        .cfg-input-group .btn-cfg-save.saved{background:var(--success)}
+
+        .export-mini{padding:var(--space-6);border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border)}
+        .export-mini .em-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-3)}
+        .export-mini .em-header h4{font-size:var(--text-xs);font-weight:700;color:var(--text)}
+        .export-mini .em-header span{font-size:var(--text-xs);color:var(--muted);font-weight:600}
+        .export-mini .em-stats{display:flex;gap:var(--space-4);font-size:var(--text-xs);color:var(--dim)}
+        .export-mini .em-stats strong{color:var(--text-secondary);font-weight:600}
 
         /* ===== RESPONSIVE ===== */
+        @media(max-width:1024px){
+            .dash-workspace{grid-template-columns:1fr}
+        }
+        @media(max-width:768px){
+            .dash-stats{grid-template-columns:repeat(2,1fr)}
+            .dash-header{flex-direction:column;align-items:flex-start}
+            .dash-header-right{width:100%;justify-content:flex-end}
+            .dash-clock{display:none}
+        }
+        @media(max-width:500px){
+            .dash-stats{grid-template-columns:1fr}
+        }
         @media(max-width:600px){
-            .welcome{padding:var(--space-4)!important}
-            .welcome-left{gap:var(--space-3)}
-            .welcome-title{font-size:var(--text-lg)}
-            .chart-body{padding:var(--space-3)!important}
-            .chart-header{padding:var(--space-3) var(--space-3)!important}
-            .chart-body .chart-container canvas{max-height:160px!important}
-            .admin-grid{gap:var(--space-3)}
-            .main{padding:var(--space-3)!important}
-            .topbar{height:44px!important}
+            .dash-greeting{font-size:var(--text-base)!important}
+            .rc-body{padding:var(--space-4)!important}
+            .rc-header{padding:var(--space-4) var(--space-4)!important}
+            .rc-body canvas{max-height:180px!important}
+            .main{padding:var(--space-4)!important}
         }
     </style>
 </head>
 <body>
 
-<div class="layout" id="layout">
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <a href="/home/dashboard.html" class="sidebar-brand" style="color:inherit;text-decoration:none">
-            <div class="sidebar-brand-icon">
-                <svg width="18" height="18" viewBox="0 0 100 100" fill="none"><rect x="8" y="14" width="84" height="56" rx="10" fill="none" stroke="white" stroke-width="6"/><path d="M38 70 L38 82 L62 82 L62 70" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round" opacity="0.6"/><rect x="34" y="82" width="32" height="5" rx="2.5" fill="white" opacity="0.4"/><path d="M24 44 L38 32 L52 40 L66 26 L78 34" fill="none" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="78" cy="34" r="4" fill="white"/></svg>
-            </div>
-            <span class="sidebar-brand-text">SmartLoan IT</span>
-        </a>
-
-        <div class="sidebar-user">
-            <div class="sidebar-avatar" id="s-avatar">A</div>
-            <div class="sidebar-user-info">
-                <div class="sidebar-user-name" id="s-name">Cargando...</div>
-                <div class="sidebar-user-role" id="s-role">Encargado</div>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav" id="sidebarNav">
-            <a href="/home/dashboard.html" class="nav-item active" data-page="dashboard">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                Dashboard
-            </a>
-            <a href="/equipos/equipos.html" class="nav-item" data-page="equipos">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                Equipos
-            </a>
-            <a href="/alumnos/alumnos.html" class="nav-item" data-page="alumnos">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                Alumnos
-            </a>
-            <a href="/prestamos/prestamos.html" class="nav-item" data-page="prestamos">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                Préstamos
-                <span class="ni-badge" id="badge-prestamos">0</span>
-            </a>
-            <a href="/devoluciones/devoluciones.html" class="nav-item" data-page="devoluciones">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-                Devoluciones
-            </a>
-            <a href="/historial/historial.html" class="nav-item" data-page="historial">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                Historial
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="Cambiar tema">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                Tema
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="logout()">Salir</button>
-        </div>
-    </aside>
+<div class="layout dashboard-layout" id="layout">
 
     <main class="main">
         <div class="topbar">
-            <button class="hamburger" onclick="toggleSidebar()" aria-label="Menú">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-            </button>
-            <a href="/home/dashboard.html" class="topbar-brand" style="color:inherit;text-decoration:none;font-size:var(--text-base)">SmartLoan IT</a>
+            <span style="font-weight:700;font-size:var(--text-base);color:var(--text)">SmartLoan IT</span>
             <div style="display:flex;align-items:center;gap:var(--space-2)">
-                <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema" style="width:32px;height:32px">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
+                <button class="btn btn-danger btn-sm" onclick="logout()" style="padding:4px 10px;font-size:var(--text-xs)">Salir</button>
             </div>
         </div>
 
         <div class="main-content">
 
-            <!-- WELCOME HERO -->
-            <section class="welcome">
-                <h1 class="welcome-title" id="welcome-msg">Bienvenido</h1>
-                <div class="welcome-meta">
-                    <span id="hero-date"></span>
-                    <span>·</span>
-                    <span id="hero-time"></span>
+            <!-- DASHBOARD HEADER -->
+            <header class="dash-header">
+                <div class="dash-profile">
+                    <div class="dash-avatar" id="s-avatar-main">—</div>
+                    <div>
+                        <h1 class="dash-greeting" id="welcome-msg">Bienvenido</h1>
+                        <p class="dash-role" id="s-role-main">Encargado</p>
+                    </div>
                 </div>
-            </section>
+                <div class="dash-header-right">
+                    <div class="dash-clock">
+                        <span id="hero-date"></span>
+                        <span class="dash-clock-sep">·</span>
+                        <span id="hero-time"></span>
+                    </div>
+                    <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" style="width:36px;height:36px">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="logout()" style="height:36px">Salir</button>
+                </div>
+            </header>
 
-            <!-- MINI STATS ROW (quick overview) -->
-            <section class="stats-row">
-                <div class="stat-chip">
-                    <div class="stat-chip-icon coral">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <!-- ACTION GRID -->
+            <div class="af-grid" id="action-grid">
+                <a href="/alumnos/alumnos.html" class="af-card">
+                    <div class="af-card-icon sky">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </div>
-                    <div class="stat-chip-info">
-                        <div class="stat-chip-num" id="h-prestamos">—</div>
-                        <div class="stat-chip-label">Préstamos activos</div>
+                    <span class="af-card-label">Gestión de Alumnos</span>
+                </a>
+                <a href="/equipos/equipos.html" class="af-card">
+                    <div class="af-card-icon slate">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     </div>
-                </div>
-                <div class="stat-chip">
-                    <div class="stat-chip-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                    <span class="af-card-label">Gestión de Equipos</span>
+                </a>
+                <a href="/prestamos/prestamos.html" class="af-card">
+                    <div class="af-card-icon indigo">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     </div>
-                    <div class="stat-chip-info">
-                        <div class="stat-chip-num" id="h-equipos">—</div>
-                        <div class="stat-chip-label">Equipos totales</div>
+                    <span class="af-card-label">Registrar Préstamo</span>
+                </a>
+                <a href="/devoluciones/devoluciones.html" class="af-card">
+                    <div class="af-card-icon green">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     </div>
-                </div>
-                <div class="stat-chip">
-                    <div class="stat-chip-icon green">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    <span class="af-card-label">Recibir Devolución</span>
+                </a>
+                <button onclick="exportarExcel()" id="exportBtnGrid" class="af-card" style="width:100%">
+                    <div class="af-card-icon amber">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     </div>
-                    <div class="stat-chip-info">
-                        <div class="stat-chip-num" id="h-alumnos">—</div>
-                        <div class="stat-chip-label">Alumnos registrados</div>
-                    </div>
-                </div>
-                <div class="stat-chip">
-                    <div class="stat-chip-icon amber">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-                    </div>
-                    <div class="stat-chip-info">
-                        <div class="stat-chip-num" id="h-devueltos">—</div>
-                        <div class="stat-chip-label">Devueltos hoy</div>
-                    </div>
-                </div>
-            </section>
+                    <span class="af-card-label">Exportar Excel</span>
+                </button>
+            </div>
 
-            <!-- CHARTS -->
-            <section class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3>Distribución de Equipos</h3>
-                        <span class="chart-tag">Estado actual</span>
-                    </div>
-                    <div class="chart-body">
-                        <div class="chart-container">
+            <!-- WORKSPACE: LEFT + RIGHT -->
+            <div class="dash-workspace">
+
+                <!-- LEFT COLUMN -->
+                <div class="dash-left">
+
+                    <!-- STATS ROW -->
+                    <section class="dash-stats">
+                        <div class="dash-stat">
+                            <div class="dash-stat-icon blue">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div class="dash-stat-body">
+                                <span class="dash-stat-num" id="h-prestamos">—</span>
+                                <span class="dash-stat-label">Préstamos activos</span>
+                            </div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-icon green">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                            </div>
+                            <div class="dash-stat-body">
+                                <span class="dash-stat-num" id="h-equipos">—</span>
+                                <span class="dash-stat-label">Equipos totales</span>
+                            </div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-icon amber">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            </div>
+                            <div class="dash-stat-body">
+                                <span class="dash-stat-num" id="h-alumnos">—</span>
+                                <span class="dash-stat-label">Alumnos registrados</span>
+                            </div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-icon purple">
+                                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                            </div>
+                            <div class="dash-stat-body">
+                                <span class="dash-stat-num" id="h-devueltos">—</span>
+                                <span class="dash-stat-label">Devueltos hoy</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ACTIVITY FEED -->
+                    <section class="activity-feed">
+                        <div class="section-header">
+                            <h2>
+                                <span class="live-dot"></span>
+                                Estado Operativo Diario
+                            </h2>
+                            <span class="section-tag" id="live-time-lbl">Hoy</span>
+                        </div>
+                        <div class="af-top">
+                            <h3>Actividades Recientes</h3>
+                            <a href="/historial/historial.html">
+                                Ver historial completo
+                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                        <div class="feed-list" id="stream-wrapper">
+                            <div class="feed-empty" id="feed-empty">
+                                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <span>Cargando actividades...</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div class="dash-right">
+
+                    <!-- DONUT CHART -->
+                    <div class="rc-card">
+                        <div class="rc-header">
+                            <h3>Distribución de Equipos</h3>
+                            <span class="rc-tag">Estado actual</span>
+                        </div>
+                        <div class="rc-body">
                             <canvas id="donutChart"></canvas>
                             <div class="chart-empty" id="donutEmpty" style="display:none">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                                 <span>No hay equipos registrados</span>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3>Préstamos por Mes</h3>
-                        <span class="chart-tag">Últimos 6 meses</span>
-                    </div>
-                    <div class="chart-body">
-                        <div class="chart-container">
-                            <canvas id="barChart"></canvas>
-                            <div class="chart-empty" id="barEmpty" style="display:none">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="6" width="4" height="14"/><rect x="17" y="9" width="4" height="11"/></svg>
-                                <span>No hay préstamos registrados</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-            <div class="last-updated" id="lastUpdated"></div>
-
-            <!-- ADMIN -->
-            <p class="section-title">Administración</p>
-            <div class="admin-grid admin-only">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div style="display:flex;align-items:center;gap:var(--space-3)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Respaldo de información <span class="format-badge">XLSX</span></h3>
+                    <!-- CONFIG PANEL -->
+                    <div class="rc-card" id="config-section">
+                        <div class="rc-header">
+                            <h3>Configuración del sistema</h3>
+                            <span class="rc-tag">Multa</span>
                         </div>
-                    </div>
-                    <div class="chart-body">
-                        <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Exporta todos los préstamos y devoluciones en un archivo de Excel con formato profesional.</p>
-                        <div class="export-stats" id="exportStats">
-                            <div class="es-item"><span class="es-num" id="expLoans">—</span><span class="es-lbl">Préstamos</span></div>
-                            <div class="es-divider"></div>
-                            <div class="es-item"><span class="es-num" id="expReturns">—</span><span class="es-lbl">Devoluciones</span></div>
-                            <div class="es-divider"></div>
-                            <div class="es-item"><span class="es-num" id="expStudents">—</span><span class="es-lbl">Alumnos</span></div>
-                        </div>
-                        <button class="export-btn" id="exportBtn" onclick="exportarExcel()">
-                            <span class="eb-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-                            <span class="eb-progress-wrap"><span class="eb-progress-bar" id="progressBar"></span></span>
-                            <span class="eb-label">
-                                <span class="eb-title" id="exportBtnTitle">Exportar ahora</span>
-                                <span class="eb-desc" id="exportBtnDesc">Historial completo en .xlsx</span>
-                            </span>
-                            <svg class="eb-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                            <span class="eb-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-                        </button>
-                        <div class="export-info">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            <span>Última exportación: <strong id="lastExport">—</strong></span>
-                            <span class="export-filesize" id="lastExportSize"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div style="display:flex;align-items:center;gap:var(--space-3)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-                            <h3 style="font-size:var(--text-sm);font-weight:700;color:var(--text)">Configuración del sistema</h3>
-                        </div>
-                    </div>
-                    <div class="chart-body">
-                        <p style="font-size:var(--text-xs);color:var(--dim);margin-bottom:var(--space-4);line-height:1.5">Ajusta los parámetros operativos del sistema.</p>
-                        <div class="cfg-section">
-                            <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-4)">
-                                <div class="multa-value"><span class="cur">Gs.</span> <span id="multaValor">—</span></div>
-                                <div style="flex:1;min-width:0">
-                                    <div style="font-size:var(--text-xs);color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Valor de multa por día</div>
-                                    <div style="font-size:0.65rem;color:var(--dim);margin-top:1px">Tasa vigente para retrasos</div>
+                        <div class="rc-body">
+                            <div class="cfg-display">
+                                <div class="cfg-display-label">
+                                    <span>Multa por Retraso</span>
+                                    <span>Tasa diaria cobrada</span>
+                                </div>
+                                <div class="cfg-display-value">
+                                    <span class="cur">Gs.</span>
+                                    <span id="multaValor">—</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="cfg-section">
-                            <div class="cfg-row">
-                                <div class="cfg-label">
-                                    <strong>Actualizar multa</strong>
-                                    <span>Nuevo valor por día de retraso</span>
-                                </div>
+                            <div class="cfg-input-section">
+                                <label>Actualizar monto administrativo</label>
                                 <div class="cfg-input-group">
                                     <span class="cfg-prefix">Gs.</span>
-                                    <input class="cfg-input" id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
+                                    <input id="multa-input" type="text" placeholder="10.000" oninput="fmtMonto(this)">
                                     <button class="btn-cfg-save" id="btnCfg" onclick="guardarMulta()">Guardar</button>
                                 </div>
                             </div>
-                            <p class="cfg-note">Se aplica automáticamente al calcular multas en el módulo de devoluciones. El cambio tiene efecto inmediato.</p>
+                        </div>
+                    </div>
+
+                    <!-- EXPORT STATS MINI -->
+                    <div class="export-mini">
+                        <div class="em-header">
+                            <h4>Estadísticas de Exportación</h4>
+                            <span>Último Excel</span>
+                        </div>
+                        <div class="em-stats">
+                            <span>Alumnos: <strong id="expStudents">—</strong></span>
+                            <span>Préstamos: <strong id="expLoans">—</strong></span>
+                            <span>Retornos: <strong id="expReturns">—</strong></span>
+                        </div>
+                        <div style="font-size:0.65rem;color:var(--dim);margin-top:var(--space-2)">
+                            <span>Última exportación: <strong id="lastExport" style="color:var(--text-secondary)">—</strong></span>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div class="last-updated" id="lastUpdated"></div>
         </div>
     </main>
 </div>
@@ -343,12 +359,8 @@ var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
 if(!enc.nombre) window.location.href = '/';
 
 var donutChartInstance = null;
-var barChartInstance = null;
 
-function toggleSidebar(){
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('sidebarOverlay').classList.toggle('show');
-}
+function toggleSidebar(){}
 
 // ---------- CHARTS ----------
 function crearDonut(labels, data, colors) {
@@ -378,20 +390,20 @@ function crearDonut(labels, data, colors) {
                 legend: {
                     position: 'bottom',
                     labels: {
-                        padding: 18,
+                        padding: 14,
                         usePointStyle: true,
                         pointStyleWidth: 10,
                         boxWidth: 10,
                         boxHeight: 10,
                         color: textColor,
-                        font: { family: 'Plus Jakarta Sans, sans-serif', size: 11, weight: '600' }
+                        font: { family: 'Plus Jakarta Sans, sans-serif', size: 10, weight: '600' }
                     }
                 },
                 tooltip: {
                     backgroundColor: cardColor,
-                    titleFont: { size: 12, weight: '700' },
-                    bodyFont: { size: 11 },
-                    padding: 12,
+                    titleFont: { size: 11, weight: '700' },
+                    bodyFont: { size: 10 },
+                    padding: 10,
                     cornerRadius: 8,
                     displayColors: true,
                     callbacks: {
@@ -408,84 +420,9 @@ function crearDonut(labels, data, colors) {
     });
 }
 
-function crearBarras(labels, data) {
-    var ctx = document.getElementById('barChart').getContext('2d');
-    if (barChartInstance) barChartInstance.destroy();
-    document.getElementById('barEmpty').style.display = 'none';
-    document.getElementById('barChart').style.display = 'block';
-    var primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#3b82f6';
-    var grad = ctx.createLinearGradient(0, 0, 0, 250);
-    grad.addColorStop(0, primary);
-    grad.addColorStop(0.5, primary + 'aa');
-    grad.addColorStop(1, primary + '08');
-    var mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#4a5568';
-    var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#111b2e';
-    barChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Préstamos',
-                data: data,
-                backgroundColor: grad,
-                borderColor: primary,
-                borderWidth: 0,
-                borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 },
-                borderSkipped: false,
-                barPercentage: 0.55,
-                categoryPercentage: 0.7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: cardColor,
-                    titleFont: { size: 12, weight: '700' },
-                    bodyFont: { size: 11 },
-                    padding: 12,
-                    cornerRadius: 8,
-                    callbacks: {
-                        label: function(ctx){ return ' ' + ctx.parsed.y + ' préstamos'; }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        color: mutedColor,
-                        font: { size: 10 }
-                    },
-                    grid: { color: 'rgba(59,130,246,0.04)' }
-                },
-                x: {
-                    ticks: {
-                        color: mutedColor,
-                        font: { size: 10, weight: '600' }
-                    },
-                    grid: { display: false }
-                }
-            },
-            animation: {
-                duration: 1000,
-                easing: 'easeOutQuart'
-            }
-        }
-    });
-}
-
 function mostrarDonutVacio(){
     document.getElementById('donutChart').style.display = 'none';
     document.getElementById('donutEmpty').style.display = 'flex';
-}
-
-function mostrarBarraVacia(){
-    document.getElementById('barChart').style.display = 'none';
-    document.getElementById('barEmpty').style.display = 'flex';
 }
 
 // ---------- DATA ----------
@@ -498,7 +435,7 @@ async function cargarTodo(){
         apiFetchBackground('/alumnos')
     ]);
     if(!er && !pr && !ar){
-        document.querySelector('.stats-row').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
+        document.querySelector('.dash-stats').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--dim);font-size:var(--text-sm)">No se pudieron cargar los datos. <button class="btn-sm" onclick="cargarTodo()" style="margin-left:8px">Reintentar</button></div>';
         return;
     }
     cacheData.equipos = er ? await safeJson(er) : [];
@@ -527,33 +464,13 @@ function actualizarUI(){
     animarNumero('h-alumnos', al.length);
     animarNumero('h-devueltos', devHoy);
 
-
-    document.getElementById('badge-prestamos').textContent = activos;
+    var bp = document.getElementById('badge-prestamos'); if(bp) bp.textContent = activos;
 
     if(total > 0){
         crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#34d399', '#eab308', '#f97316']);
     } else { mostrarDonutVacio(); }
 
-    var meses = [];
-    var mesesLabels = [];
-    var ahora = new Date();
-    for(var i = 5; i >= 0; i--){
-        var m = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
-        meses.push(m);
-        mesesLabels.push(m.toLocaleDateString('es-PY', { month: 'short', year: '2-digit' }));
-    }
-    var barData = meses.map(function(m){
-        var y = m.getFullYear();
-        var mo = m.getMonth();
-        return pr.filter(function(p){
-            if(!p.fecha_prestamo) return false;
-            var pd = new Date(p.fecha_prestamo);
-            return pd.getFullYear() === y && pd.getMonth() === mo;
-        }).length;
-    });
-    if(barData.some(function(v){ return v > 0; })){
-        crearBarras(mesesLabels, barData);
-    } else { mostrarBarraVacia(); }
+    renderActivityFeed(pr);
 
     var lu = document.getElementById('lastUpdated');
     if(lu) lu.textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-PY', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
@@ -575,27 +492,70 @@ function animarNumero(id, target) {
     requestAnimationFrame(step);
 }
 
+// ---------- ACTIVITY FEED ----------
+function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    var now = new Date();
+    var date = new Date(dateStr);
+    var diffMs = now - date;
+    var diffMin = Math.floor(diffMs / 60000);
+    var diffHrs = Math.floor(diffMs / 3600000);
+    var diffDays = Math.floor(diffMs / 86400000);
+    if (diffMin < 1) return 'ahora';
+    if (diffMin < 60) return 'hace ' + diffMin + ' min';
+    if (diffHrs < 24) return 'hace ' + diffHrs + ' h';
+    if (diffDays === 1) return 'ayer';
+    if (diffDays < 30) return 'hace ' + diffDays + ' días';
+    return date.toLocaleDateString('es-PY', { day: 'numeric', month: 'short' });
+}
+
+function renderActivityFeed(prestamos) {
+    var wrapper = document.getElementById('stream-wrapper');
+    if (!wrapper) return;
+    if (!prestamos || prestamos.length === 0) {
+        wrapper.innerHTML = '<div class="feed-empty"><svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>No hay actividades registradas</span></div>';
+        return;
+    }
+    var recent = prestamos.slice(0, 6);
+    var html = '';
+    for (var i = 0; i < recent.length; i++) {
+        var p = recent[i];
+        var isActive = p.estado === 'ACTIVO';
+        var isLate = isActive && p.fecha_devolucion_estimada && new Date(p.fecha_devolucion_estimada) < new Date();
+        var isReturned = p.estado === 'DEVUELTO';
+        var dotColor = isReturned ? 'var(--success)' : (isLate ? 'var(--warn)' : 'var(--primary)');
+        var statusText = isReturned ? 'Devuelto' : (isLate ? 'Retrasado' : 'Activo');
+        var equipo = p.equipo || 'Equipo #' + p.id_equipo;
+        var alumno = (p.alumno_nombre || '') + ' ' + (p.alumno_apellido || '');
+        if (!alumno.trim()) alumno = 'Alumno #' + p.id_alumno;
+        var fecha = p.fecha_prestamo || p.fecha_devolucion;
+        var tAgo = timeAgo(fecha);
+        var lateClass = isLate ? 'late' : '';
+        html += '<div class="feed-item">'
+            + '<span class="feed-dot" style="background:' + dotColor + '"></span>'
+            + '<div class="feed-info">'
+            + '<span class="feed-title">' + esc(equipo) + '</span>'
+            + '<span class="feed-desc">' + esc(alumno) + ' · <strong class="' + lateClass + '">' + statusText + '</strong></span>'
+            + '</div>'
+            + '<span class="feed-time">' + tAgo + '</span>'
+            + '</div>';
+    }
+    wrapper.innerHTML = html;
+}
+
 // ---------- EXPORT ----------
 async function exportarExcel(){
-    var btn = document.getElementById('exportBtn');
-    var bar = document.getElementById('progressBar');
-    var title = document.getElementById('exportBtnTitle');
-    var desc = document.getElementById('exportBtnDesc');
-    btn.disabled = true; btn.classList.add('exporting');
-    title.textContent = 'Exportando...';
-    desc.textContent = 'Preparando archivo Excel';
-    var progress = 0;
-    var sim = setInterval(function(){
-        if(progress < 90){ progress += Math.random() * 12 + 4; if(progress > 90) progress = 90; bar.style.width = Math.round(progress) + '%'; }
-    }, 400);
+    var btn = document.getElementById('exportBtnGrid');
+    var label = btn.querySelector('.af-card-label');
+    var origText = label.textContent;
+    btn.style.pointerEvents = 'none'; btn.style.opacity = '0.6';
+    label.textContent = 'Exportando...';
     try {
         var r = await apiFetch('/exportar');
         if(!r.ok){ st('Error al exportar', 't-err'); resetExportBtn(); return; }
         var loanCount = r.headers.get('X-Export-Loans');
         var returnCount = r.headers.get('X-Export-Returns');
         var studentCount = r.headers.get('X-Export-Students');
-        clearInterval(sim);
-        bar.style.width = '100%';
         var blob = await r.blob();
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
@@ -608,21 +568,14 @@ async function exportarExcel(){
         var exportMeta = { iso: ahora.toISOString(), prestamos: loanCount, devoluciones: returnCount, alumnos: studentCount };
         localStorage.setItem('ultimaExportacion', JSON.stringify(exportMeta));
         actualizarInfoExportacion();
-        btn.classList.remove('exporting'); btn.classList.add('completed');
-        title.textContent = 'Exportación completada'; desc.textContent = 'Archivo descargado exitosamente';
+        label.textContent = '¡Exportado!';
         st('Exportación completada');
-        setTimeout(function(){ btn.classList.remove('completed'); resetExportBtn(); }, 2500);
-    } catch(e){ st('Error de conexión', 't-err'); clearInterval(sim); resetExportBtn(); }
-}
-
-function resetExportBtn(){
-    var btn = document.getElementById('exportBtn');
-    var bar = document.getElementById('progressBar');
-    var title = document.getElementById('exportBtnTitle');
-    var desc = document.getElementById('exportBtnDesc');
-    btn.disabled = false; btn.classList.remove('exporting', 'completed');
-    bar.style.width = '0%'; title.textContent = 'Exportar ahora';
-    desc.textContent = 'Historial completo en .xlsx';
+        setTimeout(resetExportBtn, 2000);
+    } catch(e){ st('Error de conexión', 't-err'); resetExportBtn(); }
+    function resetExportBtn(){
+        btn.style.pointerEvents = ''; btn.style.opacity = '';
+        label.textContent = origText;
+    }
 }
 
 function actualizarInfoExportacion(){
@@ -630,17 +583,15 @@ function actualizarInfoExportacion(){
     if(!raw) return;
     try{
         var meta = JSON.parse(raw);
-        document.getElementById('lastExport').textContent = formatearTiempoRelativo(meta.iso);
-        var sizeEl = document.getElementById('lastExportSize');
+        var relTime = formatearTiempoRelativo(meta.iso);
+        var le = document.getElementById('lastExport'); if(le) le.textContent = relTime;
         if(meta.prestamos){
-            sizeEl.textContent = meta.prestamos + ' prest. \u00B7 ' + meta.devoluciones + ' dev. \u00B7 ' + meta.alumnos + ' al.';
-            sizeEl.style.display = 'inline';
-            document.getElementById('expLoans').textContent = meta.prestamos;
-            document.getElementById('expReturns').textContent = meta.devoluciones;
-            document.getElementById('expStudents').textContent = meta.alumnos;
-        } else { sizeEl.style.display = 'none'; }
+            var el = document.getElementById('expLoans'); if(el) el.textContent = meta.prestamos;
+            var er = document.getElementById('expReturns'); if(er) er.textContent = meta.devoluciones;
+            var es = document.getElementById('expStudents'); if(es) es.textContent = meta.alumnos;
+        }
     } catch(e){
-        document.getElementById('lastExport').textContent = raw;
+        var le = document.getElementById('lastExport'); if(le) le.textContent = raw;
     }
 }
 
@@ -650,18 +601,21 @@ function formatearTiempoRelativo(iso){
     if(diffMin < 60) return 'hace ' + diffMin + ' min';
     if(diffHoras < 24) return 'hace ' + diffHoras + ' h';
     if(diffDias === 1) return 'ayer';
-    if(diffDias < 7) return 'hace ' + diffDias + ' d\u00EDas';
+    if(diffDias < 7) return 'hace ' + diffDias + ' días';
     return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
 // ---------- CLOCK ----------
 function actualizarReloj(){
     var ahora = new Date();
-    var dias = ['Domingo','Lunes','Martes','Mi\u00E9rcoles','Jueves','Viernes','S\u00E1bado'];
+    var dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
     var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    document.getElementById('hero-date').textContent = dias[ahora.getDay()] + ', ' + ahora.getDate() + ' de ' + meses[ahora.getMonth()] + ' de ' + ahora.getFullYear();
+    var mesesShort = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
+    document.getElementById('hero-date').textContent = dias[ahora.getDay()] + ', ' + ahora.getDate() + ' de ' + meses[ahora.getMonth()];
     var h = String(ahora.getHours()).padStart(2,'0'), m = String(ahora.getMinutes()).padStart(2,'0');
     document.getElementById('hero-time').textContent = h + ':' + m + ' hs';
+    var lbl = document.getElementById('live-time-lbl');
+    if (lbl) lbl.textContent = dias[ahora.getDay()] + ', ' + ahora.getDate() + ' ' + mesesShort[ahora.getMonth()];
 }
 actualizarReloj();
 setInterval(actualizarReloj, 60000);
@@ -682,9 +636,9 @@ window.addEventListener('scroll', function(){
 
 // ---------- CONFIG ----------
 function actualizarDisplayMulta(valor){
-    var display = document.getElementById('multaValor');
-    if(valor) display.textContent = fn(parseInt(valor));
-    else display.textContent = '\u2014';
+    var v = document.getElementById('multaValor');
+    var display = valor ? fn(parseInt(valor)) : '—';
+    if (v) v.textContent = display;
 }
 
 async function cargarConfig(){
@@ -707,7 +661,7 @@ function fmtMonto(el){
 
 async function guardarMulta(){
     var val = document.getElementById('multa-input').value.replace(/\./g,'').trim();
-    if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor v\u00E1lido mayor o igual a 0','t-err'); return; }
+    if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor válido mayor o igual a 0','t-err'); return; }
     var btn = document.getElementById('btnCfg');
     btn.disabled = true; btn.textContent = 'Guardando...';
     try{
@@ -716,7 +670,7 @@ async function guardarMulta(){
             st('Multa actualizada correctamente'); btn.textContent = 'Guardado'; btn.classList.add('saved');
             actualizarDisplayMulta(val);
         } else { st('Error al guardar','t-err'); btn.textContent = 'Guardar'; }
-    } catch(e){ st('Error de conexi\u00F3n','t-err'); btn.textContent = 'Guardar'; }
+    } catch(e){ st('Error de conexión','t-err'); btn.textContent = 'Guardar'; }
     setTimeout(function(){ btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('saved'); }, 2000);
 }
 
@@ -727,10 +681,13 @@ window.onload = function(){
     if(rol === 'admin') document.body.classList.add('role-admin');
     if(enc.nombre){
         var inicial = enc.nombre[0].toUpperCase();
-        document.getElementById('s-avatar').textContent = inicial;
-        document.getElementById('s-name').textContent = enc.nombre + ' ' + (enc.apellido || '');
-        document.getElementById('s-role').textContent = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
-        document.getElementById('welcome-msg').textContent = 'Bienvenido, ' + enc.nombre;
+        var sa = document.getElementById('s-avatar'); if(sa) sa.textContent = inicial;
+        var sm = document.getElementById('s-avatar-main'); if(sm) sm.textContent = inicial;
+        var sn = document.getElementById('s-name'); if(sn) sn.textContent = enc.nombre + ' ' + (enc.apellido || '');
+        var fullRole = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
+        var sr = document.getElementById('s-role'); if(sr) sr.textContent = fullRole;
+        var srm = document.getElementById('s-role-main'); if(srm) srm.textContent = fullRole;
+        var wm = document.getElementById('welcome-msg'); if(wm) wm.textContent = 'Bienvenido, ' + enc.nombre;
     }
     actualizarInfoExportacion();
     cargarConfig();
@@ -738,14 +695,14 @@ window.onload = function(){
     startPolling();
     initScrollReveal();
     initSpotlight([
-        {label:'Equipos',sub:'Gesti\u00F3n de activos tecnol\u00F3gicos',url:'/equipos/equipos.html'},
+        {label:'Equipos',sub:'Gestión de activos tecnológicos',url:'/equipos/equipos.html'},
         {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
-        {label:'Pr\u00E9stamos',sub:'Registrar nuevo pr\u00E9stamo',url:'/prestamos/prestamos.html'},
-        {label:'Devoluciones',sub:'Recibir devoluci\u00F3n',url:'/devoluciones/devoluciones.html'},
+        {label:'Préstamos',sub:'Registrar nuevo préstamo',url:'/prestamos/prestamos.html'},
+        {label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},
         {label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}
     ]);
     var themeObserver = new MutationObserver(function(){
-        if(donutChartInstance || barChartInstance) cargarTodo();
+        if(donutChartInstance) cargarTodo();
     });
     themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 };

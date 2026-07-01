@@ -10,10 +10,10 @@
     <script src="/js/utils.js" defer></script>
     <style>
         /* Estilos específicos de equipos */
-        main{max-width:1200px;margin:0 auto;padding:40px 28px}
+        main{padding:40px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
         /* Formulario de registro */
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
-        .form-card-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
+        .form-card-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
         .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
         .form-row .ig{flex:1;min-width:140px;}
         .btn-wrap{padding:0;display:flex;align-items:flex-end;}
@@ -25,22 +25,21 @@
         /* Tabla de equipos */
         .table-wrap{border-radius:14px;overflow:hidden;}
         .table-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
-        .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
-        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
+        .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
+        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:var(--text-xs);font-weight:800;}
         table{width:100%;border-collapse:collapse;}
-        th{padding:12px 16px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+        th{padding:12px 16px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
         th:nth-child(1){width:40px;}
         th:nth-child(2){width:300px}
         td:nth-child(2){max-width:300px;overflow-wrap:break-word;word-break:break-word}
         th:nth-child(3){width:140px;}
         th:nth-child(4){width:90px;}
         th:nth-child(5){width:auto;min-width:130px}
-        td{padding:12px 16px;font-size:0.88rem;border-bottom:1px solid var(--border);vertical-align:middle;}
-        .num{color:var(--dim);font-weight:700;font-size:0.85rem;}
+        td{padding:12px 16px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;}
+        .num{color:var(--dim);font-weight:700;font-size:var(--text-sm);}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
         .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
-        /* Descripción del equipo */
-        .eq-desc{display:block;font-size:0.76rem;color:var(--dim);line-height:1.4;margin-top:2px}
+        .eq-desc{display:block;font-size:var(--text-xs);color:var(--dim);line-height:1.4;margin-top:2px}
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
         /* Modal de edición */
@@ -56,21 +55,7 @@
     </style>
 </head>
 <body>
-<!-- Barra de navegación principal -->
-<nav class="nav">
-    <a href="/home/dashboard.html" class="brand"><div class="brand-icon"><svg width="18" height="18" viewBox="0 0 100 100" fill="none"><rect x="8" y="14" width="84" height="56" rx="10" fill="none" stroke="white" stroke-width="6"/><path d="M38 70 L38 82 L62 82 L62 70" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round" opacity="0.6"/><rect x="34" y="82" width="32" height="5" rx="2.5" fill="white" opacity="0.4"/><path d="M24 44 L38 32 L52 40 L66 26 L78 34" fill="none" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="78" cy="34" r="4" fill="white"/></svg></div>SmartLoan IT</a>
-    <div class="nav-right">
-        <div class="nav-user" id="navUser" style="display:none">
-            <div class="avatar" id="navAvatar">A</div>
-            <span class="nav-user-name" id="navName">Cargando...</span>
-        </div>
-        <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-
-    </div>
-</nav>
-<!-- Contenido principal de la página -->
+<!-- Contenido principal -->
 <main>
     <div class="breadcrumbs"><a href="/home/dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Equipos</span></div>
     <div class="page-header">
@@ -246,7 +231,7 @@ function render(data){
             var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
                 <td data-label="#"><span class="num">${i+1}</span></td>
                 <td data-label="Equipo"><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
-                <td data-label="Tipo / Marca" style="color:var(--dim);font-size:0.85rem">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
+                <td data-label="Tipo / Marca" style="color:var(--dim);font-size:var(--text-sm)">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
                 <td data-label="Estado">${bE(e.estado)}</td>
                 <td data-label="">${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+e.id_equipo+')">Editar</button>'+btn+(e.estado!=='Prestado'?'<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>':'')+'</div>' : ''}</td>
             </tr>`;
