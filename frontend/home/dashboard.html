@@ -122,21 +122,26 @@
             .af-grid{grid-template-columns:repeat(3,1fr)}
         }
         @media(max-width:768px){
-            .dash-stats{grid-template-columns:repeat(3,1fr)}
+            .dash-stats{grid-template-columns:repeat(2,1fr)}
             .dash-header{flex-direction:column;align-items:flex-start}
             .dash-header-right{width:100%;justify-content:flex-end}
             .dash-clock{display:none}
         }
-        @media(max-width:500px){
+        @media(max-width:640px){
+            .dash-stats{grid-template-columns:repeat(2,1fr)}
+            .af-grid{grid-template-columns:repeat(2,1fr)}
+            .dash-greeting{font-size:var(--text-base)!important}
+            .main{padding:var(--space-4)!important}
+        }
+        @media(max-width:480px){
             .dash-stats{grid-template-columns:1fr}
             .af-grid{grid-template-columns:1fr}
         }
-        @media(max-width:600px){
-            .dash-greeting{font-size:var(--text-base)!important}
+        @media(max-width:400px){
             .rc-body{padding:var(--space-4)!important}
             .rc-header{padding:var(--space-4) var(--space-4)!important}
-            .rc-body canvas{max-width:200px!important}
-            .main{padding:var(--space-4)!important}
+            .rc-body canvas{max-width:160px!important}
+            .main{padding:var(--space-3)!important}
         }
     </style>
 </head>

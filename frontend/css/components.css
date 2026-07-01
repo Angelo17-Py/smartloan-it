@@ -5,7 +5,7 @@
 
 /* ---- RESET Y BASE ---- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(59,130,246,0.12)}
 body{
   font-family:var(--font);
   background:var(--bg);
@@ -15,6 +15,7 @@ body{
   letter-spacing:var(--letter-space-wide);
   min-height:100vh;
   overflow-x:hidden;
+  overscroll-behavior:none;
   transition:background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -766,9 +767,31 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
    RESPONSIVE GLOBAL — Teléfonos
    ========================================== */
 
-@media(max-width:600px){
+@media(max-width:768px){
   .btn,.btn-sm,.btn-icon,.btn-del{min-height:40px;min-width:40px}
   .btn span,.btn-sm span{font-size:var(--text-xs)}
+  .g2{grid-template-columns:1fr!important}
+  .g2m{grid-template-columns:1fr!important}
+  .form-row,.form-row-3{grid-template-columns:1fr!important}
+  .section-title{padding:var(--space-3)!important;font-size:var(--text-xs)!important}
+  .filters{flex-wrap:wrap;gap:var(--space-2)}
+  .filters .btn,.filters button{flex:1;min-width:0;text-align:center;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
+  .search-wrap{width:100%}
+  .search-wrap input{width:100%;font-size:16px!important}
+  .topbar{padding:var(--space-2) var(--space-3)!important}
+  .topbar-brand{font-size:var(--text-sm)!important}
+  .sticky-header{position:relative!important}
+  .breadcrumbs{font-size:var(--text-xs);padding:var(--space-2) 0;gap:var(--space-1)}
+  .breadcrumbs .sep{margin:0 var(--space-1)}
+  .brand{font-size:var(--text-base)!important;gap:var(--space-2)}
+  .brand-icon{width:30px;height:30px}
+  .brand-icon svg{width:14px;height:14px}
+  .nav{padding:0 var(--space-3)!important}
+  .nav-right{gap:var(--space-2)}
+  .nav-link{padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
+}
+
+@media(max-width:600px){
   main{padding:var(--space-3)!important}
   .main{padding:var(--space-3)!important}
   .table-wrap{font-size:var(--text-xs);border-radius:var(--radius-md)!important}
@@ -780,43 +803,52 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .table-wrap table tbody tr:hover{background:var(--card-hover)}
   .table-wrap table tbody td .btn-icon,.table-wrap table tbody td .btn-del{width:36px;height:36px;min-width:36px;min-height:36px}
   .table-wrap table tbody td .ac{justify-content:flex-end;flex-wrap:wrap;gap:4px}
-  .g2{grid-template-columns:1fr!important}
   input,select,textarea,.field input{font-size:16px!important}
-  .form-row,.form-row-3{grid-template-columns:1fr!important}
   .modal-content{width:95%!important;margin:var(--space-4) auto;padding:var(--space-4)!important}
-  .modal-content .g2m{grid-template-columns:1fr!important}
-  .filters{flex-wrap:wrap;gap:var(--space-2)}
-  .filters .btn,.filters button{flex:1;min-width:0;text-align:center;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
-  .section-title{padding:var(--space-3)!important;font-size:var(--text-xs)!important}
-  .search-wrap{width:100%}
-  .search-wrap input{width:100%;font-size:16px!important}
-  .topbar{padding:var(--space-2) var(--space-3)!important}
-  .topbar-brand{font-size:var(--text-sm)!important}
   .nav-tabs{overflow-x:auto;flex-wrap:nowrap;gap:0;padding-bottom:var(--space-1);-webkit-overflow-scrolling:touch}
   .nav-tabs .tab{white-space:nowrap;padding:var(--space-2) var(--space-3);font-size:var(--text-xs);flex-shrink:0}
-  .sticky-header{position:relative!important}
   .pagination{flex-wrap:wrap;justify-content:center;gap:var(--space-1)}
   .pagination .page-btn{min-width:36px;min-height:36px;font-size:var(--text-xs)}
-  .breadcrumbs{font-size:var(--text-xs);padding:var(--space-2) 0;gap:var(--space-1)}
-  .breadcrumbs .sep{margin:0 var(--space-1)}
   .page-header{gap:var(--space-3);padding-bottom:var(--space-3)}
   .page-header .page-icon{width:36px;height:36px}
   .page-header .page-icon svg{width:16px;height:16px}
   .page-header h1{font-size:var(--text-lg)}
   .page-header p{font-size:var(--text-xs)}
   .page-header .page-icon{display:none}
-  .brand{font-size:var(--text-base)!important;gap:var(--space-2)}
-  .brand-icon{width:30px;height:30px}
-  .brand-icon svg{width:14px;height:14px}
-  .nav{padding:0 var(--space-3)!important}
-  .nav-right{gap:var(--space-2)}
-  .nav-link{padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
 }
 
-@media(max-width:400px){
-  .table-wrap table tbody td{flex-direction:column;align-items:flex-start;gap:2px}
+@media(max-width:360px){
+  main{padding:var(--space-2)!important}
+  .main{padding:var(--space-2)!important}
+  .modal-content{padding:var(--space-3)!important;border-radius:var(--radius-md)!important}
+  .table-wrap table tbody tr{padding:var(--space-2)}
+  .table-wrap table tbody td{flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
   .table-wrap table tbody td::before{margin-bottom:1px}
-  .table-wrap table tbody td{text-align:left}
-  .modal-content{border-radius:var(--radius-md)!important}
-  .btn,.btn-sm{font-size:var(--text-xs)!important;padding:var(--space-2) var(--space-3)!important}
+  .btn,.btn-sm{font-size:0.7rem!important;padding:var(--space-1) var(--space-2)!important}
+  .page-header h1{font-size:var(--text-base)}
+  .page-header .page-icon{display:none}
+  .form-card{padding:var(--space-3)}
+  .brand{font-size:var(--text-sm)!important}
+  .brand-icon{width:26px;height:26px}
+  .brand-icon svg{width:12px;height:12px}
+}
+
+/* ---- Landscape phone compact ---- */
+@media(orientation:landscape) and (max-height:500px){
+  .page-header{padding-bottom:var(--space-2)!important}
+  .page-header h1{font-size:var(--text-base)!important}
+  .page-header p{display:none}
+  .page-header .page-icon{width:30px;height:30px}
+  .breadcrumbs{padding:var(--space-1) 0!important}
+  main{padding-top:var(--space-2)!important}
+  .table-wrap table tbody tr{padding:var(--space-2)!important}
+  .modal-content{margin:var(--space-2) auto!important;padding:var(--space-3)!important}
+  .form-card{padding:var(--space-3)!important}
+}
+
+/* ---- PWA standalone (home screen) ---- */
+@media all and (display-mode:standalone){
+  body{padding-top:env(safe-area-inset-top,0)}
+  main{padding-bottom:env(safe-area-inset-bottom,0)}
+  .nav{padding-top:calc(var(--space-2) + env(safe-area-inset-top,0))!important}
 }
