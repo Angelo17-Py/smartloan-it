@@ -29,8 +29,8 @@
         .table-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
         .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:2px 8px;font-size:var(--text-xs);font-weight:800;}
-        th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;}
-        td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;}
+        th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-align:center;}
+        td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;text-align:center;}
         .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:monospace;color:var(--text);white-space:nowrap;}
         .sub-text{font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
         .em{text-align:center;padding:40px;color:var(--dim);font-size:var(--text-sm);}
@@ -186,7 +186,7 @@ function renderP(){
     var header='<div class="table-header"><span>Registro de préstamos</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th></tr></thead><tbody>';
+    var html=header+'<table style="table-layout:fixed;width:100%"><colgroup><col style="width:6%"><col style="width:22%"><col style="width:16%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:8%"></colgroup><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th></tr></thead><tbody>';
     d.forEach(function(p,i){
         // Calculamos si cada préstamo está vencido
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
@@ -215,7 +215,7 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th scope="col">#Dev</th><th scope="col">#Pres</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total</th></tr></thead><tbody>';
+    var html=header+'<table style="table-layout:fixed;width:100%"><colgroup><col style="width:6%"><col style="width:6%"><col style="width:16%"><col style="width:12%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:6%"></colgroup><thead><tr><th scope="col">#Dev</th><th scope="col">#Pres</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total</th></tr></thead><tbody>';
     d.forEach(function(dv,i){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
