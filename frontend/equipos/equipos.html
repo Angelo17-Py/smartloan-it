@@ -9,49 +9,36 @@
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
     <style>
-        /* Estilos específicos de equipos */
-        main{padding:40px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
-        /* Formulario de registro */
-        .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
-        .form-card-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:16px;}
-        .form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
-        .form-row .ig{flex:1;min-width:140px;}
+        main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
+        .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:16px;}
+        .form-card-title{font-size:var(--text-xs);letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:12px;}
+        .form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+        .form-row .ig{flex:1;min-width:130px;}
         .btn-wrap{padding:0;display:flex;align-items:flex-end;}
-                /* Barra de búsqueda */
-        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
+        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:8px 14px;margin-bottom:12px;}
         .search-bar svg{color:var(--dim);flex-shrink:0;}
         .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;padding:0;}
         .search-bar input::placeholder{color:var(--dim);}
-        /* Tabla de equipos */
         .table-wrap{border-radius:14px;overflow:hidden;}
-        .table-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
+        .table-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
         .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
-        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:var(--text-xs);font-weight:800;}
-        table{width:100%;border-collapse:collapse;}
-        th{padding:12px 16px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
-        th:nth-child(1){width:40px;}
-        th:nth-child(2){width:300px}
-        td:nth-child(2){max-width:300px;overflow-wrap:break-word;word-break:break-word}
-        th:nth-child(3){width:140px;}
-        th:nth-child(4){width:90px;}
-        th:nth-child(5){width:auto;min-width:130px}
-        td{padding:12px 16px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;}
+        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:2px 8px;font-size:var(--text-xs);font-weight:800;}
+        table{width:100%;table-layout:fixed;border-collapse:collapse;}
+        th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-align:center;}
+        th:nth-child(2){text-align:left}
+        td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;text-align:center;}
+        td:nth-child(2){text-align:left}
         .num{color:var(--dim);font-weight:700;font-size:var(--text-sm);}
-        .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
+        .empty-row td{text-align:center;color:var(--dim);padding:30px!important;}
         .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
-        .eq-desc{display:block;font-size:var(--text-xs);color:var(--dim);line-height:1.4;margin-top:2px}
+        .eq-desc{display:block;font-size:var(--text-xs);color:var(--dim);line-height:1.3;margin-top:1px}
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
-        /* Modal de edición */
-                /* Animación de apertura del modal */
         .mo .md{animation:fi var(--duration-normal) var(--ease-out);}
-                /* Grid de 2 columnas en el modal */
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-                /* Fila de descripción con textarea */
         .form-row-desc{margin-top:0;}.form-row-desc .ig-desc{flex:1 1 100%;min-width:100%;}.form-row-desc textarea{resize:none;min-height:44px;overflow:hidden;}
-        /* Responsive */
-        @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:24px 16px;}}
-        @media(max-width:600px){main{padding:var(--space-3)!important}.g2m .field input{font-size:16px!important}.form-card{padding:16px 18px}.search-bar{padding:var(--space-2) var(--space-3)}.search-bar input{font-size:16px!important}.page-header .page-icon{display:none}}
+        @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}.g2m{grid-template-columns:1fr;}main{padding:20px 16px;}}
+        @media(max-width:600px){main{padding:var(--space-3)!important}.g2m .field input{font-size:16px!important}.form-card{padding:14px 16px}.search-bar{padding:var(--space-2) var(--space-3)}.search-bar input{font-size:16px!important}.page-header .page-icon{display:none}}
     </style>
 </head>
 <body>
@@ -62,7 +49,6 @@
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
         <div><h1>Gestión de Equipos</h1><p>Registro y control de estado de los activos tecnológicos</p></div>
     </div>
-    <!-- Formulario para registrar nuevo equipo (solo administradores) -->
     <div class="form-card admin-only">
         <div class="form-card-title">Registrar nuevo equipo</div>
         <div class="form-row">
@@ -81,15 +67,13 @@
             <div class="ig ig-desc"><label>Descripción</label><textarea id="desc" placeholder="" maxlength="200" oninput="autoResize(this);clearF('desc');checkNuevoEquipo()" rows="2"></textarea><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
         </div>
     </div>
-    <!-- Buscador de equipos -->
     <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por nombre, tipo, marca..." oninput="filtrar()">
     </div>
-    <!-- Tabla de equipos registrados -->
     <div class="table-wrap">
         <div class="table-header"><span>Lista de equipos</span><span class="table-count" id="count">0 equipos</span></div>
-        <table><thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col">Tipo / Marca</th><th scope="col">Estado</th><th scope="col" style="text-align:center">Acciones</th></tr></thead>
+        <table><colgroup><col style="width:5%"><col style="width:35%"><col style="width:20%"><col style="width:14%"><col style="width:26%"></colgroup><thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col">Tipo / Marca</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
     </div>
 </main>
@@ -116,28 +100,21 @@
                     <div class="ferr" id="ferr-edit-marca">Selecciona la marca</div>
                 </div>
             </div>
-            <div class="ig"><label>Descripción</label>                <input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" maxlength="200" oninput="clearFE('desc','edit-');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
+            <div class="ig"><label>Descripción</label><input id="edit-desc" placeholder="Ej: 16GB RAM, SSD 512GB" maxlength="200" oninput="clearFE('desc','edit-');checkEditEquipo()"><div class="ferr" id="ferr-edit-desc">Ingresa una descripción del equipo</div></div>
             <button type="button" class="btn-save" id="btnGuardar" onclick="guardarEquipo()">Guardar cambios</button>
         </div>
     </div>
 </div>
 
-<!-- Notificación temporal (toast) -->
 <div class="toast" id="toast"></div>
 
-<!-- Scripts de la aplicación -->
 <script src="/js/api.js"></script>
 <script>
-// Verificamos si el usuario inició sesión
-// Verifica autenticación
 if(!localStorage.getItem('encargado')) window.location.href = '/';
 
-// Guardamos el id del equipo que estamos editando
 let equipoEditandoId = null;
-// Variable para detectar si hay cambios sin guardar
 var formDirty = false;
 
-// Preguntamos si el usuario quiere salir sin guardar
 window.onbeforeunload = function(e){
     if(formDirty){
         e.preventDefault();
@@ -145,19 +122,14 @@ window.onbeforeunload = function(e){
     }
 };
 
-// Detectamos cambios en los campos del formulario
 document.querySelectorAll('.form-card input, .form-card select, .form-card textarea').forEach(function(el){
     el.addEventListener('input', function(){ formDirty = true; });
 });
 
-// Función que convierte el estado del equipo a un badge de color
-// Mapa de estados a badges
 const bE = e => {
     const m = {'Disponible':'badge badge-success','Prestado':'badge badge-primary','En mantenimiento':'badge badge-warn'};
     return `<span class="${m[e]||'badge'}">${e}</span>`;
 };
-// Revisamos si el formulario de nuevo equipo está completo
-// Verifica campos completos
 function checkNuevoEquipo(){
     const nombre=document.getElementById('nombre').value.trim();
     const tipo=document.getElementById('tipo').value;
@@ -166,7 +138,6 @@ function checkNuevoEquipo(){
     document.getElementById('btnAdd').disabled=!(nombre&&tipo&&marca&&desc);
 }
 
-// Revisamos si el formulario de edición está completo
 function checkEditEquipo(){
     const nombre=document.getElementById('edit-nombre').value.trim();
     const tipo=document.getElementById('edit-tipo').value;
@@ -175,8 +146,6 @@ function checkEditEquipo(){
     document.getElementById('btnGuardar').disabled=!(nombre&&tipo&&marca&&desc);
 }
 
-// Validamos que todos los campos tengan algo antes de enviar
-// Valida campos del formulario
 function validarNuevo(){
     let ok = true;
     ['nombre','tipo','marca','desc'].forEach(f => {
@@ -190,11 +159,8 @@ function validarNuevo(){
     return ok;
 }
 
-// Lista de todos los equipos que vienen del servidor
 let listaEquipos = [];
 
-// Filtramos equipos según lo que el usuario escribe en el buscador
-// Filtra equipos por búsqueda
 function filtrar(){
     const q = normalizeText(document.getElementById('busq').value).trim();
     if(!q){ render(listaEquipos); return; }
@@ -208,8 +174,6 @@ function filtrar(){
     render(filtrados);
 }
 
-// Mostramos los equipos en la tabla
-// Renderiza la tabla de equipos
 function render(data){
     document.getElementById('count').textContent = `${data.length} equipo${data.length!==1?'s':''}`;
     const tb = document.getElementById('tb');
@@ -238,8 +202,6 @@ function render(data){
         }).join('');
 }
 
-// Cargamos los equipos desde el servidor
-// Carga los equipos desde el backend
 async function cargar(){
     document.getElementById('tb').innerHTML = '<tr><td colspan="6"><div style="padding:20px"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></td></tr>';
     try {
@@ -248,12 +210,10 @@ async function cargar(){
         listaEquipos = await safeJson(r);
         render(listaEquipos);
     } catch(e){
-        showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los equipos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
+        showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los equipos. Verifica la conexión con el servidor.',retry:'cargar()'});
     }
 }
 
-// Enviamos los datos del nuevo equipo al servidor
-// Registra un nuevo equipo
 async function crear(){
     if(!validarNuevo()) return;
     const btn = document.getElementById('btnAdd');
@@ -286,15 +246,12 @@ async function crear(){
     btn.disabled = false; btn.textContent = '+ Agregar equipo';
 }
 
-// Confirmamos antes de eliminar un equipo
-// Confirma y elimina equipo
 function confirmarEliminar(id){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     if(!eq) return;
-    showConfirm('Eliminar el equipo "'+eq.nombre+'"\n\nSe eliminar\u00e1 tambi\u00e9n todo su historial de pr\u00e9stamos. Esta acci\u00f3n no se puede deshacer.',function(){ eliminar(id); });
+    showConfirm('Eliminar el equipo "'+eq.nombre+'"\n\nSe eliminará también todo su historial de préstamos. Esta acción no se puede deshacer.',function(){ eliminar(id); });
 }
 
-// Eliminamos el equipo del servidor
 async function eliminar(id){
     try {
         const r = await apiFetch(`/equipos/${id}`, {method:'DELETE'});
@@ -306,15 +263,12 @@ async function eliminar(id){
     }
 }
 
-// Mapa de números de estado a texto legible
 const _estadoLabels = {'1':'Disponible','2':'Prestado','3':'En mantenimiento'};
-// Cambiamos el estado del equipo (Disponible <-> Mantenimiento)
-// Cambia estado del equipo (Disponible/Mantenimiento)
 async function cambiar(id, estado){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     const nombre = eq ? eq.nombre : 'este equipo';
     const msg = estado === '3'
-        ? 'Enviar "'+nombre+'" a mantenimiento?\nNo estar\u00e1 disponible para pr\u00e9stamos hasta marcarlo como disponible.'
+        ? 'Enviar "'+nombre+'" a mantenimiento?\nNo estará disponible para préstamos hasta marcarlo como disponible.'
         : 'Marcar "'+nombre+'" como Disponible?';
     showConfirm(msg,function(){
     (async()=>{
@@ -333,8 +287,6 @@ async function cambiar(id, estado){
     });
 }
 
-// Abrimos el modal para editar los datos del equipo
-// Abre modal de edición
 function abrirEditar(id){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     if(!eq) return;
@@ -353,23 +305,18 @@ function abrirEditar(id){
     document.getElementById('mo-edit').classList.add('show');
 }
 
-// Cerramos el modal de edición
 function cerrarEdit(){
     document.getElementById('mo-edit').classList.remove('show');
     equipoEditandoId = null;
 }
 
-// Click fuera del modal lo cierra
 document.getElementById('mo-edit').addEventListener('click', function(e){
     if(e.target === this) cerrarEdit();
 });
-// Tecla Escape cierra el modal
 document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && document.getElementById('mo-edit').classList.contains('show')) cerrarEdit();
 });
 
-// Guardamos los cambios del equipo en el servidor
-// Guarda cambios del equipo
 async function guardarEquipo(){
     const n = document.getElementById('edit-nombre').value.trim();
     const t = document.getElementById('edit-tipo').value;
@@ -405,16 +352,9 @@ async function guardarEquipo(){
     }
 }
 
-// Inicializamos todo cuando la página carga
 window.onload = function(){
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
-    var _enc = JSON.parse(localStorage.getItem('encargado') || '{}');
-    if(_enc.nombre){
-        document.getElementById('navAvatar').textContent = _enc.nombre[0].toUpperCase();
-        document.getElementById('navName').textContent = _enc.nombre + ' ' + (_enc.apellido || '');
-        document.getElementById('navUser').style.display = 'flex';
-    }
-    cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+    cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

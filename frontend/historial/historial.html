@@ -11,54 +11,41 @@
     <style>
         /* Estilos del historial */
         /* Contenedor principal de la página */
-        main{max-width:1400px;margin:0 auto;padding:40px 28px}
-        /* Barra de herramientas */
-        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px}
-        /* Pestañas (préstamos/devoluciones) */
+        main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
+        .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px}
         .tabs{display:flex;gap:3px;background:var(--surface);padding:4px;border-radius:10px}
-        .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none}
+        .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:var(--text-sm);cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none}
         .tab.active{background:var(--primary);color:white}
-        /* Filtros de estado */
         .filters{display:flex;gap:6px;flex-wrap:wrap}
-        /* Botón individual de filtro */
-        .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:0.75rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
+        .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:var(--text-xs);cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
         .fb.active{background:var(--primary);color:white;border-color:var(--primary)}
         .fb:hover:not(.active){background:var(--surface);color:var(--text);}
-        /* Barra de búsqueda */
-        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:16px;}
+        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:8px 14px;margin-bottom:12px;}
         .search-bar svg{color:var(--dim);flex-shrink:0;}
-        .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;padding:0;}
+        .search-bar input{background:none;border:none;color:var(--text);font-size:var(--text-sm);outline:none;flex:1;padding:0;}
         .search-bar input::placeholder{color:var(--dim);}
-        .search-count{font-size:0.75rem;color:var(--dim);white-space:nowrap;font-weight:700;}
-        /* Tabla de resultados */
+        .search-count{font-size:var(--text-xs);color:var(--dim);white-space:nowrap;font-weight:700;}
         .table-wrap{border-radius:14px;overflow:hidden;}
-        .table-header{padding:14px 22px;display:flex;justify-content:space-between;align-items:center;}
-        .table-header span{font-size:0.68rem;letter-spacing:2px;font-weight:700;color:var(--dim);}
-        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:800;}
-        /* Estilo de encabezados de tabla */
-        th{padding:12px 18px;font-size:0.66rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;text-transform:uppercase;}
-        /* Estilo de celdas de tabla */
-        td{padding:12px 18px;font-size:0.86rem;border-bottom:1px solid var(--border);vertical-align:middle;}
-        /* Código ID del registro */
+        .table-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
+        .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
+        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:2px 8px;font-size:var(--text-xs);font-weight:800;}
+        th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;}
+        td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;}
         .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:monospace;color:var(--text);white-space:nowrap;}
-        /* Texto secundario (debajo del principal) */
-        .sub-text{font-size:0.75rem;color:var(--dim);margin-top:2px;}
-        /* Mensaje cuando no hay resultados */
-        .em{text-align:center;padding:40px;color:var(--dim);font-size:0.88rem;}
-        /* Resaltado del texto buscado */
+        .sub-text{font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
+        .em{text-align:center;padding:40px;color:var(--dim);font-size:var(--text-sm);}
         .highlight{background:var(--primary-glow);border-radius:3px;padding:0 2px;}
-        /* Botón para eliminar una fila */
-        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:0.72rem;font-weight:700;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
+        .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:var(--text-xs);font-weight:700;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
         .btn-del-row:hover{background:var(--danger-bg);}
-        /* Columna de acciones (botón eliminar) */
-        th.ac{width:52px;}
+
+        @media(max-width:900px){main{padding:20px 16px}}
         @media(max-width:600px){
             main{padding:var(--space-3)!important}
             .toolbar{flex-direction:column;align-items:stretch}
             .tabs{justify-content:center;overflow-x:auto;-webkit-overflow-scrolling:touch}
             .tab{padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
             .filters{gap:4px}
-            .fb{flex:1;text-align:center;padding:var(--space-2) var(--space-2);font-size:0.65rem}
+            .fb{flex:1;text-align:center;padding:var(--space-2) var(--space-2);font-size:var(--text-xs)}
             .search-bar{padding:var(--space-2) var(--space-3);gap:var(--space-2)}
             .search-bar input{font-size:16px!important}
             .breadcrumbs{font-size:var(--text-xs)}
@@ -199,7 +186,7 @@ function renderP(){
     var header='<div class="table-header"><span>Registro de préstamos</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th><th scope="col" class="ac"></th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th></tr></thead><tbody>';
     d.forEach(function(p,i){
         // Calculamos si cada préstamo está vencido
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
@@ -214,7 +201,6 @@ function renderP(){
         html+='<td data-label="Encargado" style="color:var(--dim);font-size:0.82rem">'+resaltar((p.encargado_nombre||'')+' '+(p.encargado_apellido||''),q)+'</td>';
         html+='<td data-label="Motivo" style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td data-label="Estado">'+badge+'</td>';
-        html+='<td data-label="">'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarPrestamo('+p.id_prestamo+')" title="Eliminar préstamo">✕</button>':'')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -229,7 +215,7 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var html=header+'<table><thead><tr><th scope="col">#Dev</th><th scope="col">#Pres</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total</th><th scope="col" class="ac"></th></tr></thead><tbody>';
+    var html=header+'<table><thead><tr><th scope="col">#Dev</th><th scope="col">#Pres</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total</th></tr></thead><tbody>';
     d.forEach(function(dv,i){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
@@ -246,7 +232,6 @@ function renderD(){
         html+='<td data-label="Daño">'+danoCell+'</td>';
         html+='<td data-label="Multa" style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
         html+='<td data-label="Total" style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
-        html+='<td data-label="">'+(esAdmin()?'<button class="btn-del-row" onclick="eliminarDevolucion('+dv.id_devolucion+')" title="Eliminar devolución">✕</button>':'')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -301,7 +286,7 @@ function eliminarDevolucion(id){
     });
 }
 // Inicializamos todo cuando la página carga
-window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); var _enc=JSON.parse(localStorage.getItem('encargado')||'{}');if(_enc.nombre){document.getElementById('navAvatar').textContent=_enc.nombre[0].toUpperCase();document.getElementById('navName').textContent=_enc.nombre+' '+(_enc.apellido||'');document.getElementById('navUser').style.display='flex';} };
+window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargar(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

@@ -10,10 +10,10 @@
     <script src="/js/utils.js" defer></script>
     <style>
         /* Estilos específicos de devoluciones */
-        main{padding:40px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
+        main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
         /* Indicador de pasos */
         .ds{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;}
-        .dstep{display:flex;align-items:center;gap:6px;font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
+        .dstep{display:flex;align-items:center;gap:6px;font-size:var(--text-xs);font-weight:700;letter-spacing:1px;color:var(--dim);}
         .dstep.active{color:var(--text);}.dstep.done{color:var(--success);}
         .sn{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:var(--text-xs);font-weight:800;transition:all var(--duration-normal) var(--ease-out);}
         .dstep.active .sn{background:var(--primary);border-color:var(--primary);color:#fff;}
@@ -22,7 +22,7 @@
         .sl.done{background:var(--success);}
 
         /* Lista de préstamos activos */
-        .section-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;}
+        .section-title{font-size:var(--text-xs);letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;}
         .pres-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);}
         .pres-item:hover{border-color:var(--primary);transform:translateX(3px);}
         .pres-item.sel{border-color:var(--primary);background:var(--primary-glow);}
@@ -49,7 +49,7 @@
         .btn-change{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:var(--text-xs);font-weight:700;color:var(--dim);cursor:pointer;transition:all var(--duration-fast) var(--ease-out);}
         .btn-change:hover{background:var(--primary-glow);color:var(--primary);}
         .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;}
-        .if span{display:block;font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:1px;font-weight:700;}
+        .if span{display:block;font-size:0.62rem;color:var(--muted);letter-spacing:1.2px;margin-bottom:1px;font-weight:700;}
         .if strong{font-size:0.84rem;font-weight:700;color:var(--text);}
         /* Alerta de retraso */
         .retraso-alerta{background:var(--danger-bg);border:1px solid rgba(229,62,62,0.18);border-radius:9px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:8px;}
@@ -63,7 +63,7 @@
 
         /* Verificación de accesorios */
         .acc-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px;}
-        .acc-box h4{font-size:var(--text-xs);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
+        .acc-box h4{font-size:var(--text-xs);font-weight:800;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
         .check-row{display:flex;align-items:flex-start;gap:9px;cursor:pointer;margin-bottom:5px;}
         .check-row input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--primary);appearance:auto;-webkit-appearance:auto;padding:0;flex-shrink:0;margin-top:2px;}
         .check-row span{font-size:0.82rem;font-weight:600;color:var(--dim);}
@@ -78,14 +78,14 @@
         /* Resumen de cobros */
         .cobros-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;display:none;}
         .cobros-card.show{display:block;}
-        .cobros-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+        .cobros-title{font-size:var(--text-xs);letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
         .cobro-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:8px;font-size:var(--text-sm);margin-bottom:3px;}
         .cobro-row:last-child{margin-bottom:0;font-weight:800;font-size:0.95rem;background:var(--primary-glow);border:1px solid var(--border);}
         .cobro-row strong{font-size:0.9rem;font-weight:700;}
         .cobro-row:last-child strong{font-size:1rem;}
 
         .conf-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
-        .conf-box h4{font-size:var(--text-xs);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
+        .conf-box h4{font-size:var(--text-xs);font-weight:800;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
         #p1 .card + .card{margin-top:16px}
         .btn-procesar{width:100%;padding:15px;background:var(--primary);color:white;border:none;border-radius:11px;font-size:var(--text-base);font-weight:800;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);}
         .btn-procesar:hover{opacity:0.9;}
@@ -100,7 +100,7 @@
         .receipt-header .rh-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
         .receipt-header .rh-brand svg{color:var(--primary);flex-shrink:0;}
         .receipt-header .rh-brand h2{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin:0;}
-        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;}
+        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;letter-spacing:1.5px;}
         .receipt-title{margin-top:14px;}
         .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
         .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:var(--primary-glow);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
@@ -108,7 +108,7 @@
         .receipt-body{padding:20px 28px;}
         .rsec{margin-bottom:20px;}
         .rsec:last-child{margin-bottom:0;}
-        .rsec-title{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
+        .rsec-title{font-size:0.65rem;font-weight:800;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
         .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
         .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
         .rg-item:last-child{border-bottom:none;}
@@ -127,17 +127,17 @@
         .rc-table .rc-total td:last-child{color:var(--danger);}
 
         .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
-        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
+        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
         .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
 
         .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
         .receipt-stamp{text-align:center;margin-bottom:14px;}
-        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:var(--success-bg);color:var(--success);border:1.5px solid rgba(5,150,105,0.25);}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;background:var(--success-bg);color:var(--success);border:1.5px solid rgba(5,150,105,0.25);}
         .stamp-badge.late{background:var(--danger-bg);color:var(--danger);border-color:rgba(229,62,62,0.2);}
         .stamp-badge.damage{background:var(--warn-bg);color:var(--warn);border-color:rgba(217,119,6,0.25);}
         .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
         .sig-field{flex:1;max-width:200px;}
-        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}
         .sig-field .sig-line{border-bottom:1.5px solid var(--text);height:24px;margin-bottom:2px;}
         .sig-field small{font-size:0.62rem;color:var(--muted);}
         .receipt-legal{text-align:center;}
@@ -686,7 +686,7 @@ function setStep(n){
 // Atajo de teclado para buscar al presionar Enter
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
 // Inicialización cuando la página carga
-window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); else document.querySelector('.no-access').style.display='block'; cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); var _enc = JSON.parse(localStorage.getItem('encargado') || '{}'); if(_enc.nombre){ document.getElementById('navAvatar').textContent = _enc.nombre[0].toUpperCase(); document.getElementById('navName').textContent = _enc.nombre + ' ' + (_enc.apellido || ''); document.getElementById('navUser').style.display = 'flex'; } };
+window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); else document.querySelector('.no-access').style.display='block'; cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>

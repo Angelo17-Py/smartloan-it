@@ -10,8 +10,8 @@
     <script src="/js/utils.js" defer></script>
     <style>
         /* Contenedor principal */
-        main{padding:40px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
-        .section-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+        main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
+        .section-title{font-size:var(--text-xs);letter-spacing:2.5px;color:var(--muted);font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
         .sep{border:none;border-top:1px solid var(--border);margin:18px 0;}
         /* Estilos del formulario de préstamo */
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
@@ -30,9 +30,9 @@
         /* Resumen del préstamo */
         .resumen{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;display:none;}
         .resumen.show{display:block;}
-        .resumen-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:10px;}
+        .resumen-title{font-size:var(--text-xs);letter-spacing:2px;color:var(--muted);font-weight:800;margin-bottom:10px;}
         .res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;}
-        .res-field span{display:block;font-size:0.62rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;}
+        .res-field span{display:block;font-size:0.62rem;color:var(--dim);letter-spacing:1px;margin-bottom:1px;}
         .res-field strong{font-size:0.84rem;font-weight:700;color:var(--text);}
         /* Caja del contrato */
         .contract-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:0.8rem;color:var(--dim);line-height:1.6;margin-bottom:12px;}
@@ -51,7 +51,7 @@
         .receipt-header .rh-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
         .receipt-header .rh-brand svg{color:var(--primary);flex-shrink:0;}
         .receipt-header .rh-brand h2{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin:0;}
-        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;}
+        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;letter-spacing:1.5px;}
         .receipt-title{margin-top:14px;}
         .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
         .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:var(--primary-glow);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
@@ -59,7 +59,7 @@
         .receipt-body{padding:20px 28px;}
         .rsec{margin-bottom:20px;}
         .rsec:last-child{margin-bottom:0;}
-        .rsec-title{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
+        .rsec-title{font-size:0.65rem;font-weight:800;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
         .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
         .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
         .rg-item:last-child{border-bottom:none;}
@@ -68,7 +68,7 @@
         .rg-item strong{font-size:var(--text-sm);font-weight:700;color:var(--text);text-align:right;}
         /* Observaciones en el comprobante */
         .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
-        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
+        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
         .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
         /* Términos del contrato en comprobante */
         .rsec-contract{background:var(--surface);border-radius:8px;padding:12px 16px;font-size:0.78rem;color:var(--dim);line-height:1.65;border:1px solid var(--border);}
@@ -76,10 +76,10 @@
         /* Pie con firmas */
         .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
         .receipt-stamp{text-align:center;margin-bottom:14px;}
-        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:var(--success-bg);color:var(--success);border:1.5px solid rgba(5,150,105,0.25);}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;background:var(--success-bg);color:var(--success);border:1.5px solid rgba(5,150,105,0.25);}
         .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
         .sig-field{flex:1;max-width:200px;}
-        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}
         .sig-field .sig-line{border-bottom:1.5px solid var(--text);height:24px;margin-bottom:2px;}
         .sig-field small{font-size:0.62rem;color:var(--muted);}
         .receipt-legal{text-align:center;}
@@ -521,12 +521,6 @@ window.onload=function(){
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
     document.getElementById('fecha_dev').min=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
     cargar(); checkFormComplete(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
-    var _enc = JSON.parse(localStorage.getItem('encargado') || '{}');
-    if(_enc.nombre){
-        document.getElementById('navAvatar').textContent = _enc.nombre[0].toUpperCase();
-        document.getElementById('navName').textContent = _enc.nombre + ' ' + (_enc.apellido || '');
-        document.getElementById('navUser').style.display = 'flex';
-    }
 };
 </script>
 </body>
