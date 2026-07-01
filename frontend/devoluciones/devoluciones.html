@@ -553,7 +553,7 @@ function togDano(){
     checkFormComplete();
 }
 // Formateamos el monto con puntos cada mil
-function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v?Number(v).toLocaleString('es-PY'):'';}
+function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v!==''?Number(v).toLocaleString('es-PY'):'';}
 function _rv(id){return document.getElementById(id).value.replace(/\./g,'');}
 // Actualizamos el resumen de cobros (multa + daños)
 function updRes(){

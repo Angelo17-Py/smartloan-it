@@ -676,7 +676,7 @@ async function cargarConfig(){
 
 function fmtMonto(el){
     var v = el.value.replace(/\./g,'').replace(/\D/g,'');
-    el.value = v ? Number(v).toLocaleString('es-PY') : '';
+    el.value = v !== '' ? Number(v).toLocaleString('es-PY') : '';
 }
 
 async function guardarMulta(){
