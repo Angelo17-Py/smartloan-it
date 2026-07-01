@@ -556,8 +556,6 @@ async function registrar(){
     const obs=document.getElementById('obs').value.trim();
     const a=alumnos.find(x=>x.id_alumno==id_a);
     const e=equipos.find(x=>x.id_equipo==id_e);
-    // Mostramos un mensaje de confirmación antes de enviar
-    showConfirm('Confirmar pr\u00e9stamo?\n\nAlumno: '+a.nombre+' '+a.apellido+'\nEquipo: '+e.nombre+'\nVencimiento: '+ff(fecha)+'\nMotivo: '+motivo,function(){
     // Deshabilitamos el botón para evitar doble envío
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Registrando...';
     (async()=>{
@@ -610,7 +608,6 @@ async function registrar(){
         btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
     }
     })();
-    });
 }
 
 // Imprimimos el comprobante
@@ -620,14 +617,12 @@ function imprimir(){
 
 // Reiniciamos todo para registrar un nuevo préstamo
 function nuevoPrestamo(){
-    showConfirm('\u00bfRegistrar un nuevo pr\u00e9stamo? Se perder\u00e1 el comprobante actual.',function(){
-        document.getElementById('resultado').classList.remove('show');
-        document.querySelector('.form-card').style.display='';
-        document.getElementById('r-obs-section').style.display='none';
-        formDirty = false;
-        cargar();
-        window.scrollTo({top:0,behavior:'smooth'});
-    });
+    document.getElementById('resultado').classList.remove('show');
+    document.querySelector('.form-card').style.display='';
+    document.getElementById('r-obs-section').style.display='none';
+    formDirty = false;
+    cargar();
+    window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // Configuración inicial cuando la página carga

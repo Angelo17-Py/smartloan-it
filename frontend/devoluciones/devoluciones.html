@@ -660,13 +660,11 @@ async function procesar(){
 
 // Reiniciamos para procesar otra devolución
 function nueva(){
-    showConfirm('\u00bfRegistrar una nueva devoluci\u00f3n? Se perder\u00e1 el comprobante actual.',function(){
     pActual=null;
     document.getElementById('resultado').classList.remove('show');
     document.getElementById('p1').style.display='block';
     document.getElementById('idp').value='';
     setStep(1);resetForm();cargarActivos();
-    });
 }
 // Reseteamos los campos del formulario
 function resetForm(){
