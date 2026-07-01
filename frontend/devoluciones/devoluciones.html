@@ -426,7 +426,7 @@ async function cargarActivos(){
             var sc='animate-fi-'+Math.min(i+1,10);
             return `<div class="pres-item ${sc}" id="item-${p.id_prestamo}" onclick="selec(${p.id_prestamo})">
                 <div class="pi-left">
-                    <h4>#${p.id_prestamo} &mdash; ${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)} <span style="font-size:var(--text-xs);color:var(--dim)">(${esc(p.codigo_alumno)})</span></h4>
+                    <h4>${p.codigo_prestamo||'#'+p.id_prestamo} &mdash; ${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)} <span style="font-size:var(--text-xs);color:var(--dim)">(${esc(p.codigo_alumno)})</span></h4>
                     <p>${esc(p.equipo)} &middot; ${esc(p.tipo)} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
                 </div>
                 <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al día'}</span>
@@ -473,7 +473,7 @@ async function buscar(){
                 var sc='animate-fi-'+Math.min(i+1,10);
                 return '<div class="pres-item '+sc+'" id="item-'+p.id_prestamo+'" onclick="selec('+p.id_prestamo+')">'+
                     '<div class="pi-left">'+
-                    '<h4>#'+p.id_prestamo+' &mdash; '+esc(p.alumno_nombre)+' '+esc(p.alumno_apellido)+' <span style="font-size:var(--text-xs);color:var(--dim)">('+esc(p.codigo_alumno)+')</span></h4>'+
+                    '<h4>'+(p.codigo_prestamo||'#'+p.id_prestamo)+' &mdash; '+esc(p.alumno_nombre)+' '+esc(p.alumno_apellido)+' <span style="font-size:var(--text-xs);color:var(--dim)">('+esc(p.codigo_alumno)+')</span></h4>'+
                     '<p>'+esc(p.equipo)+' &middot; '+esc(p.tipo)+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
                     '</div>'+
                     '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al día')+'</span>'+
@@ -498,7 +498,7 @@ function mostrar(){
     // Calculamos los días de retraso y la multa
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     document.getElementById('ig').innerHTML=`
-        <div class="if"><span>Pr\u00e9stamo</span><strong>#${p.id_prestamo}</strong></div>
+        <div class="if"><span>Pr\u00e9stamo</span><strong>${p.codigo_prestamo||'#'+p.id_prestamo}</strong></div>
         <div class="if"><span>Alumno</span><strong>${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)}</strong></div>
         <div class="if"><span>Codigo</span><strong>${esc(p.codigo_alumno)}</strong></div>
         <div class="if"><span>Carrera</span><strong>${esc(p.carrera||'\u2014')}</strong></div>
@@ -618,8 +618,8 @@ async function procesar(){
             const danoSi=document.getElementById('dano').checked;
             const obsVal=document.getElementById('obs').value.trim();
             const multaBase=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
-            document.getElementById('r-recibo').textContent=`REC-${numRec}`;
-            document.getElementById('r-id').textContent=`#${pActual.id_prestamo}`;
+            document.getElementById('r-recibo').textContent=pActual.codigo_prestamo||`REC-${numRec}`;
+            document.getElementById('r-id').textContent=pActual.codigo_prestamo||`#${pActual.id_prestamo}`;
             document.getElementById('r-alu').textContent=`${pActual.alumno_nombre} ${pActual.alumno_apellido}`;
             document.getElementById('r-cod').textContent=pActual.codigo_alumno;
             document.getElementById('r-car').textContent=pActual.carrera||'—';

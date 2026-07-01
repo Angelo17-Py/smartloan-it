@@ -459,7 +459,7 @@ async function registrar(){
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
             const numRec=String(d.id_prestamo).padStart(4,'0');
             const estMap={'1':'Excelente','2':'Bueno','3':'Dañado'};
-            document.getElementById('r-recibo').textContent=`PRE-${numRec}`;
+            document.getElementById('r-recibo').textContent=d.codigo_prestamo||`PRE-${numRec}`;
             document.getElementById('r-alu').textContent=`${a.nombre} ${a.apellido}`;
             document.getElementById('r-cod').textContent=a.codigo_alumno;
             document.getElementById('r-car').textContent=a.carrera||'—';

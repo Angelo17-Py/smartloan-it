@@ -36,14 +36,18 @@ exports.crear = async (req, res) => {
     const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
     let multaBase = cfg.length ? parseFloat(cfg[0].valor) : 10000;
     if (multaBase == null || isNaN(multaBase) || multaBase < 0) multaBase = 10000;
+    // Generamos código correlativo (PRE-001, PRE-002...)
+    const [maxRow] = await conn.query('SELECT MAX(CAST(SUBSTRING(codigo_prestamo, 5) AS UNSIGNED)) AS max_num FROM prestamos FOR UPDATE');
+    const maxNum = maxRow[0].max_num || 0;
+    const codigoPrestamo = 'PRE-' + String(maxNum + 1).padStart(3, '0');
     const [result] = await conn.query(
-      `INSERT INTO prestamos (id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
+      `INSERT INTO prestamos (codigo_prestamo,id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
        estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-      [id_alumno, id_equipo, req.encargado.id, fmt(new Date()), fmt(fecha_devolucion_estimada),
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [codigoPrestamo, id_alumno, id_equipo, req.encargado.id, fmt(new Date()), fmt(fecha_devolucion_estimada),
        estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase]
     );
-    res.json({ mensaje: 'Préstamo registrado correctamente', id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()), multa_base: multaBase });
+    res.json({ mensaje: 'Préstamo registrado correctamente', codigo_prestamo: codigoPrestamo, id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()), multa_base: multaBase });
   } catch (err) {
     // Error lanzado por el trigger validar_prestamo si el equipo no está disponible
     if (err.code === 'ER_SIGNAL_EXCEPTION') {

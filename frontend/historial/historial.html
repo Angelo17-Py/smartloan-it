@@ -193,7 +193,7 @@ function renderP(){
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
-        html+='<td data-label="#"><span class="code">#'+p.id_prestamo+'</span></td>';
+        html+='<td data-label="#"><span class="code">'+(p.codigo_prestamo||'#'+p.id_prestamo)+'</span></td>';
         html+='<td data-label="Alumno"><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
         html+='<td data-label="Equipo"><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
         html+='<td data-label="Préstamo">'+ff(p.fecha_prestamo)+'</td>';
@@ -221,8 +221,8 @@ function renderD(){
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
-        html+='<td data-label="#Dev"><span class="code">#'+dv.id_devolucion+'</span></td>';
-        html+='<td data-label="#Pres"><span class="code">#'+dv.id_prestamo+'</span></td>';
+        html+='<td data-label="#Dev"><span class="code">'+(dv.codigo_prestamo||'#'+dv.id_devolucion)+'</span></td>';
+        html+='<td data-label="#Pres"><span class="code">'+(dv.codigo_prestamo||'#'+dv.id_prestamo)+'</span></td>';
         html+='<td data-label="Alumno"><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
         html+='<td data-label="Equipo"><strong>'+resaltar(dv.equipo,q)+'</strong><div class="sub-text">'+dv.tipo+'</div></td>';
         html+='<td data-label="Devuelto">'+ff(dv.fecha_devolucion)+'</td>';
