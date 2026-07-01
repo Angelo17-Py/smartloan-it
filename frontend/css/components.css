@@ -434,7 +434,6 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .receipt-enter{animation:slideUp 0.4s var(--ease-out) both}
 
 /* ---- TRANSICIÓN DE ENTRADA/SALIDA ---- */
-main{animation:fi 0.6s var(--ease-out) both}
 .page-exit{opacity:0;transition:opacity var(--duration-normal) var(--ease-out);will-change:opacity;pointer-events:none}
 
 /* ---- MIGAS DE PAN ---- */
