@@ -617,12 +617,7 @@ function imprimir(){
 
 // Reiniciamos todo para registrar un nuevo préstamo
 function nuevoPrestamo(){
-    document.getElementById('resultado').classList.remove('show');
-    document.querySelector('.form-card').style.display='';
-    document.getElementById('r-obs-section').style.display='none';
-    formDirty = false;
-    cargar();
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.location.href = '/prestamos/prestamos.html';
 }
 
 // Configuración inicial cuando la página carga
