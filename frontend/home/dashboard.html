@@ -463,7 +463,14 @@ function actualizarUI(){
     var bp = document.getElementById('badge-prestamos'); if(bp) bp.textContent = activos;
 
     if(total > 0){
-        crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#34d399', '#eab308', '#f97316']);
+        if(donutChartInstance){
+            donutChartInstance.data.labels = ['Disponible', 'Prestado', 'Mantenimiento'];
+            donutChartInstance.data.datasets[0].data = [disponibles, prestados, mant];
+            donutChartInstance.data.datasets[0].backgroundColor = ['#34d399', '#eab308', '#f97316'];
+            donutChartInstance.update();
+        } else {
+            crearDonut(['Disponible', 'Prestado', 'Mantenimiento'], [disponibles, prestados, mant], ['#34d399', '#eab308', '#f97316']);
+        }
     } else { mostrarDonutVacio(); }
 
     renderActivityFeed(pr);
