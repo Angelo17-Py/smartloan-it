@@ -356,3 +356,18 @@ function initScrollReveal(){
   }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 }
+
+/* Inicia la animación de entrada de la página al cargar */
+function initPageEntrance(){
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      document.body.classList.add('page-loaded');
+    });
+  });
+}
+
+/* Inicializa animaciones globales al cargar DOM */
+document.addEventListener('DOMContentLoaded', function(){
+  initPageEntrance();
+  initScrollReveal();
+});

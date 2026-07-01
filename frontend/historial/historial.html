@@ -66,7 +66,7 @@
         <div><h1>Historial y Trazabilidad</h1><p>Registro completo de todos los movimientos del sistema</p></div>
     </div>
     <!-- Barra de herramientas con pestañas y filtros -->
-    <div class="toolbar">
+    <div class="toolbar reveal">
         <div class="tabs">
             <button class="tab active" onclick="setTab('p',this)">Préstamos</button>
             <button class="tab" onclick="setTab('d',this)">Devoluciones</button>
@@ -79,15 +79,15 @@
         </div>
     </div>
     <!-- Buscador de registros -->
-    <div class="search-bar">
+    <div class="search-bar reveal">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por alumno, equipo, código, motivo..." oninput="buscar()">
         <span class="search-count" id="search-count"></span>
     </div>
     <!-- Tabla de préstamos -->
-    <div id="tp" class="table-wrap"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
+    <div id="tp" class="table-wrap reveal"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
     <!-- Tabla de devoluciones -->
-    <div id="td" class="table-wrap" style="display:none"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
+    <div id="td" class="table-wrap reveal" style="display:none"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
 </main>
 <!-- Notificación toast para mensajes -->
 <div class="toast" id="toast"></div>

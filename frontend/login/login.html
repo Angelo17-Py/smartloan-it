@@ -224,6 +224,12 @@
         .login-btn.loading .btn-text{display:none}
         .login-btn.loading .spinner{display:block}
 
+        /* Entrance animation */
+        body:not(.page-loaded) .brand-content,
+        body:not(.page-loaded) .form-inner{opacity:0;transform:translateY(16px)}
+        body.page-loaded .brand-content{animation:fi 0.6s var(--ease-out) both}
+        body.page-loaded .form-inner{animation:fi 0.6s var(--ease-out) 0.15s both}
+
         /* Error toast */
         .err{
             display:flex;align-items:center;justify-content:center;gap:8px;

@@ -49,7 +49,7 @@
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
         <div><h1>Gestión de Equipos</h1><p>Registro y control de estado de los activos tecnológicos</p></div>
     </div>
-    <div class="form-card admin-only">
+    <div class="form-card admin-only reveal">
         <div class="form-card-title">Registrar nuevo equipo</div>
         <div class="form-row">
             <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoEquipo()"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
@@ -67,11 +67,11 @@
             <div class="ig ig-desc"><label>Descripción</label><textarea id="desc" placeholder="" maxlength="200" oninput="autoResize(this);clearF('desc');checkNuevoEquipo()" rows="2"></textarea><div class="ferr" id="ferr-desc">Ingresa una descripción del equipo</div></div>
         </div>
     </div>
-    <div class="search-bar">
+    <div class="search-bar reveal">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por nombre, tipo, marca..." oninput="filtrar()">
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap reveal">
         <div class="table-header"><span>Lista de equipos</span><span class="table-count" id="count">0 equipos</span></div>
         <table><colgroup><col style="width:5%"><col style="width:35%"><col style="width:20%"><col style="width:14%"><col style="width:26%"></colgroup><thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col">Tipo / Marca</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
