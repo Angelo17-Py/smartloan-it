@@ -310,13 +310,6 @@ function cerrarEdit(){
     equipoEditandoId = null;
 }
 
-document.getElementById('mo-edit').addEventListener('click', function(e){
-    if(e.target === this) cerrarEdit();
-});
-document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && document.getElementById('mo-edit').classList.contains('show')) cerrarEdit();
-});
-
 async function guardarEquipo(){
     const n = document.getElementById('edit-nombre').value.trim();
     const t = document.getElementById('edit-tipo').value;

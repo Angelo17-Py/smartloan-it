@@ -312,16 +312,6 @@ function cerrarEdit(){
     alumnoEditandoId = null;
 }
 
-// Si el usuario hace click fuera del modal, se cierra
-document.getElementById('mo-edit').addEventListener('click', function(e){
-    if(e.target === this) cerrarEdit();
-});
-// Tecla Escape cierra el modal
-document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && document.getElementById('mo-edit').classList.contains('show')) cerrarEdit();
-});
-
-// Guardamos los cambios del alumno en el servidor
 async function guardarAlumno(){
     const n  = document.getElementById('edit-nombre').value.trim();
     const ap = document.getElementById('edit-apellido').value.trim();
