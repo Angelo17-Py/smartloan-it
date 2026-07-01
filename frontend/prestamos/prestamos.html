@@ -144,6 +144,34 @@
             .res-btns .btn{width:100%}
             #resultado.show{max-width:100%}
         }
+
+        /* ===== SEARCHABLE SELECT ===== */
+        .ss-wrap{position:relative;width:100%}
+        .ss-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--dim);font-family:var(--font);font-size:var(--text-sm);cursor:pointer;transition:border-color var(--duration-fast) var(--ease-out);text-align:left;gap:8px}
+        .ss-trigger:hover{border-color:var(--border-hover)}
+        .ss-trigger:focus,.ss-open .ss-trigger{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+        .ss-trigger span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .ss-trigger .ss-arrow{flex-shrink:0;transition:transform var(--duration-fast) var(--ease-out)}
+        .ss-open .ss-trigger .ss-arrow{transform:rotate(180deg)}
+        .ss-drop{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);display:none;max-height:260px;flex-direction:column}
+        .ss-open .ss-drop{display:flex;animation:scaleIn var(--duration-fast) var(--ease-out) both;transform-origin:top center}
+        .ss-search{padding:8px;border-bottom:1px solid var(--border)}
+        .ss-search input{width:100%;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:var(--text-sm);outline:none;transition:border-color var(--duration-fast) var(--ease-out)}
+        .ss-search input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+        .ss-search input::placeholder{color:var(--muted)}
+        .ss-options{overflow-y:auto;flex:1;padding:4px}
+        .ss-opt{padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:var(--text-sm);color:var(--text-secondary);transition:background var(--duration-fast) var(--ease-out);display:flex;align-items:center;gap:8px}
+        .ss-opt:hover,.ss-opt.highlight{background:var(--surface);color:var(--text)}
+        .ss-opt.sel{background:var(--primary-glow);color:var(--primary);font-weight:700}
+        .ss-opt .ss-code{font-family:var(--mono);font-size:0.75rem;padding:1px 5px;border-radius:4px;background:var(--primary-glow);color:var(--primary);flex-shrink:0}
+        .ss-empty{padding:16px;text-align:center;color:var(--muted);font-size:var(--text-sm)}
+        .ss-noreset .ss-trigger{color:var(--dim)}
+        .ss-selected .ss-trigger{color:var(--text);font-weight:600}
+        .ss-wrap select{display:none}
+        @media(max-width:600px){
+            .ss-drop{position:fixed;top:auto;bottom:0;left:0;right:0;max-height:60vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:0 -8px 32px rgba(0,0,0,0.5)}
+            .ss-open .ss-drop{animation:slideUp 0.25s var(--ease-out) both}
+        }
     </style>
 </head>
 <body>
@@ -373,7 +401,95 @@ async function cargar(){
         avisoEq.classList.remove('show');
         equipos.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
     }
+    crearSelectBusqueda('alumno');
+    crearSelectBusqueda('equipo');
     checkFormComplete();
+}
+
+// Convierte un <select> en buscador con dropdown
+function crearSelectBusqueda(id){
+  const sel=document.getElementById(id);
+  if(!sel||sel._ssInit)return;
+  sel._ssInit=true;
+  const wrap=document.createElement('div');
+  wrap.className='ss-wrap';
+  const trigger=document.createElement('button');
+  trigger.type='button';
+  trigger.className='ss-trigger';
+  trigger.innerHTML='<span>'+sel.options[sel.selectedIndex].text+'</span><svg class="ss-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5l3 3 3-3"/></svg>';
+  const drop=document.createElement('div');
+  drop.className='ss-drop';
+  drop.innerHTML='<div class="ss-search"><input type="text" placeholder="Buscar..." autocomplete="off"></div><div class="ss-options"></div>';
+  sel.parentNode.insertBefore(wrap,sel);
+  wrap.appendChild(trigger);
+  wrap.appendChild(drop);
+  wrap.appendChild(sel);
+  sel.style.display='none';
+  const input=drop.querySelector('.ss-search input');
+  const list=drop.querySelector('.ss-options');
+  function render(f){
+    var q=normalizeText(f||'');
+    list.innerHTML='';
+    var opts=sel.querySelectorAll('option');
+    var found=false;
+    opts.forEach(function(o){
+      if(!o.value)return;
+      var txt=normalizeText(o.textContent);
+      if(q&&!txt.includes(q))return;
+      found=true;
+      var d=document.createElement('div');
+      d.className='ss-opt'+(o.selected?' sel':'');
+      var code='';
+      var m=o.textContent.match(/^([\w-]+)\s*(—|·)\s*/);
+      if(m)code='<span class="ss-code">'+esc(m[1])+'</span>';
+      d.innerHTML=code+'<span>'+esc(o.textContent)+'</span>';
+      d.dataset.value=o.value;
+      d.addEventListener('click',function(e){
+        e.stopPropagation();
+        sel.value=this.dataset.value;
+        sel.dispatchEvent(new Event('change',{bubbles:true}));
+        closeDrop();
+      });
+      list.appendChild(d);
+    });
+    if(!found)list.innerHTML='<div class="ss-empty">Sin resultados</div>';
+  }
+  function closeDrop(){
+    wrap.classList.remove('ss-open');
+    document.removeEventListener('click',docClose);
+  }
+  function docClose(e){
+    if(!wrap.contains(e.target))closeDrop();
+  }
+  input.addEventListener('input',function(){render(this.value);});
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){
+      var first=list.querySelector('.ss-opt:not(.sel)');
+      if(first)first.click();
+    }
+    if(e.key==='Escape')closeDrop();
+  });
+  trigger.addEventListener('click',function(e){
+    e.stopPropagation();
+    if(wrap.classList.contains('ss-open')){
+      closeDrop();
+    }else{
+      wrap.classList.add('ss-open');
+      input.value='';
+      render('');
+      input.focus();
+      document.addEventListener('click',docClose);
+    }
+  });
+  sel.addEventListener('change',function(){
+    trigger.querySelector('span').textContent=sel.options[sel.selectedIndex].text;
+    wrap.classList.toggle('ss-selected',!!sel.value);
+    render(input.value);
+  });
+   wrap.classList.toggle('ss-selected',!!sel.value);
+  // Si no hay opciones reales, deshabilitar
+  var realOpts=sel.querySelectorAll('option[value!=""]');
+  if(!realOpts.length){trigger.disabled=true;trigger.style.opacity='0.45';trigger.style.cursor='not-allowed';}
 }
 
 // Cuando el usuario selecciona un alumno, mostramos sus datos
