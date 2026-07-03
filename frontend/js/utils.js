@@ -51,6 +51,7 @@ function ff(d) {
 // Formatea un número con separador de miles (estilo Paraguay)
 function fn(n) {
   if (n == null || isNaN(n)) return '0';
+  if (typeof n === 'string') n = parseFloat(n);
   return Number(n).toLocaleString('es-PY');
 }
 
