@@ -1,12 +1,11 @@
 /* ============================================
    SmartLoan IT — Tokens de diseño
    Identidad: "Ateneo con lámpara"
-   Nogal y verde resina, latón, papiro, serif Fraunces.
-   Sensación de biblioteca de prestigio — cálida, literaria,
-   con numeración tabular y sellos institucionales.
+   Nogal y verde resina, latón, papiro.
+   Tipografía sans humanista, numeración tabular y sellos institucionales.
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=DM+Mono:wght@300;400;500&display=swap');
 
 :root {
   /* ==========================================
@@ -60,16 +59,16 @@
   --card-border: rgba(237, 230, 211, 0.10);
 
   /* ==========================================
-   * TIPOGRAFÍA — Fraunces (display) + Schibsted Grotesk (UI)
+   * TIPOGRAFÍA — Instrument Sans (UI y display) + DM Mono
    * ========================================== */
 
-  --font: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-  --heading-weight: 620;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Instrument Sans', 'Helvetica Neue', Helvetica, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Instrument Sans', 'Helvetica Neue', Helvetica, sans-serif;
+  --mono: 'DM Mono', ui-monospace, 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  --heading-weight: 560;
   --body-weight: 400;
-  --letter-space-wide: -0.01em;
-  --letter-space-tight: -0.02em;
+  --letter-space-wide: -0.011em;
+  --letter-space-tight: -0.025em;
 
   --text-xs: clamp(0.8rem, 1.2vw, 0.9rem);
   --text-sm: clamp(0.9rem, 1.4vw, 1rem);
