@@ -41,23 +41,21 @@ exports.crear = async (req, res) => {
     }
 };
 
-// Elimina un equipo y sus registros relacionados, si no tiene préstamos activos
+// Elimina un equipo solo si no tiene ningún historial de préstamos
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
-      // Verificamos que no tenga préstamos activos antes de eliminar
-      const [prestamosActivos] = await tx.query(
-        'SELECT id_prestamo FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
+      // El historial de préstamos/devoluciones no debe perderse al eliminar un equipo
+      const [historial] = await tx.query(
+        'SELECT COUNT(*) AS total FROM prestamos WHERE id_equipo = ? FOR UPDATE', [id]
       );
-      if (prestamosActivos.length > 0) {
+      if (Number(historial[0].total) > 0) {
         await tx.rollback();
-        return res.status(400).json({ mensaje: 'No se puede eliminar: el equipo tiene un préstamo activo' });
+        return res.status(400).json({ mensaje: 'No se puede eliminar: el equipo tiene historial de préstamos.' });
       }
-      await tx.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_equipo = ?', [id]);
-      await tx.query('DELETE FROM prestamos WHERE id_equipo = ?', [id]);
       await tx.query('DELETE FROM equipos WHERE id_equipo = ?', [id]);
       await tx.commit();
       res.json({ mensaje: 'Equipo eliminado correctamente' });

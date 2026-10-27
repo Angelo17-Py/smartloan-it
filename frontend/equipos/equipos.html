@@ -250,7 +250,7 @@ async function crear(){
 function confirmarEliminar(id){
     const eq = listaEquipos.find(e => e.id_equipo === id);
     if(!eq) return;
-    showConfirm('Eliminar el equipo "'+eq.nombre+'"\n\nSe eliminará también todo su historial de préstamos. Esta acción no se puede deshacer.',function(){ eliminar(id); });
+    showConfirm('Eliminar el equipo "'+eq.nombre+'"\n\nSolo se permitirá si no tiene historial de préstamos. Esta acción no se puede deshacer.',function(){ eliminar(id); });
 }
 
 async function eliminar(id){

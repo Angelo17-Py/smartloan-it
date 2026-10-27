@@ -34,6 +34,13 @@ exports.login = async (req, res) => {
       return res.status(401).json({ mensaje: 'Código o contraseña incorrectos' });
     }
     const token = generarToken(encargado);
+    res.cookie('sl_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 12 * 60 * 60 * 1000
+    });
     const { password: _, ...datos } = encargado;
     res.json({ token, usuario: datos });
   } catch (err) {

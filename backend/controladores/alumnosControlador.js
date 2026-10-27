@@ -58,26 +58,24 @@ exports.crear = async (req, res) => {
   }
 };
 
-// Elimina un alumno (y sus préstamos/devoluciones asociados) si no tiene préstamos activos
+// Desactiva un alumno sin borrar su historial de préstamos y devoluciones
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
-      // Verificamos que no tenga préstamos activos antes de borrar
+      // No se puede desactivar si todavía tiene un préstamo activo
       const [prestamosActivos] = await tx.query(
         'SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
       );
       if (prestamosActivos.length > 0) {
         await tx.rollback();
-        return res.status(400).json({ mensaje: 'No se puede eliminar: el alumno tiene un préstamo activo' });
+        return res.status(400).json({ mensaje: 'No se puede desactivar: el alumno tiene un préstamo activo' });
       }
-      await tx.query('DELETE dv FROM devoluciones dv JOIN prestamos p ON dv.id_prestamo = p.id_prestamo WHERE p.id_alumno = ?', [id]);
-      await tx.query('DELETE FROM prestamos WHERE id_alumno = ?', [id]);
-      await tx.query('DELETE FROM alumnos WHERE id_alumno = ?', [id]);
+      await tx.query('UPDATE alumnos SET estado = 0 WHERE id_alumno = ?', [id]);
       await tx.commit();
-      res.json({ mensaje: 'Alumno eliminado correctamente' });
+      res.json({ mensaje: 'Alumno desactivado correctamente. Su historial se conserva.' });
     } catch (txErr) {
       await tx.rollback();
       throw txErr;

@@ -225,7 +225,7 @@ docker compose up -d
 docker exec -i smartloan-app node backend/initDb.js
 
 # 4. Abrir en el navegador
-start http://localhost:3000
+start http://localhost:1002
 ```
 
 ### Opción 2: Manual (sin Docker)
@@ -252,7 +252,7 @@ node backend/initDb.js
 npm start
 
 # 7. Abrir en el navegador
-start http://localhost:3000
+start http://localhost:1002
 ```
 
 ---

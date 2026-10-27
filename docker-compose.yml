@@ -21,9 +21,9 @@ services:
       dockerfile: Dockerfile.local
     container_name: smartloan-app
     ports:
-      - "3000:3000"
+      - "1002:1002"
     environment:
-      PORT: 3000
+      PORT: 1002
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: root

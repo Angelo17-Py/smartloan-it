@@ -151,9 +151,12 @@ function fadeOutNavigate(url) {
 // Cierra la sesión del usuario actual
 function logout() {
   showConfirm('Cerrar sesi\u00f3n del sistema?', function () {
-    localStorage.removeItem('encargado');
-    localStorage.removeItem('token');
-    window.location.href = '/';
+    fetch('/encargados/logout', { method: 'POST' }).catch(function () {}).finally(function () {
+      localStorage.removeItem('encargado');
+      localStorage.removeItem('token');
+      localStorage.removeItem('rol');
+      window.location.href = '/';
+    });
   });
 }
 

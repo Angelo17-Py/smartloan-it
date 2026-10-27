@@ -290,7 +290,7 @@ async function crear(){
 function confirmarEliminar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
-    showConfirm('Eliminar al alumno "'+a.nombre+' '+a.apellido+'"\n\nSi tiene historial de pr\u00e9stamos tambi\u00e9n se eliminar\u00e1. Esta acci\u00f3n no se puede deshacer.',function(){ eliminar(id); });
+    showConfirm('Desactivar al alumno "'+a.nombre+' '+a.apellido+'"\n\nDejar\u00e1 de aparecer en el listado, pero su historial de pr\u00e9stamos y devoluciones se conservar\u00e1.',function(){ eliminar(id); });
 }
 
 // Le decimos al servidor que elimine el alumno
@@ -298,7 +298,7 @@ async function eliminar(id){
     try {
         const r = await apiFetch(`/alumnos/${id}`, {method:'DELETE'});
         const d = r.status === 204 ? {} : await safeJson(r);
-        r.ok ? st('Alumno eliminado') : st(d.mensaje||'No se puede eliminar','t-err');
+        r.ok ? st('Alumno desactivado. Historial conservado.') : st(d.mensaje||'No se puede desactivar','t-err');
         cargar();
     } catch(e){
         st('Error de conexión','t-err');

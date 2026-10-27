@@ -3,11 +3,8 @@ const API = window.location.origin;
 
 // Función principal para hacer peticiones al backend con autenticación y timeout
 async function apiFetch(url, options = {}) {
-  const token = localStorage.getItem('token');
   if (!options.headers) options.headers = {};
-  if (token) {
-    options.headers['Authorization'] = 'Bearer ' + token;
-  }
+  // La autenticación viaja en una cookie httpOnly; no se expone el token a JS.
   // Timeout de 15 segundos para evitar peticiones colgadas
   const controller = new AbortController();
   const timeout = setTimeout(function () { controller.abort(); }, 15000);
@@ -27,6 +24,7 @@ async function apiFetch(url, options = {}) {
   if (res.status === 401 && !options.skipAuthRedirect) {
     localStorage.removeItem('encargado');
     localStorage.removeItem('token');
+    localStorage.removeItem('rol');
     window.location.href = '/';
   }
   return res;

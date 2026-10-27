@@ -17,12 +17,42 @@ process.on('unhandledRejection', (reason) => {
 });
 
 const app = express();
-const PORT = parseInt(process.env.PORT, 10) || 3000;
+const PORT = parseInt(process.env.PORT, 10) || 1002;
 
-// Configuración de CORS para permitir peticiones del frontend
-const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
-app.use(cors({ origin: CORS_ORIGIN }));
-app.use(express.json());
+app.disable('x-powered-by');
+// Necesario si la app corre detrás de un proxy (Railway, Nginx, etc.)
+app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : false);
+
+// CORS cerrado por defecto: mismo origen. Configurar CORS_ORIGIN para frontends externos.
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map(function(origin) { return origin.trim(); })
+  .filter(Boolean);
+
+app.use(function(req, res, next) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Sin Origin: navegación normal o petición del mismo servidor
+    if (!origin) return callback(null, true);
+    return callback(null, allowedOrigins.includes(origin));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400
+}));
+app.use(express.json({ limit: '100kb' }));
 
 // Sirve los archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
