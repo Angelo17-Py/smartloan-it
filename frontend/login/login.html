@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#e2c99f">
+    <meta name="theme-color" content="#17140e">
     <meta name="description" content="SmartLoan IT - Sistema de Gestión de Préstamos de Recursos Tecnológicos. Universidad Integración de las Américas.">
-    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg?v=3">
     <title>SmartLoan IT | Acceso</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -14,19 +14,19 @@
     <script src="/js/utils.js" defer></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        html{background:#d6b98b}
+        html{background:var(--bg)}
         body.login-page{
-            --paper:#e2c99f;
-            --ink:#101a16;
-            --ink-soft:#333d36;
-            --muted:#4a4a3f;
-            --line:rgba(16,26,22,.22);
-            --line-soft:rgba(16,26,22,.12);
-            --ods:#c5192d;
-            --card:#1a140f;
-            --card-text:#f2f0e7;
-            --card-muted:rgba(242,240,231,.62);
-            --card-line:rgba(242,240,231,.12);
+            --paper:var(--bg);
+            --ink:var(--text);
+            --ink-soft:var(--text-secondary);
+            --muted:var(--dim);
+            --line:var(--border);
+            --line-soft:var(--border-glow);
+            --ods:var(--danger);
+            --login-card:var(--card);
+            --card-text:var(--text);
+            --card-muted:var(--text-secondary);
+            --card-line:var(--border);
             --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Instrument Sans','Helvetica Neue',Helvetica,sans-serif;
             --font-display:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Instrument Sans','Helvetica Neue',Helvetica,sans-serif;
             --heading-weight:560;
@@ -38,9 +38,9 @@
             overflow-x:hidden;
             background:var(--paper);
             background-image:
-                radial-gradient(1150px 760px at 82% -16%,rgba(255,250,240,.75),transparent 60%),
-                radial-gradient(900px 720px at -14% 112%,rgba(86,58,20,.18),transparent 64%),
-                linear-gradient(152deg,#efdcb9 0%,#e2c99f 48%,#d6b98b 100%);
+                radial-gradient(1150px 760px at 82% -16%,var(--primary-glow),transparent 60%),
+                radial-gradient(900px 720px at -14% 112%,var(--primary-glow),transparent 64%),
+                linear-gradient(152deg,var(--bg-alt) 0%,var(--bg) 48%,var(--bg) 100%);
             color:var(--ink);
             font-family:var(--font);
             letter-spacing:-.011em;
@@ -50,7 +50,7 @@
         }
         body.login-page::after{
             content:'';position:fixed;inset:0;z-index:60;pointer-events:none;
-            opacity:.05;mix-blend-mode:multiply;
+            opacity:.035;mix-blend-mode:overlay;
             background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
         }
 
@@ -64,10 +64,10 @@
         .wordmark{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink)}
         .wordmark-mark{
             width:30px;height:30px;border-radius:8px;flex:0 0 auto;
-            background:var(--ink);color:#f6f3ea;
+            background:var(--primary);color:var(--on-primary);
             display:grid;place-items:center;
             font-size:15px;font-weight:600;letter-spacing:-.04em;
-            box-shadow:inset 0 1px 0 rgba(255,255,255,.28);
+            box-shadow:inset 0 -2px 0 rgba(36,29,11,.3);
         }
         .wordmark-text{display:flex;align-items:baseline;gap:6px;font-size:15.5px;font-weight:560;letter-spacing:-.03em}
         .wordmark-text .it{font-size:11px;font-weight:500;letter-spacing:.14em;color:var(--muted)}
@@ -109,7 +109,7 @@
         .ods{display:flex;gap:10px;max-width:380px;font-size:12px;line-height:1.6;color:var(--muted)}
         .ods-dot{
             width:7px;height:7px;border-radius:50%;margin-top:4px;flex:0 0 auto;
-            background:var(--ods);box-shadow:0 0 0 3px rgba(197,25,45,.1);
+            background:var(--ods);box-shadow:0 0 0 3px var(--danger-bg);
         }
         .ods b{font-weight:520;color:var(--ink-soft)}
 
@@ -119,13 +119,12 @@
             padding:clamp(30px,3vw,40px);
             border-radius:18px;overflow:hidden;
             background:
-                radial-gradient(120% 90% at 88% -12%,rgba(255,250,240,.06),transparent 55%),
-                linear-gradient(158deg,#2b231a,var(--card) 55%,#0f0b08);
-            border:1px solid rgba(255,245,230,.12);
+                radial-gradient(120% 90% at 88% -12%,var(--primary-glow),transparent 55%),
+                linear-gradient(158deg,var(--surface),var(--login-card) 55%,var(--bg-alt));
+            border:1px solid var(--border);
             box-shadow:
-                inset 0 1px 0 rgba(255,245,230,.13),
-                0 30px 60px -28px rgba(40,26,12,.55),
-                0 8px 24px -12px rgba(40,26,12,.35);
+                inset 0 1px 0 color-mix(in srgb,var(--text) 10%,transparent),
+                var(--shadow-lg);
             color:var(--card-text);opacity:0;
         }
         body.page-loaded .access-card{animation:cardIn 1s var(--ease) .3s both}
@@ -149,22 +148,22 @@
         .label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
         .field label{
             font-family:var(--font);font-size:13px;font-weight:500;
-            letter-spacing:.005em;color:rgba(242,240,231,.82);
+            letter-spacing:.005em;color:var(--card-muted);
             transition:color .2s;
         }
         .field:focus-within label{color:var(--card-text)}
         .input-wrap{
             position:relative;display:flex;align-items:center;height:54px;
-            background:rgba(255,255,255,.035);
-            border:1px solid rgba(255,255,255,.13);border-radius:11px;overflow:hidden;
+            background:color-mix(in srgb,var(--text) 4%,transparent);
+            border:1px solid color-mix(in srgb,var(--text) 13%,transparent);border-radius:11px;overflow:hidden;
             transition:border-color .2s,background .2s,box-shadow .2s;
         }
         .input-wrap:focus-within{
-            border-color:rgba(242,240,231,.5);
-            background:rgba(255,255,255,.055);
-            box-shadow:0 0 0 3px rgba(242,240,231,.06);
+            border-color:color-mix(in srgb,var(--primary) 65%,transparent);
+            background:color-mix(in srgb,var(--text) 6%,transparent);
+            box-shadow:0 0 0 3px var(--primary-glow);
         }
-        .input-wrap.error{border-color:rgba(224,96,96,.8);box-shadow:0 0 0 3px rgba(197,25,45,.13)}
+        .input-wrap.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-bg)}
         .input-prefix{
             position:absolute;left:16px;top:50%;transform:translateY(-50%);
             font-family:var(--font);font-size:14px;font-weight:450;
@@ -181,7 +180,7 @@
         }
         #codigo{padding-left:38px;font-size:16px;letter-spacing:.14em;font-variant-numeric:tabular-nums}
         #password{letter-spacing:.04em;padding-right:52px}
-        .field input::placeholder{color:rgba(242,240,231,.24)}
+        .field input::placeholder{color:color-mix(in srgb,var(--text) 24%,transparent)}
         .field input:-webkit-autofill,
         .field input:-webkit-autofill:hover,
         .field input:-webkit-autofill:focus,
@@ -189,31 +188,31 @@
             -webkit-background-clip:text;
             -webkit-text-fill-color:var(--card-text);
             transition:background-color 5000s ease-in-out 0s;
-            box-shadow:inset 0 0 0 1000px #1a140f;
+            box-shadow:inset 0 0 0 1000px var(--login-card);
         }
         .eye{
             position:absolute;right:8px;top:50%;transform:translateY(-50%);
             width:38px;height:38px;display:grid;place-items:center;
             background:none;border:0;border-radius:8px;cursor:pointer;
-            color:rgba(242,240,231,.5);
+            color:color-mix(in srgb,var(--text) 50%,transparent);
             transition:color .2s,background .2s;
         }
-        .eye:hover{color:var(--card-text);background:rgba(255,255,255,.06)}
-        .field-err{display:none;margin-top:7px;font-size:11.5px;color:#f19090}
+        .eye:hover{color:var(--card-text);background:color-mix(in srgb,var(--text) 7%,transparent)}
+        .field-err{display:none;margin-top:7px;font-size:11.5px;color:color-mix(in srgb,var(--danger) 72%,var(--text))}
         .field-err.show{display:block}
 
         .login-btn{
             position:relative;width:100%;height:54px;margin-top:6px;
             display:flex;align-items:center;justify-content:center;gap:10px;
             border:0;border-radius:11px;cursor:pointer;
-            background:var(--card-text);color:#1a120c;
+            background:var(--primary);color:var(--on-primary);
             font-family:var(--font);font-size:14.5px;font-weight:560;letter-spacing:-.01em;
-            box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px -10px rgba(0,0,0,.6);
+            box-shadow:inset 0 -2px 0 rgba(36,29,11,.3),inset 0 1px 0 rgba(255,246,214,.28),0 8px 20px -10px rgba(0,0,0,.6);
             transition:transform .25s var(--ease),background .2s,box-shadow .25s;
         }
         .login-btn:hover:not(:disabled){
-            background:#fff;transform:translateY(-1.5px);
-            box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 14px 26px -12px rgba(0,0,0,.7);
+            background:var(--primary-hover);transform:translateY(-1.5px);
+            box-shadow:inset 0 -2px 0 rgba(36,29,11,.3),inset 0 1px 0 rgba(255,246,214,.28),0 14px 26px -12px rgba(0,0,0,.7);
         }
         .login-btn:active:not(:disabled){transform:translateY(0) scale(.992)}
         .login-btn:disabled{opacity:.55;cursor:not-allowed}
@@ -221,7 +220,7 @@
         .login-btn:hover:not(:disabled) .btn-arrow{transform:translateX(3px)}
         .spinner{
             display:none;width:16px;height:16px;
-            border:2px solid rgba(26,18,12,.25);border-top-color:#1a120c;
+            border:2px solid color-mix(in srgb,var(--on-primary) 30%,transparent);border-top-color:var(--on-primary);
             border-radius:50%;animation:spin .7s linear infinite;
         }
         .login-btn.loading .btn-text,.login-btn.loading .btn-arrow{display:none}
@@ -229,7 +228,7 @@
 
         .err{
             display:none;align-items:flex-start;gap:7px;
-            font-size:12px;line-height:1.45;color:#f19090;
+            font-size:12px;line-height:1.45;color:color-mix(in srgb,var(--danger) 72%,var(--text));
         }
         .err.show{display:flex;margin-top:14px;animation:errIn .35s var(--ease) both}
         .err svg{flex:0 0 auto;margin-top:1px}
@@ -249,8 +248,8 @@
         }
         .shake{animation:shake .4s var(--ease)}
 
-        :focus-visible{outline:2px solid var(--ods);outline-offset:3px}
-        .login-btn:focus-visible{outline-color:var(--card-text)}
+        :focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+        .login-btn:focus-visible{outline-color:var(--text)}
         .eye:focus-visible{outline-offset:0}
 
         @media (max-width:1080px){

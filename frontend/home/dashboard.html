@@ -12,7 +12,7 @@
         }catch(e){}
     })();
     </script>
-    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg?v=3">
     <title>SmartLoan IT | Consola</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -42,8 +42,8 @@
         .last-updated{min-height:1.6em;font-size:10.5px;color:var(--dash-quiet);text-align:right;margin-top:8px;font-variant-numeric:tabular-nums}
 
         .dash-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid var(--border)}
-        .dash-profile{display:flex;align-items:center;gap:14px;min-width:0}
-        .dash-avatar{width:46px;height:46px;border-radius:11px;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.2rem;flex-shrink:0;box-shadow:inset 0 -2px 0 rgba(36,29,11,.3)}
+        .dash-profile{display:flex;align-items:center;min-width:0}
+
         .dash-brand{font-size:10px;font-weight:560;color:var(--primary);letter-spacing:.14em;margin-bottom:2px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
         .dash-brand span{color:var(--dash-quiet);font-size:9px;letter-spacing:.16em}
         .dash-greeting{font-family:var(--font);font-size:clamp(1.4rem,2vw,1.7rem);font-weight:560;color:var(--text);letter-spacing:-.035em;line-height:1.05;overflow:hidden;padding-bottom:.09em;margin-bottom:-.04em}
@@ -238,7 +238,6 @@
             .dash-right{gap:16px}
         }
         @media(max-width:430px){
-            .dash-avatar{width:42px;height:42px}
             .dash-brand{font-size:9px}
             .dash-greeting{font-size:1.25rem}
             .dash-lead{padding:20px}
@@ -289,7 +288,6 @@
             <!-- DASHBOARD HEADER -->
             <header class="dash-header">
                 <div class="dash-profile">
-                    <div class="dash-avatar" id="s-avatar-main" aria-hidden="true">—</div>
                     <div>
                         <div class="dash-brand">SmartLoan <span>IT</span></div>
                         <h1 class="dash-greeting"><span class="greet-line" id="welcome-msg">Bienvenido</span></h1>
@@ -972,7 +970,7 @@ window.onload = function(){
     if(enc.nombre){
         var inicial = enc.nombre[0].toUpperCase();
         var sa = document.getElementById('s-avatar'); if(sa) sa.textContent = inicial;
-        var sm = document.getElementById('s-avatar-main'); if(sm) sm.textContent = inicial;
+
         var sn = document.getElementById('s-name'); if(sn) sn.textContent = enc.nombre + ' ' + (enc.apellido || '');
         var fullRole = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
         var sr = document.getElementById('s-role'); if(sr) sr.textContent = fullRole;
