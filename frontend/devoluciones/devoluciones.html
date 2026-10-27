@@ -91,112 +91,157 @@
         .btn-procesar:hover{opacity:0.9;}
         .btn-procesar:disabled{opacity:0.5;cursor:not-allowed;}
 
-        /* Comprobante de devolución */
-        #resultado{display:none;}#resultado.show{display:block;max-width:480px;margin:0 auto;animation:slideUp var(--duration-slow) var(--ease-out) both;}
-        .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
-
-        .receipt{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:0;overflow:hidden;}
-        .receipt-header{background:var(--surface);padding:24px 28px 20px;border-bottom:2px dashed var(--border);text-align:center;}
-        .receipt-header .rh-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
-        .receipt-header .rh-brand svg{color:var(--primary);flex-shrink:0;}
-        .receipt-header .rh-brand h2{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin:0;}
-        .receipt-header .rh-sub{font-size:0.7rem;color:var(--muted);font-weight:600;letter-spacing:1.5px;}
-        .receipt-title{margin-top:14px;}
-        .receipt-title h3{font-size:1.05rem;font-weight:800;letter-spacing:1px;color:var(--text);margin:0 0 4px;}
-        .receipt-title .rt-number{display:inline-block;font-size:0.7rem;font-weight:700;color:var(--primary);background:var(--primary-glow);padding:3px 12px;border-radius:20px;font-family:var(--mono);letter-spacing:1px;}
-
-        .receipt-body{padding:20px 28px;}
-        .rsec{margin-bottom:20px;}
-        .rsec:last-child{margin-bottom:0;}
-        .rsec-title{font-size:0.65rem;font-weight:800;letter-spacing:2px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border);}
-        .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;}
-        .rg-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px dotted var(--border);}
-        .rg-item:last-child{border-bottom:none;}
+        /* Comprobante — documento institucional */
+        #resultado{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;padding:clamp(12px,3vw,28px);background:rgba(12,10,7,.78);backdrop-filter:blur(7px);}
+        #resultado.show{display:flex;animation:modalFade .2s ease both;}
+        .receipt-modal-card{display:flex;flex-direction:column;width:min(880px,100%);max-height:min(88vh,1000px);overflow:hidden;border:1px solid var(--border);border-radius:14px;background:var(--bg-alt);box-shadow:0 32px 100px -32px rgba(0,0,0,.85);animation:modalIn .35s var(--ease-out) both;}
+        .receipt-modal-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--card);}
+        .receipt-modal-status{display:flex;align-items:center;gap:10px;min-width:0;color:var(--success);}
+        .receipt-modal-status svg{width:20px;height:20px;flex-shrink:0;}
+        .receipt-modal-status strong{display:block;color:var(--text);font-size:13px;font-weight:600;line-height:1.2;}
+        .receipt-modal-status span{display:block;margin-top:2px;color:var(--dim);font-size:11px;}
+        .receipt-modal-close{width:34px;height:34px;flex-shrink:0;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--dim);font-size:21px;line-height:1;cursor:pointer;transition:background var(--duration-fast) var(--ease-out),color var(--duration-fast) var(--ease-out);}
+        .receipt-modal-close:hover{background:var(--danger-bg);border-color:var(--danger);color:var(--danger);}
+        .receipt-modal-scroll{flex:1;min-height:0;overflow-y:auto;padding:22px;background:#0d0b08;overscroll-behavior:contain;}
+        .receipt-modal-scroll .receipt{max-width:100%;margin:0 auto;box-shadow:0 18px 44px -24px rgba(0,0,0,.8);}
+        .receipt-modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;padding:12px 20px;border-top:1px solid var(--border);background:var(--card);}
+        .receipt-modal-actions .btn{min-width:150px;height:40px;}
+        body.modal-open{overflow:hidden;}
+        @keyframes modalFade{from{opacity:0}to{opacity:1}}
+        @keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+        .receipt{
+            --doc-paper:#f7f1e4;
+            --doc-paper-deep:#f1e8d5;
+            --doc-ink:#241d0b;
+            --doc-muted:#6f6552;
+            --doc-line:rgba(36,29,11,.16);
+            --doc-gold:#85651e;
+            position:relative;overflow:hidden;
+            background:var(--doc-paper);
+            border:1px solid rgba(36,29,11,.20);
+            border-top:4px solid var(--doc-gold);
+            border-radius:4px;
+            color:var(--doc-ink);
+            box-shadow:0 30px 80px -32px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.55);
+            font-family:var(--font);
+        }
+        .receipt::before{
+            content:'SMARTLOAN IT';
+            position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-24deg);
+            color:rgba(36,29,11,.016);font-size:56px;font-weight:700;letter-spacing:.08em;
+            white-space:nowrap;pointer-events:none;
+        }
+        .receipt-header{position:relative;padding:28px 36px 22px;background:linear-gradient(180deg,#fbf7ed,var(--doc-paper));border-bottom:1px solid var(--doc-line);}
+        .rh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;}
+        .rh-identity{display:flex;align-items:center;gap:12px;min-width:0;}
+        .rh-mark{width:42px;height:42px;display:grid;place-items:center;flex-shrink:0;border:1px solid var(--doc-gold);border-radius:8px;background:rgba(154,119,38,.06);color:var(--doc-gold);}
+        .rh-mark svg{width:22px;height:22px;}
+        .rh-identity h2{margin:0;color:var(--doc-ink);font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.1;}
+        .rh-sub{margin-top:4px;color:var(--doc-muted);font-size:9px;font-weight:650;letter-spacing:.16em;text-transform:uppercase;}
+        .rh-doc{display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right;flex-shrink:0;}
+        .rh-doc-label{color:var(--doc-muted);font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
+        .rt-number{display:inline-block;padding:4px 9px;border:1px solid var(--doc-line);border-radius:3px;color:var(--doc-ink);background:rgba(255,255,255,.35);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;}
+        .rh-status{padding:2px 8px;border:1px solid rgba(47,107,69,.28);border-radius:20px;background:rgba(47,107,69,.08);color:#2f6b45;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+        .receipt-title{margin-top:22px;padding-top:16px;border-top:1px solid var(--doc-line);}
+        .rt-kicker{display:block;color:var(--doc-gold);font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;}
+        .receipt-title h3{margin:5px 0 0;color:var(--doc-ink);font-family:var(--font-display);font-size:22px;font-weight:560;letter-spacing:-.02em;line-height:1.05;}
+        .rt-sub{margin:4px 0 0;color:var(--doc-muted);font-size:10px;line-height:1.4;}
+        .receipt-body{position:relative;padding:24px 36px 8px;counter-reset:rsec;}
+        .rsec{margin-bottom:22px;counter-increment:rsec;break-inside:avoid;}
+        .rsec-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--doc-line);color:var(--doc-muted);font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;}
+        .rsec-title::before{content:counter(rsec,decimal-leading-zero);color:var(--doc-gold);font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.04em;}
+        .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
+        .rsec-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+        .rg-item{display:flex;flex-direction:column;gap:2px;min-width:0;padding:8px 0;border-bottom:1px solid var(--doc-line);}
         .rg-item.full{grid-column:1/-1;}
-        .rg-item span{font-size:var(--text-xs);color:var(--dim);font-weight:600;}
-        .rg-item strong{font-size:0.82rem;font-weight:700;color:var(--text);text-align:right;}
-
+        .rg-item span{color:var(--doc-muted);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
+        .rg-item strong{color:var(--doc-ink);font-size:11.5px;font-weight:600;line-height:1.35;overflow-wrap:anywhere;}
         .rc-table{width:100%;border-collapse:collapse;}
-        .rc-table td{padding:5px 0;font-size:0.8rem;border-bottom:1px dotted var(--border);}
-        .rc-table td:last-child{text-align:right;font-weight:700;}
-        .rc-table .rc-label{color:var(--dim);font-weight:600;}
-        .rc-table .rc-value{text-align:right;font-weight:700;color:var(--text);}
-        .rc-table .rc-divider td{padding:2px 0;border-bottom:1.5px solid var(--text);}
-        .rc-table .rc-divider td:last-child{text-align:right;}
-        .rc-table .rc-total td{font-size:0.95rem;font-weight:800;color:var(--text);border-bottom:none;padding-top:8px;}
-        .rc-table .rc-total td:last-child{color:var(--danger);}
-
-        .rsec-obs{background:var(--surface);border-radius:8px;padding:10px 14px;margin-top:14px;}
-        .rsec-obs span{display:block;font-size:0.62rem;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;}
-        .rsec-obs p{font-size:0.8rem;color:var(--dim);margin:0;line-height:1.5;}
-
-        .receipt-footer{margin-top:16px;padding:16px 28px 24px;border-top:2px dashed var(--border);background:var(--surface);}
-        .receipt-stamp{text-align:center;margin-bottom:14px;}
-        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;font-size:0.78rem;font-weight:800;letter-spacing:1.5px;background:var(--success-bg);color:var(--success);border:1.5px solid var(--success);}
-        .stamp-badge.late{background:var(--danger-bg);color:var(--danger);border-color:var(--danger);}
-        .stamp-badge.damage{background:var(--warn-bg);color:var(--warn);border-color:var(--warn);}
-        .sig-row{display:flex;gap:32px;justify-content:center;margin-bottom:14px;}
-        .sig-field{flex:1;max-width:200px;}
-        .sig-field span{display:block;font-size:0.65rem;font-weight:600;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}
-        .sig-field .sig-line{border-bottom:1.5px solid var(--text);height:24px;margin-bottom:2px;}
-        .sig-field small{font-size:0.62rem;color:var(--muted);}
-        .receipt-legal{text-align:center;}
-        .receipt-legal .rl-date{font-size:0.7rem;color:var(--dim);font-weight:600;}
-        .receipt-legal p{font-size:0.65rem;color:var(--muted);margin:4px 0 0;line-height:1.4;}
-
+        .rc-table td{padding:7px 0;border-bottom:1px solid var(--doc-line);font-size:10.5px;}
+        .rc-table td:last-child{text-align:right;font-weight:600;}
+        .rc-table .rc-label{color:var(--doc-muted);font-size:9px;font-weight:600;}
+        .rc-table .rc-value{color:var(--doc-ink);text-align:right;font-weight:600;}
+        .rc-table .rc-divider td{padding:2px 0;border-bottom:1px solid var(--doc-ink);}
+        .rc-table .rc-total td{padding-top:10px;border-bottom:none;color:var(--doc-ink);font-size:14px;font-weight:700;}
+        .rc-table .rc-total td:last-child{color:var(--doc-gold);}
+        .rsec-obs{position:relative;margin-top:2px;padding:10px 14px;border:1px solid var(--doc-line);border-left:3px solid var(--doc-gold);border-radius:0 3px 3px 0;background:rgba(36,29,11,.03);}
+        .rsec-obs span{display:block;margin-bottom:4px;color:var(--doc-muted);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
+        .rsec-obs p{margin:0;color:var(--doc-muted);font-size:9.5px;line-height:1.5;}
+        .receipt-footer{position:relative;padding:18px 36px 22px;border-top:1px solid var(--doc-line);background:var(--doc-paper-deep);break-inside:avoid;}
+        .receipt-stamp{margin-bottom:14px;text-align:center;}
+        .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border:1px solid rgba(47,107,69,.3);border-radius:20px;background:rgba(47,107,69,.08);color:#2f6b45;font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
+        .stamp-badge.late{border-color:rgba(138,59,44,.32);background:rgba(138,59,44,.08);color:#8a3b2c;}
+        .stamp-badge.damage{border-color:rgba(138,90,22,.35);background:rgba(138,90,22,.08);color:#8a5a16;}
+        .sig-row{display:flex;justify-content:center;gap:48px;margin-bottom:16px;}
+        .sig-field{flex:1;max-width:230px;text-align:center;}
+        .sig-field span{display:block;margin-bottom:2px;color:var(--doc-muted);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
+        .sig-field .sig-line{height:30px;margin-bottom:6px;border-bottom:1px solid var(--doc-ink);}
+        .sig-field small{color:var(--doc-muted);font-size:9px;}
+        .receipt-legal{padding-top:10px;border-top:1px solid var(--doc-line);text-align:center;}
+        .receipt-legal .rl-date{color:var(--doc-muted);font-family:var(--mono);font-size:8.5px;letter-spacing:.03em;}
+        .receipt-legal p{max-width:560px;margin:6px auto 0;color:var(--doc-muted);font-size:8px;line-height:1.45;}
+        .rl-meta{display:flex;justify-content:space-between;gap:12px;margin-top:12px;padding-top:8px;border-top:1px solid var(--doc-line);color:var(--doc-muted);font-size:7px;letter-spacing:.12em;text-transform:uppercase;}
+        .result-success{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;color:var(--success);font-size:var(--text-sm);font-weight:700;}
+        .result-success svg{width:18px;height:18px;flex-shrink:0;}
         /* Estilos de impresión */
-        /* Cuando solo se muestran los botones (sin el recibo visible) */
-        #resultado.solo-btns .receipt{display:none}
-        #resultado.solo-btns{padding:40px 0;text-align:center}
-        #resultado.solo-btns .res-btns{justify-content:center}
-        .result-success{display:flex;align-items:center;justify-content:center;gap:8px;font-size:var(--text-sm);font-weight:700;color:var(--success);margin-bottom:20px}
-        .result-success svg{width:18px;height:18px;flex-shrink:0}
         @media print {
-            @page{margin:8mm 12mm;}
+            @page{size:A4;margin:10mm 12mm;}
             *{margin:0;padding:0;box-sizing:border-box;background:transparent!important;}
             html,body{background:white!important;color:black!important;font-size:9pt;}
-            nav,.page-header,.ds,#p1,#ps,.toast,.res-btns,.btn-change,.result-success{display:none!important;}
-            #resultado.solo-btns .receipt{display:block!important}
-            #resultado.solo-btns{padding:0;text-align:left}
+            nav,.page-header,.breadcrumbs,.ds,#p1,#ps,.toast,.receipt-modal-head,.receipt-modal-actions,.btn-change{display:none!important;}
             main{max-width:100%!important;padding:0!important;margin:0!important;}
-            #resultado{display:block!important;max-width:100%!important;box-shadow:none!important;}
-            .receipt{border:none!important;border-radius:0!important;background:white!important;box-shadow:none!important;}
-            .receipt-header{border-bottom:2px dashed #999!important;background:white!important;padding:0 0 10px!important;}
-            .receipt-header .rh-brand h2{color:black!important;font-size:12pt!important;}
-            .receipt-header .rh-sub{color:#666!important;font-size:6.5pt!important;}
-            .receipt-title{margin-top:8px!important}
-            .receipt-title h3{color:black!important;font-size:11pt!important;}
-            .receipt-title .rt-number{color:black!important;background:#eee!important;border:1px solid #ccc!important;font-size:6.5pt!important;}
-            .receipt-body{padding:10px 0!important;}
-            .rsec{margin-bottom:10px!important}
-            .rsec-title{color:#666!important;border-bottom-color:#999!important;font-size:7pt!important;margin-bottom:6px!important;padding-bottom:4px!important;}
-            .rsec-grid{gap:3px 12px!important}
-            .rg-item{padding:2px 0!important;border-bottom-color:#ddd!important;}
-            .rg-item span{color:#555!important;font-size:6.5pt!important;}
-            .rg-item strong{color:black!important;font-size:7.5pt!important;}
+            #resultado{position:static!important;display:block!important;max-width:100%!important;padding:0!important;background:none!important;backdrop-filter:none!important;z-index:auto!important;box-shadow:none!important;}
+            .receipt-modal-card{display:block!important;width:auto!important;max-height:none!important;border:none!important;border-radius:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;animation:none!important;}
+            .receipt-modal-scroll{padding:0!important;background:none!important;overflow:visible!important;}
+            .receipt{border:1px solid #b9b0a0!important;border-top:3px solid #9a7726!important;border-radius:0!important;background:white!important;box-shadow:none!important;break-inside:avoid;}
+            .receipt::before{display:none!important}
+            .receipt-header{padding:0 0 10px!important;border-bottom:1px solid #bbb!important;background:white!important;}
+            .rh-mark{border-color:#9a7726!important;color:#7a5e1b!important;background:white!important;width:34px!important;height:34px!important;}
+            .rh-mark svg{width:18px!important;height:18px!important;}
+            .rh-identity h2{color:black!important;font-size:14pt!important;}
+            .rh-sub{color:#555!important;font-size:7pt!important;}
+            .rh-doc-label{color:#666!important;font-size:6.5pt!important;}
+            .rt-number{color:black!important;background:white!important;border:1px solid #999!important;font-size:7.5pt!important;padding:2px 7px!important;}
+            .rh-status{color:#1f5c38!important;border-color:#8aa995!important;background:white!important;font-size:6pt!important;}
+            .receipt-title{margin-top:12px!important;padding-top:10px!important;border-top:1px solid #ccc!important;}
+            .rt-kicker{color:#7a5e1b!important;font-size:6.5pt!important;}
+            .receipt-title h3{color:black!important;font-size:15pt!important;}
+            .rt-sub{color:#555!important;font-size:7.5pt!important;}
+            .receipt-body{padding:12px 0 0!important;counter-reset:rsec;}
+            .rsec{margin-bottom:10px!important;break-inside:avoid;}
+            .rsec-title{color:#555!important;border-bottom-color:#ccc!important;font-size:7pt!important;margin-bottom:6px!important;padding-bottom:4px!important;}
+            .rsec-title::before{color:#7a5e1b!important;font-size:7pt!important;}
+            .rsec-grid{gap:0 18px!important;}
+            .rg-item{padding:4px 0!important;border-bottom-color:#ddd!important;}
+            .rg-item span{color:#666!important;font-size:6.5pt!important;}
+            .rg-item strong{color:black!important;font-size:8pt!important;}
             .rc-table td{border-bottom-color:#ddd!important;font-size:8pt!important;padding:2px 6px!important;}
             .rc-table .rc-label{color:#555!important;}
             .rc-table .rc-value{color:black!important;}
             .rc-table .rc-divider td{border-bottom-color:black!important;}
             .rc-table .rc-total td{font-size:10pt!important;}
             .rc-table .rc-total td:last-child{color:black!important;}
-            .rsec-obs{border:1px solid #ddd!important;background:#f9f9f9!important;padding:6px 10px!important;margin-top:8px!important;}
-            .rsec-obs span{color:#555!important;font-size:6pt!important;}
+            .rsec-obs{border:1px solid #ccc!important;border-left:2px solid #9a7726!important;background:#fcfbf8!important;padding:6px 9px!important;margin-top:8px!important;}
+            .rsec-obs span{color:#666!important;font-size:6pt!important;}
             .rsec-obs p{color:#333!important;font-size:7pt!important;}
-            .receipt-footer{border-top:2px dashed #999!important;background:white!important;padding:10px 0 0!important;margin-top:8px!important;}
-            .stamp-badge{border:1.5px solid #999!important;color:black!important;background:white!important;font-size:8pt!important;}
+            .receipt-footer{padding:10px 0 0!important;border-top:1px solid #bbb!important;background:white!important;break-inside:avoid;}
+            .receipt-stamp{margin-bottom:8px!important;}
+            .stamp-badge{border:1px solid #8aa995!important;color:#1f5c38!important;background:white!important;font-size:6pt!important;padding:2px 10px!important;}
             .stamp-badge svg{display:none!important;}
-            .sig-row{gap:24px!important;margin-bottom:8px!important}
+            .sig-row{gap:32px!important;margin-bottom:8px!important;}
             .sig-field span{color:#555!important;font-size:6.5pt!important;}
-            .sig-field .sig-line{border-bottom-color:black!important;height:22px!important;}
-            .sig-field small{font-size:6pt!important}
+            .sig-field .sig-line{border-bottom-color:black!important;height:24px!important;}
+            .sig-field small{font-size:7pt!important;}
+            .receipt-legal{padding-top:6px!important;border-top-color:#ddd!important;}
             .receipt-legal .rl-date{color:#555!important;font-size:6.5pt!important;}
-            .receipt-legal p{color:#666!important;font-size:6.5pt!important;line-height:1.3!important;}
+            .receipt-legal p{color:#666!important;font-size:6.5pt!important;line-height:1.3!important;max-width:100%!important;}
+            .rl-meta{color:#666!important;font-size:5.5pt!important;margin-top:6px!important;padding-top:4px!important;border-top-color:#ddd!important;}
         }
         .admin-only{display:none!important;}
         body.role-admin .admin-only{display:revert!important;}
         /* Responsive */
         @media(max-width:600px){
+            .receipt::before{display:none}
             .g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:var(--space-3)!important}.receipt-wrap{width:100%!important}.stamp-badge{font-size:0.65rem;padding:4px 10px}
             .ds{gap:4px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start}
             .dstep{flex-shrink:0;font-size:0.6rem}
@@ -211,25 +256,35 @@
             .info-banner{padding:12px 14px}
             .info-banner-header h3{font-size:0.82rem}
             .cobro-row{padding:7px 10px;font-size:0.78rem}
-            .receipt-header{padding:18px 16px 16px}
-            .receipt-body{padding:14px 16px}
-            .rsec-grid{grid-template-columns:1fr}
-            .rg-item.full{grid-column:1}
-            .receipt-footer{padding:14px 16px 18px}
-            .sig-row{flex-direction:column;gap:14px;align-items:stretch}
+            .receipt-header{padding:22px 20px 18px}
+            .rh-top{flex-direction:column;align-items:flex-start;gap:14px}
+            .rh-doc{align-items:flex-start;text-align:left}
+            .rh-identity h2{font-size:16px}
+            .receipt-title h3{font-size:19px}
+            .receipt-body{padding:20px 20px 6px}
+            .rsec-grid,.rsec-grid.cols-3{grid-template-columns:1fr}
+            .rg-item.full{grid-column:auto}
+            .receipt-footer{padding:16px 20px 18px}
+            .sig-row{flex-direction:column;gap:18px;align-items:stretch}
             .sig-field{max-width:100%}
-            .res-btns{flex-direction:column}
-            .res-btns .btn{width:100%}
-            #resultado.show{max-width:100%}
+            .rl-meta{flex-direction:column;align-items:center;gap:4px}
+            #resultado{padding:8px}
+            .receipt-modal-card{width:100%;max-height:94dvh;border-radius:12px}
+            .receipt-modal-head{padding:12px 14px}
+            .receipt-modal-scroll{padding:12px}
+            .receipt-modal-actions{padding:10px 14px}
+            .receipt-modal-actions .btn{flex:1;min-width:0;width:auto;height:42px}
         }
         @media(max-width:480px){
             .info-grid{grid-template-columns:1fr}
             .info-banner{padding:8px 12px}
             .cobro-row{padding:5px 8px;font-size:0.72rem}
-            .receipt-header{padding:14px 12px 12px}
-            .receipt-body{padding:10px 12px}
-            .receipt-footer{padding:10px 12px 14px}
+            .receipt-header{padding:18px 16px 16px}
+            .receipt-body{padding:16px 16px 4px}
+            .receipt-footer{padding:14px 16px 16px}
+            .receipt-title h3{font-size:18px}
             .stamp-badge{font-size:0.6rem;padding:3px 8px}
+            .receipt-modal-status span{display:none}
             .dstep{font-size:0.55rem}
             .result-success{font-size:var(--text-xs)}
         }
@@ -334,47 +389,78 @@
     </div>
 
     <!-- Paso 3: Comprobante de devolución -->
-    <div id="resultado" class="reveal">
-        <div class="receipt" id="receipt">
+    <div id="resultado" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title">
+        <div class="receipt-modal-card">
+        <div class="receipt-modal-head">
+            <div class="receipt-modal-status">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <div><strong id="receipt-modal-title">Devolución registrada</strong><span>Comprobante listo para imprimir</span></div>
+            </div>
+            <button type="button" class="receipt-modal-close" onclick="nueva()" aria-label="Cerrar comprobante">&times;</button>
+        </div>
+        <div class="receipt-modal-scroll">
+        <div class="receipt" id="receipt" role="document" aria-label="Comprobante de devolución">
             <div class="receipt-header">
-                <div class="rh-brand">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                    <h2>SmartLoan IT</h2>
+                <div class="rh-top">
+                    <div class="rh-identity">
+                        <div class="rh-mark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <div>
+                            <h2>SmartLoan IT</h2>
+                            <div class="rh-sub">Gestión de préstamos tecnológicos</div>
+                        </div>
+                    </div>
+                    <div class="rh-doc">
+                        <span class="rh-doc-label">Comprobante N.°</span>
+                        <span class="rt-number" id="r-recibo">REC-0000</span>
+                        <span class="rh-status">Devuelto</span>
+                    </div>
                 </div>
-                <div class="rh-sub">Sistema de Gesti&oacute;n de Pr&eacute;stamos Tecnol&oacute;gicos</div>
                 <div class="receipt-title">
-                    <h3>COMPROBANTE DE DEVOLUCI&Oacute;N</h3>
-                    <span class="rt-number" id="r-recibo">REC-0000</span>
+                    <span class="rt-kicker">Constancia de recepción</span>
+                    <h3>COMPROBANTE DE DEVOLUCIÓN</h3>
+                    <p class="rt-sub">Recepción de equipo tecnológico</p>
                 </div>
             </div>
             <div class="receipt-body">
                 <div class="rsec">
-                    <div class="rsec-title">Datos del Pr&eacute;stamo</div>
-                    <div class="rsec-grid">
-                        <div class="rg-item"><span># Pr&eacute;stamo</span><strong id="r-id">—</strong></div>
-                        <div class="rg-item"><span>Alumno</span><strong id="r-alu">—</strong></div>
-                        <div class="rg-item"><span>C&oacute;digo</span><strong id="r-cod">—</strong></div>
-                        <div class="rg-item"><span>Bachillerato</span><strong id="r-car">—</strong></div>
+                    <div class="rsec-title">Datos del alumno</div>
+                    <div class="rsec-grid cols-3">
+                        <div class="rg-item full"><span>Nombre y apellido</span><strong id="r-alu">—</strong></div>
+                        <div class="rg-item"><span>Código</span><strong id="r-cod">—</strong></div>
                         <div class="rg-item"><span>Curso</span><strong id="r-cur">—</strong></div>
                         <div class="rg-item"><span>Turno</span><strong id="r-turno">—</strong></div>
-                        <div class="rg-item full"><span>Equipo</span><strong id="r-eq">—</strong></div>
-                        <div class="rg-item"><span>Tipo / Marca</span><strong id="r-tm">—</strong></div>
-                        <div class="rg-item"><span>Fecha Pr&eacute;stamo</span><strong id="r-fp">—</strong></div>
-                        <div class="rg-item"><span>Vencimiento</span><strong id="r-fv">—</strong></div>
-                        <div class="rg-item"><span>Fecha Devoluci&oacute;n</span><strong id="r-fd">—</strong></div>
-                        <div class="rg-item full"><span>Registr&oacute; pr&eacute;stamo</span><strong id="r-enc-prestamo">—</strong></div>
-                        <div class="rg-item full"><span>Recibi&oacute; devoluci&oacute;n</span><strong id="r-enc-devolucion">—</strong></div>
+                        <div class="rg-item full"><span>Bachillerato</span><strong id="r-car">—</strong></div>
                     </div>
                 </div>
                 <div class="rsec">
-                    <div class="rsec-title">Detalle de Cobros</div>
+                    <div class="rsec-title">Datos del préstamo</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item"><span># Préstamo</span><strong id="r-id">—</strong></div>
+                        <div class="rg-item"><span>Fecha de préstamo</span><strong id="r-fp">—</strong></div>
+                        <div class="rg-item"><span>Vencimiento</span><strong id="r-fv">—</strong></div>
+                        <div class="rg-item"><span>Fecha de devolución</span><strong id="r-fd">—</strong></div>
+                        <div class="rg-item"><span>Registró préstamo</span><strong id="r-enc-prestamo">—</strong></div>
+                        <div class="rg-item"><span>Recibió devolución</span><strong id="r-enc-devolucion">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec">
+                    <div class="rsec-title">Datos del equipo</div>
+                    <div class="rsec-grid">
+                        <div class="rg-item full"><span>Equipo</span><strong id="r-eq">—</strong></div>
+                        <div class="rg-item"><span>Tipo / Marca</span><strong id="r-tm">—</strong></div>
+                        <div class="rg-item"><span>Estado de devolución</span><strong id="r-est">—</strong></div>
+                    </div>
+                </div>
+                <div class="rsec">
+                    <div class="rsec-title">Detalle de cobros</div>
                     <table class="rc-table">
-                        <tr><td class="rc-label">Estado del equipo</td><td class="rc-value" id="r-est">—</td></tr>
-                        <tr><td class="rc-label">D&iacute;as de retraso</td><td class="rc-value" id="r-dias">0</td></tr>
-                        <tr><td class="rc-label">Multa por d&iacute;a</td><td class="rc-value" id="r-mpd">Gs. 0</td></tr>
+                        <tr><td class="rc-label">Días de retraso</td><td class="rc-value" id="r-dias">0</td></tr>
+                        <tr><td class="rc-label">Multa por día</td><td class="rc-value" id="r-mpd">Gs. 0</td></tr>
                         <tr><td class="rc-label">Multa por retraso</td><td class="rc-value" id="r-mul">Gs. 0</td></tr>
-                        <tr id="r-dano-tr"><td class="rc-label">Da&ntilde;os</td><td class="rc-value" id="r-dano">No</td></tr>
-                        <tr id="r-dano-monto-tr" style="display:none"><td class="rc-label">Monto da&ntilde;o</td><td class="rc-value" id="r-mdano">Gs. 0</td></tr>
+                        <tr id="r-dano-tr"><td class="rc-label">Daños</td><td class="rc-value" id="r-dano">No</td></tr>
+                        <tr id="r-dano-monto-tr" style="display:none"><td class="rc-label">Monto daño</td><td class="rc-value" id="r-mdano">Gs. 0</td></tr>
                         <tr class="rc-divider"><td></td><td></td></tr>
                         <tr class="rc-total"><td>TOTAL COBRADO</td><td id="r-tot">Gs. 0</td></tr>
                     </table>
@@ -388,27 +474,25 @@
                 <div class="receipt-stamp">
                     <div class="stamp-badge" id="r-stamp">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        DEVUELTO
+                        <span id="r-stamp-text">DEVUELTO</span>
                     </div>
                 </div>
                 <div class="sig-row">
-                    <div class="sig-field"><span id="r-sig-enc-label">Encargado</span><div class="sig-line"></div><small id="r-sig-enc-name">Firma</small></div>
+                    <div class="sig-field"><span id="r-sig-enc-label">Responsable de recepción</span><div class="sig-line"></div><small id="r-sig-enc-name">Firma</small></div>
                     <div class="sig-field"><span id="r-sig-alu-label">Alumno</span><div class="sig-line"></div><small id="r-sig-alu-name">Firma</small></div>
                 </div>
                 <div class="receipt-legal">
                     <div class="rl-date" id="r-emision">—</div>
-                    <p>Este comprobante es v&aacute;lido como constancia de devoluci&oacute;n de equipos tecnol&oacute;gicos.</p>
+                    <p>Este comprobante es válido como constancia de devolución de equipos tecnológicos.</p>
+                    <div class="rl-meta"><span>SmartLoan IT</span><span>Documento generado automáticamente</span><span>Página 1 de 1</span></div>
                 </div>
             </div>
         </div>
-        <div class="result-success">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Devolución cargada con éxito
         </div>
-        <!-- Botones: imprimir comprobante o nueva devolución -->
-        <div class="res-btns">
+        <div class="receipt-modal-actions">
             <button class="btn btn-secondary" onclick="window.print()">Imprimir comprobante</button>
             <button class="btn btn-primary" onclick="nueva()">Nueva devolución</button>
+        </div>
         </div>
     </div>
 </main>
@@ -641,11 +725,11 @@ async function procesar(){
             // Mostramos el comprobante con todos los detalles
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-            const numRec=String(pActual.id_prestamo).padStart(4,'0');
+            const numRec=String(d.id_devolucion||pActual.id_prestamo).padStart(4,'0');
             const danoSi=document.getElementById('dano').checked;
             const obsVal=document.getElementById('obs').value.trim();
             const multaBase=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
-            document.getElementById('r-recibo').textContent=pActual.codigo_prestamo||`REC-${numRec}`;
+            document.getElementById('r-recibo').textContent=`REC-${numRec}`;
             document.getElementById('r-id').textContent=pActual.codigo_prestamo||`#${pActual.id_prestamo}`;
             document.getElementById('r-alu').textContent=`${pActual.alumno_nombre} ${pActual.alumno_apellido}`;
             document.getElementById('r-cod').textContent=pActual.codigo_alumno;
@@ -669,8 +753,10 @@ async function procesar(){
             document.getElementById('r-tot').textContent=`Gs. ${fn(d.total_cobro)}`;
             const stamp=document.getElementById('r-stamp');
             stamp.className='stamp-badge';
-            if(danoSi)stamp.classList.add('damage');
-            else if(d.dias_retraso>0)stamp.classList.add('late');
+            let stampText='DEVUELTO';
+            if(danoSi){stamp.classList.add('damage');stampText='DEVUELTO CON DAÑO';}
+            else if(d.dias_retraso>0){stamp.classList.add('late');stampText='DEVUELTO CON RETRASO';}
+            document.getElementById('r-stamp-text').textContent=stampText;
             if(obsVal){
                 document.getElementById('r-obs-section').style.display='block';
                 document.getElementById('r-obs-text').textContent=obsVal;
@@ -681,8 +767,11 @@ async function procesar(){
             document.getElementById('r-sig-alu-name').textContent = pActual.alumno_nombre ? `${pActual.alumno_nombre} ${pActual.alumno_apellido}` : 'Firma';
             document.getElementById('r-emision').textContent=`Emitido: ${hoy}`;
             document.getElementById('ps').classList.remove('show');document.getElementById('fd').classList.remove('show');
-            document.getElementById('resultado').classList.add('show');document.getElementById('resultado').classList.add('solo-btns');setStep(3);
-            window.scrollTo({top:0,behavior:'smooth'});
+            const modalResultado = document.getElementById('resultado');
+            document.body.appendChild(modalResultado);
+            modalResultado.classList.add('show');setStep(3);
+            document.body.classList.add('modal-open');
+            document.querySelector('.receipt-modal-close').focus();
         }else{st(d.mensaje||'Error al registrar');btn.disabled=false;btn.textContent='Procesar devolución';}
     }catch(e){st('Error de conexión');btn.disabled=false;btn.textContent='Procesar devolución';}
 }

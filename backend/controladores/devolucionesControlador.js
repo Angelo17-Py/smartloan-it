@@ -39,7 +39,7 @@ exports.crear = async (req, res) => {
       const total = multa + dano;
       const fmt = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T', ' ').slice(0, 19);
 
-      await tx.query(
+      const [result] = await tx.query(
         `INSERT INTO devoluciones (id_prestamo,id_encargado,fecha_devolucion,estado_equipo,tiene_dano,
          tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
          VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
@@ -47,7 +47,7 @@ exports.crear = async (req, res) => {
          tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
       );
       await tx.commit();
-      res.json({ mensaje: 'Devolucion registrada', dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total, fecha_devolucion: fmt(ahora) });
+      res.json({ mensaje: 'Devolucion registrada', id_devolucion: result.insertId, dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total, fecha_devolucion: fmt(ahora) });
     } catch (txErr) {
       await tx.rollback();
       throw txErr;
