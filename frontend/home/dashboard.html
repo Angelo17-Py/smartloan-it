@@ -267,6 +267,225 @@
             .dash-greeting .greet-line{transform:none!important;animation:none!important}
             body:not(.page-loaded) main > .main-content{opacity:1!important;transform:none!important}
         }
+        /* ===== REDISEÑO DASHBOARD ===== */
+        :root{--dash-sidebar:264px;--dash-line:rgba(237,230,211,.085);--dash-green:#55b88a;--dash-amber:#d6a84b;--dash-coral:#e06b5f;--dash-muted:#8f8878}
+        .layout.dashboard-layout{display:block!important;min-height:100vh;background:var(--bg)}
+        .dash-sidebar{position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;width:var(--dash-sidebar);padding:24px 14px 20px;background:linear-gradient(180deg,#17140e 0%,#12100b 100%);border-right:1px solid var(--dash-line)}
+        .dash-sidebar .dash-brand{display:flex;align-items:center;gap:12px;padding:0 10px 26px;margin:0;text-decoration:none;color:var(--text);font-size:12px;font-weight:500;letter-spacing:normal;text-transform:none}
+        .dash-sidebar .dash-brand span{color:inherit;font-size:inherit;letter-spacing:normal}
+        .dash-logo{width:42px;height:42px;border-radius:9px;flex:0 0 auto;box-shadow:0 6px 18px -8px rgba(200,162,75,.45)}
+        .dash-brand strong{display:block;color:var(--text);font-size:13px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;line-height:1.1}
+        .dash-brand small{display:block;margin-top:4px;color:var(--dash-muted);font-size:9px;font-weight:500;letter-spacing:.01em;line-height:1.3;white-space:nowrap}
+        .dash-nav{display:flex;flex-direction:column;gap:3px}
+        .dash-nav-item{position:relative;display:flex;align-items:center;gap:12px;height:46px;padding:0 13px;border-radius:8px;color:var(--dash-muted);font-family:var(--font);font-size:12.5px;font-weight:560;text-decoration:none;transition:background var(--duration-fast) var(--ease-out),color var(--duration-fast) var(--ease-out)}
+        .dash-nav-item svg{width:18px;height:18px;flex:0 0 auto;color:var(--dash-muted);transition:color var(--duration-fast) var(--ease-out)}
+        .dash-nav-item:hover{background:rgba(237,230,211,.045);color:var(--text)}
+        .dash-nav-item:hover svg{color:var(--text-secondary)}
+        .dash-nav-item.active{background:linear-gradient(90deg,rgba(200,162,75,.13),rgba(200,162,75,.025));color:var(--primary)}
+        .dash-nav-item.active svg{color:var(--primary)}
+        .dash-nav-item.active::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:2px;background:var(--primary)}
+        .dash-sidebar-footer{display:flex;align-items:center;gap:10px;margin-top:auto;padding:18px 10px 0;border-top:1px solid var(--dash-line);color:var(--text-secondary)}
+        .dash-sidebar-footer svg{width:20px;height:20px;flex:0 0 auto;color:var(--dash-muted)}
+        .dash-sidebar-footer strong{display:block;font-size:11px;font-weight:600;line-height:1.25}
+        .dash-sidebar-footer span{display:block;margin-top:2px;font-size:9.5px;color:var(--dash-muted)}
+        .dash-sidebar-backdrop{display:none}
+        .dashboard-layout .main{margin-left:var(--dash-sidebar)!important;padding:30px 34px 36px!important;min-height:100vh}
+        .main-content{max-width:1380px!important}
+        .dash-header{display:flex!important;align-items:flex-start!important;justify-content:space-between;gap:24px;padding-bottom:24px!important;margin-bottom:0!important;border-bottom:1px solid var(--dash-line)!important}
+        .dash-header-left{display:flex;align-items:flex-start;gap:14px;min-width:0}
+        .dash-menu-btn{display:none;width:40px;height:40px;place-items:center;flex:0 0 auto;margin-top:2px;border:1px solid var(--dash-line);border-radius:8px;background:transparent;color:var(--text-secondary);cursor:pointer}
+        .dash-menu-btn:hover{background:var(--surface);color:var(--text)}
+        .dash-kicker{display:block;color:var(--primary);font-size:10px;font-weight:650;letter-spacing:.18em;text-transform:uppercase;line-height:1;margin-bottom:6px}
+        .dash-greeting{font-size:clamp(2rem,3.2vw,2.55rem)!important;font-weight:560!important;letter-spacing:-.04em!important;line-height:1!important;color:var(--text);overflow:visible!important;padding-bottom:0!important;margin:0!important}
+        .dash-greeting .greet-line{display:block;transform:none}
+        .dash-role{margin-top:7px!important;color:var(--dash-muted)!important;font-size:11.5px!important;font-weight:500!important}
+        .dash-header-right{display:flex;align-items:center;gap:18px;flex-shrink:0;padding-top:5px}
+        .dash-clock{display:flex;align-items:center;gap:9px;padding-right:18px;border-right:1px solid var(--dash-line);color:var(--text-secondary);font-size:11.5px;font-variant-numeric:tabular-nums}
+        .dash-clock svg{width:16px;height:16px;color:var(--dash-muted)}
+        .dash-clock-sep{color:var(--dash-line);font-size:10px;margin:0 2px}
+        #hero-date{font-size:11.5px;font-weight:550;color:var(--text-secondary)}
+        #hero-time{font-size:10.5px;font-weight:550;color:var(--dash-muted)}
+        .dash-theme-btn{width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--dash-line);border-radius:50%;background:transparent;color:var(--dash-muted);cursor:pointer;transition:color var(--duration-fast) var(--ease-out),border-color var(--duration-fast) var(--ease-out)}
+        .dash-theme-btn:hover{color:var(--primary);border-color:var(--primary)}
+        .dash-user{display:flex;align-items:center;gap:10px}
+        .dash-avatar{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--surface);border:1px solid var(--dash-line);color:var(--text);font-size:13px;font-weight:600}
+        .dash-logout{height:36px;padding:0 2px;border:0;background:transparent;color:var(--text-secondary);font-family:var(--font);font-size:11.5px;font-weight:550;cursor:pointer}
+        .dash-logout:hover{color:var(--danger)}
+        .data-error{margin-top:16px;margin-bottom:0}
+        .dash-overview{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:1px solid var(--dash-line)}
+        .overview-stat{display:flex;align-items:flex-start;gap:13px;min-width:0;padding:26px 24px;border-left:1px solid var(--dash-line)}
+        .overview-stat:first-child{padding-left:0;border-left:0}
+        .stat-icon{width:31px;height:31px;display:grid;place-items:center;flex:0 0 auto;border-radius:7px;background:rgba(237,230,211,.045);color:var(--dash-muted)}
+        .stat-icon svg{width:17px;height:17px}
+        .stat-icon.green{background:var(--success-bg);color:var(--dash-green)}
+        .stat-icon.amber{background:var(--warn-bg);color:var(--dash-amber)}
+        .stat-icon.coral{background:var(--danger-bg);color:var(--dash-coral)}
+        .stat-copy{min-width:0}
+        .stat-num{display:block;color:var(--text);font-size:28px;font-weight:560;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+        .stat-label{display:block;margin-top:5px;color:var(--text-secondary);font-size:11.5px;font-weight:550;line-height:1.3}
+        .stat-note{display:block;margin-top:3px;color:var(--dash-muted);font-size:9.5px;line-height:1.35}
+        .dash-workspace{display:grid!important;grid-template-columns:minmax(0,1.58fr) minmax(0,1fr)!important;gap:22px!important;padding-top:24px;align-items:start}
+        .dash-left,.dash-right{min-width:0}
+        .dash-right{display:flex!important;flex-direction:column;gap:18px!important}
+        .activity-feed{min-width:0}
+        .activity-card{background:var(--card);border:1px solid var(--dash-line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-card)}
+        .activity-card-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;border-bottom:1px solid var(--dash-line)}
+        .activity-title-wrap{display:flex;align-items:center;gap:10px;min-width:0}
+        .activity-title-icon{width:32px;height:32px;display:grid;place-items:center;flex:0 0 auto;border-radius:8px;background:var(--primary-glow);color:var(--primary)}
+        .activity-title-icon svg{width:18px;height:18px}
+        .activity-title-wrap h2{margin:0;color:var(--text);font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+        .activity-title-wrap p{margin:3px 0 0;color:var(--dash-muted);font-size:10.5px;line-height:1.3}
+        .activity-head-actions{display:flex;align-items:center;gap:14px;flex-shrink:0}
+        #live-time-lbl{color:var(--dash-muted);font-size:10.5px;white-space:nowrap}
+        .activity-link{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap}
+        .activity-link:hover{text-decoration:underline}
+        .activity-headrow{display:grid;grid-template-columns:62px minmax(150px,1.25fr) minmax(110px,1fr) 96px 92px;gap:14px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--dash-line);background:rgba(237,230,211,.018);color:var(--dash-muted);font-size:8.5px;font-weight:650;letter-spacing:.12em;text-transform:uppercase}
+        .activity-card .feed-list{display:flex;flex-direction:column;min-height:0;background:transparent;border:0;border-radius:0;overflow:visible;flex:1}
+        .feed-item{display:grid;grid-template-columns:62px minmax(150px,1.25fr) minmax(110px,1fr) 96px 92px;grid-template-areas:none;grid-auto-flow:row;gap:14px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--dash-line);transition:background var(--duration-fast) var(--ease-out)}
+        .feed-item:last-child{border-bottom:0}
+        .feed-item:hover{background:rgba(237,230,211,.025)}
+        .feed-time{grid-area:auto;color:var(--dash-muted);font-size:10.5px;font-family:var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+        .feed-equipment{display:flex;align-items:center;gap:10px;min-width:0}
+        .feed-eq-icon{width:30px;height:30px;display:grid;place-items:center;flex:0 0 auto;border-radius:7px;background:rgba(237,230,211,.045);color:var(--text-secondary)}
+        .feed-eq-icon svg{width:15px;height:15px}
+        .feed-eq-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+        .feed-eq-name{color:var(--text);font-size:11.5px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .feed-eq-code{color:var(--dash-muted);font-family:var(--mono);font-size:8.5px;letter-spacing:.04em}
+        .feed-student{color:var(--text-secondary);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .feed-action{color:var(--dash-muted);font-size:10.5px;white-space:nowrap}
+        .feed-status{grid-area:auto;justify-self:end;display:inline-flex;align-items:center;padding:4px 9px;border-radius:100px;font-size:8.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+        .feed-status.s-active{background:rgba(214,168,75,.12);color:var(--dash-amber)}
+        .feed-status.s-returned{background:rgba(85,184,138,.12);color:var(--dash-green)}
+        .feed-status.s-late{background:rgba(224,107,95,.12);color:var(--dash-coral)}
+        .feed-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:250px;padding:30px 20px;text-align:center;gap:6px}
+        .feed-empty-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--dash-muted);margin-bottom:2px}
+        .feed-empty-title{color:var(--text-secondary);font-size:12px;font-weight:600}
+        .feed-empty-text{max-width:32ch;color:var(--dash-muted);font-size:11px;line-height:1.5}
+        .feed-empty .btn-sm{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 14px;border:1px solid var(--primary);border-radius:6px;background:var(--primary-glow);color:var(--primary);font-size:11px;font-weight:650;text-decoration:none}
+        .rc-card{background:var(--card)!important;border:1px solid var(--dash-line)!important;border-radius:12px!important;box-shadow:var(--shadow-card)}
+        .rc-card .rc-header{display:flex;align-items:center;gap:9px;padding:15px 18px;border-bottom:1px solid var(--dash-line)}
+        .rc-icon{width:22px;height:22px;display:grid;place-items:center;flex:0 0 auto;color:var(--dash-muted)}
+        .rc-icon svg{width:16px;height:16px}
+        .rc-card .rc-header h3{flex:1;margin:0;color:var(--text);font-size:12.5px;font-weight:600;letter-spacing:-.01em}
+        .rc-tag{padding:3px 9px;border:1px solid var(--dash-line);border-radius:100px;color:var(--dash-muted);font-size:9px;font-weight:550;white-space:nowrap}
+        .rc-body{padding:17px 18px}
+        .chart-body{display:grid;grid-template-columns:minmax(140px,.9fr) minmax(0,1fr);align-items:center;gap:16px}
+        .donut-figure{width:min(100%,154px);margin:0 auto}
+        .donut-center strong{font-size:2rem!important;font-weight:560!important;letter-spacing:-.04em!important}
+        .donut-center span{font-size:8.5px!important;color:var(--dash-muted)!important}
+        .donut-legend{display:flex!important;flex-direction:column;gap:12px!important;margin:0!important;padding:0!important;border:0!important;list-style:none}
+        .donut-legend li{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px!important;color:var(--text-secondary);font-size:10.5px!important;white-space:normal!important}
+        .donut-legend i{width:7px!important;height:7px!important;border-radius:50%!important}
+        .donut-legend .legend-value{display:flex;flex-direction:column;align-items:flex-end;gap:1px;text-align:right}
+        .donut-legend b{margin:0!important;color:var(--text);font-size:12px!important;font-weight:600!important;line-height:1}
+        .donut-legend small{color:var(--dash-muted);font-size:8.5px;line-height:1}
+        .chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:150px;gap:8px;color:var(--dash-muted);font-size:11px;text-align:center}
+        #config-section .rc-body{display:block!important;padding:0!important}
+        .cfg-display{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 18px}
+        .cfg-display-label{display:flex;flex-direction:column;gap:3px;min-width:0}
+        .cfg-display-label span:first-child{color:var(--text);font-size:12px;font-weight:550}
+        .cfg-display-label span:last-child{color:var(--dash-muted);font-size:10px}
+        .cfg-display-value{display:flex;align-items:baseline;gap:3px;color:var(--text);font-size:17px;font-weight:560;white-space:nowrap;font-variant-numeric:tabular-nums}
+        .cfg-display-value .cur{color:var(--dash-muted);font-size:10px;font-weight:500}
+        .cfg-toggle{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--dash-line);border-radius:7px;background:transparent;color:var(--dash-muted);cursor:pointer;transition:color var(--duration-fast) var(--ease-out),border-color var(--duration-fast) var(--ease-out),transform var(--duration-fast) var(--ease-out)}
+        .cfg-toggle svg{width:14px;height:14px;transition:transform var(--duration-fast) var(--ease-out)}
+        .cfg-toggle:hover,.cfg-toggle[aria-expanded="true"]{color:var(--primary);border-color:var(--primary)}
+        .cfg-toggle[aria-expanded="true"] svg{transform:rotate(90deg)}
+        .cfg-input-section{padding:14px 18px 17px;border-top:1px solid var(--dash-line);border-left:0;margin-top:0}
+        .cfg-input-section[hidden]{display:none!important}
+        .cfg-input-section label{display:block;margin-bottom:7px;color:var(--dash-muted);font-size:10.5px;font-weight:550}
+        .cfg-input-group{display:flex;align-items:center;height:40px;padding:3px;padding-left:9px;border:1px solid var(--dash-line);border-radius:7px;background:var(--surface)}
+        .cfg-input-group:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+        .cfg-prefix{color:var(--dash-muted);font-size:10px;flex:0 0 auto}
+        .cfg-input-group input{flex:1;min-width:0;height:100%;padding:0 8px;border:0;outline:0;background:transparent;color:var(--text);font-family:var(--font);font-size:13px;font-weight:550;text-align:right;font-variant-numeric:tabular-nums}
+        .cfg-input-group .btn-cfg-save{height:32px;padding:0 12px;border:0;border-radius:5px;background:var(--primary);color:var(--on-primary);font-family:var(--font);font-size:10.5px;font-weight:600;cursor:pointer}
+        .cfg-input-group .btn-cfg-save:hover{background:var(--primary-hover)}
+        .cfg-input-group .btn-cfg-save.saved{background:var(--success)}
+        .export-card{display:flex;align-items:center;gap:12px;width:100%;padding:16px 18px;border:1px solid var(--dash-line);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;text-align:left;font-family:var(--font);transition:background var(--duration-fast) var(--ease-out),border-color var(--duration-fast) var(--ease-out)}
+        .export-card:hover{background:var(--card-hover);border-color:var(--border-hover)}
+        .export-icon{width:32px;height:32px;display:grid;place-items:center;flex:0 0 auto;border-radius:7px;background:var(--primary-glow);color:var(--primary)}
+        .export-icon svg{width:17px;height:17px}
+        .export-copy{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+        .export-copy .qa-label{color:var(--text);font-size:12px;font-weight:550}
+        .export-copy #lastExport{color:var(--dash-muted);font-size:9.5px}
+        .export-chevron{width:16px;height:16px;color:var(--dash-muted);flex:0 0 auto}
+        .last-updated{margin-top:18px;text-align:right;color:var(--dash-muted);font-size:10px}
+        .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+        html.role-lectura .dash-nav-item[href="/prestamos/prestamos.html"],html.role-lectura .dash-nav-item[href="/devoluciones/devoluciones.html"]{display:none}
+        html.role-lectura .cfg-input-section{display:none!important}
+        html.role-lectura .cfg-toggle{display:none}
+        .dash-header,.dash-overview,.activity-card,.dash-right .rc-card,.export-card{opacity:0}
+        body.page-loaded .dash-header{animation:riseIn .7s var(--ease) .04s both}
+        body.page-loaded .dash-overview{animation:riseIn .8s var(--ease) .12s both}
+        body.page-loaded .activity-card{animation:cardIn .9s var(--ease) .2s both}
+        body.page-loaded .dash-right .rc-card:nth-child(1){animation:cardIn .9s var(--ease) .25s both}
+        body.page-loaded .dash-right .rc-card:nth-child(2){animation:cardIn .9s var(--ease) .32s both}
+        body.page-loaded .export-card{animation:riseIn .8s var(--ease) .38s both}
+        @media(max-width:1180px){
+            .dash-overview{grid-template-columns:repeat(3,minmax(0,1fr))}
+            .overview-stat:nth-child(4){border-left:0;padding-left:0}
+            .overview-stat:nth-child(4),.overview-stat:nth-child(5){border-top:1px solid var(--dash-line)}
+            .dash-workspace{grid-template-columns:1fr!important}
+            .dash-right{display:grid!important;grid-template-columns:1fr 1fr}
+            .export-card{grid-column:1/-1}
+        }
+        @media(max-width:980px){
+            .dash-sidebar{transform:translateX(-100%);transition:transform .3s var(--ease);box-shadow:24px 0 60px rgba(0,0,0,.45)}
+            body.sidebar-open .dash-sidebar{transform:none}
+            .dash-sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.58);backdrop-filter:blur(2px)}
+            body.sidebar-open{overflow:hidden}
+            body.sidebar-open .dash-sidebar-backdrop{display:block}
+            .dashboard-layout .main{margin-left:0!important;padding:22px 20px 30px!important}
+            .dash-menu-btn{display:grid}
+            .dash-clock{display:none}
+            .dash-header-right{gap:12px}
+        }
+        @media(max-width:760px){
+            .dash-header{flex-direction:column;gap:16px}
+            .dash-header-right{width:100%;justify-content:flex-end;padding-top:0;border-top:1px solid var(--dash-line);padding-top:12px}
+            .dash-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+            .overview-stat{padding:18px 16px}
+            .overview-stat:first-child{padding-left:0}
+            .overview-stat:nth-child(3){border-left:0}
+            .overview-stat:nth-child(3),.overview-stat:nth-child(4),.overview-stat:nth-child(5){border-top:1px solid var(--dash-line)}
+            .overview-stat:nth-child(4){border-left:1px solid var(--dash-line);padding-left:16px}
+            .overview-stat:nth-child(5){grid-column:1/-1;padding-left:0;border-left:0}
+            .dash-right{grid-template-columns:1fr!important}
+            .export-card{grid-column:auto}
+            .activity-card-head{align-items:flex-start}
+            .activity-headrow{display:none}
+            .feed-item{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"equipment status" "student action" "time time";gap:5px 12px;padding:13px 16px}
+            .feed-equipment{grid-area:equipment}
+            .feed-student{grid-area:student;font-size:11px}
+            .feed-action{grid-area:action;justify-self:end}
+            .feed-status{grid-area:status}
+            .feed-time{grid-area:time;font-size:9.5px;margin-top:2px}
+            .chart-body{grid-template-columns:1fr;gap:18px}
+            .donut-legend{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+            .donut-legend li{grid-template-columns:auto 1fr!important;gap:6px!important}
+            .donut-legend .legend-value{align-items:flex-start!important;text-align:left}
+            .last-updated{text-align:left}
+        }
+        @media(max-width:480px){
+            .dashboard-layout .main{padding:18px 14px 26px!important}
+            .dash-greeting{font-size:1.85rem!important}
+            .overview-stat{padding:15px 12px}
+            .stat-num{font-size:24px}
+            .stat-label{font-size:10.5px}
+            .stat-note{font-size:9px}
+            .dash-header-right{gap:8px}
+            .dash-user .dash-avatar{width:36px;height:36px}
+            .activity-card-head{padding:14px 14px}
+            .feed-item{padding:12px 14px}
+            .rc-body{padding:14px}
+            .cfg-display{padding:14px}
+            .cfg-input-section{padding:12px 14px 14px}
+            .export-card{padding:14px}
+            .donut-legend{grid-template-columns:1fr!important}
+        }
+        @media(prefers-reduced-motion:reduce){
+            .dash-header,.dash-overview,.activity-card,.dash-right .rc-card,.export-card{opacity:1!important;transform:none!important;animation:none!important}
+        }
     </style>
     <script>
     (function(){
@@ -282,28 +501,73 @@
 
 <div class="layout dashboard-layout" id="layout">
 
+    <aside class="dash-sidebar" id="dashSidebar" aria-label="Navegación principal">
+        <a class="dash-brand" href="/home/dashboard.html">
+            <img class="dash-logo" src="/img/favicon.svg?v=3" alt="SmartLoan IT">
+            <span><strong>SmartLoan IT</strong><small>Gestión de Recursos Tecnológicos</small></span>
+        </a>
+        <nav class="dash-nav">
+            <a class="dash-nav-item active" href="/home/dashboard.html" onclick="closeSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5V21a1 1 0 01-1 1h-5v-7H9v7H4a1 1 0 01-1-1V10.5z"/></svg>
+                Inicio
+            </a>
+            <a class="dash-nav-item" href="/alumnos/alumnos.html" onclick="closeSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                Alumnos
+            </a>
+            <a class="dash-nav-item" href="/equipos/equipos.html" onclick="closeSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8M12 17v4"/></svg>
+                Equipos
+            </a>
+            <a class="dash-nav-item" href="/prestamos/prestamos.html" onclick="closeSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
+                Préstamos
+            </a>
+            <a class="dash-nav-item" href="/devoluciones/devoluciones.html" onclick="closeSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12a8 8 0 1114.93 4M4 12V7m0 5h5"/></svg>
+                Devoluciones
+            </a>
+            <a class="dash-nav-item" href="/historial/historial.html" onclick="closeSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+                Historial
+            </a>
+        </nav>
+        <div class="dash-sidebar-footer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6M9 10h.01M15 10h.01M12 10h.01"/></svg>
+            <div><strong>Colegio Nacional</strong><span>Encarnación</span></div>
+        </div>
+    </aside>
+    <div class="dash-sidebar-backdrop" onclick="closeSidebar()"></div>
+
     <main class="main">
         <div class="main-content">
 
             <!-- DASHBOARD HEADER -->
             <header class="dash-header">
-                <div class="dash-profile">
+                <div class="dash-header-left">
+                    <button class="dash-menu-btn" id="menuBtn" type="button" onclick="toggleSidebar()" aria-label="Abrir menú" aria-controls="dashSidebar" aria-expanded="false">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                    </button>
                     <div>
-                        <div class="dash-brand">SmartLoan <span>IT</span></div>
-                        <h1 class="dash-greeting"><span class="greet-line" id="welcome-msg">Bienvenido</span></h1>
+                        <span class="dash-kicker">Bienvenido,</span>
+                        <h1 class="dash-greeting"><span class="greet-line" id="welcome-msg">—</span></h1>
                         <p class="dash-role" id="s-role-main">Encargado</p>
                     </div>
                 </div>
                 <div class="dash-header-right">
                     <div class="dash-clock">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M8 2.5v4M16 2.5v4M3 9h18"/></svg>
                         <span id="hero-date"></span>
-                        <span class="dash-clock-sep" aria-hidden="true">·</span>
+                        <span class="dash-clock-sep" aria-hidden="true">|</span>
                         <span id="hero-time"></span>
                     </div>
-                    <button class="btn-icon" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema" type="button">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <button class="dash-theme-btn" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema" type="button">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     </button>
-                    <button class="dash-logout" onclick="logout()" type="button" aria-label="Cerrar sesión">Salir</button>
+                    <div class="dash-user">
+                        <span class="dash-avatar" id="s-avatar" aria-hidden="true">A</span>
+                        <button class="dash-logout" onclick="logout()" type="button" aria-label="Cerrar sesión">Salir</button>
+                    </div>
                 </div>
             </header>
 
@@ -312,38 +576,48 @@
                 <button type="button" onclick="cargarTodo()">Reintentar</button>
             </div>
 
-            <nav class="quick-actions" id="action-grid" aria-label="Acciones rápidas">
-                <a href="/alumnos/alumnos.html" class="qa-item">
-                    <span class="qa-icon sky" aria-hidden="true">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    </span>
-                    <span class="qa-label">Gestión de Alumnos</span>
-                </a>
-                <a href="/equipos/equipos.html" class="qa-item">
-                    <span class="qa-icon slate" aria-hidden="true">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </span>
-                    <span class="qa-label">Gestión de Equipos</span>
-                </a>
-                <a href="/prestamos/prestamos.html" class="qa-item">
-                    <span class="qa-icon indigo" aria-hidden="true">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                    </span>
-                    <span class="qa-label">Registrar Préstamo</span>
-                </a>
-                <a href="/devoluciones/devoluciones.html" class="qa-item">
-                    <span class="qa-icon green" aria-hidden="true">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                    </span>
-                    <span class="qa-label">Recibir Devolución</span>
-                </a>
-                <button onclick="exportarExcel()" id="exportBtnGrid" class="qa-item" type="button">
-                    <span class="qa-icon amber" aria-hidden="true">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    </span>
-                    <span class="qa-label">Exportar Excel</span>
-                </button>
-            </nav>
+            <section class="dash-overview" aria-label="Resumen del inventario">
+                <div class="overview-stat">
+                    <span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg></span>
+                    <div class="stat-copy">
+                        <strong class="stat-num" id="h-equipos-totales">—</strong>
+                        <span class="stat-label">Equipos registrados</span>
+                        <span class="stat-note">Total en inventario</span>
+                    </div>
+                </div>
+                <div class="overview-stat">
+                    <span class="stat-icon green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7" fill="currentColor" stroke="none"/></svg></span>
+                    <div class="stat-copy">
+                        <strong class="stat-num" id="h-equipos">—</strong>
+                        <span class="stat-label">Disponibles</span>
+                        <span class="stat-note" id="h-equipos-pct">0% del inventario</span>
+                    </div>
+                </div>
+                <div class="overview-stat">
+                    <span class="stat-icon amber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7" fill="currentColor" stroke="none"/></svg></span>
+                    <div class="stat-copy">
+                        <strong class="stat-num" id="h-prestamos">—</strong>
+                        <span class="stat-label">En préstamo</span>
+                        <span class="stat-note" id="h-prestamos-note">Equipo fuera del inventario disponible</span>
+                    </div>
+                </div>
+                <div class="overview-stat">
+                    <span class="stat-icon coral" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7" fill="currentColor" stroke="none"/></svg></span>
+                    <div class="stat-copy">
+                        <strong class="stat-num" id="h-mantenimiento">—</strong>
+                        <span class="stat-label">Mantenimiento</span>
+                        <span class="stat-note" id="h-mantenimiento-note">Sin equipos reportados</span>
+                    </div>
+                </div>
+                <div class="overview-stat">
+                    <span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path stroke-linecap="round" d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+                    <div class="stat-copy">
+                        <strong class="stat-num" id="h-alumnos">—</strong>
+                        <span class="stat-label">Alumnos</span>
+                        <span class="stat-note">Registrados en el sistema</span>
+                    </div>
+                </div>
+            </section>
 
             <!-- WORKSPACE: LEFT + RIGHT -->
             <div class="dash-workspace">
@@ -351,63 +625,24 @@
                 <!-- LEFT COLUMN -->
                 <div class="dash-left">
 
-                    <!-- EL PARTE DEL D�?A -->
-                    <section class="dash-lead" aria-labelledby="lead-label">
-                        <div class="dl-itemlabel" id="lead-label"><span class="dl-mark" aria-hidden="true"></span>Préstamos activos en el colegio</div>
-                        <div class="dl-hero">
-                            <span class="dash-stat-num" id="h-prestamos">—</span>
-                            <span class="dl-note" id="h-prestamos-note">equipos fuera del estante en este momento</span>
-                        </div>
-                        <div class="dash-stats">
-                            <div class="dash-stat">
-                                <div class="dash-stat-body">
-                                    <span class="dash-stat-num" id="h-alumnos">—</span>
-                                    <span class="dash-stat-label">Alumnos registrados</span>
-                                </div>
-                            </div>
-                            <div class="dash-stat">
-                                <div class="dash-stat-body">
-                                    <span class="dash-stat-num" id="h-equipos-totales">—</span>
-                                    <span class="dash-stat-label">Equipos totales</span>
-                                </div>
-                            </div>
-                            <div class="dash-stat">
-                                <div class="dash-stat-body">
-                                    <span class="dash-stat-num" id="h-equipos">—</span>
-                                    <span class="dash-stat-label">Equipos disponibles</span>
-                                </div>
-                            </div>
-                            <div class="dash-stat">
-                                <div class="dash-stat-body">
-                                    <span class="dash-stat-num" id="h-mantenimiento">—</span>
-                                    <span class="dash-stat-label">En mantenimiento</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
                     <!-- ACTIVITY FEED -->
                     <section class="activity-feed" aria-labelledby="activity-title">
-                        <div class="section-header">
-                            <div>
-                                <h2 id="activity-title"><span class="live-dot" aria-hidden="true"></span>Actividad reciente</h2>
-                                <p class="section-sub">Últimos movimientos del colegio</p>
+                        <div class="activity-card">
+                            <div class="activity-card-head">
+                                <div class="activity-title-wrap">
+                                    <span class="activity-title-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 7v5l3 2"/></svg></span>
+                                    <div><h2 id="activity-title">Actividad reciente</h2><p>Últimos movimientos del colegio</p></div>
+                                </div>
                             </div>
-                            <div class="section-actions">
-                                <span class="section-tag" id="live-time-lbl">Hoy</span>
-                                <a class="section-link" href="/historial/historial.html">
-                                    Ver historial
-                                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="feed-list" id="stream-wrapper">
-                            <div class="feed-empty" id="feed-empty">
-                                <span class="feed-empty-icon" aria-hidden="true">
-                                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                                </span>
-                                <strong class="feed-empty-title">Cargando movimientos</strong>
-                                <span class="feed-empty-text">Estamos consultando la actividad del colegio.</span>
+                            <div class="activity-headrow" aria-hidden="true"><span>Hora</span><span>Equipo</span><span>Alumno / Usuario</span><span>Acción</span><span>Estado</span></div>
+                            <div class="feed-list" id="stream-wrapper">
+                                <div class="feed-empty" id="feed-empty">
+                                    <span class="feed-empty-icon" aria-hidden="true">
+                                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                    </span>
+                                    <strong class="feed-empty-title">Cargando movimientos</strong>
+                                    <span class="feed-empty-text">Estamos consultando la actividad del colegio.</span>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -419,31 +654,37 @@
                     <!-- DONUT CHART -->
                     <div class="rc-card">
                         <div class="rc-header">
+                            <span class="rc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/></svg></span>
                             <h3>Distribución de equipos</h3>
                             <span class="rc-tag" id="donutTag">Estado actual</span>
                         </div>
                         <div class="rc-body">
-                            <div class="donut-figure">
-                                <canvas id="donutChart" role="img" aria-label="Distribución de equipos"></canvas>
-                                <div class="donut-center"><strong id="donutTotal">—</strong><span>equipos</span></div>
+                            <div class="chart-body">
+                                <div class="chart-figure-wrap">
+                                    <div class="donut-figure">
+                                        <canvas id="donutChart" role="img" aria-label="Distribución de equipos"></canvas>
+                                        <div class="donut-center"><strong id="donutTotal">—</strong><span>equipos</span></div>
+                                    </div>
+                                    <div class="chart-empty" id="donutEmpty" style="display:none">
+                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                        <span>No hay equipos registrados</span>
+                                    </div>
+                                </div>
+                                <ul class="donut-legend" id="donutLegend">
+                                    <li><i style="background:var(--dash-green)" aria-hidden="true"></i><span>Disponibles</span><span class="legend-value"><b id="donutDisponible">—</b><small id="donutDisponiblePct">0%</small></span></li>
+                                    <li><i style="background:var(--dash-amber)" aria-hidden="true"></i><span>Prestados</span><span class="legend-value"><b id="donutPrestado">—</b><small id="donutPrestadoPct">0%</small></span></li>
+                                    <li><i style="background:var(--dash-coral)" aria-hidden="true"></i><span>Mantenimiento</span><span class="legend-value"><b id="donutMantenimiento">—</b><small id="donutMantenimientoPct">0%</small></span></li>
+                                </ul>
                             </div>
-                            <div class="chart-empty" id="donutEmpty" style="display:none">
-                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                                <span>No hay equipos registrados</span>
-                            </div>
-                            <ul class="donut-legend" id="donutLegend">
-                                <li><i style="background:var(--success)" aria-hidden="true"></i>Disponibles <b id="donutDisponible">—</b></li>
-                                <li><i style="background:var(--warn)" aria-hidden="true"></i>Prestados <b id="donutPrestado">—</b></li>
-                                <li><i style="background:var(--danger)" aria-hidden="true"></i>Mantenimiento <b id="donutMantenimiento">—</b></li>
-                            </ul>
                         </div>
                     </div>
 
                     <!-- CONFIG PANEL -->
                     <div class="rc-card" id="config-section">
                         <div class="rc-header">
+                            <span class="rc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.42 1.42-.06-.06a1.7 1.7 0 00-1.88-.34 1.7 1.7 0 00-1.03 1.55V20h-2v-.09A1.7 1.7 0 0012.4 18.4a1.7 1.7 0 00-1.88.34l-.06.06-1.42-1.42.06-.06A1.7 1.7 0 009.44 15a1.7 1.7 0 00-1.55-1.03H8v-2h.09A1.7 1.7 0 009.44 11a1.7 1.7 0 00-.34-1.88l-.06-.06 1.42-1.42.06.06A1.7 1.7 0 0012.4 8a1.7 1.7 0 001.03-1.55V6h2v.09A1.7 1.7 0 0016.4 7.6a1.7 1.7 0 001.88-.34l.06-.06 1.42 1.42-.06.06A1.7 1.7 0 0019.4 11c.2.6.77 1 1.55 1H21v2h-.09A1.7 1.7 0 0019.4 15z"/></svg></span>
                             <h3>Configuración del sistema</h3>
-                            <span class="rc-tag">Multa</span>
+                            <button class="cfg-toggle" id="cfgToggle" type="button" onclick="toggleConfig()" aria-expanded="false" aria-controls="cfgInputSection" aria-label="Editar multa por retraso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
                         </div>
                         <div class="rc-body">
                             <div class="cfg-display">
@@ -451,12 +692,9 @@
                                     <span>Multa por retraso</span>
                                     <span>Tasa diaria cobrada</span>
                                 </div>
-                                <div class="cfg-display-value">
-                                    <span class="cur">Gs.</span>
-                                    <span id="multaValor">—</span>
-                                </div>
+                                <div class="cfg-display-value"><span class="cur">Gs.</span><span id="multaValor">—</span></div>
                             </div>
-                            <div class="cfg-input-section">
+                            <div class="cfg-input-section" id="cfgInputSection" hidden>
                                 <label for="multa-input">Actualizar monto administrativo</label>
                                 <div class="cfg-input-group">
                                     <span class="cfg-prefix">Gs.</span>
@@ -466,19 +704,17 @@
                             </div>
                         </div>
                     </div>
+
+                    <button class="export-card" id="exportBtnGrid" onclick="exportarExcel()" type="button">
+                        <span class="export-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></span>
+                        <span class="export-copy"><span class="qa-label">Exportar Excel</span><span id="lastExport">—</span></span>
+                        <svg class="export-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                    <span class="sr-only" id="expStudents">—</span>
+                    <span class="sr-only" id="expLoans">—</span>
+                    <span class="sr-only" id="expReturns">—</span>
                 </div>
             </div>
-
-            <section class="export-strip" aria-label="Estadísticas de exportación">
-                <div class="em-title">
-                    <strong>Exportación</strong>
-                    <span>Último archivo generado</span>
-                </div>
-                <div class="em-stat"><span>Alumnos</span><strong id="expStudents">—</strong></div>
-                <div class="em-stat"><span>Préstamos</span><strong id="expLoans">—</strong></div>
-                <div class="em-stat"><span>Retornos</span><strong id="expReturns">—</strong></div>
-                <div class="em-last"><span>Última exportación</span><strong id="lastExport">—</strong></div>
-            </section>
 
             <div class="last-updated" id="lastUpdated"></div>
         </div>
@@ -500,7 +736,25 @@ var esLectura = (enc.rol || localStorage.getItem('rol') || 'lectura') !== 'admin
 
 var donutChartInstance = null;
 
-function toggleSidebar(){}
+function toggleSidebar(){
+    var open = document.body.classList.toggle('sidebar-open');
+    var btn = document.getElementById('menuBtn');
+    if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeSidebar(){
+    document.body.classList.remove('sidebar-open');
+    var btn = document.getElementById('menuBtn');
+    if(btn) btn.setAttribute('aria-expanded', 'false');
+}
+function toggleConfig(){
+    var section = document.getElementById('cfgInputSection');
+    var btn = document.getElementById('cfgToggle');
+    if(!section || !btn) return;
+    var open = section.hasAttribute('hidden');
+    if(open) section.removeAttribute('hidden'); else section.setAttribute('hidden', '');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(open){ var input = document.getElementById('multa-input'); if(input) input.focus(); }
+}
 
 // ---------- CHARTS ----------
 function cssVar(name, fallback){
@@ -509,10 +763,11 @@ function cssVar(name, fallback){
 }
 
 function actualizarLeyendaDonut(disponibles, prestados, mant, total){
+    var pct = function(v){ return total ? Math.round((v / total) * 100) + '%' : '0%'; };
     var values = [
-        ['donutDisponible', disponibles],
-        ['donutPrestado', prestados],
-        ['donutMantenimiento', mant],
+        ['donutDisponible', disponibles], ['donutDisponiblePct', pct(disponibles)],
+        ['donutPrestado', prestados], ['donutPrestadoPct', pct(prestados)],
+        ['donutMantenimiento', mant], ['donutMantenimientoPct', pct(mant)],
         ['donutTotal', total]
     ];
     values.forEach(function(pair){
@@ -640,13 +895,17 @@ function actualizarUI(){
     var note = document.getElementById('h-prestamos-note');
     if(note){
         note.textContent = activos === 0
-            ? 'Todo el inventario está disponible.'
-            : (activos === 1 ? 'equipo fuera del estante en este momento' : 'equipos fuera del estante en este momento');
+            ? 'Sin equipos prestados'
+            : (activos === 1 ? '1 equipo prestado' : activos + ' equipos prestados');
     }
+    var pctEl = document.getElementById('h-equipos-pct');
+    if(pctEl) pctEl.textContent = (total ? Math.round((disponibles / total) * 100) : 0) + '% del inventario';
+    var mantNote = document.getElementById('h-mantenimiento-note');
+    if(mantNote) mantNote.textContent = mant === 0 ? 'Sin equipos reportados' : (mant === 1 ? 'Equipo en revisión' : 'Equipos en revisión');
 
     var bp = document.getElementById('badge-prestamos'); if(bp) bp.textContent = activos;
 
-    var colors = [cssVar('--success', '#55a676'), cssVar('--warn', '#d99a2b'), cssVar('--danger', '#c8553f')];
+    var colors = [cssVar('--dash-green', '#55b88a'), cssVar('--dash-amber', '#d6a84b'), cssVar('--dash-coral', '#e06b5f')];
     if(total > 0){
         var empty = document.getElementById('donutEmpty'); if(empty) empty.style.display = 'none';
         var figure = document.querySelector('.donut-figure'); if(figure) figure.style.display = 'block';
@@ -664,7 +923,7 @@ function actualizarUI(){
         }
     } else { mostrarDonutVacio(); }
 
-    renderActivityFeed(pr);
+    renderActivityFeed(pr, eq);
 
     var lu = document.getElementById('lastUpdated');
     if(lu) lu.textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-PY', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
@@ -689,71 +948,77 @@ function animarNumero(id, target) {
 }
 
 // ---------- ACTIVITY FEED ----------
-function timeAgo(dateStr) {
-    if (!dateStr) return '';
-    var now = new Date();
-    var date = new Date(dateStr);
-    var diffMs = now - date;
-    var diffMin = Math.floor(diffMs / 60000);
-    var diffHrs = Math.floor(diffMs / 3600000);
-    var diffDays = Math.floor(diffMs / 86400000);
-    if (diffMin < 1) return 'ahora';
-    if (diffMin < 60) return 'hace ' + diffMin + ' min';
-    if (diffHrs < 24) return 'hace ' + diffHrs + ' h';
-    if (diffDays === 1) return 'ayer';
-    if (diffDays < 30) return 'hace ' + diffDays + ' días';
-    return date.toLocaleDateString('es-PY', { day: 'numeric', month: 'short' });
+function formatHora(dateStr) {
+    if (!dateStr) return '—';
+    var d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
-function renderActivityFeed(prestamos) {
+function equipmentIcon(tipo) {
+    var t = (tipo || '').toLowerCase();
+    if (t.indexOf('laptop') >= 0 || t.indexOf('notebook') >= 0) {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="12" rx="2"/><path stroke-linecap="round" d="M2 20h20"/></svg>';
+    }
+    if (t.indexOf('dock') >= 0 || t.indexOf('accesorio') >= 0) {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7l8-4 8 4-8 4-8-4zM4 12l8 4 8-4M4 17l8 4 8-4"/></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>';
+}
+
+function renderActivityFeed(prestamos, equipos) {
     var wrapper = document.getElementById('stream-wrapper');
     if (!wrapper) return;
-    if (!prestamos || prestamos.length === 0) {
+    var events = [];
+    (prestamos || []).forEach(function(p) {
+        var isReturned = p.estado === 'DEVUELTO';
+        var isLate = p.estado === 'ACTIVO' && p.fecha_devolucion_estimada && new Date(p.fecha_devolucion_estimada) < new Date();
+        var alumno = ((p.alumno_nombre || '') + ' ' + (p.alumno_apellido || '')).trim();
+        events.push({
+            date: isReturned ? (p.fecha_devolucion || p.fecha_prestamo) : p.fecha_prestamo,
+            equipo: p.equipo || 'Equipo #' + p.id_equipo,
+            code: 'EQ-' + String(p.id_equipo || 0).padStart(3, '0'),
+            tipo: p.tipo || '',
+            alumno: alumno || '—',
+            action: isReturned ? 'Devolución' : 'Préstamo',
+            status: isReturned ? 'Devuelto' : (isLate ? 'Retrasado' : 'Activo'),
+            statusCls: isReturned ? 's-returned' : (isLate ? 's-late' : 's-active')
+        });
+    });
+    (equipos || []).forEach(function(e) {
+        var status = e.estado === 'En mantenimiento' ? 'Mantenimiento' : (e.estado === 'Prestado' ? 'Prestado' : 'Disponible');
+        events.push({
+            date: e.fecha_registro,
+            equipo: e.nombre || 'Equipo #' + e.id_equipo,
+            code: 'EQ-' + String(e.id_equipo || 0).padStart(3, '0'),
+            tipo: e.tipo || '',
+            alumno: '—',
+            action: 'Registro',
+            status: status,
+            statusCls: status === 'Mantenimiento' ? 's-late' : (status === 'Prestado' ? 's-active' : 's-returned')
+        });
+    });
+    events = events.filter(function(e) { return e.date && !isNaN(new Date(e.date).getTime()); })
+        .sort(function(a, b) { return new Date(b.date) - new Date(a.date); })
+        .slice(0, 5);
+    if (!events.length) {
         wrapper.innerHTML = '<div class="feed-empty">'
             + '<span class="feed-empty-icon" aria-hidden="true"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>'
             + '<strong class="feed-empty-title">Aún no hay movimientos</strong>'
-            + '<span class="feed-empty-text">Los préstamos y devoluciones del colegio van a aparecer acá.</span>'
+            + '<span class="feed-empty-text">Los préstamos, devoluciones y registros del colegio van a aparecer acá.</span>'
             + '<a class="btn-sm" href="' + (esLectura ? '/historial/historial.html' : '/prestamos/prestamos.html') + '">' + (esLectura ? 'Ver historial' : 'Registrar préstamo') + '</a>'
             + '</div>';
         return;
     }
-    var recent = prestamos.slice().sort(function(a, b){
-        var fa = new Date(a.fecha_prestamo || a.fecha_devolucion || 0).getTime() || 0;
-        var fb = new Date(b.fecha_prestamo || b.fecha_devolucion || 0).getTime() || 0;
-        return fb - fa;
-    }).slice(0, 6);
-    var html = '';
-    for (var i = 0; i < recent.length; i++) {
-        var p = recent[i];
-        var isActive = p.estado === 'ACTIVO';
-        var isLate = isActive && p.fecha_devolucion_estimada && new Date(p.fecha_devolucion_estimada) < new Date();
-        var isReturned = p.estado === 'DEVUELTO';
-        var dotColor = isReturned ? 'var(--success)' : (isLate ? 'var(--warn)' : 'var(--primary)');
-        var statusText = isReturned ? 'Devuelto' : (isLate ? 'Retrasado' : 'Activo');
-        var equipo = p.equipo || 'Equipo #' + p.id_equipo;
-        var alumno = (p.alumno_nombre || '') + ' ' + (p.alumno_apellido || '');
-        if (!alumno.trim()) alumno = 'Alumno #' + p.id_alumno;
-        var fecha = p.fecha_prestamo || p.fecha_devolucion;
-        var tAgo = timeAgo(fecha);
-        var statusCls = isReturned ? 's-returned' : (isLate ? 's-late' : 's-active');
-        html += '<div class="feed-item">'
-            + '<span class="feed-time">' + tAgo + '</span>'
-            + '<span class="feed-dot" style="background:' + dotColor + '"></span>'
-            + '<div class="feed-info">'
-            + '<span class="feed-title">' + esc(equipo) + '</span>'
-            + '<span class="feed-desc">' + esc(alumno) + '</span>'
-            + '</div>'
-            + '<span class="feed-status ' + statusCls + '">' + statusText + '</span>'
+    wrapper.innerHTML = events.map(function(e, i) {
+        return '<div class="feed-item animate-fi-' + Math.min(i + 1, 10) + '">'
+            + '<span class="feed-time">' + formatHora(e.date) + '</span>'
+            + '<div class="feed-equipment"><span class="feed-eq-icon" aria-hidden="true">' + equipmentIcon(e.tipo) + '</span><span class="feed-eq-copy"><span class="feed-eq-name">' + esc(e.equipo) + '</span><span class="feed-eq-code">' + esc(e.code) + '</span></span></div>'
+            + '<span class="feed-student">' + esc(e.alumno) + '</span>'
+            + '<span class="feed-action">' + esc(e.action) + '</span>'
+            + '<span class="feed-status ' + e.statusCls + '">' + esc(e.status) + '</span>'
             + '</div>';
-    }
-    wrapper.innerHTML = html;
-    // Stagger entrance for feed items
-    requestAnimationFrame(function(){
-      var items = wrapper.querySelectorAll('.feed-item');
-      items.forEach(function(el, i){
-        el.classList.add('animate-fi-' + Math.min(i + 1, 10));
-      });
-    });
+    }).join('');
 }
 
 // ---------- EXPORT ----------
@@ -975,7 +1240,7 @@ window.onload = function(){
         var fullRole = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
         var sr = document.getElementById('s-role'); if(sr) sr.textContent = fullRole;
         var srm = document.getElementById('s-role-main'); if(srm) srm.textContent = fullRole;
-        var wm = document.getElementById('welcome-msg'); if(wm) wm.textContent = 'Bienvenido, ' + enc.nombre;
+        var wm = document.getElementById('welcome-msg'); if(wm) wm.textContent = enc.nombre || 'Bienvenido';
     }
     actualizarInfoExportacion();
     cargarConfig();
