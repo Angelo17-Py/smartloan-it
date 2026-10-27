@@ -289,7 +289,7 @@ function initSpotlight(pages) {
           var name = normalizeText(a.nombre + ' ' + a.apellido);
           var code = normalizeText(a.codigo_alumno || '');
           if (name.includes(nq) || code.includes(nq)) {
-            allPages.push({ label: a.codigo_alumno + ' \u2014 ' + a.nombre + ' ' + a.apellido, sub: a.carrera || 'Alumno', url: '/alumnos/alumnos.html' });
+            allPages.push({ label: a.codigo_alumno + ' \u2014 ' + a.nombre + ' ' + a.apellido, sub: [a.carrera, a.curso, a.turno].filter(Boolean).join(' · ') || 'Alumno', url: '/alumnos/alumnos.html' });
           }
         });
       }

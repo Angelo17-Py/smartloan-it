@@ -112,7 +112,7 @@ exports.historial = async (req, res) => {
       SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
         p.estado AS estado_prestamo, p.estado_inicial_equipo, p.motivo, p.accesorios,
         a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
-        a.carrera, a.curso,
+        a.carrera, a.curso, a.turno,
         d.fecha_devolucion, d.estado_equipo AS estado_devolucion,
         d.dias_retraso, d.monto_multa, d.monto_dano, d.total_cobro, d.tiene_dano, d.tipo_dano
       FROM prestamos p

@@ -1,5 +1,5 @@
 -- Sistema de Gestión de Préstamos de Equipos Tecnológicos
--- SmartLoan IT - UNIDA
+-- SmartLoan IT - Colegios de Paraguay
 -- ATENCION: Este schema se genera automaticamente via initDb.js al iniciar la app.
 -- Este archivo es solo para referencia o para inicializar la BD manualmente.
 -- Los passwords deben generarse con bcrypt (ver initDb.js para los valores actualizados).
@@ -26,6 +26,7 @@ CREATE TABLE alumnos (
     apellido       VARCHAR(100) NOT NULL,
     carrera        VARCHAR(150),
     curso          VARCHAR(50),
+    turno          VARCHAR(20) DEFAULT 'Mañana',
     estado         BOOLEAN DEFAULT TRUE,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -137,10 +138,10 @@ DELIMITER ;
 -- ('0000', '<bcrypt_hash>', 'Invitado','',           'Visualizador',                     'lectura')
 
 -- Datos de ejemplo
-INSERT IGNORE INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso) VALUES
-('ALU001', 'María',   'González', 'Ingeniería en Informática',  '3er año'),
-('ALU002', 'Carlos',  'Mendoza',  'Administración de Empresas', '2do año'),
-('ALU003', 'Ana',     'Rivas',    'Medicina',                   '4to año');
+INSERT IGNORE INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso, turno) VALUES
+('ALU001', 'María',   'González', 'Bachillerato Técnico en Informática',           '3° año', 'Mañana'),
+('ALU002', 'Carlos',  'Mendoza',  'Bachillerato Técnico en Contabilidad',          '2° año', 'Tarde'),
+('ALU003', 'Ana',     'Rivas',    'Bachillerato Científico en Ciencias Sociales',  '1° año', 'Mañana');
 
 INSERT IGNORE INTO equipos (nombre, tipo, marca, descripcion) VALUES
 ('ThinkPad X1 Carbon',   'Laptop', 'Lenovo',    '16GB RAM, SSD 512GB'),

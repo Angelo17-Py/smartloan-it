@@ -111,7 +111,7 @@ exports.listar = async (req, res) => {
     const [rows] = await conn.query(`
       SELECT d.*, p.fecha_prestamo, p.fecha_devolucion_estimada, p.codigo_prestamo,
         e.nombre AS equipo, e.tipo, e.marca,
-        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso,
+        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso, a.turno,
         enc_p.nombre AS enc_prestamo_nombre, enc_p.apellido AS enc_prestamo_apellido,
         enc_d.nombre AS enc_devolucion_nombre, enc_d.apellido AS enc_devolucion_apellido
       FROM devoluciones d

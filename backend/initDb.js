@@ -50,6 +50,7 @@ async function initDatabase() {
       apellido       VARCHAR(100) NOT NULL,
       carrera        VARCHAR(150),
       curso          VARCHAR(50),
+      turno          VARCHAR(20) DEFAULT 'Mañana',
       estado         BOOLEAN DEFAULT TRUE,
       fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -137,6 +138,10 @@ async function initDatabase() {
   try { await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo"); } catch (e) { console.error('Migracion 13 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE prestamos ADD COLUMN codigo_prestamo VARCHAR(20) UNIQUE AFTER id_prestamo"); } catch (e) { console.error('Migracion 14 fallo (no critico):', e.message); }
   try { await conn.query("UPDATE prestamos SET codigo_prestamo = CONCAT('PRE-', LPAD(id_prestamo, 3, '0')) WHERE codigo_prestamo IS NULL"); } catch (e) { console.error('Migracion 15 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE alumnos ADD COLUMN turno VARCHAR(20) DEFAULT 'Mañana' AFTER curso"); } catch (e) { console.error('Migracion 16 fallo (no critico):', e.message); }
+  try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Informática', curso='3° año', turno='Mañana' WHERE codigo_alumno='ALU001' AND carrera LIKE 'Ingenier%'"); } catch (e) { console.error('Migracion 17 fallo (no critico):', e.message); }
+  try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Contabilidad', curso='2° año', turno='Tarde' WHERE codigo_alumno='ALU002' AND carrera LIKE 'Administraci%'"); } catch (e) { console.error('Migracion 18 fallo (no critico):', e.message); }
+  try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Científico en Ciencias Sociales', curso='1° año', turno='Mañana' WHERE codigo_alumno='ALU003' AND carrera='Medicina'"); } catch (e) { console.error('Migracion 19 fallo (no critico):', e.message); }
 
   // =============================================================
   // TRIGGERS
@@ -226,9 +231,9 @@ async function initDatabase() {
 
   const [aluCount] = await conn.query('SELECT COUNT(*) AS c FROM alumnos');
   if (aluCount[0].c === 0) {
-    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU001','Maria','Gonzalez','Ingenieria en Informatica','3er año')");
-    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU002','Carlos','Mendoza','Administracion de Empresas','2do año')");
-    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso) VALUES ('ALU003','Ana','Rivas','Medicina','4to año')");
+    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU001','María','González','Bachillerato Técnico en Informática','3° año','Mañana')");
+    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU002','Carlos','Mendoza','Bachillerato Técnico en Contabilidad','2° año','Tarde')");
+    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU003','Ana','Rivas','Bachillerato Científico en Ciencias Sociales','1° año','Mañana')");
     console.log('Alumnos de ejemplo creados (ALU001-ALU003)');
   }
 

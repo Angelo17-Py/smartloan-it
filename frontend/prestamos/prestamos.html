@@ -298,8 +298,9 @@
                     <div class="rsec-grid">
                         <div class="rg-item"><span>Nombre</span><strong id="r-alu">—</strong></div>
                         <div class="rg-item"><span>C&oacute;digo</span><strong id="r-cod">—</strong></div>
-                        <div class="rg-item"><span>Carrera</span><strong id="r-car">—</strong></div>
+                        <div class="rg-item"><span>Bachillerato</span><strong id="r-car">—</strong></div>
                         <div class="rg-item"><span>Curso</span><strong id="r-cur">—</strong></div>
+                        <div class="rg-item"><span>Turno</span><strong id="r-turno">—</strong></div>
                     </div>
                 </div>
                 <!-- Datos del equipo -->
@@ -520,7 +521,7 @@ function onAlumno(){
     const ai = document.getElementById('alu-info');
     if(!id){ai.classList.remove('show');checkFormComplete();return;}
     const a = alumnos.find(x=>x.id_alumno==id);
-    if(a){document.getElementById('alu-code').textContent=a.codigo_alumno;document.getElementById('alu-detail').textContent=`${a.carrera||'Sin carrera'} · ${a.curso||'—'}`;ai.classList.add('show');}
+    if(a){document.getElementById('alu-code').textContent=a.codigo_alumno;document.getElementById('alu-detail').textContent=`${a.carrera||'Bachillerato'} · ${a.curso||'—'} · ${a.turno||'—'}`;ai.classList.add('show');}
     actualizarResumen();
     checkFormComplete();
 }
@@ -600,6 +601,7 @@ async function registrar(){
             document.getElementById('r-cod').textContent=a.codigo_alumno;
             document.getElementById('r-car').textContent=a.carrera||'—';
             document.getElementById('r-cur').textContent=a.curso||'—';
+            document.getElementById('r-turno').textContent=a.turno||'—';
             document.getElementById('r-eq').textContent=e.nombre;
             document.getElementById('r-tipo').textContent=e.tipo;
             document.getElementById('r-marca').textContent=e.marca;

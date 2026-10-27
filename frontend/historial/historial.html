@@ -199,7 +199,7 @@ function renderP(){
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
         html+='<td data-label="#"><span class="code">'+(p.codigo_prestamo||'#'+p.id_prestamo)+'</span></td>';
-        html+='<td data-label="Alumno"><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+'</div></td>';
+        html+='<td data-label="Alumno"><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+' · '+(p.curso||'—')+' · '+(p.turno||'—')+'</div></td>';
         html+='<td data-label="Equipo"><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
         html+='<td data-label="Préstamo">'+ff(p.fecha_prestamo)+'</td>';
         html+='<td data-label="Vence" style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';

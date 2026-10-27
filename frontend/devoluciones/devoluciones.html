@@ -354,7 +354,9 @@
                         <div class="rg-item"><span># Pr&eacute;stamo</span><strong id="r-id">—</strong></div>
                         <div class="rg-item"><span>Alumno</span><strong id="r-alu">—</strong></div>
                         <div class="rg-item"><span>C&oacute;digo</span><strong id="r-cod">—</strong></div>
-                        <div class="rg-item"><span>Carrera</span><strong id="r-car">—</strong></div>
+                        <div class="rg-item"><span>Bachillerato</span><strong id="r-car">—</strong></div>
+                        <div class="rg-item"><span>Curso</span><strong id="r-cur">—</strong></div>
+                        <div class="rg-item"><span>Turno</span><strong id="r-turno">—</strong></div>
                         <div class="rg-item full"><span>Equipo</span><strong id="r-eq">—</strong></div>
                         <div class="rg-item"><span>Tipo / Marca</span><strong id="r-tm">—</strong></div>
                         <div class="rg-item"><span>Fecha Pr&eacute;stamo</span><strong id="r-fp">—</strong></div>
@@ -524,7 +526,9 @@ function mostrar(){
         <div class="if"><span>Pr\u00e9stamo</span><strong>${p.codigo_prestamo||'#'+p.id_prestamo}</strong></div>
         <div class="if"><span>Alumno</span><strong>${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)}</strong></div>
         <div class="if"><span>Codigo</span><strong>${esc(p.codigo_alumno)}</strong></div>
-        <div class="if"><span>Carrera</span><strong>${esc(p.carrera||'\u2014')}</strong></div>
+        <div class="if"><span>Bachillerato</span><strong>${esc(p.carrera||'\u2014')}</strong></div>
+        <div class="if"><span>Curso</span><strong>${esc(p.curso||'\u2014')}</strong></div>
+        <div class="if"><span>Turno</span><strong>${esc(p.turno||'\u2014')}</strong></div>
         <div class="if"><span>Equipo</span><strong>${esc(p.equipo)}</strong></div>
         <div class="if"><span>Tipo / Marca</span><strong>${esc(p.tipo)} &middot; ${esc(p.marca)}</strong></div>
         <div class="if"><span>Fecha pr\u00e9stamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
@@ -646,6 +650,8 @@ async function procesar(){
             document.getElementById('r-alu').textContent=`${pActual.alumno_nombre} ${pActual.alumno_apellido}`;
             document.getElementById('r-cod').textContent=pActual.codigo_alumno;
             document.getElementById('r-car').textContent=pActual.carrera||'—';
+            document.getElementById('r-cur').textContent=pActual.curso||'—';
+            document.getElementById('r-turno').textContent=pActual.turno||'—';
             document.getElementById('r-eq').textContent=pActual.equipo;
             document.getElementById('r-tm').textContent=`${pActual.tipo} · ${pActual.marca}`;
             document.getElementById('r-fp').textContent=ff(pActual.fecha_prestamo);

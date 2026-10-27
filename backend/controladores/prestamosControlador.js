@@ -64,7 +64,7 @@ exports.listar = async (req, res) => {
     const conn = await db;
     const [rows] = await conn.query(`
       SELECT p.*, e.nombre AS equipo, e.tipo, e.marca, e.estado AS estado_equipo,
-        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso,
+        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso, a.turno,
         enc.codigo AS codigo_encargado, enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido
       FROM prestamos p
       JOIN equipos e ON p.id_equipo = e.id_equipo
@@ -123,7 +123,7 @@ exports.buscar = async (req, res) => {
     const [rows] = await conn.query(`
       SELECT p.*, e.nombre AS equipo, e.tipo, e.marca,
         a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
-        a.carrera, a.curso,
+        a.carrera, a.curso, a.turno,
         enc.codigo AS codigo_encargado, enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido
       FROM prestamos p
       JOIN equipos e ON p.id_equipo = e.id_equipo

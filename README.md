@@ -1,6 +1,6 @@
 <div align="center">
   <h1>SmartLoan IT</h1>
-  <p><strong>Sistema de Gestión de Préstamos de Recursos Tecnológicos</strong></p>
+  <p><strong>Sistema de Gestión de Préstamos de Recursos Tecnológicos para Colegios</strong></p>
   <p>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.x-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js"></a>
     <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-5.x-000000?style=flat-square&logo=express&logoColor=white" alt="Express"></a>

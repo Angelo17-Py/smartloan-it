@@ -74,13 +74,17 @@
         <div class="form-row">
             <div class="ig"><label>Nombre</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoAlumno()"><div class="ferr" id="ferr-nombre">Ingresa el nombre</div></div>
             <div class="ig"><label>Apellido</label><input id="apellido" placeholder="" maxlength="100" oninput="clearF('apellido');checkNuevoAlumno()"><div class="ferr" id="ferr-apellido">Ingresa el apellido</div></div>
-            <div class="ig"><label>Carrera</label>
-                <select id="carrera" onchange="clearF('carrera');checkNuevoAlumno()"><option value="">Seleccionar</option><option>Ingeniería en Informática</option><option>Ingeniería Industrial</option><option>Ingeniería Civil</option><option>Administración de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
-                <div class="ferr" id="ferr-carrera">Selecciona la carrera</div>
+            <div class="ig"><label>Bachillerato</label>
+                <select id="carrera" onchange="clearF('carrera');checkNuevoAlumno()"><option value="">Seleccionar</option><option>Bachillerato Científico en Ciencias Sociales</option><option>Bachillerato Técnico en Informática</option><option>Bachillerato Técnico en Marketing</option><option>Bachillerato Técnico en Contabilidad</option></select>
+                <div class="ferr" id="ferr-carrera">Selecciona el bachillerato</div>
             </div>
-            <div class="ig"><label>Curso / Año</label>
-                <select id="curso" onchange="clearF('curso');checkNuevoAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
+            <div class="ig"><label>Curso</label>
+                <select id="curso" onchange="clearF('curso');checkNuevoAlumno()"><option value="">Seleccionar</option><option>1° año</option><option>2° año</option><option>3° año</option></select>
                 <div class="ferr" id="ferr-curso">Selecciona el curso</div>
+            </div>
+            <div class="ig"><label>Turno</label>
+                <select id="turno" onchange="clearF('turno');checkNuevoAlumno()"><option value="">Seleccionar</option><option>Mañana</option><option>Tarde</option></select>
+                <div class="ferr" id="ferr-turno">Selecciona el turno</div>
             </div>
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
         </div>
@@ -88,12 +92,12 @@
     <!-- Barra de búsqueda para filtrar alumnos -->
     <div class="search-bar reveal">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="busq" placeholder="Buscar por nombre, apellido o codigo..." oninput="filtrar()">
+        <input id="busq" placeholder="Buscar por nombre, apellido, código, bachillerato o turno..." oninput="filtrar()">
     </div>
     <!-- Tabla que muestra la lista de alumnos -->
     <div class="table-wrap reveal">
         <div class="table-header"><span>Lista de alumnos</span><span class="table-count" id="count">0 alumnos</span></div>
-        <table><colgroup><col style="width:5%"><col style="width:12%"><col style="width:35%"><col style="width:20%"><col style="width:13%"><col style="width:15%"></colgroup><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Carrera</th><th scope="col">Curso</th><th scope="col">Acciones</th></tr></thead>
+        <table><colgroup><col style="width:5%"><col style="width:11%"><col style="width:25%"><col style="width:27%"><col style="width:10%"><col style="width:9%"><col style="width:13%"></colgroup><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Bachillerato</th><th scope="col">Curso</th><th scope="col">Turno</th><th scope="col">Acciones</th></tr></thead>
         <tbody id="tb"></tbody></table>
     </div>
 </main>
@@ -108,15 +112,20 @@
                 <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" maxlength="100" oninput="clearFE('nombre','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
                 <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" maxlength="100" oninput="clearFE('apellido','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
-            <!-- Selector de carrera -->
-            <div class="ig"><label>Carrera</label>
-                <select id="edit-carrera" onchange="clearFE('carrera','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Ingeniería en Informática</option><option>Ingeniería Industrial</option><option>Ingeniería Civil</option><option>Administración de Empresas</option><option>Contabilidad</option><option>Derecho</option><option>Medicina</option><option>Otra</option></select>
-                <div class="ferr" id="ferr-edit-carrera">Selecciona la carrera</div>
+            <!-- Selector de bachillerato -->
+            <div class="ig"><label>Bachillerato</label>
+                <select id="edit-carrera" onchange="clearFE('carrera','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Bachillerato Científico en Ciencias Sociales</option><option>Bachillerato Técnico en Informática</option><option>Bachillerato Técnico en Marketing</option><option>Bachillerato Técnico en Contabilidad</option></select>
+                <div class="ferr" id="ferr-edit-carrera">Selecciona el bachillerato</div>
             </div>
             <!-- Selector de curso -->
-            <div class="ig"><label>Curso / Año</label>
-                <select id="edit-curso" onchange="clearFE('curso','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>1er año</option><option>2do año</option><option>3er año</option><option>4to año</option><option>5to año</option></select>
+            <div class="ig"><label>Curso</label>
+                <select id="edit-curso" onchange="clearFE('curso','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>1° año</option><option>2° año</option><option>3° año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
+            </div>
+            <!-- Selector de turno -->
+            <div class="ig"><label>Turno</label>
+                <select id="edit-turno" onchange="clearFE('turno','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Mañana</option><option>Tarde</option></select>
+                <div class="ferr" id="ferr-edit-turno">Selecciona el turno</div>
             </div>
             <!-- Botón para guardar los cambios -->
             <button type="button" class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
@@ -157,7 +166,8 @@ function checkNuevoAlumno(){
     const apellido=document.getElementById('apellido').value.trim();
     const carrera=document.getElementById('carrera').value;
     const curso=document.getElementById('curso').value;
-    document.getElementById('btnAdd').disabled=!(nombre&&apellido&&carrera&&curso);
+    const turno=document.getElementById('turno').value;
+    document.getElementById('btnAdd').disabled=!(nombre&&apellido&&carrera&&curso&&turno);
 }
 
 // Revisamos si los campos del formulario de edición están completos
@@ -166,13 +176,14 @@ function checkEditAlumno(){
     const apellido=document.getElementById('edit-apellido').value.trim();
     const carrera=document.getElementById('edit-carrera').value;
     const curso=document.getElementById('edit-curso').value;
-    document.getElementById('btnGuardarAlu').disabled=!(nombre&&apellido&&carrera&&curso);
+    const turno=document.getElementById('edit-turno').value;
+    document.getElementById('btnGuardarAlu').disabled=!(nombre&&apellido&&carrera&&curso&&turno);
 }
 
 // Validamos que ningún campo esté vacío antes de enviar
 function validarNuevo(){
     let ok = true;
-    ['nombre','apellido','carrera','curso'].forEach(f => {
+    ['nombre','apellido','carrera','curso','turno'].forEach(f => {
         const el = document.getElementById(f);
         if(!el.value.trim()){
             el.classList.add('err');
@@ -185,7 +196,7 @@ function validarNuevo(){
 
 // Cargamos la lista de alumnos desde el servidor
 async function cargar(){
-    document.getElementById('tb').innerHTML = '<tr><td colspan="6"><div style="padding:20px"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></td></tr>';
+    document.getElementById('tb').innerHTML = '<tr><td colspan="7"><div style="padding:20px"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></td></tr>';
     try {
         const r = await apiFetch('/alumnos');
         if(!r.ok){st('Error al cargar alumnos','t-err');return;}
@@ -202,7 +213,7 @@ function render(data){
     const tb = document.getElementById('tb');
     // Si no hay alumnos, mostramos un mensaje
     if(!data.length){
-        tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
+        tb.innerHTML = '<tr class="empty-row"><td colspan="7">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
     }
     var admin = esAdmin();
@@ -212,8 +223,9 @@ function render(data){
             <td data-label="#"><span class="num">${i+1}</span></td>
             <td data-label="Código"><span class="code-chip">${esc(a.codigo_alumno)}</span></td>
             <td data-label="Alumno"><strong>${esc(a.nombre)} ${esc(a.apellido)}</strong></td>
-            <td data-label="Carrera" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.carrera||'—')}</td>
+            <td data-label="Bachillerato" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.carrera||'—')}</td>
             <td data-label="Curso" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.curso||'—')}</td>
+            <td data-label="Turno" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.turno||'—')}</td>
             <td data-label="">${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+a.id_alumno+')">Editar</button><button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button></div>' : ''}</td>
         </tr>`;}).join('');
 }
@@ -228,7 +240,10 @@ function filtrar(){
         normalizeText(a.apellido).includes(q) ||
         normalizeText(a.codigo_alumno).includes(q) ||
         normalizeText(a.nombre + ' ' + a.apellido).includes(q) ||
-        normalizeText(a.apellido + ' ' + a.nombre).includes(q)
+        normalizeText(a.apellido + ' ' + a.nombre).includes(q) ||
+        normalizeText(a.carrera || '').includes(q) ||
+        normalizeText(a.curso || '').includes(q) ||
+        normalizeText(a.turno || '').includes(q)
     );
     document.getElementById('count').textContent = `${filtrados.length} de ${todos.length} alumnos`;
     render(filtrados);
@@ -247,7 +262,8 @@ async function crear(){
                 nombre:   document.getElementById('nombre').value.trim(),
                 apellido: document.getElementById('apellido').value.trim(),
                 carrera:  document.getElementById('carrera').value,
-                curso:    document.getElementById('curso').value
+                curso:    document.getElementById('curso').value,
+                turno:    document.getElementById('turno').value
             })
         });
         const d = await safeJson(r);
@@ -258,6 +274,7 @@ async function crear(){
             document.getElementById('apellido').value = '';
             document.getElementById('carrera').value = '';
             document.getElementById('curso').value = '';
+            document.getElementById('turno').value = '';
             st(`Alumno registrado: ${d.codigo_alumno}`);
             cargar();
         } else {
@@ -297,7 +314,8 @@ function abrirEditar(id){
     document.getElementById('edit-apellido').value = a.apellido;
     document.getElementById('edit-carrera').value = a.carrera || '';
     document.getElementById('edit-curso').value = a.curso || '';
-    ['nombre','apellido','carrera','curso'].forEach(f => {
+    document.getElementById('edit-turno').value = a.turno || '';
+    ['nombre','apellido','carrera','curso','turno'].forEach(f => {
         document.getElementById('edit-'+f).classList.remove('err');
         document.getElementById('ferr-edit-'+f).classList.remove('show');
     });
@@ -318,11 +336,13 @@ async function guardarAlumno(){
     const ap = document.getElementById('edit-apellido').value.trim();
     const ca = document.getElementById('edit-carrera').value;
     const cu = document.getElementById('edit-curso').value;
+    const tu = document.getElementById('edit-turno').value;
     let ok = true;
     if(!n){ document.getElementById('edit-nombre').classList.add('err');    document.getElementById('ferr-edit-nombre').classList.add('show');    ok=false; }
     if(!ap){ document.getElementById('edit-apellido').classList.add('err'); document.getElementById('ferr-edit-apellido').classList.add('show'); ok=false; }
     if(!ca){ document.getElementById('edit-carrera').classList.add('err');  document.getElementById('ferr-edit-carrera').classList.add('show');  ok=false; }
     if(!cu){ document.getElementById('edit-curso').classList.add('err');    document.getElementById('ferr-edit-curso').classList.add('show');    ok=false; }
+    if(!tu){ document.getElementById('edit-turno').classList.add('err');    document.getElementById('ferr-edit-turno').classList.add('show');    ok=false; }
     if(!ok) return;
     if(!alumnoEditandoId){ st('Error interno: ID no encontrado','t-err'); return; }
     const btn = document.getElementById('btnGuardarAlu');
@@ -331,7 +351,7 @@ async function guardarAlumno(){
         const r = await apiFetch(`/alumnos/${alumnoEditandoId}`, {
             method: 'PUT',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({nombre:n, apellido:ap, carrera:ca, curso:cu})
+            body: JSON.stringify({nombre:n, apellido:ap, carrera:ca, curso:cu, turno:tu})
         });
         if(r.ok){
             st('Alumno actualizado correctamente');

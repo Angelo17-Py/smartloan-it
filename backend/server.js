@@ -58,6 +58,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
         a.apellido AS alumno_apellido,
         a.carrera,
         a.curso,
+        a.turno,
         e.nombre AS equipo,
         e.tipo,
         e.marca,
@@ -164,12 +165,12 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
     const ws1 = wb.addWorksheet('Prestamos');
     buildSheet(ws1,
       [
-        { w: 12 }, { w: 14 }, { w: 18 }, { w: 18 }, { w: 26 }, { w: 12 },
+        { w: 12 }, { w: 14 }, { w: 18 }, { w: 18 }, { w: 26 }, { w: 12 }, { w: 12 },
         { w: 24 }, { w: 14 }, { w: 16 },
         { w: 16 }, { w: 16 },
         { w: 16 }, { w: 22 }, { w: 30 }, { w: 26 }, { w: 16 }, { w: 20 }
       ],
-      ['# Prestamo','Codigo','Nombre','Apellido','Carrera','Curso','Equipo','Tipo','Marca','Fecha Prestamo','Dev. Estimada','Estado Inicial','Accesorios','Motivo','Observaciones','Estado','Encargado'],
+      ['# Prestamo','Codigo','Nombre','Apellido','Bachillerato','Curso','Turno','Equipo','Tipo','Marca','Fecha Prestamo','Dev. Estimada','Estado Inicial','Accesorios','Motivo','Observaciones','Estado','Encargado'],
       rows,
       function(r, ri) {
         const ret = parseInt(r.dias_retraso) > 0;
@@ -191,6 +192,7 @@ app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
           { value: r.alumno_apellido, bgColor: bg },
           { value: r.carrera, bgColor: bg },
           { value: r.curso, bgColor: bg },
+          { value: r.turno, bgColor: bg },
           { value: r.equipo, bgColor: bg },
           { value: r.tipo, bgColor: bg },
           { value: r.marca, bgColor: bg },
