@@ -56,13 +56,14 @@
         <div class="form-card reveal">
             <div class="form-card-title">Registrar nuevo usuario</div>
             <div class="form-grid">
-                <div class="ig"><label>Código</label><input id="n-codigo" placeholder="Ej: 1006" maxlength="10" oninput="clearF('n-codigo')"><div class="ferr" id="ferr-n-codigo">Ingresa el código</div></div>
-                <div class="ig"><label>Nombre</label><input id="n-nombre" placeholder="Ej: María" maxlength="100" oninput="clearF('n-nombre')"><div class="ferr" id="ferr-n-nombre">Ingresa el nombre</div></div>
-                <div class="ig"><label>Apellido</label><input id="n-apellido" placeholder="Ej: López" maxlength="100" oninput="clearF('n-apellido')"><div class="ferr" id="ferr-n-apellido">Ingresa el apellido</div></div>
+                <div class="ig"><label>Código</label><input id="n-codigo" placeholder="Ej: 1006" maxlength="10" oninput="clearF('n-codigo');checkNuevoUsuario()" onblur="marcarError('n-codigo',!this.value.trim())"><div class="ferr" id="ferr-n-codigo">Ingresa el código</div></div>
+                <div class="ig"><label>Nombre</label><input id="n-nombre" placeholder="Ej: María" maxlength="100" oninput="clearF('n-nombre');checkNuevoUsuario()" onblur="marcarError('n-nombre',!this.value.trim())"><div class="ferr" id="ferr-n-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido</label><input id="n-apellido" placeholder="Ej: López" maxlength="100" oninput="clearF('n-apellido');checkNuevoUsuario()" onblur="marcarError('n-apellido',!this.value.trim())"><div class="ferr" id="ferr-n-apellido">Ingresa el apellido</div></div>
                 <div class="ig"><label>Cargo</label><input id="n-cargo" placeholder="Encargado de Recursos Tecnológicos" maxlength="100"></div>
                 <div class="ig"><label>Rol</label><select id="n-rol"><option value="lectura">Operador</option><option value="admin">Administrador</option></select></div>
-                <div class="ig"><label>Contraseña</label><input type="password" id="n-password" placeholder="Mínimo 6 caracteres" maxlength="100" oninput="clearF('n-password')"><div class="ferr" id="ferr-n-password">Ingresa la contraseña</div></div>
-                <div class="form-actions"><button type="button" class="btn btn-primary" id="btnCrear" onclick="crear()">+ Registrar usuario</button></div>
+                <div class="ig"><label>Contraseña</label><input type="password" id="n-password" placeholder="Mínimo 6 caracteres" maxlength="100" oninput="clearF('n-password');checkNuevoUsuario()" onblur="marcarError('n-password',!this.value||this.value.length<6)"><div class="ferr" id="ferr-n-password">Ingresa una contraseña de al menos 6 caracteres</div></div>
+                <div class="ig"><label>Confirmar contraseña</label><input type="password" id="n-password2" placeholder="Repetí la contraseña" maxlength="100" oninput="clearF('n-password2');checkNuevoUsuario()" onblur="marcarError('n-password2',!this.value||this.value!==document.getElementById('n-password').value)"><div class="ferr" id="ferr-n-password2">Las contraseñas no coinciden</div></div>
+                <div class="form-actions"><button type="button" class="btn btn-primary" id="btnCrear" onclick="crear()" disabled>+ Registrar usuario</button></div>
             </div>
         </div>
 
@@ -85,15 +86,16 @@
         <div class="mh"><h3>Editar usuario</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
             <div class="g2m">
-                <div class="ig"><label>Nombre</label><input id="e-nombre" maxlength="100" oninput="clearFE('e-nombre')"><div class="ferr" id="ferr-e-nombre">Ingresa el nombre</div></div>
-                <div class="ig"><label>Apellido</label><input id="e-apellido" maxlength="100" oninput="clearFE('e-apellido')"><div class="ferr" id="ferr-e-apellido">Ingresa el apellido</div></div>
+                <div class="ig"><label>Nombre</label><input id="e-nombre" maxlength="100" oninput="clearFE('e-nombre');checkEditUsuario()" onblur="marcarError('e-nombre',!this.value.trim())"><div class="ferr" id="ferr-e-nombre">Ingresa el nombre</div></div>
+                <div class="ig"><label>Apellido</label><input id="e-apellido" maxlength="100" oninput="clearFE('e-apellido');checkEditUsuario()" onblur="marcarError('e-apellido',!this.value.trim())"><div class="ferr" id="ferr-e-apellido">Ingresa el apellido</div></div>
             </div>
             <div class="ig"><label>Cargo</label><input id="e-cargo" maxlength="100"></div>
             <div class="ig"><label>Rol</label><select id="e-rol"><option value="lectura">Operador</option><option value="admin">Administrador</option></select></div>
-            <div class="ig"><label>Nueva contraseña</label><input type="password" id="e-password" placeholder="Dejar vacío para conservar la actual" maxlength="100" oninput="clearFE('e-password')"><div class="pw-hint">Mínimo 6 caracteres. Solo se cambia si escribís una contraseña nueva.</div><div class="ferr" id="ferr-e-password">La contraseña debe tener al menos 6 caracteres</div></div>
+            <div class="ig"><label>Nueva contraseña</label><input type="password" id="e-password" placeholder="Dejar vacío para conservar la actual" maxlength="100" oninput="clearFE('e-password');checkEditUsuario()" onblur="marcarError('e-password',this.value&&this.value.length<6)"><div class="pw-hint">Mínimo 6 caracteres. Solo se cambia si escribís una contraseña nueva.</div><div class="ferr" id="ferr-e-password">La contraseña debe tener al menos 6 caracteres</div></div>
+            <div class="ig"><label>Confirmar nueva contraseña</label><input type="password" id="e-password2" placeholder="Repetí la nueva contraseña" maxlength="100" oninput="clearFE('e-password2');checkEditUsuario()" onblur="marcarError('e-password2',(this.value||document.getElementById('e-password').value)&&this.value!==document.getElementById('e-password').value)"><div class="ferr" id="ferr-e-password2">Las contraseñas no coinciden</div></div>
             <div class="res-btns" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
                 <button type="button" class="btn btn-secondary" onclick="cerrarEdit()">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnGuardar" onclick="guardarEdit()">Guardar cambios</button>
+                <button type="button" class="btn btn-primary" id="btnGuardar" onclick="guardarEdit()" disabled>Guardar cambios</button>
             </div>
         </div>
     </div>
@@ -162,9 +164,41 @@ function filtrar(){
     }));
 }
 
+function marcarError(id, mostrar){
+    var el = document.getElementById(id);
+    var fe = document.getElementById('ferr-' + id);
+    if(!el || !fe) return;
+    el.classList.toggle('err', !!mostrar);
+    fe.classList.toggle('show', !!mostrar);
+}
+
+function checkNuevoUsuario(){
+    var codigo = document.getElementById('n-codigo').value.trim();
+    var nombre = document.getElementById('n-nombre').value.trim();
+    var apellido = document.getElementById('n-apellido').value.trim();
+    var p1 = document.getElementById('n-password').value;
+    var p2 = document.getElementById('n-password2').value;
+    marcarError('n-password', p1 && p1.length < 6);
+    marcarError('n-password2', p2 && p1 !== p2);
+    var ok = codigo && nombre && apellido && p1 && p2 && p1.length >= 6 && p1 === p2;
+    document.getElementById('btnCrear').disabled = !ok;
+}
+
+function checkEditUsuario(){
+    var nombre = document.getElementById('e-nombre').value.trim();
+    var apellido = document.getElementById('e-apellido').value.trim();
+    var p1 = document.getElementById('e-password').value;
+    var p2 = document.getElementById('e-password2').value;
+    marcarError('e-password', p1 && p1.length < 6);
+    marcarError('e-password2', (p1 || p2) && p1 !== p2);
+    var passOk = (!p1 && !p2) || (p1.length >= 6 && p1 === p2);
+    document.getElementById('btnGuardar').disabled = !(nombre && apellido && passOk);
+}
+
 function limpiarNuevo(){
-    ['n-codigo','n-nombre','n-apellido','n-cargo','n-password'].forEach(function(id){ document.getElementById(id).value = ''; });
+    ['n-codigo','n-nombre','n-apellido','n-cargo','n-password','n-password2'].forEach(function(id){ document.getElementById(id).value = ''; });
     document.getElementById('n-rol').value = 'lectura';
+    checkNuevoUsuario();
 }
 
 async function crear(){
@@ -174,11 +208,13 @@ async function crear(){
     var cargo = document.getElementById('n-cargo').value.trim();
     var rol = document.getElementById('n-rol').value;
     var password = document.getElementById('n-password').value;
+    var password2 = document.getElementById('n-password2').value;
     var ok = true;
-    [['n-codigo',codigo],['n-nombre',nombre],['n-apellido',apellido],['n-password',password]].forEach(function(p){
+    [['n-codigo',codigo],['n-nombre',nombre],['n-apellido',apellido],['n-password',password],['n-password2',password2]].forEach(function(p){
         if(!p[1]){ document.getElementById(p[0]).classList.add('err'); document.getElementById('ferr-' + p[0]).classList.add('show'); ok = false; }
     });
     if(password && password.length < 6){ document.getElementById('n-password').classList.add('err'); document.getElementById('ferr-n-password').classList.add('show'); ok = false; }
+    if(password && password2 && password !== password2){ document.getElementById('n-password2').classList.add('err'); document.getElementById('ferr-n-password2').classList.add('show'); ok = false; }
     if(!ok) return;
     var btn = document.getElementById('btnCrear');
     btn.disabled = true; btn.textContent = 'Registrando...';
@@ -209,7 +245,9 @@ function abrirEditar(id, enfocarPassword){
     document.getElementById('e-cargo').value = u.cargo || '';
     document.getElementById('e-rol').value = u.rol === 'admin' ? 'admin' : 'lectura';
     document.getElementById('e-password').value = '';
+    document.getElementById('e-password2').value = '';
     limpiarErroresEdit();
+    checkEditUsuario();
     document.getElementById('mo-edit').classList.add('show');
     setTimeout(function(){
         var input = enfocarPassword ? document.getElementById('e-password') : document.getElementById('e-nombre');
@@ -223,7 +261,7 @@ function cerrarEdit(){
 }
 
 function limpiarErroresEdit(){
-    ['e-nombre','e-apellido','e-password'].forEach(function(id){
+    ['e-nombre','e-apellido','e-password','e-password2'].forEach(function(id){
         document.getElementById(id).classList.remove('err');
         document.getElementById('ferr-' + id).classList.remove('show');
     });
@@ -236,11 +274,13 @@ async function guardarEdit(){
     var cargo = document.getElementById('e-cargo').value.trim();
     var rol = document.getElementById('e-rol').value;
     var password = document.getElementById('e-password').value;
+    var password2 = document.getElementById('e-password2').value;
     var ok = true;
     [['e-nombre',nombre],['e-apellido',apellido]].forEach(function(p){
         if(!p[1]){ document.getElementById(p[0]).classList.add('err'); document.getElementById('ferr-' + p[0]).classList.add('show'); ok = false; }
     });
     if(password && password.length < 6){ document.getElementById('e-password').classList.add('err'); document.getElementById('ferr-e-password').classList.add('show'); ok = false; }
+    if((password || password2) && password !== password2){ document.getElementById('e-password2').classList.add('err'); document.getElementById('ferr-e-password2').classList.add('show'); ok = false; }
     if(!ok) return;
     var btn = document.getElementById('btnGuardar');
     btn.disabled = true; btn.textContent = 'Guardando...';
@@ -286,6 +326,7 @@ window.onload = function(){
         return;
     }
     document.getElementById('page').style.display = 'block';
+    checkNuevoUsuario();
     cargar();
     initSpotlight([
         {label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'},
