@@ -37,6 +37,7 @@ async function initDatabase() {
       apellido       VARCHAR(100) NOT NULL,
       cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnológicos',
       estado         BOOLEAN DEFAULT TRUE,
+      token_version  INT NOT NULL DEFAULT 0,
       fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -148,7 +149,7 @@ async function initDatabase() {
   try { await conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"); } catch (e) { console.error('Migracion 4 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato"); } catch (e) { console.error('Migracion 5 fallo (no critico):', e.message); }
   try { await conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"); } catch (e) { console.error('Migracion 6 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) UNIQUE NOT NULL"); } catch (e) { console.error('Migracion 7 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) NOT NULL"); } catch (e) { console.error('Migracion 7 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo"); } catch (e) { console.error('Migracion 8 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)"); } catch (e) { console.error('Migracion 9 fallo (no critico):', e.message); }
   try { await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)"); } catch (e) { console.error('Migracion 10 fallo (no critico):', e.message); }
@@ -160,6 +161,39 @@ async function initDatabase() {
   try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Informática', curso='3° año', turno='Mañana' WHERE codigo_alumno='ALU001' AND carrera LIKE 'Ingenier%'"); } catch (e) { console.error('Migracion 17 fallo (no critico):', e.message); }
   try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Contabilidad', curso='2° año', turno='Tarde' WHERE codigo_alumno='ALU002' AND carrera LIKE 'Administraci%'"); } catch (e) { console.error('Migracion 18 fallo (no critico):', e.message); }
   try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Científico en Ciencias Sociales', curso='1° año', turno='Mañana' WHERE codigo_alumno='ALU003' AND carrera='Medicina'"); } catch (e) { console.error('Migracion 19 fallo (no critico):', e.message); }
+  try { await conn.query("ALTER TABLE encargados ADD COLUMN token_version INT NOT NULL DEFAULT 0 AFTER estado"); } catch (e) { console.error('Migracion 20 fallo (no critico):', e.message); }
+  // Limpia los índices UNIQUE duplicados que versiones anteriores agregaban en cada arranque
+  try {
+    const [duplicados] = await conn.query(`
+      SELECT s.INDEX_NAME
+      FROM information_schema.STATISTICS s
+      WHERE s.TABLE_SCHEMA = DATABASE()
+        AND s.TABLE_NAME = 'encargados'
+        AND s.COLUMN_NAME = 'codigo'
+        AND s.NON_UNIQUE = 0
+        AND s.INDEX_NAME LIKE 'codigo\\_%'
+        AND (
+          SELECT COUNT(*) FROM information_schema.STATISTICS s2
+          WHERE s2.TABLE_SCHEMA = s.TABLE_SCHEMA
+            AND s2.TABLE_NAME = s.TABLE_NAME
+            AND s2.INDEX_NAME = s.INDEX_NAME
+        ) = 1
+    `);
+    for (const fila of duplicados) {
+      const nombre = String(fila.INDEX_NAME).replace(/`/g, '``');
+      await conn.query('ALTER TABLE encargados DROP INDEX `' + nombre + '`');
+    }
+  } catch (e) { console.error('Migracion 21 fallo (no critico):', e.message); }
+  // Garantiza que exista exactamente la restricción UNIQUE necesaria sobre codigo
+  try {
+    const [indices] = await conn.query('SHOW INDEX FROM encargados');
+    const unicoCodigo = indices.some(function (i) {
+      return i.Column_name === 'codigo' && Number(i.Non_unique) === 0;
+    });
+    if (!unicoCodigo) {
+      await conn.query('ALTER TABLE encargados ADD UNIQUE INDEX codigo (codigo)');
+    }
+  } catch (e) { console.error('Migracion 22 fallo (no critico):', e.message); }
 
   // =============================================================
   // TRIGGERS
@@ -211,28 +245,60 @@ async function initDatabase() {
   `);
 
   // =============================================================
-  // USUARIOS POR DEFECTO
+  // USUARIOS INICIALES
+  // En desarrollo se mantienen los usuarios de ejemplo.
+  // En producción no se crean credenciales conocidas: si no existe
+  // ningún administrador activo, se exige crearlo desde variables de entorno.
   // =============================================================
 
-  const hash = await bcrypt.hash('Adm1n2026', 10);
-  const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
-  const usuarios = [
-    ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'lectura'],
-    ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'lectura'],
-    ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'lectura'],
-    ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'lectura'],
-    ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura'],
-  ];
-  for (const u of usuarios) {
-    await conn.query(
-      `INSERT INTO encargados (codigo, password, nombre, apellido, cargo, rol)
-       VALUES (?, ?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), apellido = VALUES(apellido), cargo = VALUES(cargo), rol = VALUES(rol)`,
-      u
+  const esProduccion = process.env.NODE_ENV === 'production';
+  if (esProduccion) {
+    const [admins] = await conn.query(
+      "SELECT COUNT(*) AS c FROM encargados WHERE rol = 'admin' AND estado = 1"
     );
+    if (Number(admins[0].c) === 0) {
+      const codigo = String(process.env.ADMIN_INICIAL_CODIGO || '').trim();
+      const password = String(process.env.ADMIN_INICIAL_PASSWORD || '');
+      const nombre = String(process.env.ADMIN_INICIAL_NOMBRE || 'Administrador').trim();
+      const apellido = String(process.env.ADMIN_INICIAL_APELLIDO || 'Sistema').trim();
+      if (!codigo || !password) {
+        throw new Error('No hay administrador activo. Definí ADMIN_INICIAL_CODIGO y ADMIN_INICIAL_PASSWORD antes de iniciar en producción.');
+      }
+      if (!/^[A-Za-z0-9_-]{1,10}$/.test(codigo)) {
+        throw new Error('ADMIN_INICIAL_CODIGO debe tener hasta 10 caracteres alfanuméricos, guion o guion bajo.');
+      }
+      if (password.length < 12) {
+        throw new Error('ADMIN_INICIAL_PASSWORD debe tener al menos 12 caracteres.');
+      }
+      const hash = await bcrypt.hash(password, 10);
+      await conn.query(
+        `INSERT INTO encargados (codigo, password, nombre, apellido, cargo, rol)
+         VALUES (?, ?, ?, ?, ?, 'admin')`,
+        [codigo, hash, nombre, apellido, 'Administrador del Sistema']
+      );
+      console.log('Administrador inicial creado desde variables de entorno.');
+    }
+  } else {
+    const hash = await bcrypt.hash('Adm1n2026', 10);
+    const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
+    const usuarios = [
+      ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
+      ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'lectura'],
+      ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'lectura'],
+      ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'lectura'],
+      ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'lectura'],
+      ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura'],
+    ];
+    for (const u of usuarios) {
+      await conn.query(
+        `INSERT INTO encargados (codigo, password, nombre, apellido, cargo, rol)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), apellido = VALUES(apellido), cargo = VALUES(cargo), rol = VALUES(rol)`,
+        u
+      );
+    }
+    console.log('Encargados sincronizados');
   }
-  console.log('Encargados sincronizados');
 
   // =============================================================
   // CONFIGURACIÓN INICIAL
@@ -244,25 +310,27 @@ async function initDatabase() {
   );
 
   // =============================================================
-  // DATOS DE EJEMPLO (solo si las tablas están vacías)
+  // DATOS DE EJEMPLO (solo en desarrollo y si las tablas están vacías)
   // =============================================================
 
-  const [aluCount] = await conn.query('SELECT COUNT(*) AS c FROM alumnos');
-  if (aluCount[0].c === 0) {
-    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU001','María','González','Bachillerato Técnico en Informática','3° año','Mañana')");
-    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU002','Carlos','Mendoza','Bachillerato Técnico en Contabilidad','2° año','Tarde')");
-    await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU003','Ana','Rivas','Bachillerato Científico en Ciencias Sociales','1° año','Mañana')");
-    console.log('Alumnos de ejemplo creados (ALU001-ALU003)');
-  }
+  if (!esProduccion) {
+    const [aluCount] = await conn.query('SELECT COUNT(*) AS c FROM alumnos');
+    if (aluCount[0].c === 0) {
+      await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU001','María','González','Bachillerato Técnico en Informática','3° año','Mañana')");
+      await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU002','Carlos','Mendoza','Bachillerato Técnico en Contabilidad','2° año','Tarde')");
+      await conn.query("INSERT INTO alumnos (codigo_alumno,nombre,apellido,carrera,curso,turno) VALUES ('ALU003','Ana','Rivas','Bachillerato Científico en Ciencias Sociales','1° año','Mañana')");
+      console.log('Alumnos de ejemplo creados (ALU001-ALU003)');
+    }
 
-  const [eqCount] = await conn.query('SELECT COUNT(*) AS c FROM equipos');
-  if (eqCount[0].c === 0) {
-    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('ThinkPad X1 Carbon','Laptop','Lenovo','16GB RAM, SSD 512GB')");
-    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('MacBook Pro 14','Laptop','Apple','M3 Pro, 18GB RAM')");
-    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('OptiPlex 7090','PC','Dell','Intel i7, 32GB RAM, SSD 1TB')");
-    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('Surface Laptop 5','Laptop','Microsoft','i5, 8GB RAM, 256GB SSD')");
-    await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('Predator Helios 300','Laptop','Acer','i7, 16GB RAM, RTX 3060')");
-    console.log('Equipos de ejemplo creados (5 equipos)');
+    const [eqCount] = await conn.query('SELECT COUNT(*) AS c FROM equipos');
+    if (eqCount[0].c === 0) {
+      await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('ThinkPad X1 Carbon','Laptop','Lenovo','16GB RAM, SSD 512GB')");
+      await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('MacBook Pro 14','Laptop','Apple','M3 Pro, 18GB RAM')");
+      await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('OptiPlex 7090','PC','Dell','Intel i7, 32GB RAM, SSD 1TB')");
+      await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('Surface Laptop 5','Laptop','Microsoft','i5, 8GB RAM, 256GB SSD')");
+      await conn.query("INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES ('Predator Helios 300','Laptop','Acer','i7, 16GB RAM, RTX 3060')");
+      console.log('Equipos de ejemplo creados (5 equipos)');
+    }
   }
 
   console.log('Base de datos inicializada correctamente');

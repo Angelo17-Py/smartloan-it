@@ -28,6 +28,7 @@
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Inicio Rapido](#inicio-rapido)
 - [Credenciales](#credenciales)
+- [Seguridad y Produccion](#seguridad-y-produccion)
 - [API](#api)
 - [Logica de Negocio](#logica-de-negocio)
 - [Base de Datos](#base-de-datos)
@@ -227,7 +228,7 @@ SistemaPrestamos/
 │   ├── devoluciones/devoluciones.html
 │   ├── historial/historial.html
 │   └── usuarios/usuarios.html    ← Gestión de usuarios (admin)
-├── test/                         ← Pruebas de autenticación y sanitización
+├── test/                         ← Pruebas de autenticación, permisos, logout, errores y sanitización
 ├── .github/workflows/ci.yml      ← CI (npm test)
 ├── query.sql
 ├── railway.json                  ← Config Railway (nixpacks)
@@ -303,6 +304,52 @@ start http://localhost:1002
 > El administrador principal del sistema es **Angelo Caballero** (código `1001`).  
 > Los administradores pueden crear, editar, activar/desactivar usuarios y cambiar contraseñas desde la pantalla **Usuarios**.  
 > Cambiá las contraseñas iniciales antes de usar el sistema en producción.
+
+> **Importante:** los usuarios y datos de ejemplo (`1001`–`1005`, `0000`, alumnos y equipos de muestra) se crean **solo en desarrollo**. En producción, una base vacía exige `ADMIN_INICIAL_CODIGO` y `ADMIN_INICIAL_PASSWORD`; no se crean credenciales conocidas.
+
+---
+
+## Seguridad y Produccion
+
+### Variables obligatorias
+- `DB_PASSWORD` o `MYSQL_PASSWORD`: ya no existe una contraseña de base de datos por defecto.
+- `JWT_SECRET`: mínimo 32 caracteres; el servidor no inicia sin él.
+- `NODE_ENV=production`: activa cookies `Secure` y HSTS.
+- `ADMIN_INICIAL_CODIGO`, `ADMIN_INICIAL_PASSWORD`, opcionalmente `ADMIN_INICIAL_NOMBRE` y `ADMIN_INICIAL_APELLIDO`: solo para crear el primer administrador en una base de producción vacía. La contraseña debe tener al menos 12 caracteres y cambiarse después del primer ingreso.
+- `TRUST_PROXY=true`: solo si la aplicación está detrás de un proxy inverso confiable (Railway, Nginx, etc.).
+
+### Sesiones y tokens
+- JWT firmado y verificado exclusivamente con **HS256**, expiración de 12 horas.
+- En cada solicitud protegida se consulta el usuario actual: estado, rol y `token_version`.
+- Desactivar una cuenta, cambiar su rol o su contraseña incrementa `token_version` e invalida los tokens anteriores.
+- **Logout incrementa `token_version`**: cierra todas las sesiones del usuario, no solo la del dispositivo actual.
+- La autenticación principal usa una cookie `sl_token` con `HttpOnly`, `SameSite=Strict` y `Secure` en producción. El login también devuelve un token para clientes Bearer; el frontend no lo almacena.
+
+### Cambios directos en la base de datos
+Si se modifica una contraseña, un rol o el estado directamente en MySQL, hay que incrementar `token_version` en la misma operación:
+
+```sql
+UPDATE encargados
+SET password = '<hash_bcrypt>', token_version = token_version + 1
+WHERE codigo = '1001';
+
+UPDATE encargados
+SET rol = 'lectura', token_version = token_version + 1
+WHERE codigo = '1002';
+
+UPDATE encargados
+SET estado = 0, token_version = token_version + 1
+WHERE codigo = '1005';
+```
+
+Nunca se debe guardar una contraseña en texto plano; el valor debe ser un hash bcrypt generado por la aplicación.
+
+### Despliegue
+- Servir siempre por HTTPS.
+- Mantener `HttpOnly` y `SameSite=Strict`; no desactivar `Secure` en producción.
+- El rate limiting actual es en memoria y adecuado para una sola instancia. Si se despliegan varias instancias, usar un almacén compartido.
+- Realizar un respaldo de la base de datos antes de migraciones o mantenimientos.
+- Los errores 5xx devuelven un mensaje genérico al cliente; el detalle queda en los logs del servidor.
 
 ---
 
@@ -429,12 +476,16 @@ start http://localhost:1002
 3. Selecciona `Angelo17-Py/smartloan-it`
 4. Agrega un plugin **MySQL** desde el dashboard
 5. Configura las variables de entorno:
-   - `JWT_SECRET` → cualquier clave secreta (ej: `SmartLoanIT_Produccion_2026`)
+   - `JWT_SECRET`: clave única de al menos 32 caracteres.
+   - `NODE_ENV=production`.
+   - `TRUST_PROXY=true` si Railway/Nginx está delante de la aplicación.
+   - `ADMIN_INICIAL_CODIGO` y `ADMIN_INICIAL_PASSWORD` (mínimo 12 caracteres) **solo la primera vez**, si la base está vacía. Cambiá esa contraseña después del primer ingreso.
+   - Las credenciales de MySQL las provee el plugin; no uses contraseñas por defecto.
 6. Railway iniciará el deploy automáticamente
-7. Abre la URL asignada (ej: `smartloan-it.up.railway.app`)
-8. Inicia sesión con tu usuario administrador u operador, o con el invitado de demostración ([credenciales](#credenciales))
+7. Abre la URL asignada (ej: `smartloan-it.up.railway.app`) siempre por HTTPS
+8. Inicia sesión con el administrador inicial y cambiá su contraseña
 
-> La base de datos y tablas se crean automáticamente en el primer inicio.
+> La base de datos y las tablas se crean automáticamente en el primer inicio. En producción no se crean usuarios, alumnos ni equipos de ejemplo.
 
 ---
 

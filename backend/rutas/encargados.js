@@ -8,11 +8,8 @@ const { loginLimiter, apiLimiter } = require('../middleware/rateLimiters');
 
 // Inicio de sesión con límite de intentos fallidos
 router.post('/login', loginLimiter, c.login);
-// Cierre de sesión: elimina la cookie httpOnly
-router.post('/logout', (req, res) => {
-  res.clearCookie('sl_token', { path: '/' });
-  res.json({ mensaje: 'Sesión cerrada' });
-});
+// Cierre de sesión: revoca los tokens del usuario y elimina la cookie httpOnly
+router.post('/logout', verificarToken, c.logout);
 // Lista todos los encargados, activos e inactivos (solo admin)
 router.get('/',              verificarToken, requireAdmin, c.listar);
 // Crea un usuario nuevo (solo admin)

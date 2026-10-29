@@ -1,9 +1,11 @@
-// Middleware global de errores: captura cualquier error no manejado y devuelve una respuesta JSON limpia
+// Middleware global de errores: registra el detalle interno y devuelve un mensaje seguro
 function errorHandler(err, req, res, _next) {
+  const status = err.statusCode || err.status || 500;
   console.error('Error:', err.stack || err.message || err);
-  res.status(err.statusCode || err.status || 500).json({
-    mensaje: err.mensaje || err.message || 'Error interno del servidor'
-  });
+  const mensaje = status >= 500
+    ? 'Error interno del servidor'
+    : (err.mensaje || 'Solicitud inválida');
+  res.status(status).json({ mensaje });
 }
 
 module.exports = errorHandler;

@@ -2,6 +2,8 @@ const db = require('../db');
 const bcrypt = require('bcryptjs');
 const { generarToken } = require('../middleware/auth');
 const { s } = require('../utils/sanitize');
+const { opcionesCookieToken } = require('../utils/cookies');
+const { crearLogout } = require('../utils/sesion');
 const auditoria = require('../utils/auditoria');
 
 // Inicio de sesión: verifica código y contraseña, devuelve token JWT
@@ -36,13 +38,10 @@ exports.login = async (req, res) => {
       return res.status(401).json({ mensaje: 'Código o contraseña incorrectos' });
     }
     const token = generarToken(encargado);
-    res.cookie('sl_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/',
+    res.set('Cache-Control', 'no-store');
+    res.cookie('sl_token', token, Object.assign({}, opcionesCookieToken(), {
       maxAge: 12 * 60 * 60 * 1000
-    });
+    }));
     req.encargado = { id: encargado.id_encargado, codigo: encargado.codigo };
     auditoria.registrar(req, {
       accion: 'LOGIN',
@@ -50,13 +49,16 @@ exports.login = async (req, res) => {
       id_entidad: encargado.codigo,
       detalle: `${encargado.nombre} ${encargado.apellido} (${encargado.rol || 'admin'})`
     });
-    const { password: _, ...datos } = encargado;
+    const { password: _, token_version: __, ...datos } = encargado;
     res.json({ token, usuario: datos });
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+
+// Cierra la sesión actual e invalida todos los tokens del usuario
+exports.logout = crearLogout(async function () { return db; });
 
 // Lista todos los encargados, activos e inactivos (sin contraseña)
 exports.listar = async (req, res) => {
@@ -158,6 +160,10 @@ exports.editar = async (req, res) => {
         [nombre, apellido, cargo, rol, id]
       );
     }
+    // Invalidar sesiones anteriores cuando cambia la contraseña o el rol
+    if (password || actual.rol !== rol) {
+      await conn.query('UPDATE encargados SET token_version = token_version + 1 WHERE id_encargado = ?', [id]);
+    }
     const rolAnterior = actual.rol === 'admin' ? 'Administrador' : 'Operador';
     const rolNuevo = rol === 'admin' ? 'Administrador' : 'Operador';
     const cambios = [];
@@ -208,7 +214,10 @@ exports.cambiarEstado = async (req, res) => {
         return res.status(400).json({ mensaje: 'Debe existir al menos un administrador activo' });
       }
     }
-    await conn.query('UPDATE encargados SET estado = ? WHERE id_encargado = ?', [activo ? 1 : 0, id]);
+    await conn.query(
+      'UPDATE encargados SET estado = ?, token_version = token_version + 1 WHERE id_encargado = ?',
+      [activo ? 1 : 0, id]
+    );
     auditoria.registrar(req, {
       accion: activo ? 'ACTIVAR' : 'DESACTIVAR',
       entidad: 'usuario',

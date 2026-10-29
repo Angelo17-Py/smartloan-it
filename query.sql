@@ -16,6 +16,7 @@ CREATE TABLE encargados (
     cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnológicos',
     rol            VARCHAR(20) DEFAULT 'admin',
     estado         BOOLEAN DEFAULT TRUE,
+    token_version  INT NOT NULL DEFAULT 0,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

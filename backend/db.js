@@ -5,11 +5,12 @@ const mysql = require('mysql2/promise');
 const host     = process.env.MYSQLHOST     || process.env.MYSQL_HOST     || process.env.DB_HOST     || 'localhost';
 const port     = parseInt(process.env.MYSQLPORT     || process.env.MYSQL_PORT     || process.env.DB_PORT     || '3306', 10);
 const user     = process.env.MYSQLUSER     || process.env.MYSQL_USER     || process.env.DB_USER     || 'root';
-const password = process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || '1234';
+const password = process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || '';
 const database = process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || process.env.DB_NAME     || 'prestamos_db';
 
-if (!process.env.MYSQLPASSWORD && !process.env.MYSQL_PASSWORD && !process.env.DB_PASSWORD) {
-  console.warn('ADVERTENCIA: No se definió contraseña de MySQL. Usando valor por defecto (solo para desarrollo local).');
+if (!password) {
+  console.error('Falta la contraseña de MySQL. Definí MYSQL_PASSWORD o DB_PASSWORD antes de iniciar el servidor.');
+  process.exit(1);
 }
 
 const pool = mysql.createPool({
