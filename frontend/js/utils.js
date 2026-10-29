@@ -39,6 +39,23 @@ function clearFE(f, prefix) {
   if (fer) fer.classList.remove('show');
 }
 
+// Controla cambios sin guardar en un formulario y advierte antes de salir
+function initUnsavedChangesGuard(selector) {
+  var dirty = false;
+  window.addEventListener('beforeunload', function (e) {
+    if (!dirty) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+  document.querySelectorAll(selector).forEach(function (el) {
+    el.addEventListener('input', function () { dirty = true; });
+  });
+  return {
+    markClean: function () { dirty = false; },
+    isDirty: function () { return dirty; }
+  };
+}
+
 // Formatea una fecha para mostrar en pantalla (dd/mm/aaaa hh:mm)
 function ff(d) {
   if (!d) return '\u2014';

@@ -7,11 +7,10 @@
     <title>SmartLoan IT | Historial</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/modules.css">
     <script src="/js/utils.js" defer></script>
     <style>
-        /* Estilos del historial */
-        /* Contenedor principal de la página */
-        main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
+        /* Estilos específicos del historial (las bases comunes están en modules.css) */
         .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px}
         .tabs{display:flex;gap:3px;background:var(--surface);padding:4px;border-radius:10px}
         .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:var(--text-sm);cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none}
@@ -20,17 +19,8 @@
         .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:var(--text-xs);cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
         .fb.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
         .fb:hover:not(.active){background:var(--surface);color:var(--text);}
-        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:8px 14px;margin-bottom:12px;}
-        .search-bar svg{color:var(--dim);flex-shrink:0;}
-        .search-bar input{background:none;border:none;color:var(--text);font-size:var(--text-sm);outline:none;flex:1;padding:0;}
-        .search-bar input::placeholder{color:var(--dim);}
+        .search-bar input{font-size:var(--text-sm);}
         .search-count{font-size:var(--text-xs);color:var(--dim);white-space:nowrap;font-weight:700;}
-        .table-wrap{border-radius:14px;overflow:hidden;}
-        .table-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
-        .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
-        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:2px 8px;font-size:var(--text-xs);font-weight:800;}
-        th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-align:center;}
-        td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;text-align:center;}
         .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:var(--mono);color:var(--text);white-space:nowrap;}
         .sub-text{font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
         .em{text-align:center;padding:40px;color:var(--dim);font-size:var(--text-sm);}

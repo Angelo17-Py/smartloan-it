@@ -7,51 +7,12 @@
     <title>SmartLoan IT | Alumnos</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/modules.css">
     <script src="/js/utils.js" defer></script>
     <style>
-        main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
-        /* Estilos para la tarjeta del formulario de registro */
-        .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:16px;}
-        /* Estilo del titulo del formulario */
-        .form-card-title{font-size:var(--text-xs);letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:12px;}
-        /* Los campos del formulario se ponen uno al lado del otro */
-        .form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
-        /* Cada campo ocupa el mismo espacio */
-        .form-row .ig{flex:1;min-width:130px;}
-        /* Contenedor del botón */
-        .btn-wrap{padding:0;display:flex;align-items:flex-end;}
-        /* Barra de búsqueda con lupa */
-        .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:8px 14px;margin-bottom:12px;}
-        .search-bar svg{color:var(--dim);flex-shrink:0;}
-        /* El input de búsqueda ocupa todo el espacio disponible */
-        .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;padding:0;}
-        .search-bar input::placeholder{color:var(--dim);}
-        /* Contenedor de la tabla con bordes redondeados */
-        .table-wrap{border-radius:14px;overflow:hidden;}
-        /* Encabezado de la tabla con el titulo y el contador */
-        .table-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
-        .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
-        /* Contador de alumnos (circulito con número) */
-        .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:2px 8px;font-size:var(--text-xs);font-weight:800;}
-        /* La tabla ocupa todo el ancho y sin bordes separados */
-        table{width:100%;table-layout:fixed;border-collapse:collapse;}
-        th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-align:center;}
-        td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;text-align:center;}
+        /* Reglas específicas de alumnos (las comunes están en modules.css) */
         td:nth-child(3),td:nth-child(2){overflow-wrap:break-word;word-break:break-word}
-        /* Número de fila */
-        .num{color:var(--dim);font-weight:700;font-size:var(--text-sm);}
-        /* Fila vacía cuando no hay alumnos */
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
-        /* Botones de acción (editar/eliminar) */
-        .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
-        /* Por defecto ocultamos lo que requiere sesión */
-        .admin-only{display:none!important;}
-        /* Los usuarios autenticados pueden registrar y editar; el admin además elimina */
-        body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
-        /* Modal de edición con dos columnas */
-        .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-        /* Animación del modal */
-        .mo .md{animation:fi var(--duration-normal) var(--ease-out);}
         /* En pantallas chicas los formularios se apilan verticalmente */
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}main{padding:20px 16px;}}
         @media(max-width:600px){.form-card{padding:14px 16px}.search-bar{padding:var(--space-2) var(--space-3)}}
@@ -144,21 +105,8 @@ if(!localStorage.getItem('encargado')) window.location.href = '/';
 let todos = [];
 // Guarda el id del alumno que estamos editando
 let alumnoEditandoId = null;
-// Controla si el formulario tiene cambios sin guardar
-var formDirty = false;
-
-// Cuando el usuario cierra o recarga la página, preguntamos si está seguro
-window.onbeforeunload = function(e){
-    if(formDirty){
-        e.preventDefault();
-        e.returnValue = '';
-    }
-};
-
-// Si el usuario escribe algo en el formulario, marcamos que hay cambios
-document.querySelectorAll('.form-card input, .form-card select, .form-card textarea').forEach(function(el){
-    el.addEventListener('input', function(){ formDirty = true; });
-});
+// Advierte si hay cambios sin guardar al intentar salir
+var formGuard = null;
 
 // Revisamos si los campos del formulario están llenos para habilitar el botón de registro
 function checkNuevoAlumno(){
@@ -268,7 +216,7 @@ async function crear(){
         });
         const d = await safeJson(r);
         if (r.ok) {
-            formDirty = false;
+            formGuard.markClean();
             // Limpiamos el formulario después de registrar
             document.getElementById('nombre').value = '';
             document.getElementById('apellido').value = '';
@@ -372,6 +320,7 @@ async function guardarAlumno(){
 window.onload = function(){
     document.body.classList.add('role-user');
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
+    formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
     cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
 };
 </script>
