@@ -383,6 +383,7 @@ function initPageEntrance(){
 /* ===== NOTIFICACIONES DE VENCIMIENTO ===== */
 function initNotificaciones(){
   if(!localStorage.getItem('encargado')) return;
+  if(!/\/home\/dashboard(\.html)?$/.test(window.location.pathname)) return;
   if(/\/login\//.test(window.location.pathname)) return;
   if(document.getElementById('notif-wrap')) return;
   var target=document.querySelector('.dash-header-right')||document.querySelector('.page-header');
