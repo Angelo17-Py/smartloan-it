@@ -326,14 +326,14 @@
         #live-time-lbl{color:var(--dash-muted);font-size:10.5px;white-space:nowrap}
         .activity-link{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap}
         .activity-link:hover{text-decoration:underline}
-        .activity-headrow{display:grid;grid-template-columns:62px minmax(150px,1.25fr) minmax(110px,1fr) 96px 92px;gap:14px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--dash-line);background:rgba(237,230,211,.018);color:var(--dash-muted);font-size:8.5px;font-weight:650;letter-spacing:.12em;text-transform:uppercase}
+        .activity-headrow{display:grid;grid-template-columns:48px minmax(165px,1.5fr) minmax(90px,1fr) 78px 80px;gap:6px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--dash-line);background:rgba(237,230,211,.018);color:var(--dash-muted);font-size:8.5px;font-weight:650;letter-spacing:.12em;text-transform:uppercase}
         .activity-card .feed-list{display:flex;flex-direction:column;min-height:0;background:transparent;border:0;border-radius:0;overflow:visible;flex:1}
-        .feed-item{display:grid;grid-template-columns:62px minmax(150px,1.25fr) minmax(110px,1fr) 96px 92px;grid-template-areas:none;grid-auto-flow:row;gap:14px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--dash-line);transition:background var(--duration-fast) var(--ease-out)}
+        .feed-item{display:grid;grid-template-columns:48px minmax(165px,1.5fr) minmax(90px,1fr) 78px 80px;grid-template-areas:none;grid-auto-flow:row;gap:6px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--dash-line);transition:background var(--duration-fast) var(--ease-out)}
         .feed-item:last-child{border-bottom:0}
         .feed-item:hover{background:rgba(237,230,211,.025)}
         .feed-time{grid-area:auto;color:var(--dash-muted);font-size:10.5px;font-family:var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
-        .feed-equipment{display:flex;align-items:center;gap:10px;min-width:0}
-        .feed-eq-icon{width:30px;height:30px;display:grid;place-items:center;flex:0 0 auto;border-radius:7px;background:rgba(237,230,211,.045);color:var(--text-secondary)}
+        .feed-equipment{display:flex;align-items:center;gap:6px;min-width:0}
+        .feed-eq-icon{width:24px;height:24px;display:grid;place-items:center;flex:0 0 auto;border-radius:6px;background:rgba(237,230,211,.045);color:var(--text-secondary)}
         .feed-eq-icon svg{width:15px;height:15px}
         .feed-eq-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
         .feed-eq-name{color:var(--text);font-size:11.5px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -473,6 +473,47 @@
         @media(prefers-reduced-motion:reduce){
             .dash-header,.dash-overview,.activity-card,.dash-right .rc-card,.export-card{opacity:1!important;transform:none!important;animation:none!important}
         }
+
+        /* ===== ESCALA TIPOGRÁFICA UNIFICADA CON LOS MÓDULOS ===== */
+        .dash-brand strong{font-size:var(--text-base)}
+        .dash-brand small{font-size:var(--text-xs)}
+        .dash-greeting{font-size:var(--text-2xl)!important}
+        .dash-kicker{font-size:var(--text-xs)}
+        .dash-role{font-size:var(--text-sm)!important}
+        .dash-nav-item{font-size:var(--text-sm)}
+        .dash-sidebar-footer strong{font-size:var(--text-sm)}
+        .dash-sidebar-footer span{font-size:var(--text-xs)}
+        .stat-num,.dash-stat-num{font-size:var(--text-xl)}
+        .stat-label,.dash-stat-label{font-size:var(--text-xs)}
+        .stat-note{font-size:0.75rem}
+        .qa-label{font-size:var(--text-xs)}
+        .export-copy .qa-label{font-size:var(--text-sm)}
+        .export-copy #lastExport{font-size:var(--text-xs)}
+        .activity-title-wrap h2{font-size:var(--text-base)}
+        .activity-title-wrap p{font-size:var(--text-sm)}
+        .activity-headrow{font-size:var(--text-xs)}
+        .feed-time,.feed-eq-code{font-size:var(--text-xs)}
+        .feed-eq-name,.feed-student,.feed-action{font-size:var(--text-xs)}
+        .feed-status{font-size:0.75rem;text-transform:none;letter-spacing:0}
+        .rc-card .rc-header h3{font-size:var(--text-sm)}
+        .rc-tag{font-size:var(--text-xs)}
+        .donut-center span{font-size:var(--text-xs)}
+        .donut-center strong{font-size:var(--text-2xl)}
+        .donut-legend li{font-size:var(--text-xs)}
+        .donut-legend b{font-size:var(--text-sm)!important}
+        .donut-legend small{font-size:var(--text-xs)}
+        .cfg-display-label span{font-size:var(--text-sm)}
+        .cfg-display-label span:last-child{font-size:var(--text-xs)}
+        .cfg-input-section label{font-size:var(--text-xs)}
+        .em-title strong{font-size:var(--text-sm)}
+        .em-title span{font-size:var(--text-xs)}
+        .em-stat span{font-size:var(--text-xs)}
+        .em-stat strong{font-size:var(--text-base)}
+        .em-last span{font-size:var(--text-xs)}
+        .em-last strong{font-size:var(--text-sm)}
+        .feed-empty-title{font-size:var(--text-sm)}
+        .feed-empty-text{font-size:var(--text-xs)}
+        .feed-empty .btn-sm{font-size:var(--text-xs)}
     </style>
     <script>
     (function(){
