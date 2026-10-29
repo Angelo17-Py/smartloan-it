@@ -27,17 +27,19 @@ exports.actualizar = async (req, res) => {
       return res.status(400).json({ mensaje: 'Valor inválido. Debe ser un número positivo' });
     }
     const conn = await db;
-    // Verificamos que la clave exista
-    const [existing] = await conn.query('SELECT id_config FROM configuracion WHERE clave=?', [req.params.clave]);
+    // Verificamos que la clave exista y guardamos el valor anterior
+    const [existing] = await conn.query('SELECT valor FROM configuracion WHERE clave=?', [req.params.clave]);
     if (existing.length === 0) {
       return res.status(404).json({ mensaje: 'La clave de configuración no existe' });
     }
-    await conn.query('UPDATE configuracion SET valor=? WHERE clave=?', [String(Math.round(valNum)), req.params.clave]);
+    const valorAnterior = existing[0].valor;
+    const valorNuevo = String(Math.round(valNum));
+    await conn.query('UPDATE configuracion SET valor=? WHERE clave=?', [valorNuevo, req.params.clave]);
     auditoria.registrar(req, {
       accion: 'EDITAR',
       entidad: 'configuracion',
       id_entidad: req.params.clave,
-      detalle: `Nuevo valor: ${Math.round(valNum)}`
+      detalle: `Valor: ${valorAnterior} → ${valorNuevo}`
     });
     res.json({ mensaje: 'Configuración actualizada' });
   } catch (err) {

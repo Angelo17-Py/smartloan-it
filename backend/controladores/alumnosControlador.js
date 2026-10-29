@@ -132,15 +132,35 @@ exports.editar = async (req, res) => {
     const { nombre, apellido, carrera, curso, turno } = req.body;
     if (!nombre || !apellido) return res.status(400).json({ mensaje: 'Datos incompletos' });
     const conn = await db;
+    const [prevRows] = await conn.query(
+      'SELECT nombre, apellido, carrera, curso, turno FROM alumnos WHERE id_alumno = ?', [req.params.id]
+    );
+    if (prevRows.length === 0) {
+      return res.status(404).json({ mensaje: 'Alumno no encontrado' });
+    }
+    const nuevo = {
+      nombre: s(nombre, 100),
+      apellido: s(apellido, 100),
+      carrera: s(carrera, 150),
+      curso: s(curso, 50),
+      turno: s(turno || 'Mañana', 20)
+    };
     await conn.query(
       'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=?, turno=? WHERE id_alumno=?',
-      [s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50), s(turno || 'Mañana', 20), req.params.id]
+      [nuevo.nombre, nuevo.apellido, nuevo.carrera, nuevo.curso, nuevo.turno, req.params.id]
     );
+    const prev = prevRows[0];
+    const cambios = [];
+    [['Nombre', 'nombre'], ['Apellido', 'apellido'], ['Bachillerato', 'carrera'], ['Curso', 'curso'], ['Turno', 'turno']].forEach(function (par) {
+      if (String(prev[par[1]] || '') !== String(nuevo[par[1]] || '')) {
+        cambios.push(par[0] + ': "' + (prev[par[1]] || '—') + '" → "' + (nuevo[par[1]] || '—') + '"');
+      }
+    });
     auditoria.registrar(req, {
       accion: 'EDITAR',
       entidad: 'alumno',
       id_entidad: req.params.id,
-      detalle: `${nombre} ${apellido} · ${curso || '—'} · ${turno || 'Mañana'}`
+      detalle: cambios.length ? cambios.join(' · ') : 'Sin cambios'
     });
     res.json({ mensaje: 'Alumno actualizado' });
   } catch (err) {

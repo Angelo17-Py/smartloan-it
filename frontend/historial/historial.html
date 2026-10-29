@@ -261,12 +261,12 @@ function getAudFiltrados(){
     var q=normalizeText(document.getElementById('busq').value).trim();
     if(!q) return auditoria.slice();
     return auditoria.filter(function(a){
-        return normalizeText(a.codigo_encargado||'').includes(q)||
+        return normalizeText((a.encargado_nombre||'')+' '+(a.encargado_apellido||'')).includes(q)||
+               normalizeText(a.codigo_encargado||'').includes(q)||
                normalizeText(a.accion||'').includes(q)||
                normalizeText(a.entidad||'').includes(q)||
                normalizeText(a.id_entidad||'').includes(q)||
-               normalizeText(a.detalle||'').includes(q)||
-               normalizeText(a.ip||'').includes(q);
+               normalizeText(a.detalle||'').includes(q);
     });
 }
 
@@ -278,18 +278,19 @@ function renderA(){
     var header='<div class="table-header"><span>Registro de auditoría</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='a') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var map={'CREAR':'badge-success','ELIMINAR':'badge-danger','EDITAR':'badge-warn','ESTADO':'badge-warn','DESACTIVAR':'badge-danger','LOGIN':'badge-info'};
-    var html=header+'<table style="width:100%"><thead><tr><th scope="col">Fecha y hora</th><th scope="col">Usuario</th><th scope="col">Acción</th><th scope="col">Módulo</th><th scope="col">Detalle</th><th scope="col">IP</th></tr></thead><tbody>';
+    var map={'CREAR':'badge-success','ELIMINAR':'badge-danger','EDITAR':'badge-warn','ESTADO':'badge-warn','DESACTIVAR':'badge-danger','ACTIVAR':'badge-success','LOGIN':'badge-info'};
+    var modulos={'sesion':'Sesión','alumno':'Alumno','equipo':'Equipo','prestamo':'Préstamo','devolucion':'Devolución','usuario':'Usuario','configuracion':'Configuración'};
+    var html=header+'<table style="width:100%"><thead><tr><th scope="col">Fecha y hora</th><th scope="col">Usuario</th><th scope="col">Acción</th><th scope="col">Módulo</th><th scope="col">Detalle</th></tr></thead><tbody>';
     d.forEach(function(a,i){
         var cls=map[a.accion]||'badge-primary';
         var sc='animate-fi-'+Math.min(i+1,10);
+        var usuario=((a.encargado_nombre||'')+' '+(a.encargado_apellido||'')).trim()||a.codigo_encargado||'Sistema';
         html+='<tr class="'+sc+'">';
         html+='<td data-label="Fecha">'+ff(a.fecha)+'</td>';
-        html+='<td data-label="Usuario" style="color:var(--dim);font-size:0.82rem">'+resaltar(a.codigo_encargado||'Sistema',q)+'</td>';
+        html+='<td data-label="Usuario"><strong>'+resaltar(usuario,q)+'</strong>'+(a.codigo_encargado?'<div class="sub-text">Código: '+esc(a.codigo_encargado)+'</div>':'')+'</td>';
         html+='<td data-label="Acción"><span class="badge '+cls+'">'+esc(a.accion)+'</span></td>';
-        html+='<td data-label="Módulo">'+resaltar(a.entidad||'—',q)+(a.id_entidad?' <span class="code">'+esc(a.id_entidad)+'</span>':'')+'</td>';
+        html+='<td data-label="Módulo">'+resaltar(modulos[a.entidad]||a.entidad||'—',q)+'</td>';
         html+='<td data-label="Detalle" style="color:var(--dim);font-size:0.82rem">'+resaltar(a.detalle||'—',q)+'</td>';
-        html+='<td data-label="IP" style="color:var(--dim);font-size:0.75rem">'+esc(a.ip||'—')+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -317,6 +318,10 @@ function setTab(t,el){
     else if(t==='d'){td.style.animation='none';void td.offsetWidth;td.style.animation='fi 0.35s var(--ease-out) both';}
     else{ta.style.animation='none';void ta.offsetWidth;ta.style.animation='fi 0.35s var(--ease-out) both';}
     document.getElementById('filtros').style.display=t==='p'?'flex':'none';
+    var busq=document.getElementById('busq');
+    if(t==='a') busq.placeholder='Buscar por usuario, acción, módulo o detalle...';
+    else if(t==='d') busq.placeholder='Buscar por alumno, equipo, código o daño...';
+    else busq.placeholder='Buscar por alumno, equipo, código, motivo...';
     if(t==='p') renderP();
     else if(t==='d') renderD();
     else renderA();

@@ -131,7 +131,7 @@ exports.editar = async (req, res) => {
     }
     const conn = await db;
     const [rows] = await conn.query(
-      'SELECT id_encargado, codigo, nombre, apellido, rol, estado FROM encargados WHERE id_encargado = ?', [id]
+      'SELECT id_encargado, codigo, nombre, apellido, cargo, rol, estado FROM encargados WHERE id_encargado = ?', [id]
     );
     if (rows.length === 0) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
@@ -158,11 +158,21 @@ exports.editar = async (req, res) => {
         [nombre, apellido, cargo, rol, id]
       );
     }
+    const rolAnterior = actual.rol === 'admin' ? 'Administrador' : 'Operador';
+    const rolNuevo = rol === 'admin' ? 'Administrador' : 'Operador';
+    const cambios = [];
+    [['Nombre', 'nombre', nombre], ['Apellido', 'apellido', apellido], ['Cargo', 'cargo', cargo]].forEach(function (par) {
+      if (String(actual[par[1]] || '') !== String(par[2] || '')) {
+        cambios.push(par[0] + ': "' + (actual[par[1]] || '—') + '" → "' + par[2] + '"');
+      }
+    });
+    if (actual.rol !== rol) cambios.push('Rol: "' + rolAnterior + '" → "' + rolNuevo + '"');
+    if (password) cambios.push('Contraseña actualizada');
     auditoria.registrar(req, {
       accion: 'EDITAR',
       entidad: 'usuario',
       id_entidad: actual.codigo,
-      detalle: `${nombre} ${apellido} · ${rol === 'admin' ? 'Administrador' : 'Operador'}${password ? ' · contraseña actualizada' : ''}`
+      detalle: cambios.length ? cambios.join(' · ') : 'Sin cambios'
     });
     res.json({ mensaje: 'Usuario actualizado correctamente' });
   } catch (err) {

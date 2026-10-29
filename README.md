@@ -94,7 +94,7 @@ SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos
 
 ### Auditoría
 - Registro de **login, altas, ediciones, cambios de estado, activaciones/desactivaciones y eliminaciones**
-- Guarda usuario, acción, módulo, ID afectado, detalle, IP y fecha
+- Guarda usuario, acción, módulo, detalle y fecha
 - En eliminaciones conserva un resumen del registro borrado
 - Pestaña **Auditoría** en Historial, disponible solo para administradores
 
@@ -386,7 +386,7 @@ start http://localhost:1002
 | **Control de disponibilidad** | Un alumno con préstamo activo no aparece en el selector de nuevos préstamos. |
 | **Roles y permisos** | El operador realiza las tareas diarias; el administrador además gestiona usuarios, configuración, auditoría y eliminaciones. |
 | **Notificaciones** | Se consideran próximos a vencer los préstamos activos con devolución estimada dentro de las próximas 48 horas. |
-| **Auditoría** | Toda acción administrativa u operativa relevante se registra con usuario, fecha, IP y detalle; las eliminaciones guardan un resumen previo. |
+| **Auditoría** | Toda acción administrativa u operativa relevante se registra con usuario, fecha y detalle; las eliminaciones guardan un resumen previo. |
 | **Usuarios** | Código único, contraseña mínima de 6 caracteres y confirmación. No se puede desactivar la propia cuenta ni dejar el sistema sin un administrador activo. |
 | **Protección de datos** | Un equipo prestado no se puede eliminar ni cambiar de estado manualmente. Un alumno con préstamo activo no se puede desactivar. |
 | **Zona horaria** | Todas las fechas se registran en hora local de Paraguay (`America/Asuncion`). |
@@ -406,7 +406,7 @@ start http://localhost:1002
 | `prestamos` | Registro de salida de equipos |
 | `devoluciones` | Registro de retorno con daños y multas |
 | `configuracion` | Parámetros del sistema (multa por día, etc.) |
-| `auditoria` | Registro de acciones: usuario, acción, módulo, detalle, IP y fecha |
+| `auditoria` | Registro de acciones: usuario, acción, módulo, detalle y fecha |
 
 ### Triggers Automáticos
 

@@ -93,11 +93,12 @@ exports.cambiarEstado = async (req, res) => {
       return res.status(400).json({ mensaje: 'Estado inválido' });
     }
     const conn = await db;
-    const [equipos] = await conn.query('SELECT estado FROM equipos WHERE id_equipo=?', [req.params.id]);
+    const [equipos] = await conn.query('SELECT nombre, estado FROM equipos WHERE id_equipo=?', [req.params.id]);
     if (equipos.length === 0) {
       return res.status(404).json({ mensaje: 'Equipo no encontrado' });
     }
     const actual = equipos[0].estado;
+    const nombreEquipo = equipos[0].nombre;
     // Solo se permite cambiar manualmente entre Disponible y En mantenimiento
     const permitidas = {
       'Disponible':       ['En mantenimiento'],
@@ -112,7 +113,7 @@ exports.cambiarEstado = async (req, res) => {
       accion: 'ESTADO',
       entidad: 'equipo',
       id_entidad: req.params.id,
-      detalle: `${actual} → ${estado}`
+      detalle: `${nombreEquipo}: ${actual} → ${estado}`
     });
     res.json({ mensaje: 'Estado actualizado' });
   } catch (err) {
@@ -151,15 +152,34 @@ exports.editar = async (req, res) => {
     const { nombre, tipo, marca, descripcion } = req.body;
     if (!nombre || !tipo || !marca || !descripcion) return res.status(400).json({ mensaje: 'Datos incompletos' });
     const conn = await db;
+    const [prevRows] = await conn.query(
+      'SELECT nombre, tipo, marca, descripcion FROM equipos WHERE id_equipo = ?', [req.params.id]
+    );
+    if (prevRows.length === 0) {
+      return res.status(404).json({ mensaje: 'Equipo no encontrado' });
+    }
+    const nuevo = {
+      nombre: s(nombre, 100),
+      tipo: s(tipo, 50),
+      marca: s(marca, 50),
+      descripcion: s(descripcion, 200)
+    };
     await conn.query(
       'UPDATE equipos SET nombre=?, tipo=?, marca=?, descripcion=? WHERE id_equipo=?',
-      [s(nombre, 100), s(tipo, 50), s(marca, 50), s(descripcion, 200), req.params.id]
+      [nuevo.nombre, nuevo.tipo, nuevo.marca, nuevo.descripcion, req.params.id]
     );
+    const prev = prevRows[0];
+    const cambios = [];
+    [['Nombre', 'nombre'], ['Tipo', 'tipo'], ['Marca', 'marca'], ['Descripción', 'descripcion']].forEach(function (par) {
+      if (String(prev[par[1]] || '') !== String(nuevo[par[1]] || '')) {
+        cambios.push(par[0] + ': "' + (prev[par[1]] || '—') + '" → "' + (nuevo[par[1]] || '—') + '"');
+      }
+    });
     auditoria.registrar(req, {
       accion: 'EDITAR',
       entidad: 'equipo',
       id_entidad: req.params.id,
-      detalle: `${nombre} · ${tipo} · ${marca}`
+      detalle: cambios.length ? cambios.join(' · ') : 'Sin cambios'
     });
     res.json({ mensaje: 'Equipo actualizado' });
   } catch (err) {

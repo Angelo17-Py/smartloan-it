@@ -13,9 +13,12 @@ router.get('/', verificarToken, requireAdmin, async (req, res) => {
     if (limit > 500) limit = 500;
     const conn = await db;
     const [rows] = await conn.query(
-      `SELECT id_auditoria, id_encargado, codigo_encargado, accion, entidad, id_entidad, detalle, ip, fecha
-       FROM auditoria
-       ORDER BY fecha DESC, id_auditoria DESC
+      `SELECT a.id_auditoria, a.id_encargado, a.codigo_encargado,
+         e.nombre AS encargado_nombre, e.apellido AS encargado_apellido,
+         a.accion, a.entidad, a.id_entidad, a.detalle, a.fecha
+       FROM auditoria a
+       LEFT JOIN encargados e ON a.id_encargado = e.id_encargado
+       ORDER BY a.fecha DESC, a.id_auditoria DESC
        LIMIT ${limit}`
     );
     res.json(rows);
