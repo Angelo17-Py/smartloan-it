@@ -1,5 +1,6 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
+const auditoria = require('../utils/auditoria');
 
 // Lista todos los alumnos activos, ordenados por código
 exports.listar = async (req, res) => {
@@ -48,6 +49,12 @@ exports.crear = async (req, res) => {
       [codigo_alumno, s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50), s(turno || 'Mañana', 20)]
     );
     await conn.commit();
+    auditoria.registrar(req, {
+      accion: 'CREAR',
+      entidad: 'alumno',
+      id_entidad: codigo_alumno,
+      detalle: `${nombre} ${apellido} · ${turno || 'Mañana'}`
+    });
     res.json({ mensaje: 'Alumno registrado', codigo_alumno });
   } catch (err) {
     await conn.rollback();
@@ -75,6 +82,12 @@ exports.eliminar = async (req, res) => {
       }
       await tx.query('UPDATE alumnos SET estado = 0 WHERE id_alumno = ?', [id]);
       await tx.commit();
+      auditoria.registrar(req, {
+        accion: 'DESACTIVAR',
+        entidad: 'alumno',
+        id_entidad: id,
+        detalle: 'Alumno desactivado (historial conservado)'
+      });
       res.json({ mensaje: 'Alumno desactivado correctamente. Su historial se conserva.' });
     } catch (txErr) {
       await tx.rollback();
@@ -123,6 +136,12 @@ exports.editar = async (req, res) => {
       'UPDATE alumnos SET nombre=?, apellido=?, carrera=?, curso=?, turno=? WHERE id_alumno=?',
       [s(nombre, 100), s(apellido, 100), s(carrera, 150), s(curso, 50), s(turno || 'Mañana', 20), req.params.id]
     );
+    auditoria.registrar(req, {
+      accion: 'EDITAR',
+      entidad: 'alumno',
+      id_entidad: req.params.id,
+      detalle: `${nombre} ${apellido} · ${curso || '—'} · ${turno || 'Mañana'}`
+    });
     res.json({ mensaje: 'Alumno actualizado' });
   } catch (err) {
     console.error(err);

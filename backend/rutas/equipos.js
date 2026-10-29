@@ -10,14 +10,14 @@ const { apiLimiter } = require('../middleware/rateLimiters');
 router.get('/',              verificarToken, c.listar);
 // Lista solo equipos disponibles para préstamo
 router.get('/disponibles',   verificarToken, c.disponibles);
-// Crea un equipo nuevo (solo admin)
-router.post('/',             verificarToken, requireAdmin, apiLimiter, c.crear);
+// Crea un equipo nuevo (cualquier usuario autenticado)
+router.post('/',             verificarToken, apiLimiter, c.crear);
 // Elimina un equipo (solo admin)
 router.delete('/:id',        verificarToken, requireAdmin, apiLimiter, c.eliminar);
-// Edita datos de un equipo (solo admin)
-router.put('/:id',           verificarToken, requireAdmin, apiLimiter, c.editar);
+// Edita datos de un equipo (cualquier usuario autenticado)
+router.put('/:id',           verificarToken, apiLimiter, c.editar);
 // Cambia el estado de un equipo (Disponible/Prestado/En mantenimiento)
-router.patch('/:id/estado',  verificarToken, requireAdmin, apiLimiter, c.cambiarEstado);
+router.patch('/:id/estado',  verificarToken, apiLimiter, c.cambiarEstado);
 // Historial de préstamos de un equipo específico
 router.get('/:id/historial', verificarToken, c.historial);
 

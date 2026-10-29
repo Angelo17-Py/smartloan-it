@@ -120,6 +120,24 @@ async function initDatabase() {
     )
   `);
 
+  // Tabla de auditoría (registro de acciones sobre los datos del sistema)
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS auditoria (
+      id_auditoria      INT AUTO_INCREMENT PRIMARY KEY,
+      id_encargado      INT DEFAULT NULL,
+      codigo_encargado  VARCHAR(10) DEFAULT NULL,
+      accion            VARCHAR(20) NOT NULL,
+      entidad           VARCHAR(30) NOT NULL,
+      id_entidad        VARCHAR(40) DEFAULT NULL,
+      detalle           VARCHAR(500) DEFAULT NULL,
+      ip                VARCHAR(45) DEFAULT NULL,
+      fecha             DATETIME DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_auditoria_fecha (fecha),
+      INDEX idx_auditoria_entidad (entidad),
+      FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado) ON DELETE SET NULL
+    )
+  `);
+
   // =============================================================
   // MIGRACIONES PARA BASES DE DATOS EXISTENTES
   // Cada una envuelta en try/catch para no romper si ya se aplicaron
@@ -200,10 +218,10 @@ async function initDatabase() {
   const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
   const usuarios = [
     ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'admin'],
-    ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'admin'],
+    ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'lectura'],
+    ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'lectura'],
+    ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'lectura'],
+    ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'lectura'],
     ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura'],
   ];
   for (const u of usuarios) {

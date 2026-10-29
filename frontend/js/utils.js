@@ -380,8 +380,155 @@ function initPageEntrance(){
   });
 }
 
+/* ===== NOTIFICACIONES DE VENCIMIENTO ===== */
+function initNotificaciones(){
+  if(!localStorage.getItem('encargado')) return;
+  if(/\/login\//.test(window.location.pathname)) return;
+  if(document.getElementById('notif-wrap')) return;
+  var target=document.querySelector('.dash-header-right')||document.querySelector('.page-header');
+  if(!target) return;
+
+  var wrap=document.createElement('div');
+  wrap.className='notif-wrap';
+  wrap.id='notif-wrap';
+  wrap.innerHTML=
+    '<button type="button" class="notif-btn" id="notif-btn" aria-label="Notificaciones de vencimiento" aria-expanded="false" aria-controls="notif-panel">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>'+
+      '<span class="notif-badge" id="notif-badge" hidden>0</span>'+
+    '</button>';
+  target.appendChild(wrap);
+
+  // El panel se monta fuera del encabezado para que ningún contexto de apilamiento lo oculte
+  var panel=document.createElement('div');
+  panel.className='notif-panel';
+  panel.id='notif-panel';
+  panel.setAttribute('role','region');
+  panel.setAttribute('aria-label','Notificaciones de vencimiento');
+  panel.innerHTML=
+    '<div class="notif-head"><div><h3>Vencimientos</h3><span id="notif-sub">Préstamos vencidos o por vencer</span></div></div>'+
+    '<div class="notif-list" id="notif-list"><div class="notif-empty">Cargando…</div></div>'+
+    '<div class="notif-foot"><a href="/devoluciones/devoluciones.html">Ir a devoluciones</a></div>';
+  document.body.appendChild(panel);
+
+  var btn=document.getElementById('notif-btn');
+  var list=document.getElementById('notif-list');
+  var badge=document.getElementById('notif-badge');
+  var sub=document.getElementById('notif-sub');
+  var alertas=[];
+  var abierto=false;
+  var READ_KEY='sl_notif_leidas';
+
+  function posicionar(){
+    if(window.innerWidth<=600){
+      panel.style.top='';panel.style.right='';
+      return;
+    }
+    var r=btn.getBoundingClientRect();
+    panel.style.top=(r.bottom+10)+'px';
+    panel.style.right=Math.max(12,window.innerWidth-r.right)+'px';
+  }
+
+  function firma(a){
+    return a.id_prestamo+':'+(Number(a.minutos_restantes)<0?'v':'p')+':'+a.fecha_devolucion_estimada;
+  }
+  function leerLeidas(){
+    try{ var v=JSON.parse(localStorage.getItem(READ_KEY)||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; }
+  }
+  function guardarLeidas(v){
+    try{ localStorage.setItem(READ_KEY,JSON.stringify(v.slice(-300))); }catch(e){}
+  }
+  function actualizarBadge(){
+    var leidas=leerLeidas();
+    var pendientes=alertas.filter(function(a){return leidas.indexOf(firma(a))===-1;}).length;
+    if(pendientes>0){
+      badge.hidden=false;
+      badge.textContent=pendientes>9?'9+':String(pendientes);
+    } else {
+      badge.hidden=true;
+    }
+  }
+  function marcarLeidas(){
+    var leidas=leerLeidas();
+    alertas.forEach(function(a){
+      var f=firma(a);
+      if(leidas.indexOf(f)===-1) leidas.push(f);
+    });
+    guardarLeidas(leidas);
+    actualizarBadge();
+  }
+  function textoRestante(min){
+    var abs=Math.abs(Math.round(min));
+    var dias=Math.floor(abs/1440);
+    var horas=Math.floor((abs%1440)/60);
+    var mins=abs%60;
+    if(dias>0) return dias+' d'+(horas?' '+horas+' h':'');
+    if(horas>0) return horas+' h'+(mins?' '+mins+' min':'');
+    return mins+' min';
+  }
+  function render(){
+    var vencidos=alertas.filter(function(a){return Number(a.minutos_restantes)<0;}).length;
+    var porVencer=alertas.length-vencidos;
+    if(!alertas.length) sub.textContent='Sin vencimientos próximos';
+    else if(vencidos && !porVencer) sub.textContent=vencidos+' vencido'+(vencidos!==1?'s':'');
+    else if(vencidos) sub.textContent=vencidos+' vencido'+(vencidos!==1?'s':'')+' · '+porVencer+' por vencer';
+    else sub.textContent=porVencer+' por vencer';
+    if(!alertas.length){
+      list.innerHTML='<div class="notif-empty">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>'+
+        '<span>No hay préstamos vencidos ni por vencer en las próximas 48 horas.</span></div>';
+      return;
+    }
+    var lateIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    var soonIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+    list.innerHTML=alertas.map(function(a){
+      var late=Number(a.minutos_restantes)<0;
+      var txt=textoRestante(a.minutos_restantes);
+      var due=late?'Vencido hace '+txt:'Vence en '+txt;
+      return '<a class="notif-item '+(late?'late':'soon')+'" href="/devoluciones/devoluciones.html?prestamo='+encodeURIComponent(a.id_prestamo)+'">'+
+        '<span class="ni-icon">'+(late?lateIcon:soonIcon)+'</span>'+
+        '<span class="ni-body">'+
+          '<span class="ni-title">'+esc(a.equipo)+(a.codigo_prestamo?' <span class="ni-code">'+esc(a.codigo_prestamo)+'</span>':'')+'</span>'+
+          '<span class="ni-sub">'+esc(a.alumno_nombre)+' '+esc(a.alumno_apellido)+' · '+esc(a.codigo_alumno)+'</span>'+
+          '<span class="ni-due">'+due+' · '+ff(a.fecha_devolucion_estimada)+'</span>'+
+        '</span>'+
+      '</a>';
+    }).join('');
+  }
+  function toggle(open){
+    abierto=(typeof open==='boolean')?open:!abierto;
+    if(abierto) posicionar();
+    panel.classList.toggle('show',abierto);
+    btn.setAttribute('aria-expanded',String(abierto));
+    if(abierto) marcarLeidas();
+  }
+  async function cargarAlertas(){
+    try{
+      var r=await apiFetch('/prestamos/alertas');
+      if(!r.ok){ mostrarError(); return; }
+      var d=await safeJson(r);
+      alertas=Array.isArray(d.alertas)?d.alertas:[];
+      render();
+      if(abierto) marcarLeidas(); else actualizarBadge();
+    }catch(e){ mostrarError(); }
+  }
+  function mostrarError(){
+    list.innerHTML='<div class="notif-empty"><span>No se pudieron cargar las notificaciones.</span></div>';
+  }
+
+  btn.addEventListener('click',function(e){ e.stopPropagation(); toggle(); });
+  document.addEventListener('click',function(e){ if(abierto && !wrap.contains(e.target) && !panel.contains(e.target)) toggle(false); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && abierto) toggle(false); });
+  window.addEventListener('resize',function(){ if(abierto) posicionar(); });
+  window.addEventListener('scroll',function(){ if(abierto) posicionar(); },{passive:true});
+
+  cargarAlertas();
+  setInterval(function(){ if(document.visibilityState==='visible') cargarAlertas(); },60000);
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') cargarAlertas(); });
+}
+
 /* Inicializa animaciones globales al cargar DOM */
 document.addEventListener('DOMContentLoaded', function(){
   initPageEntrance();
   initScrollReveal();
+  initNotificaciones();
 });

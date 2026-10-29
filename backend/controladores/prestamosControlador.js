@@ -1,5 +1,6 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
+const auditoria = require('../utils/auditoria');
 
 // Formatea fechas a string MySQL (YYYY-MM-DD HH:MM:SS) en zona horaria de Paraguay
 const fmt = (d) => {
@@ -63,6 +64,12 @@ exports.crear = async (req, res) => {
       [codigoPrestamo, id_alumno, id_equipo, req.encargado.id, fechaPrestamoStr, fmt(fecha_devolucion_estimada),
        estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase]
     );
+    auditoria.registrar(req, {
+      accion: 'CREAR',
+      entidad: 'prestamo',
+      id_entidad: codigoPrestamo,
+      detalle: `Equipo #${id_equipo} prestado al alumno #${id_alumno} · vence ${fmt(fecha_devolucion_estimada)}`
+    });
     res.json({ mensaje: 'Préstamo registrado correctamente', codigo_prestamo: codigoPrestamo, id_prestamo: result.insertId, fecha_prestamo: fechaPrestamoStr, multa_base: multaBase });
   } catch (err) {
     // Error lanzado por el trigger validar_prestamo si el equipo no está disponible
@@ -97,12 +104,47 @@ exports.listar = async (req, res) => {
   }
 };
 
+// Lista préstamos activos vencidos o próximos a vencer (ventana de 48 horas)
+exports.alertas = async (req, res) => {
+  try {
+    const conn = await db;
+    const ahoraStr = fmt(new Date());
+    const umbralStr = fmt(new Date(Date.now() + 48 * 60 * 60 * 1000));
+    const [rows] = await conn.query(`
+      SELECT p.id_prestamo, p.codigo_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
+        a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
+        e.nombre AS equipo, e.tipo,
+        TIMESTAMPDIFF(MINUTE, ?, p.fecha_devolucion_estimada) AS minutos_restantes
+      FROM prestamos p
+      JOIN alumnos a ON p.id_alumno = a.id_alumno
+      JOIN equipos e ON p.id_equipo = e.id_equipo
+      WHERE p.estado = 'ACTIVO' AND p.fecha_devolucion_estimada <= ?
+      ORDER BY p.fecha_devolucion_estimada ASC
+    `, [ahoraStr, umbralStr]);
+    res.json({
+      alertas: rows,
+      total: rows.length,
+      vencidos: rows.filter(r => Number(r.minutos_restantes) < 0).length
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 // Elimina un préstamo y su devolución asociada, libera el equipo si no tiene más préstamos activos
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
     const conn = await db;
-    const [prestamos] = await conn.query('SELECT id_equipo FROM prestamos WHERE id_prestamo = ?', [id]);
+    const [prestamos] = await conn.query(
+      `SELECT p.id_equipo, p.codigo_prestamo, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
+         e.nombre AS equipo
+       FROM prestamos p
+       JOIN alumnos a ON p.id_alumno = a.id_alumno
+       JOIN equipos e ON p.id_equipo = e.id_equipo
+       WHERE p.id_prestamo = ?`, [id]
+    );
     if (prestamos.length === 0) {
       return res.status(404).json({ mensaje: 'Préstamo no encontrado' });
     }
@@ -121,6 +163,13 @@ exports.eliminar = async (req, res) => {
         await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [idEquipo]);
       }
       await tx.commit();
+      const p = prestamos[0];
+      auditoria.registrar(req, {
+        accion: 'ELIMINAR',
+        entidad: 'prestamo',
+        id_entidad: p.codigo_prestamo || id,
+        detalle: `${p.equipo} → ${p.alumno_nombre} ${p.alumno_apellido} · devolución asociada eliminada`
+      });
       res.json({ mensaje: 'Préstamo eliminado correctamente' });
     } catch (txErr) {
       await tx.rollback();

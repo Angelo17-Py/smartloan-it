@@ -33,7 +33,7 @@
         .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
         .eq-desc{display:block;font-size:var(--text-xs);color:var(--dim);line-height:1.3;margin-top:1px}
         .admin-only{display:none!important;}
-        body.role-admin .admin-only{display:revert!important;}
+        body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
         .mo .md{animation:fi var(--duration-normal) var(--ease-out);}
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
         .form-row-desc{margin-top:0;}.form-row-desc .ig-desc{flex:1 1 100%;min-width:100%;}.form-row-desc textarea{resize:none;min-height:44px;overflow:hidden;}
@@ -185,20 +185,18 @@ function render(data){
     var admin = esAdmin();
     tb.innerHTML = data.map((e,i) => {
             let btn = '';
-            if(admin){
-                if(e.estado === 'Disponible')
-                    btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'3')">Mantenimiento</button>`;
-                else if(e.estado === 'En mantenimiento')
-                    btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'1')">Disponible</button>`;
-                else
-                    btn = `<button class="btn-sm" disabled>En préstamo</button>`;
-            }
+            if(e.estado === 'Disponible')
+                btn = `<button class="btn-sm btn-mant" onclick="cambiar(${e.id_equipo},'3')">Mantenimiento</button>`;
+            else if(e.estado === 'En mantenimiento')
+                btn = `<button class="btn-sm btn-avail" onclick="cambiar(${e.id_equipo},'1')">Disponible</button>`;
+            else
+                btn = `<button class="btn-sm" disabled>En préstamo</button>`;
             var sc='animate-fi-'+(Math.min(i+1,10));return `<tr class="${sc}">
                 <td data-label="#"><span class="num">${i+1}</span></td>
                 <td data-label="Equipo"><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
                 <td data-label="Tipo / Marca" style="color:var(--dim);font-size:var(--text-sm)">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
                 <td data-label="Estado">${bE(e.estado)}</td>
-                <td data-label="">${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+e.id_equipo+')">Editar</button>'+btn+(e.estado!=='Prestado'?'<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>':'')+'</div>' : ''}</td>
+                <td data-label=""><div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar(${e.id_equipo})">Editar</button>${btn}${admin && e.estado!=='Prestado' ? '<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>' : ''}</div></td>
             </tr>`;
         }).join('');
 }
@@ -347,6 +345,7 @@ async function guardarEquipo(){
 }
 
 window.onload = function(){
+    document.body.classList.add('role-user');
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
     cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>

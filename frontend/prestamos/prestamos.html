@@ -132,9 +132,9 @@
         body.modal-open{overflow:hidden;}
         @keyframes modalFade{from{opacity:0}to{opacity:1}}
         @keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
-        /* Oculta el formulario a usuarios que no son administradores */
+        /* Oculta el formulario hasta confirmar que hay sesión iniciada */
         .admin-only{display:none!important;}
-        body.role-admin .admin-only{display:revert!important;}
+        body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
         /* Estilos de impresión */
         @media print {
             @page{size:A4;margin:10mm 12mm}
@@ -753,9 +753,9 @@ function nuevoPrestamo(){
 
 // Configuración inicial cuando la página carga
 window.onload=function(){
-    // Verificamos si el usuario es administrador para mostrar el formulario
+    // Cualquier usuario autenticado puede registrar préstamos
+    document.body.classList.add('role-user');
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
-    else document.querySelector('.no-access').style.display='block';
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
     const fechaActual=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
     const fechaPrestamo=document.getElementById('fecha_prestamo');

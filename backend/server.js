@@ -8,7 +8,6 @@ const db      = require('./db');
 const ExcelJS = require('exceljs');
 const errorHandler = require('./middleware/errorHandler');
 const { verificarToken } = require('./middleware/auth');
-const requireAdmin = require('./middleware/requireAdmin');
 const initDatabase = require('./initDb');
 
 // Atrapa promesas no manejadas para que no tumben el servidor
@@ -74,9 +73,10 @@ app.use('/equipos',      require('./rutas/equipos'));
 app.use('/prestamos',    require('./rutas/prestamos'));
 app.use('/devoluciones', require('./rutas/devoluciones'));
 app.use('/configuracion', require('./rutas/configuracion'));
+app.use('/auditoria',    require('./rutas/auditoria'));
 
-// Endpoint de exportación a Excel — requiere autenticación y rol admin
-app.get('/exportar', verificarToken, requireAdmin, async (req, res) => {
+// Endpoint de exportación a Excel — requiere autenticación
+app.get('/exportar', verificarToken, async (req, res) => {
   try {
     const conn = await db;
     // Trae todos los préstamos con datos relacionados (alumno, equipo, encargado, devolución)

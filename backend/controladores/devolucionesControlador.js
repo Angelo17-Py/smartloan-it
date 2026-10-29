@@ -1,4 +1,5 @@
 const db = require('../db');
+const auditoria = require('../utils/auditoria');
 
 // Registra una nueva devolución: calcula días de retraso, multas y total a cobrar
 exports.crear = async (req, res) => {
@@ -47,6 +48,12 @@ exports.crear = async (req, res) => {
          tipo_dano || null, observacion_dano || null, dano, dias, multa, total, observacion || null]
       );
       await tx.commit();
+      auditoria.registrar(req, {
+        accion: 'CREAR',
+        entidad: 'devolucion',
+        id_entidad: result.insertId,
+        detalle: `Préstamo #${id_prestamo} · ${dias} día(s) de retraso · multa Gs. ${multa} · daño Gs. ${dano}`
+      });
       res.json({ mensaje: 'Devolucion registrada', id_devolucion: result.insertId, dias_retraso: dias, monto_multa: multa, monto_dano: dano, total_cobro: total, fecha_devolucion: fmt(ahora) });
     } catch (txErr) {
       await tx.rollback();
@@ -66,7 +73,10 @@ exports.eliminar = async (req, res) => {
     const id = req.params.id;
     const conn = await db;
     const [devoluciones] = await conn.query(
-      'SELECT id_prestamo FROM devoluciones WHERE id_devolucion = ?', [id]
+      `SELECT d.id_prestamo, p.codigo_prestamo
+       FROM devoluciones d
+       JOIN prestamos p ON d.id_prestamo = p.id_prestamo
+       WHERE d.id_devolucion = ?`, [id]
     );
     if (devoluciones.length === 0) {
       return res.status(404).json({ mensaje: 'Devolución no encontrada' });
@@ -91,6 +101,12 @@ exports.eliminar = async (req, res) => {
         }
       }
       await tx.commit();
+      auditoria.registrar(req, {
+        accion: 'ELIMINAR',
+        entidad: 'devolucion',
+        id_entidad: id,
+        detalle: `Devolución eliminada · préstamo ${devoluciones[0].codigo_prestamo || '#' + idPrestamo} reactivado`
+      });
       res.json({ mensaje: 'Devolución eliminada correctamente. Préstamo reactivado.' });
     } catch (txErr) {
       await tx.rollback();

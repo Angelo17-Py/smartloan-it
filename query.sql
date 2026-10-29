@@ -88,6 +88,21 @@ CREATE TABLE configuracion (
     descripcion VARCHAR(300)
 );
 
+CREATE TABLE auditoria (
+    id_auditoria      INT AUTO_INCREMENT PRIMARY KEY,
+    id_encargado      INT DEFAULT NULL,
+    codigo_encargado  VARCHAR(10) DEFAULT NULL,
+    accion            VARCHAR(20) NOT NULL,
+    entidad           VARCHAR(30) NOT NULL,
+    id_entidad        VARCHAR(40) DEFAULT NULL,
+    detalle           VARCHAR(500) DEFAULT NULL,
+    ip                VARCHAR(45) DEFAULT NULL,
+    fecha             DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_auditoria_fecha (fecha),
+    INDEX idx_auditoria_entidad (entidad),
+    FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado) ON DELETE SET NULL
+);
+
 INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
 ('multa_por_dia', '10000', 'Monto en guaraníes por día de retraso');
 

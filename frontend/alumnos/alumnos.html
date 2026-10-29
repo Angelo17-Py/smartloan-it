@@ -44,10 +44,10 @@
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
         /* Botones de acción (editar/eliminar) */
         .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
-        /* Por defecto ocultamos lo que solo ve el admin */
+        /* Por defecto ocultamos lo que requiere sesión */
         .admin-only{display:none!important;}
-        /* Si el usuario es admin, mostramos los elementos admin-only */
-        body.role-admin .admin-only{display:revert!important;}
+        /* Los usuarios autenticados pueden registrar y editar; el admin además elimina */
+        body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
         /* Modal de edición con dos columnas */
         .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
         /* Animación del modal */
@@ -226,7 +226,7 @@ function render(data){
             <td data-label="Bachillerato" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.carrera||'—')}</td>
             <td data-label="Curso" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.curso||'—')}</td>
             <td data-label="Turno" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.turno||'—')}</td>
-            <td data-label="">${admin ? '<div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar('+a.id_alumno+')">Editar</button><button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button></div>' : ''}</td>
+            <td data-label=""><div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>${admin ? '<button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button>' : ''}</div></td>
         </tr>`;}).join('');
 }
 
@@ -370,6 +370,7 @@ async function guardarAlumno(){
 
 // Configuramos todo cuando la página termina de cargar
 window.onload = function(){
+    document.body.classList.add('role-user');
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
     cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
 };

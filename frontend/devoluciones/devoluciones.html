@@ -238,7 +238,7 @@
             .rl-meta{color:#666!important;font-size:5.5pt!important;margin-top:6px!important;padding-top:4px!important;border-top-color:#ddd!important;}
         }
         .admin-only{display:none!important;}
-        body.role-admin .admin-only{display:revert!important;}
+        body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
         /* Responsive */
         @media(max-width:600px){
             .receipt::before{display:none}
@@ -635,6 +635,7 @@ function mostrar(){
 // Volvemos a la pantalla de selección de préstamos
 function volver(){
     pActual=null;
+    if(location.search) history.replaceState(null,'',location.pathname);
     document.getElementById('p1').style.display='block';
     document.getElementById('ps').classList.remove('show');
     document.getElementById('fd').classList.remove('show');
@@ -798,7 +799,7 @@ function setStep(n){
 // Atajo de teclado para buscar al presionar Enter
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
 // Inicialización cuando la página carga
-window.onload=function(){ if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); else document.querySelector('.no-access').style.display='block'; cargarMulta(); cargarActivos(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+window.onload=function(){ document.body.classList.add('role-user'); if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargarMulta(); cargarActivos().then(function(){ var pid=new URLSearchParams(location.search).get('prestamo'); if(pid) selec(parseInt(pid,10)); }); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>
 </html>
