@@ -5,6 +5,7 @@
     <meta name="description" content="SmartLoan IT - Registro de préstamos de equipos tecnológicos con contrato de uso.">
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg?v=3">
     <title>SmartLoan IT | Préstamos</title>
+    <script>if('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
     <script src="/js/utils.js" defer></script>
@@ -15,8 +16,9 @@
         .sep{border:none;border-top:1px solid var(--border);margin:18px 0;}
         /* Estilos del formulario de préstamo */
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px;}
-        /* Rejilla de 2 columnas para los campos */
+        /* Rejillas de columnas para los campos */
         .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+        .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
         .g1{margin-bottom:12px;}
         /* Banner del encargado */
         .enc-banner{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
@@ -184,9 +186,12 @@
             .rl-meta{color:#666!important;font-size:5.5pt!important;margin-top:6px!important;padding-top:4px!important;border-top-color:#ddd!important}
         }
         /* Responsive */
+        @media(max-width:900px){
+            .g3{grid-template-columns:1fr 1fr}
+        }
         @media(max-width:600px){
             .receipt::before{display:none}
-            .g2{grid-template-columns:1fr}main{padding:var(--space-3)!important}.receipt-wrap{width:100%!important}
+            .g2,.g3{grid-template-columns:1fr}main{padding:var(--space-3)!important}.receipt-wrap{width:100%!important}
             .receipt-header{padding:22px 20px 18px}
             .rh-top{flex-direction:column;align-items:flex-start;gap:14px}
             .rh-doc{align-items:flex-start;text-align:left}
@@ -296,9 +301,10 @@
             <!-- Datos del alumno seleccionado -->
             <div id="alu-info" class="alu-info"><span class="alu-chip" id="alu-code"></span><span id="alu-detail" style="color:var(--dim);font-size:0.82rem"></span></div>
             <div class="sep"></div>
-            <!-- Fecha de devolución y estado del equipo -->
-            <div class="section-title">Fechas y condicion</div>
-            <div class="g2">
+            <!-- Fecha del préstamo, devolución y estado del equipo -->
+            <div class="section-title">Fechas y condición</div>
+            <div class="g3">
+                <div class="ig"><label>Fecha y hora del préstamo</label><input type="datetime-local" id="fecha_prestamo" onchange="clearF('fecha_prestamo');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_prestamo">Selecciona la fecha y hora</div></div>
                 <div class="ig"><label>Fecha de devolución estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
                 <div class="ig"><label>Estado inicial del equipo</label>
                     <select id="estado_ini"><option value="1">Excelente</option><option value="2">Bueno</option><option value="3">Dañado</option></select>
@@ -611,13 +617,14 @@ function onAlumno(){
 
 // Actualizamos el resumen del préstamo en tiempo real
 function actualizarResumen(){
-    const id_a=document.getElementById('alumno').value,id_e=document.getElementById('equipo').value,fecha=document.getElementById('fecha_dev').value,motivo=document.getElementById('motivo').value.trim();
+    const id_a=document.getElementById('alumno').value,id_e=document.getElementById('equipo').value,fechaPrestamo=document.getElementById('fecha_prestamo').value,fecha=document.getElementById('fecha_dev').value,motivo=document.getElementById('motivo').value.trim();
     if(!id_a||!id_e||!fecha){document.getElementById('resumen').classList.remove('show');return;}
     const a=alumnos.find(x=>x.id_alumno==id_a),e=equipos.find(x=>x.id_equipo==id_e);
     if(!a||!e)return;
     document.getElementById('resumen-grid').innerHTML=`
         <div class="res-field"><span>Alumno</span><strong>${esc(a.codigo_alumno)} — ${esc(a.nombre)} ${esc(a.apellido)}</strong></div>
         <div class="res-field"><span>Equipo</span><strong>${esc(e.nombre)} · ${esc(e.tipo)}</strong></div>
+        ${fechaPrestamo?'<div class="res-field"><span>Fecha del préstamo</span><strong>'+ff(fechaPrestamo)+'</strong></div>':''}
         <div class="res-field"><span>Devolución estimada</span><strong>${ff(fecha)}</strong></div>
         ${motivo?'<div class="res-field"><span>Motivo</span><strong>'+esc(motivo)+'</strong></div>':''}`;
     document.getElementById('resumen').classList.add('show');
@@ -627,22 +634,37 @@ function actualizarResumen(){
 function checkFormComplete(){
     const alumno=document.getElementById('alumno').value;
     const equipo=document.getElementById('equipo').value;
+    const fechaPrestamo=document.getElementById('fecha_prestamo').value;
     const fecha=document.getElementById('fecha_dev').value;
     const motivo=document.getElementById('motivo').value.trim();
     const accesorios=document.getElementById('accesorios').value.trim();
     const obs=document.getElementById('obs').value.trim();
     const contrato=document.getElementById('contrato').checked;
-    const completo=alumno&&equipo&&fecha&&motivo&&contrato;
+    const completo=alumno&&equipo&&fechaPrestamo&&fecha&&motivo&&contrato;
     document.getElementById('btn').disabled=!completo;
 }
 
 // Validamos que los campos obligatorios no estén vacíos
 function validar(){
     let ok=true;
-    [{id:'alumno'},{id:'equipo'},{id:'fecha_dev'},{id:'motivo'}].forEach(c=>{
+    [{id:'alumno'},{id:'equipo'},{id:'fecha_prestamo'},{id:'fecha_dev'},{id:'motivo'}].forEach(c=>{
         const el=document.getElementById(c.id);
         if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
     });
+    const fechaPrestamo=document.getElementById('fecha_prestamo').value;
+    const fechaDev=document.getElementById('fecha_dev').value;
+    if(fechaPrestamo&&new Date(fechaPrestamo)>new Date()){
+        document.getElementById('fecha_prestamo').classList.add('err');
+        document.getElementById('ferr-fecha_prestamo').classList.add('show');
+        st('La fecha del préstamo no puede ser futura','t-err');
+        ok=false;
+    }
+    if(fechaPrestamo&&fechaDev&&new Date(fechaDev)<=new Date(fechaPrestamo)){
+        document.getElementById('fecha_dev').classList.add('err');
+        document.getElementById('ferr-fecha_dev').classList.add('show');
+        st('La devolución debe ser posterior a la fecha del préstamo','t-err');
+        ok=false;
+    }
     if(!document.getElementById('contrato').checked){document.getElementById('ferr-contrato').classList.add('show');ok=false;}
     return ok;
 }
@@ -653,6 +675,7 @@ async function registrar(){
     if(!enc?.id_encargado){st('Sesion no encontrada','t-err');return;}
     const id_a=document.getElementById('alumno').value;
     const id_e=document.getElementById('equipo').value;
+    const fechaPrestamo=document.getElementById('fecha_prestamo').value;
     const fecha=document.getElementById('fecha_dev').value;
     const estado_ini=document.getElementById('estado_ini').value;
     const motivo=document.getElementById('motivo').value.trim();
@@ -665,7 +688,7 @@ async function registrar(){
     (async()=>{
     // Enviamos los datos del préstamo al servidor
     try{
-        const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
+        const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,fecha_prestamo:fechaPrestamo,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
         const d = await safeJson(r);
         // Si el registro fue exitoso
         if(r.ok){
@@ -734,7 +757,10 @@ window.onload=function(){
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
     else document.querySelector('.no-access').style.display='block';
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
-    document.getElementById('fecha_dev').min=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
+    const fechaActual=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
+    const fechaPrestamo=document.getElementById('fecha_prestamo');
+    fechaPrestamo.value=fechaActual;
+    document.getElementById('fecha_dev').min=fechaActual;
     cargar(); checkFormComplete(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
 };
 </script>

@@ -42,6 +42,7 @@ function clearFE(f, prefix) {
 // Formatea una fecha para mostrar en pantalla (dd/mm/aaaa hh:mm)
 function ff(d) {
   if (!d) return '\u2014';
+  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(d)) d = d.replace(' ', 'T');
   return new Date(d).toLocaleString('es-PY', {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit', hour12: false

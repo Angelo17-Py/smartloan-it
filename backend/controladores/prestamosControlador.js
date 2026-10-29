@@ -12,7 +12,7 @@ const fmt = (d) => {
 // Crea un nuevo préstamo: valida datos, calcula multa base y registra
 exports.crear = async (req, res) => {
   try {
-    const { id_alumno, id_equipo, fecha_devolucion_estimada,
+    const { id_alumno, id_equipo, fecha_prestamo, fecha_devolucion_estimada,
             estado_inicial_equipo, accesorios, motivo, observaciones, acepto_contrato } = req.body;
     const estadoIniMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
     const estadoIni = estadoIniMap[estado_inicial_equipo];
@@ -26,10 +26,26 @@ exports.crear = async (req, res) => {
       return res.status(400).json({ mensaje: 'El alumno debe aceptar el contrato' });
     }
     const ahora = new Date();
+    const ahoraStr = fmt(ahora);
+    // Fecha y hora en que se realizó el préstamo (por defecto, el momento actual)
+    let fechaPrestamoStr = ahoraStr;
+    if (fecha_prestamo) {
+      if (isNaN(new Date(fecha_prestamo).getTime())) {
+        return res.status(400).json({ mensaje: 'Fecha de préstamo inválida' });
+      }
+      fechaPrestamoStr = fmt(fecha_prestamo);
+      if (fechaPrestamoStr > ahoraStr) {
+        return res.status(400).json({ mensaje: 'La fecha del préstamo no puede ser futura' });
+      }
+    }
     const devEst = new Date(fecha_devolucion_estimada);
-    // La fecha de devolución debe ser futura
-    if (isNaN(devEst.getTime()) || devEst <= ahora) {
-      return res.status(400).json({ mensaje: 'La fecha de devolución debe ser posterior a la fecha actual' });
+    const devStr = fmt(fecha_devolucion_estimada);
+    // La fecha de devolución debe ser futura y posterior a la fecha del préstamo
+    if (isNaN(devEst.getTime()) || !devStr) {
+      return res.status(400).json({ mensaje: 'Fecha de devolución inválida' });
+    }
+    if (devStr <= fechaPrestamoStr || devStr <= ahoraStr) {
+      return res.status(400).json({ mensaje: 'La fecha de devolución debe ser posterior a la fecha actual y a la del préstamo' });
     }
     const conn = await db;
     // Obtenemos la multa por día desde configuración
@@ -44,10 +60,10 @@ exports.crear = async (req, res) => {
       `INSERT INTO prestamos (codigo_prestamo,id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
        estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [codigoPrestamo, id_alumno, id_equipo, req.encargado.id, fmt(new Date()), fmt(fecha_devolucion_estimada),
+      [codigoPrestamo, id_alumno, id_equipo, req.encargado.id, fechaPrestamoStr, fmt(fecha_devolucion_estimada),
        estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase]
     );
-    res.json({ mensaje: 'Préstamo registrado correctamente', codigo_prestamo: codigoPrestamo, id_prestamo: result.insertId, fecha_prestamo: fmt(new Date()), multa_base: multaBase });
+    res.json({ mensaje: 'Préstamo registrado correctamente', codigo_prestamo: codigoPrestamo, id_prestamo: result.insertId, fecha_prestamo: fechaPrestamoStr, multa_base: multaBase });
   } catch (err) {
     // Error lanzado por el trigger validar_prestamo si el equipo no está disponible
     if (err.code === 'ER_SIGNAL_EXCEPTION') {
