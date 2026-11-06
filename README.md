@@ -1,532 +1,494 @@
 <div align="center">
-  <h1>SmartLoan IT</h1>
-  <p><strong>Sistema de Gestión de Préstamos de Recursos Tecnológicos para Colegios</strong></p>
-  <p>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22.x-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js"></a>
-    <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-5.x-000000?style=flat-square&logo=express&logoColor=white" alt="Express"></a>
-    <a href="https://www.mysql.com/"><img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL"></a>
-    <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"></a>
-    <a href="https://github.com/Angelo17-Py/smartloan-it/actions/workflows/ci.yml"><img src="https://github.com/Angelo17-Py/smartloan-it/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-    <a href="https://jwt.io/"><img src="https://img.shields.io/badge/JWT-auth-e34f26?style=flat-square&logo=json-web-tokens&logoColor=white" alt="JWT"></a>
-    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT">
-  </p>
-  <p>
-    <sub>Proyecto de Grado — Ingeniería en Informática · UNIDA 2026</sub><br>
-    <sub>Autor: <strong>Angelo Caballero</strong></sub>
-  </p>
+
+<img src="frontend/img/favicon.svg" alt="SmartLoan IT" width="64" height="64">
+
+# SmartLoan IT
+
+**Sistema de gestión de préstamos de equipos tecnológicos para instituciones educativas**
+
+Registra alumnos y equipos, controla la disponibilidad, genera comprobantes y calcula multas por retraso con trazabilidad completa de cada movimiento.
+
+<p>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-22-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js 22"></a>
+  <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white" alt="Express 5"></a>
+  <a href="https://www.mysql.com/"><img src="https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8"></a>
+  <a href="https://developer.mozilla.org/docs/Web/JavaScript"><img src="https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript vanilla"></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"></a>
+  <a href="https://github.com/Angelo17-Py/smartloan-it/actions/workflows/ci.yml"><img src="https://github.com/Angelo17-Py/smartloan-it/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
+
+<sub>Proyecto académico · 2026</sub>
+
 </div>
 
 ---
 
-## Tabla de Contenidos
+## Contenido
 
-- [Descripcion](#descripcion)
-- [Pantallas](#pantallas)
-- [Caracteristicas](#caracteristicas)
-- [Tecnologias](#tecnologias)
+- [Descripción](#descripción)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologías](#tecnologías)
 - [Arquitectura](#arquitectura)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Inicio Rapido](#inicio-rapido)
-- [Credenciales](#credenciales)
-- [Seguridad y Produccion](#seguridad-y-produccion)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Requisitos](#requisitos)
+- [Instalación y configuración](#instalación-y-configuración)
+- [Ejecución](#ejecución)
 - [API](#api)
-- [Logica de Negocio](#logica-de-negocio)
-- [Base de Datos](#base-de-datos)
-- [Deploy en Railway](#deploy-en-railway)
-- [Comandos Utiles](#comandos-utiles)
+- [Base de datos](#base-de-datos)
+- [Seguridad y permisos](#seguridad-y-permisos)
+- [Capturas de pantalla](#capturas-de-pantalla)
+- [Estado del proyecto](#estado-del-proyecto)
+- [Autoría y licencia](#autoría-y-licencia)
 
 ---
 
-## Descripcion
+## Descripción
 
-SmartLoan IT es un sistema web moderno para la gestión de préstamos de equipos tecnológicos en instituciones educativas. Permite **registrar, controlar y hacer seguimiento** del uso de laptops, PCs y periféricos con control automático de estados, cálculo de multas por retraso, registro de daños y trazabilidad completa de todos los movimientos. Incluye **notificaciones de vencimiento**, **auditoría de acciones** y **gestión de usuarios con roles**.
+SmartLoan IT es una aplicación web para administrar el ciclo completo de préstamo de recursos tecnológicos en una institución educativa: laptops, PCs y periféricos. Centraliza el inventario, el registro de alumnos, la salida y devolución de equipos, el cálculo de multas y la auditoría de las operaciones.
 
-> **Problema que resuelve**: Las instituciones educativas prestan equipos a alumnos sin un sistema centralizado, perdiendo el rastro de quién tiene qué equipo, cuándo debe devolverlo y en qué condiciones lo recibió. SmartLoan IT automatiza todo ese proceso.
+El problema que resuelve es la dispersión de registros manuales: sin un sistema centralizado se pierde el rastro de quién tiene cada equipo, cuándo debe devolverlo y en qué condiciones lo recibió. SmartLoan IT reemplaza ese seguimiento por un flujo único con estados, validaciones y comprobantes imprimibles.
 
----
+Está pensado para encargados de recursos tecnológicos de colegios e instituciones educativas. La interfaz está en español, usa guaraníes (Gs.) como moneda y registra las fechas en la zona horaria de Paraguay (`America/Asuncion`).
 
-## Pantallas
+## Funcionalidades
 
-<div align="center">
+| Módulo | Qué permite |
+|---|---|
+| **Acceso y sesiones** | Inicio de sesión con código de encargado y contraseña. La sesión se transporta en una cookie `HttpOnly`; el cierre de sesión revoca los tokens emitidos. |
+| **Dashboard** | Métricas de inventario y préstamos activos, gráfico donut de distribución de equipos, actividad reciente, reloj y actualización automática cada 30 segundos. |
+| **Alertas de vencimiento** | Campana en el dashboard con préstamos vencidos o por vencer en las próximas 48 horas. Se actualiza cada 60 segundos y al volver a la pestaña. |
+| **Alumnos** | Alta con código automático (`ALU001`, `ALU002`, …), edición, búsqueda sin acentos y baja lógica que conserva el historial. |
+| **Equipos** | Registro y edición de activos; estados `Disponible`, `Prestado` y `En mantenimiento`. El cambio manual solo se permite entre `Disponible` y `En mantenimiento`; la baja solo procede si no hay historial de préstamos. |
+| **Préstamos** | Selección de alumnos sin préstamo activo y equipos disponibles; aceptación del contrato, validación de fechas, código correlativo (`PRE-001`, `PRE-002`, …) y comprobante imprimible con firmas. |
+| **Devoluciones** | Búsqueda de préstamos activos, registro del estado del equipo y de daños, cálculo automático de días de retraso, multa y total a cobrar; comprobante imprimible. |
+| **Historial** | Tablas de préstamos y devoluciones con filtros y búsqueda. Incluye una pestaña de auditoría visible solo para administradores. |
+| **Usuarios** | Solo administradores: alta, edición, cambio de rol y contraseña, activación y desactivación de encargados. |
+| **Configuración** | Solo administradores: edición de la multa diaria desde el dashboard. El cambio queda registrado en la auditoría. |
+| **Exportación** | Descarga de un archivo Excel (`.xlsx`) con hojas `Prestamos` y `Devoluciones`, formato de tablas, filtros y resumen de la última exportación. |
 
-| Pantalla | Descripción |
-|:--------:|:------------|
-| **Login** | Acceso seguro por código de usuario + contraseña con protección JWT |
-| **Dashboard** | Métricas en vivo, gráficos, reloj, exportación y configuración en tiempo real |
-| **Equipos** | CRUD completo con control de estado y búsqueda sin acentos |
-| **Alumnos** | Registro con código auto-incremental (ALU001…), edición y desactivación |
-| **Préstamos** | Contrato de uso, comprobante imprimible y validación de disponibilidad |
-| **Devoluciones** | Búsqueda instantánea, registro de daños, multa automática |
-| **Historial** | Trazabilidad completa con filtros, búsqueda en vivo y pestaña de auditoría (admin) |
-| **Usuarios** | Gestión de encargados, roles, activación/desactivación y contraseñas (solo admin) |
+La interfaz incluye tema oscuro y claro con persistencia, búsqueda Spotlight (`Ctrl`/`Cmd` + `K`), notificaciones tipo toast, modales de confirmación, diseño responsive y estilos de impresión para los comprobantes.
 
-</div>
+> **Tasa de multa:** al crear un préstamo, la multa diaria vigente se guarda en `prestamos.multa_base`. Los préstamos existentes conservan esa tasa aunque la configuración cambie. En registros antiguos sin ese valor se utiliza la configuración actual.
 
----
+## Tecnologías
 
-## Caracteristicas
-
-### Dashboard Interactivo
-- **Métricas en vivo** con animación de números (`requestAnimationFrame`)
-- **Gráficos Chart.js**: donut de distribución de equipos y barras de préstamos mensuales
-- **Sparklines** dibujadas con Canvas 2D nativo en cada tarjeta métrica
-- **Reloj** en tiempo real con zona horaria de Paraguay
-- **Polling** cada 30 segundos para datos siempre actualizados
-- Sidebar glass con navegación, avatar, tema oscuro/claro y cierre de sesión
-
-### Gestión Inteligente
-- **Búsqueda sin acentos**: normalización Unicode (NFD) en todas las pantallas
-- **Códigos automáticos**: alumnos con prefijo `ALU` + correlativo auto-incremental
-- **Disponibilidad inteligente**: alumnos con préstamo activo no aparecen en el selector
-- **Validaciones**: no se puede prestar un equipo ocupado, no se puede desactivar un alumno con préstamo activo
-
-### Notificaciones de Vencimiento
-- **Campana global** en todas las páginas del sistema
-- Muestra préstamos **vencidos** y **por vencer en las próximas 48 horas**
-- Contador de alertas sin leer, detalle con alumno, equipo, código y fecha
-- Acceso directo a la devolución con el préstamo ya seleccionado
-- Actualización automática cada 60 segundos y al volver a la pestaña
-
-### Roles y Permisos
-- **Administrador**: todas las tareas diarias + gestión de usuarios, configuración, auditoría y eliminaciones
-- **Operador**: registra alumnos, equipos, préstamos y devoluciones; edita datos y cambia estados
-- Las funciones administrativas (usuarios, configuración, auditoría y eliminaciones) quedan restringidas al rol admin
-- Los roles se validan en el backend; la interfaz oculta las acciones no permitidas
-
-### Auditoría
-- Registro de **login, altas, ediciones, cambios de estado, activaciones/desactivaciones y eliminaciones**
-- Guarda usuario, acción, módulo, detalle y fecha
-- En eliminaciones conserva un resumen del registro borrado
-- Pestaña **Auditoría** en Historial, disponible solo para administradores
-
-### Gestión de Usuarios (admin)
-- Alta de encargados con código único, rol y contraseña
-- Edición de datos, rol y contraseña con confirmación
-- Activación y desactivación de cuentas
-- Protecciones: no se puede desactivar la propia cuenta ni dejar el sistema sin un administrador activo
-
-### Devoluciones y Multas
-- **Multa configurable**: valor por día de retraso ajustable desde el dashboard
-- **Cálculo automático** al registrar la devolución
-- **Registro de daños** con tipo, descripción y monto de reparación
-- Actualización inmediata del estado del equipo (Disponible / En mantenimiento)
-
-### Exportación
-- Descarga de **Excel (.xlsx)** con formato profesional
-- Barra de progreso animada y feedback visual
-- Metadata de última exportación guardada en localStorage
-- Contador de préstamos, devoluciones y alumnos exportados
-
-### Experiencia de Usuario
-- **Tema oscuro/claro** con persistencia y animación suave
-- **Spotlight search** (Ctrl+K / ⌘K) para navegación rápida
-- **Toast notifications** para feedback de acciones
-- **Skeleton loading** en gráficos mientras cargan datos
-- Diseño 100% responsive (sidebar → drawer en mobile)
-
----
-
-## Tecnologias
-
-### Backend
-| Tecnología | Uso |
-|------------|-----|
-| **Node.js 22** | Entorno de ejecución |
-| **Express 5** | Framework web con soporte de promesas nativo |
-| **MySQL 8.0** | Base de datos relacional |
-| **mysql2** | Driver MySQL con promesas |
-| **JWT** | Autenticación basada en tokens |
-| **bcrypt** | Hash de contraseñas |
-| **express-rate-limit** | Protección contra fuerza bruta |
-| **exceljs** | Exportación de datos a Excel |
-| **cors** | Control de acceso cross-origin |
-
-### Frontend
-| Tecnología | Uso |
-|------------|-----|
-| **HTML5** | Estructura semántica |
-| **CSS3** | Diseño con variables, glassmorphism, grid |
-| **JavaScript vanilla** | Lógica del cliente sin frameworks |
-| **Chart.js** | Gráficos interactivos (donut + barras) |
-| **Canvas 2D API** | Sparklines nativas en tarjetas |
-| **Instrument Sans + DM Mono** | Tipografía principal y monoespaciada (Google Fonts) |
-
-### DevOps
-| Herramienta | Uso |
-|-------------|-----|
-| **Docker** | Contenedorización de la aplicación |
-| **Docker Compose** | Orquestación multicontenedor |
-| **Railway** | Plataforma de deploy gratuita |
-| **Nixpacks** | Builder automático para Railway |
-
----
+| Capa | Tecnología | Uso |
+|---|---|---|
+| Frontend | HTML5, CSS3 y JavaScript | Interfaz sin framework ni paso de compilación |
+| Frontend | Chart.js 4.4.7 (incluido localmente) | Gráfico donut del dashboard |
+| Frontend | Instrument Sans y DM Mono | Tipografías de la interfaz |
+| Backend | Node.js 22 | Entorno de ejecución (CI y Docker) |
+| Backend | Express 5.2.1 | API REST y servidor de archivos estáticos |
+| Backend | mysql2 3.20.0 | Pool de conexiones a MySQL |
+| Backend | jsonwebtoken 9.0.3 | Autenticación con JWT (HS256) |
+| Backend | bcryptjs 2.4.3 | Hash de contraseñas |
+| Backend | express-rate-limit 8.5.2 | Límites de solicitudes e intentos de login |
+| Backend | exceljs 4.4.0 | Generación de archivos Excel |
+| Backend | cors 2.8.6 y dotenv 17.4.2 | Control de orígenes y variables de entorno |
+| Base de datos | MySQL 8.0 | Persistencia relacional y triggers de estado |
+| Pruebas | `node:test` | 23 pruebas unitarias de autenticación, permisos, logout y utilidades |
+| CI | GitHub Actions | `npm ci` y `npm test` en cada push y pull request |
+| Infraestructura | Docker, Docker Compose y Railway (Nixpacks) | Ejecución local y despliegue |
 
 ## Arquitectura
 
+SmartLoan IT es un monolito web. Express sirve las páginas del frontend y expone la API JSON en el mismo origen; no hay una SPA ni un bundler. Las rutas delegan en controladores, los middlewares aplican autenticación, autorización y límites de solicitudes, y MySQL mantiene la consistencia del inventario mediante triggers.
+
+```mermaid
+flowchart LR
+    U["Usuario"] --> F["Frontend<br/>HTML + CSS + JavaScript"]
+    F -->|"fetch JSON + cookie HttpOnly"| A["Express 5<br/>API REST y archivos estáticos"]
+    A --> M["Middlewares<br/>JWT · roles · rate limit · CORS"]
+    M --> C["Controladores"]
+    C --> D[("MySQL 8<br/>tablas · triggers")]
+    A -->|"HTML, CSS y JS"| F
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────┐
-│  Frontend   │────▶│  Express 5   │────▶│  MySQL  │
-│  (vanilla)  │◀────│  REST API    │◀────│   8.0   │
-└─────────────┘     └──────────────┘     └─────────┘
-                           │
-                    ┌──────┴──────┐
-                    │  JWT Auth   │
-                    │  (middleware)│
-                    └─────────────┘
-```
 
-- **Frontend**: archivos HTML estáticos servidos por Express como contenido público
-- **Backend**: API REST con autenticación JWT en cada endpoint (excepto login)
-- **Base de datos**: MySQL con triggers automáticos para mantener consistencia
-- **Comunicación**: JSON via `fetch()`; autenticación con cookie httpOnly `sl_token` (también acepta `Authorization: Bearer <token>`)
+Flujo típico de una operación:
 
----
+1. El usuario inicia sesión y el servidor responde con un JWT, además de establecer la cookie `sl_token`.
+2. Cada solicitud protegida pasa por `verificarToken`, que consulta el usuario actual en la base y valida su estado, rol y `token_version`.
+3. El controlador ejecuta la consulta o transacción correspondiente.
+4. El frontend actualiza la vista; en las operaciones de préstamo y devolución, los triggers de MySQL ajustan el estado del equipo.
 
-## Estructura del Proyecto
+El cliente usa `fetch` con un timeout de 15 segundos. En las llamadas autenticadas, ante un `401` limpia los datos de sesión y redirige al login.
 
-```
-SistemaPrestamos/
+## Estructura del proyecto
+
+```text
+smartloan-it/
 ├── backend/
-│   ├── server.js                 ← Entry point (Express 5)
-│   ├── db.js                     ← Conexión MySQL (pool)
-│   ├── initDb.js                 ← Auto-creación de tablas y datos iniciales
-│   ├── middleware/
-│   │   ├── auth.js               ← Verificación JWT
-│   │   ├── requireAdmin.js       ← Control de rol administrador
-│   │   ├── errorHandler.js       ← Manejo centralizado de errores
-│   │   └── rateLimiters.js       ← Rate limiters compartidos
-│   ├── controladores/
-│   │   ├── encargadosControlador.js
-│   │   ├── alumnosControlador.js
-│   │   ├── equiposControlador.js
-│   │   ├── prestamosControlador.js
-│   │   ├── devolucionesControlador.js
-│   │   └── configuracionControlador.js
-│   ├── rutas/
-│   │   ├── encargados.js
-│   │   ├── alumnos.js
-│   │   ├── equipos.js
-│   │   ├── prestamos.js
-│   │   ├── devoluciones.js
-│   │   ├── configuracion.js
-│   │   └── auditoria.js
-│   └── utils/
-│       ├── sanitize.js           ← Sanitización compartida
-│       └── auditoria.js          ← Registro de acciones
+│   ├── server.js                 # Punto de entrada: estáticos, API, exportación y arranque
+│   ├── db.js                     # Pool de conexiones MySQL
+│   ├── initDb.js                 # Creación de tablas, migraciones, triggers y datos iniciales
+│   ├── controladores/            # Lógica de negocio por módulo
+│   ├── middleware/               # Autenticación, rol admin, rate limiting y errores
+│   ├── rutas/                    # Definición de endpoints y permisos
+│   └── utils/                    # Sanitización, auditoría, cookies y logout
 ├── frontend/
-│   ├── css/
-│   │   ├── tokens.css            ← Variables de diseño (colores, espacios)
-│   │   └── components.css        ← Componentes reutilizables
+│   ├── css/                      # Tokens de diseño, componentes y estilos de impresión
 │   ├── js/
-│   │   ├── api.js                ← fetch wrapper + safeJson
-│   │   └── utils.js              ← normalizeText, esc, spotlight, tema, notificaciones
+│   │   ├── api.js                # Wrapper de fetch con timeout y manejo de 401
+│   │   ├── utils.js              # Búsqueda, tema, spotlight, notificaciones y utilidades
+│   │   └── vendor/
+│   │       └── chart.umd.min.js  # Chart.js 4.4.7
+│   ├── img/
+│   │   └── favicon.svg
 │   ├── login/login.html
 │   ├── home/dashboard.html
-│   ├── equipos/equipos.html
 │   ├── alumnos/alumnos.html
+│   ├── equipos/equipos.html
 │   ├── prestamos/prestamos.html
 │   ├── devoluciones/devoluciones.html
 │   ├── historial/historial.html
-│   └── usuarios/usuarios.html    ← Gestión de usuarios (admin)
-├── test/                         ← Pruebas de autenticación, permisos, logout, errores y sanitización
-├── .github/workflows/ci.yml      ← CI (npm test)
-├── query.sql
-├── railway.json                  ← Config Railway (nixpacks)
-├── Dockerfile.local
-├── docker-compose.yml
-├── .env.example
-└── package.json
+│   └── usuarios/usuarios.html
+├── test/                         # Pruebas unitarias con node:test
+├── .github/workflows/ci.yml      # Integración continua
+├── docker-compose.yml            # MySQL + aplicación para desarrollo local
+├── Dockerfile.local              # Imagen Node.js usada por Docker Compose
+├── railway.json                  # Configuración de despliegue en Railway
+├── query.sql                     # Esquema manual de referencia (opcional)
+├── .env.example                  # Plantilla de variables de entorno
+├── package.json
+└── package-lock.json
 ```
 
----
+- **`backend/`** concentra la API, la inicialización del esquema y las reglas de negocio. La lógica está separada en controladores de alumnos, equipos, préstamos, devoluciones, encargados y configuración.
+- **`frontend/`** contiene páginas estáticas independientes y recursos compartidos. Cada módulo tiene su propio HTML; la comunicación con el backend se hace por `fetch`.
+- **`test/`** agrupa las pruebas de autenticación, permisos, logout, manejo de errores y sanitización.
+- **`query.sql`** es una referencia manual del esquema. La aplicación no lo ejecuta; la inicialización real ocurre al arrancar el servidor.
 
-## Inicio Rapido
+## Requisitos
 
-### Requisitos Previos
-- [Node.js](https://nodejs.org/) v22 o superior
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Git](https://git-scm.com/)
+- **Node.js 22 o superior** (el CI y la imagen Docker usan Node 22).
+- **npm**.
+- **MySQL 8.0** si se ejecuta de forma local, o **Docker Desktop** si se usa Docker Compose.
+- **Git**.
+- El usuario de MySQL debe poder crear y alterar tablas, índices y triggers.
 
-### Opción 1: Docker Compose (recomendado)
+No se necesita un framework de frontend, un bundler ni herramientas de compilación adicionales.
+
+## Instalación y configuración
+
+La aplicación crea tablas, índices, triggers y datos iniciales, pero **no crea la base de datos**. La base configurada en `DB_NAME` o `MYSQLDATABASE` (por defecto, `prestamos_db`) debe existir antes de iniciar el servidor.
+
+### 1. Clonar el repositorio
 
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/Angelo17-Py/smartloan-it.git
 cd smartloan-it
-
-# 2. Iniciar MySQL + App
-docker compose up -d
-
-# 3. Cargar datos iniciales
-docker exec -i smartloan-app node backend/initDb.js
-
-# 4. Abrir en el navegador
-start http://localhost:1002
 ```
 
-### Opción 2: Manual (sin Docker)
+### 2. Configurar las variables de entorno
 
 ```bash
-# 1. Clonar
-git clone https://github.com/Angelo17-Py/smartloan-it.git
-cd smartloan-it
+cp .env.example .env
+```
 
-# 2. Crear base de datos MySQL local
-#    (asegúrate de tener MySQL 8.0 corriendo en puerto 3306)
+En PowerShell:
 
-# 3. Configurar variables de entorno
-copy .env.example .env
-# Editar .env con tus credenciales MySQL
+```powershell
+Copy-Item .env.example .env
+```
 
-# 4. Instalar dependencias
+Editar `.env` y reemplazar los valores de ejemplo. Las variables principales son:
+
+| Variable | Obligatoria | Descripción |
+|---|---|---|
+| `DB_PASSWORD` | Sí | Contraseña del usuario de MySQL. No hay contraseña por defecto. |
+| `JWT_SECRET` | Sí | Secreto de firma de al menos 32 caracteres. El servidor no arranca si falta o conserva el valor de ejemplo. |
+| `DB_HOST` | No | Host de MySQL. Por defecto: `localhost`. En Docker Compose: `mysql`. |
+| `DB_PORT` | No | Puerto de MySQL. Por defecto: `3306`. |
+| `DB_USER` | No | Usuario de MySQL. Por defecto: `root`. |
+| `DB_NAME` | No | Nombre de la base. Por defecto: `prestamos_db`. |
+| `PORT` | No | Puerto HTTP del servidor. Por defecto: `1002`. |
+| `JWT_EXPIRES_IN` | No | Vigencia del token. Por defecto: `12h`. |
+| `NODE_ENV` | No | Con `production` se activan cookies `Secure` y HSTS. |
+| `TRUST_PROXY` | No | `true` solo si la aplicación está detrás de un proxy inverso confiable. |
+| `CORS_ORIGIN` | No | Orígenes permitidos, separados por coma. Vacío equivale a mismo origen. |
+| `ADMIN_INICIAL_CODIGO`, `ADMIN_INICIAL_PASSWORD`, `ADMIN_INICIAL_NOMBRE`, `ADMIN_INICIAL_APELLIDO` | Solo producción | Crean el primer administrador cuando la base no tiene ningún administrador activo. La contraseña debe tener al menos 12 caracteres. |
+| `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE` | Alternativa | Equivalentes a las variables `DB_*`; se usan en Railway y tienen prioridad. |
+
+La aplicación también acepta las variantes con guion bajo (`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`). En una instalación local, `DB_PASSWORD` debe coincidir con la contraseña del usuario de MySQL. En Docker Compose, ese mismo valor se usa como contraseña de root del contenedor.
+
+`.env` está incluido en `.gitignore`. No se debe versionar ni compartir.
+
+### 3. Opción A: ejecución local
+
+```bash
 npm install
+```
 
-# 5. Inicializar base de datos
-node backend/initDb.js
+Crear la base de datos:
 
-# 6. Iniciar servidor
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS prestamos_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
+
+Si se usa otro nombre de base o un usuario distinto de `root`, crear esa base y ajustar `DB_NAME` y `DB_USER` en `.env`.
+
+Iniciar el servidor:
+
+```bash
 npm start
-
-# 7. Abrir en el navegador
-start http://localhost:1002
 ```
 
----
+Al arrancar, `backend/server.js` ejecuta `backend/initDb.js`: crea las tablas y triggers, aplica las migraciones incrementales y carga la configuración inicial. Si la base tarda en estar disponible, el servidor reintenta durante unos 60 segundos antes de abortar.
 
-## Credenciales
+> **Importante:** `backend/initDb.js` no es un script CLI. Exporta una función que se ejecuta automáticamente desde el servidor; no es necesario ejecutarlo por separado.
 
-| Rol | Código | Contraseña | Permisos |
-|-----|--------|------------|----------|
-| **Administrador** | Asignado por el departamento | Asignada por el departamento | Tareas diarias + usuarios, configuración, auditoría y eliminaciones |
-| **Operador** | Asignado por el departamento | Asignada por el departamento | Alumnos, equipos, préstamos, devoluciones y cambios de estado |
-| **Invitado** | `0000` | `V1su4l#2026` | Acceso de demostración con permisos de operador |
+En desarrollo (`NODE_ENV` distinto de `production`) se sincronizan usuarios de demostración y, si las tablas de alumnos y equipos están vacías, se crean registros de ejemplo. Las credenciales de demostración están definidas en `backend/initDb.js` y no se reproducen en este README. No deben usarse en producción.
 
-> El administrador principal del sistema es **Angelo Caballero** (código `1001`).  
-> Los administradores pueden crear, editar, activar/desactivar usuarios y cambiar contraseñas desde la pantalla **Usuarios**.  
-> Cambiá las contraseñas iniciales antes de usar el sistema en producción.
+### 4. Opción B: Docker Compose
 
-> **Importante:** los usuarios y datos de ejemplo (`1001`–`1005`, `0000`, alumnos y equipos de muestra) se crean **solo en desarrollo**. En producción, una base vacía exige `ADMIN_INICIAL_CODIGO` y `ADMIN_INICIAL_PASSWORD`; no se crean credenciales conocidas.
+Crear `.env` como se indicó y ejecutar:
 
----
-
-## Seguridad y Produccion
-
-### Variables obligatorias
-- `DB_PASSWORD` o `MYSQL_PASSWORD`: ya no existe una contraseña de base de datos por defecto.
-- `JWT_SECRET`: mínimo 32 caracteres; el servidor no inicia sin él.
-- `NODE_ENV=production`: activa cookies `Secure` y HSTS.
-- `ADMIN_INICIAL_CODIGO`, `ADMIN_INICIAL_PASSWORD`, opcionalmente `ADMIN_INICIAL_NOMBRE` y `ADMIN_INICIAL_APELLIDO`: solo para crear el primer administrador en una base de producción vacía. La contraseña debe tener al menos 12 caracteres y cambiarse después del primer ingreso.
-- `TRUST_PROXY=true`: solo si la aplicación está detrás de un proxy inverso confiable (Railway, Nginx, etc.).
-
-### Sesiones y tokens
-- JWT firmado y verificado exclusivamente con **HS256**, expiración de 12 horas.
-- En cada solicitud protegida se consulta el usuario actual: estado, rol y `token_version`.
-- Desactivar una cuenta, cambiar su rol o su contraseña incrementa `token_version` e invalida los tokens anteriores.
-- **Logout incrementa `token_version`**: cierra todas las sesiones del usuario, no solo la del dispositivo actual.
-- La autenticación principal usa una cookie `sl_token` con `HttpOnly`, `SameSite=Strict` y `Secure` en producción. El login también devuelve un token para clientes Bearer; el frontend no lo almacena.
-
-### Cambios directos en la base de datos
-Si se modifica una contraseña, un rol o el estado directamente en MySQL, hay que incrementar `token_version` en la misma operación:
-
-```sql
-UPDATE encargados
-SET password = '<hash_bcrypt>', token_version = token_version + 1
-WHERE codigo = '1001';
-
-UPDATE encargados
-SET rol = 'lectura', token_version = token_version + 1
-WHERE codigo = '1002';
-
-UPDATE encargados
-SET estado = 0, token_version = token_version + 1
-WHERE codigo = '1005';
+```bash
+docker compose up -d mysql
+docker compose exec mysql mysql -uroot -p -e "CREATE DATABASE IF NOT EXISTS prestamos_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+docker compose up -d
 ```
 
-Nunca se debe guardar una contraseña en texto plano; el valor debe ser un hash bcrypt generado por la aplicación.
+El contenedor de MySQL publica el puerto `3307` en el host; la aplicación usa `mysql:3306` dentro de la red de Compose. Los datos persisten en el volumen `mysql_data`.
 
-### Despliegue
-- Servir siempre por HTTPS.
-- Mantener `HttpOnly` y `SameSite=Strict`; no desactivar `Secure` en producción.
-- El rate limiting actual es en memoria y adecuado para una sola instancia. Si se despliegan varias instancias, usar un almacén compartido.
-- Realizar un respaldo de la base de datos antes de migraciones o mantenimientos.
-- Los errores 5xx devuelven un mensaje genérico al cliente; el detalle queda en los logs del servidor.
+> `docker-compose.yml` no define `NODE_ENV=production`, por lo que este entorno crea usuarios de demostración y, si la base está vacía, alumnos y equipos de ejemplo. Está pensado para desarrollo local, no como configuración de producción.
 
----
+Para ver los logs y detener los contenedores:
+
+```bash
+docker compose logs -f app
+docker compose down
+```
+
+Para eliminar también los datos de MySQL:
+
+```bash
+docker compose down -v
+```
+
+### 5. Inicialización manual opcional
+
+`query.sql` contiene una versión de referencia del esquema y datos de ejemplo. No se ejecuta automáticamente y no es necesario para el flujo normal. Si se importa en producción, hay que quitar los datos de ejemplo.
+
+## Ejecución
+
+| Acción | Comando |
+|---|---|
+| Iniciar en modo normal | `npm start` |
+| Iniciar con recarga automática | `npm run dev` |
+| Ejecutar pruebas | `npm test` |
+| Iniciar con Docker Compose | `docker compose up -d` |
+| Ver logs de la aplicación | `docker compose logs -f app` |
+| Detener Docker Compose | `docker compose down` |
+
+Direcciones locales:
+
+- Aplicación y login: `http://localhost:1002`
+- Dashboard: `http://localhost:1002/home/dashboard.html`
+- Estado del servicio: `http://localhost:1002/health`
+
+El puerto se puede cambiar con la variable `PORT`.
+
+### Despliegue en Railway
+
+El archivo `railway.json` configura el build con Nixpacks, el comando de inicio `node backend/server.js`, el healthcheck en `/` y el reinicio ante fallos.
+
+1. Crear un proyecto en Railway y conectar el repositorio.
+2. Agregar un plugin de MySQL. El plugin provee las variables `MYSQL*`.
+3. Configurar `JWT_SECRET`, `NODE_ENV=production` y, si corresponde, `TRUST_PROXY=true`.
+4. En el primer arranque con una base vacía, definir `ADMIN_INICIAL_CODIGO` y `ADMIN_INICIAL_PASSWORD` (mínimo 12 caracteres). Cambiar la contraseña después del primer ingreso.
+5. Servir siempre por HTTPS y mantener habilitadas las cookies seguras.
 
 ## API
 
-> Todos los endpoints requieren autenticación (cookie httpOnly `sl_token` o `Authorization: Bearer <token>`), excepto el login.  
-> **Operador**: consulta y tareas diarias (alumnos, equipos, préstamos, devoluciones y estados).  
-> **Administrador**: además gestiona usuarios, configuración, auditoría y eliminaciones.
+La API responde en JSON, excepto `/exportar`, que devuelve un archivo `.xlsx`. La autenticación se envía en la cookie `sl_token` o mediante `Authorization: Bearer <token>`. Los errores tienen la forma `{ "mensaje": "..." }`.
 
-### Autenticación y Usuarios
-| Método | Ruta | Descripción | Rol |
-|--------|------|-------------|-----|
-| POST | `/encargados/login` | Iniciar sesión (retorna `{ token, usuario }`) | público |
-| POST | `/encargados/logout` | Cerrar sesión | todos |
-| GET | `/encargados` | Listar usuarios activos e inactivos | admin |
-| POST | `/encargados` | Crear usuario | admin |
-| PUT | `/encargados/:id` | Editar datos, rol y contraseña | admin |
-| PATCH | `/encargados/:id/estado` | Activar o desactivar usuario | admin |
+En la columna **Acceso**, `Autenticado` incluye a administradores y operadores; `Admin` requiere el rol `admin`.
 
-### Alumnos
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/alumnos` | Listar alumnos activos | todos |
-| GET | `/alumnos/disponibles` | Alumnos sin préstamo activo | todos |
-| GET | `/alumnos/:id/historial` | Historial de préstamos del alumno | todos |
-| POST | `/alumnos` | Registrar nuevo alumno | operador/admin |
-| PUT | `/alumnos/:id` | Editar alumno | operador/admin |
-| DELETE | `/alumnos/:id` | Desactivar alumno | admin |
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| GET | `/health` | Estado del servicio | Público |
+| POST | `/encargados/login` | Inicio de sesión; devuelve token y datos del usuario | Público |
+| POST | `/encargados/logout` | Cierra la sesión y revoca los tokens del usuario | Autenticado |
+| GET | `/encargados` | Lista usuarios activos e inactivos | Admin |
+| POST | `/encargados` | Crea un usuario | Admin |
+| PUT | `/encargados/:id` | Edita datos, rol y/o contraseña | Admin |
+| PATCH | `/encargados/:id/estado` | Activa o desactiva un usuario | Admin |
+| GET | `/alumnos` | Lista alumnos activos | Autenticado |
+| GET | `/alumnos/disponibles` | Alumnos sin préstamo activo | Autenticado |
+| GET | `/alumnos/:id/historial` | Historial de préstamos del alumno | Autenticado |
+| POST | `/alumnos` | Crea un alumno y genera su código | Autenticado |
+| PUT | `/alumnos/:id` | Edita un alumno | Autenticado |
+| DELETE | `/alumnos/:id` | Desactiva un alumno conservando su historial | Admin |
+| GET | `/equipos` | Lista equipos | Autenticado |
+| GET | `/equipos/disponibles` | Lista equipos disponibles | Autenticado |
+| GET | `/equipos/:id/historial` | Historial de préstamos del equipo | Autenticado |
+| POST | `/equipos` | Crea un equipo | Autenticado |
+| PUT | `/equipos/:id` | Edita un equipo | Autenticado |
+| PATCH | `/equipos/:id/estado` | Cambia el estado del equipo | Autenticado |
+| DELETE | `/equipos/:id` | Elimina un equipo sin historial | Admin |
+| GET | `/prestamos` | Lista préstamos | Autenticado |
+| GET | `/prestamos/alertas` | Préstamos vencidos o por vencer en 48 h | Autenticado |
+| GET | `/prestamos/:id` | Busca un préstamo activo por ID | Autenticado |
+| POST | `/prestamos` | Registra un préstamo | Autenticado |
+| DELETE | `/prestamos/:id` | Elimina el préstamo y su devolución asociada | Admin |
+| GET | `/devoluciones` | Lista devoluciones | Autenticado |
+| POST | `/devoluciones` | Registra una devolución y calcula la multa | Autenticado |
+| DELETE | `/devoluciones/:id` | Elimina la devolución y reactiva el préstamo | Admin |
+| GET | `/configuracion` | Lista los parámetros del sistema | Autenticado |
+| PUT | `/configuracion/:clave` | Actualiza un parámetro | Admin |
+| GET | `/auditoria?limit=` | Lista acciones registradas (máximo 500) | Admin |
+| GET | `/exportar` | Descarga el Excel con préstamos y devoluciones | Autenticado |
 
-### Equipos
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/equipos` | Listar equipos | todos |
-| GET | `/equipos/disponibles` | Equipos disponibles | todos |
-| GET | `/equipos/:id/historial` | Historial de préstamos del equipo | todos |
-| POST | `/equipos` | Registrar nuevo equipo | operador/admin |
-| PUT | `/equipos/:id` | Editar equipo | operador/admin |
-| PATCH | `/equipos/:id/estado` | Cambiar estado | operador/admin |
-| DELETE | `/equipos/:id` | Eliminar equipo (sin historial) | admin |
+Notas de uso:
 
-### Prestamos
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/prestamos` | Listar préstamos | todos |
-| GET | `/prestamos/alertas` | Vencidos y por vencer en 48 horas | todos |
-| POST | `/prestamos` | Registrar préstamo | operador/admin |
-| GET | `/prestamos/:id` | Buscar préstamo activo por ID | todos |
-| DELETE | `/prestamos/:id` | Eliminar préstamo y su devolución | admin |
+- `POST /prestamos` exige `acepto_contrato: true` y una fecha de devolución posterior a la fecha actual y a la del préstamo.
+- `PATCH /equipos/:id/estado` recibe `1` (Disponible), `2` (Prestado) o `3` (En mantenimiento). Solo permite alternar manualmente entre `1` y `3`.
+- `POST /devoluciones` calcula en el servidor los días de retraso y la multa. El monto de daño se registra como dato de la devolución y el total surge de multa + daño.
+- La eliminación de un préstamo borra también su devolución si existe; la eliminación de una devolución reactiva el préstamo.
+- `GET /exportar` genera las hojas `Prestamos` y `Devoluciones` y devuelve contadores en las cabeceras de la respuesta.
 
-### Devoluciones
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/devoluciones` | Listar devoluciones | todos |
-| POST | `/devoluciones` | Registrar devolución | operador/admin |
-| DELETE | `/devoluciones/:id` | Eliminar devolución y reactivar préstamo | admin |
+## Base de datos
 
-### Configuracion
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/configuracion` | Leer parámetros del sistema | todos |
-| PUT | `/configuracion/:clave` | Actualizar parámetro | admin |
-
-### Auditoria
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/auditoria` | Listar acciones registradas (`?limit=` hasta 500) | admin |
-
-### Exportacion
-| Metodo | Ruta | Descripcion | Rol |
-|--------|------|-------------|-----|
-| GET | `/exportar` | Descargar Excel (.xlsx) con todos los registros | operador/admin |
-
----
-
-## Logica de Negocio
-
-| Regla | Comportamiento |
-|-------|---------------|
-| **Multa por retraso** | Configurable desde dashboard (por defecto: Gs. 10.000/día). Se calcula automáticamente al registrar la devolución. El cambio tiene efecto inmediato. |
-| **Códigos de alumno** | Generación automática: `ALU001`, `ALU002`, … Toma el máximo histórico para evitar duplicados. |
-| **Control de disponibilidad** | Un alumno con préstamo activo no aparece en el selector de nuevos préstamos. |
-| **Roles y permisos** | El operador realiza las tareas diarias; el administrador además gestiona usuarios, configuración, auditoría y eliminaciones. |
-| **Notificaciones** | Se consideran próximos a vencer los préstamos activos con devolución estimada dentro de las próximas 48 horas. |
-| **Auditoría** | Toda acción administrativa u operativa relevante se registra con usuario, fecha y detalle; las eliminaciones guardan un resumen previo. |
-| **Usuarios** | Código único, contraseña mínima de 6 caracteres y confirmación. No se puede desactivar la propia cuenta ni dejar el sistema sin un administrador activo. |
-| **Protección de datos** | Un equipo prestado no se puede eliminar ni cambiar de estado manualmente. Un alumno con préstamo activo no se puede desactivar. |
-| **Zona horaria** | Todas las fechas se registran en hora local de Paraguay (`America/Asuncion`). |
-| **Triggers automáticos** | El estado del equipo se actualiza solo al crear un préstamo o devolución (via MySQL triggers). |
-
----
-
-## Base de Datos
+Motor: **MySQL 8.0**. Nombre predeterminado de la base: `prestamos_db`. Se recomienda crearla con `utf8mb4` para admitir correctamente los acentos y caracteres especiales.
 
 ### Tablas
 
-| Tabla | Propósito |
-|-------|-----------|
-| `encargados` | Usuarios del sistema (login, roles) |
-| `alumnos` | Registro de alumnos |
-| `equipos` | Activos tecnológicos (laptops, PCs, periféricos) |
-| `prestamos` | Registro de salida de equipos |
-| `devoluciones` | Registro de retorno con daños y multas |
-| `configuracion` | Parámetros del sistema (multa por día, etc.) |
-| `auditoria` | Registro de acciones: usuario, acción, módulo, detalle y fecha |
+| Tabla | Propósito | Campos relevantes |
+|---|---|---|
+| `encargados` | Usuarios del sistema | `codigo` único, `password` (bcrypt), `rol`, `estado`, `token_version` |
+| `alumnos` | Personas que solicitan equipos | `codigo_alumno` único (`ALU001`), datos académicos, `estado` |
+| `equipos` | Inventario tecnológico | `nombre`, `tipo`, `marca`, `estado` (`Disponible`, `Prestado`, `En mantenimiento`) |
+| `prestamos` | Salidas de equipos | `codigo_prestamo` único (`PRE-001`), fechas, contrato, `multa_base`, `estado` (`ACTIVO`, `DEVUELTO`) |
+| `devoluciones` | Retornos de equipos | `fecha_devolucion`, `estado_equipo`, daño, `dias_retraso`, `monto_multa`, `total_cobro` |
+| `configuracion` | Parámetros del sistema | `clave` y `valor`; valor inicial: `multa_por_dia = 10000` |
+| `auditoria` | Trazabilidad de acciones | usuario, acción, entidad, detalle, IP y fecha |
 
-### Triggers Automáticos
+### Relaciones
 
-| Trigger | Efecto |
-|---------|--------|
-| `validar_prestamo` | Impide prestar un equipo que no esté `Disponible` |
-| `actualizar_estado_prestamo` | Al crear préstamo → equipo pasa a `Prestado` |
-| `actualizar_estado_devolucion` | Al crear devolución → equipo pasa a `Disponible` o `En mantenimiento` (según daños) |
-
----
-
-## Deploy en Railway
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/Angelo17-Py/smartloan-it)
-
-### Pasos Manuales
-
-1. Crea una cuenta en [railway.app](https://railway.app/) con tu GitHub
-2. **New Project** → **Deploy from GitHub repo**
-3. Selecciona `Angelo17-Py/smartloan-it`
-4. Agrega un plugin **MySQL** desde el dashboard
-5. Configura las variables de entorno:
-   - `JWT_SECRET`: clave única de al menos 32 caracteres.
-   - `NODE_ENV=production`.
-   - `TRUST_PROXY=true` si Railway/Nginx está delante de la aplicación.
-   - `ADMIN_INICIAL_CODIGO` y `ADMIN_INICIAL_PASSWORD` (mínimo 12 caracteres) **solo la primera vez**, si la base está vacía. Cambiá esa contraseña después del primer ingreso.
-   - Las credenciales de MySQL las provee el plugin; no uses contraseñas por defecto.
-6. Railway iniciará el deploy automáticamente
-7. Abre la URL asignada (ej: `smartloan-it.up.railway.app`) siempre por HTTPS
-8. Inicia sesión con el administrador inicial y cambiá su contraseña
-
-> La base de datos y las tablas se crean automáticamente en el primer inicio. En producción no se crean usuarios, alumnos ni equipos de ejemplo.
-
----
-
-## Comandos Utiles
-
-```bash
-# Iniciar contenedores
-docker compose up -d
-
-# Ver logs del backend
-docker compose logs -f app
-
-# Ejecutar pruebas automatizadas
-npm test
-
-# Resetear base de datos
-docker compose down -v
-docker compose up -d
-
-# Limpiar solo datos (mantiene estructura)
-docker exec -i smartloan-mysql mysql -u root -p1234 prestamos_db -e "
-  DELETE FROM devoluciones;
-  DELETE FROM prestamos;
-  DELETE FROM equipos;
-  DELETE FROM alumnos;
-  DELETE FROM auditoria;
-  ALTER TABLE equipos AUTO_INCREMENT = 1;
-  ALTER TABLE alumnos AUTO_INCREMENT = 1;
-  ALTER TABLE prestamos AUTO_INCREMENT = 1;
-  ALTER TABLE devoluciones AUTO_INCREMENT = 1;
-  ALTER TABLE auditoria AUTO_INCREMENT = 1;
-"
-
-# Acceder a la base de datos
-docker exec -it smartloan-mysql mysql -u root -p1234 prestamos_db
+```mermaid
+erDiagram
+    ENCARGADOS ||--o{ PRESTAMOS : registra
+    ENCARGADOS ||--o{ DEVOLUCIONES : recibe
+    ALUMNOS ||--o{ PRESTAMOS : solicita
+    EQUIPOS ||--o{ PRESTAMOS : incluye
+    PRESTAMOS ||--o| DEVOLUCIONES : genera
+    ENCARGADOS ||--o{ AUDITORIA : genera
 ```
 
----
+`configuracion` es una tabla independiente de clave-valor. `auditoria` conserva el registro aunque el usuario asociado se elimine, porque su clave foránea usa `ON DELETE SET NULL`.
 
-## Licencia
+### Triggers
 
-Proyecto desarrollado con fines académicos.
+| Trigger | Momento | Efecto |
+|---|---|---|
+| `validar_prestamo` | Antes de insertar un préstamo | Rechaza el préstamo si el equipo no está en estado `Disponible`. |
+| `actualizar_estado_prestamo` | Después de insertar un préstamo | Cambia el equipo a `Prestado`. |
+| `actualizar_estado_devolucion` | Después de insertar una devolución | Cambia el equipo a `Disponible` o `En mantenimiento` según el daño y marca el préstamo como `DEVUELTO`. |
 
-© 2026 Angelo Caballero — Universidad Integración de las Américas
+### Inicialización
+
+- La base configurada (por defecto, `prestamos_db`) debe existir antes de iniciar la aplicación.
+- `backend/initDb.js` se ejecuta automáticamente al arrancar `backend/server.js`. Crea tablas con `CREATE TABLE IF NOT EXISTS`, aplica migraciones incrementales protegidas, recrea los triggers y carga la configuración inicial.
+- En desarrollo se sincronizan usuarios de ejemplo y se agregan alumnos y equipos solo si sus tablas están vacías.
+- En producción no se crean datos de demostración. Si no existe ningún administrador activo, el arranque exige `ADMIN_INICIAL_CODIGO` y `ADMIN_INICIAL_PASSWORD`.
+- `query.sql` es una referencia manual del esquema; no forma parte del arranque normal.
+- Las fechas de negocio se registran en la zona horaria `America/Asuncion`.
+
+## Seguridad y permisos
+
+### Roles
+
+| Rol en la base | Nombre en la interfaz | Alcance |
+|---|---|---|
+| `admin` | Administrador | Operación diaria, gestión de usuarios, configuración, auditoría y eliminaciones. |
+| `lectura` | Operador | Consulta, alta y edición de alumnos y equipos, registro de préstamos y devoluciones, cambios de estado y exportación. No accede a usuarios, configuración, auditoría ni eliminaciones. |
+
+La autorización se valida en el backend con `verificarToken` y `requireAdmin`. La interfaz oculta las acciones no permitidas, pero esa ocultación es solo visual: la API es la que impone los permisos.
+
+### Autenticación y sesiones
+
+- Contraseñas almacenadas con **bcrypt** (10 rondas).
+- JWT firmado y verificado exclusivamente con **HS256**; vigencia configurable con `JWT_EXPIRES_IN` (12 horas por defecto).
+- La autenticación principal usa la cookie `sl_token` con `HttpOnly`, `SameSite=Strict` y `Secure` cuando `NODE_ENV=production`. También se acepta `Authorization: Bearer`.
+- En cada solicitud protegida se consulta el usuario actual: estado, rol y `token_version`. El rol usado es el de la base, no el del token.
+- Desactivar una cuenta, cambiar su rol o su contraseña incrementa `token_version` e invalida los tokens anteriores. El logout también incrementa la versión, por lo que cierra todas las sesiones del usuario.
+- La validación de alta de usuarios exige contraseñas de al menos 6 caracteres; el administrador inicial de producción exige al menos 12.
+
+### Protecciones implementadas
+
+| Control | Configuración actual |
+|---|---|
+| Intentos de login | 10 intentos fallidos por IP cada 15 minutos |
+| Escrituras de gestión | 30 solicitudes por IP cada 15 minutos para alumnos, equipos, préstamos, devoluciones y usuarios |
+| Configuración | 15 solicitudes por IP cada 15 minutos |
+| Tamaño del cuerpo JSON | Máximo 100 KB |
+| CORS | Cerrado por defecto al mismo origen; se habilita con `CORS_ORIGIN` |
+| Cabeceras | `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` y `Cross-Origin-Opener-Policy`; HSTS en producción |
+| Errores | Los errores 5xx devuelven un mensaje genérico y el detalle queda en los logs |
+| Datos | Consultas parametrizadas, sanitización de longitudes, escape de HTML en el frontend y transacciones con bloqueos en operaciones críticas |
+
+La protección CSRF se apoya en `SameSite=Strict` y en el CORS restringido; no se implementa un token CSRF explícito. El rate limiting usa el almacén en memoria de `express-rate-limit`, adecuado para una sola instancia.
+
+### Lista de verificación para producción
+
+- Servir siempre por HTTPS.
+- Definir `NODE_ENV=production`.
+- Usar un `JWT_SECRET` único de al menos 32 caracteres.
+- Configurar `TRUST_PROXY=true` solo detrás de un proxy confiable.
+- Crear el primer administrador con las variables `ADMIN_INICIAL_*` y cambiar su contraseña.
+- No usar usuarios ni contraseñas de demostración.
+- Realizar copias de seguridad de la base antes de migraciones o mantenimientos.
+- Si se despliegan varias instancias, mover el rate limiting a un almacén compartido.
+
+## Capturas de pantalla
+
+El repositorio todavía no incluye capturas de la interfaz. Para mantener la documentación verificable, esta sección no contiene imágenes de referencia. La estructura prevista para incorporarlas es:
+
+| Vista | Archivo sugerido |
+|---|---|
+| Login | `docs/screenshots/login.png` |
+| Dashboard | `docs/screenshots/dashboard.png` |
+| Gestión de alumnos | `docs/screenshots/alumnos.png` |
+| Gestión de equipos | `docs/screenshots/equipos.png` |
+| Registro de préstamos | `docs/screenshots/prestamos.png` |
+| Registro de devoluciones | `docs/screenshots/devoluciones.png` |
+| Historial y auditoría | `docs/screenshots/historial.png` |
+| Gestión de usuarios | `docs/screenshots/usuarios.png` |
+
+Cuando estén disponibles, guardar las imágenes en `docs/screenshots/` y enlazarlas en esta tabla.
+
+## Estado del proyecto
+
+SmartLoan IT es un proyecto académico y demostrativo, funcional, desarrollado durante 2026. Incluye medidas de seguridad para producción, pero no se presenta como un producto terminado ni como una plataforma lista para operar sin una revisión adicional.
+
+Verificado en el repositorio:
+
+- `npm test` ejecuta **23 pruebas unitarias** y todas pasan localmente.
+- El flujo de CI está configurado en GitHub Actions con `npm ci` y `npm test`.
+- La aplicación incluye configuración de Docker Compose y Railway, además de inicialización automática del esquema.
+
+Limitaciones conocidas:
+
+- Las notificaciones de vencimiento se muestran únicamente en el dashboard.
+- El rate limiting se guarda en memoria y está pensado para una sola instancia.
+- La inicialización y las migraciones están embebidas en `initDb.js`; no hay una herramienta de migraciones versionadas.
+- Las pruebas cubren middleware y utilidades, pero no hay pruebas de integración con MySQL ni de extremo a extremo.
+- No se incluyen capturas de pantalla ni un archivo de licencia.
+- La interfaz está orientada a Paraguay: textos en español, moneda en guaraníes y fechas en `America/Asuncion`.
+
+Posibles siguientes pasos, aún no implementados:
+
+- Añadir pruebas de integración y de extremo a extremo.
+- Incorporar capturas reales y un archivo `LICENSE`.
+- Extender las notificaciones a todas las pantallas internas.
+- Usar un almacén compartido para el rate limiting en despliegues con varias instancias.
+- Incorporar una herramienta de migraciones para evolucionar el esquema de forma versionada.
+
+## Autoría y licencia
+
+Desarrollo: **Angelo Caballero** ([Angelo17-Py](https://github.com/Angelo17-Py)). Proyecto académico, 2026.
+
+La pantalla de acceso incluye el crédito **Powered by Bytex**.
+
+Este repositorio no incluye un archivo `LICENSE`. El campo `license` de `package.json` conserva el valor `ISC`, que es el valor por defecto de npm, pero no se distribuye el texto de esa licencia. Hasta que se agregue una licencia explícita, el código se comparte con fines académicos y de demostración y no se concede permiso explícito de reutilización. Para reutilizarlo, contactar al autor.
