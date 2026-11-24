@@ -2,6 +2,7 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 const auditoria = require('../utils/auditoria');
+const { describirCambios } = require('../utils/diffCampos');
 const httpError = require('../utils/httpError');
 const { withTransaction } = require('../utils/transaccion');
 
@@ -175,18 +176,17 @@ exports.editar = async (req, res) => {
     [nuevo.nombre, nuevo.tipo, nuevo.marca, nuevo.descripcion, req.params.id]
   );
 
-  const prev = prevRows[0];
-  const cambios = [];
-  [['Nombre', 'nombre'], ['Tipo', 'tipo'], ['Marca', 'marca'], ['Descripción', 'descripcion']].forEach(function (par) {
-    if (String(prev[par[1]] || '') !== String(nuevo[par[1]] || '')) {
-      cambios.push(par[0] + ': "' + (prev[par[1]] || '—') + '" → "' + (nuevo[par[1]] || '—') + '"');
-    }
-  });
+  const detalle = describirCambios(prevRows[0], nuevo, [
+    ['Nombre', 'nombre'],
+    ['Tipo', 'tipo'],
+    ['Marca', 'marca'],
+    ['Descripción', 'descripcion']
+  ]) || 'Sin cambios';
   auditoria.registrar(req, {
     accion: 'EDITAR',
     entidad: 'equipo',
     id_entidad: req.params.id,
-    detalle: cambios.length ? cambios.join(' · ') : 'Sin cambios'
+    detalle
   });
   res.json({ mensaje: 'Equipo actualizado' });
 };

@@ -6,6 +6,21 @@ const { s } = require('../utils/sanitize');
 const { opcionesCookieToken } = require('../utils/cookies');
 const { crearLogout } = require('../utils/sesion');
 const auditoria = require('../utils/auditoria');
+const { describirCambios } = require('../utils/diffCampos');
+
+/**
+ * Indica si queda otro administrador activo distinto del indicado.
+ * @param {object} conn Conexión de MySQL.
+ * @param {number|string} id Identificador que se excluye del conteo.
+ * @returns {Promise<boolean>}
+ */
+async function existeOtroAdminActivo(conn, id) {
+  const [admins] = await conn.query(
+    "SELECT COUNT(*) AS c FROM encargados WHERE rol = 'admin' AND estado = 1 AND id_encargado <> ?",
+    [id]
+  );
+  return Number(admins[0].c) > 0;
+}
 
 /**
  * Inicia sesión verificando código y contraseña, y devuelve un JWT.
@@ -155,14 +170,8 @@ exports.editar = async (req, res) => {
     return res.status(400).json({ mensaje: 'No puedes cambiar tu propio rol' });
   }
   // No permitir quedarse sin ningún administrador activo.
-  if (actual.rol === 'admin' && rol !== 'admin') {
-    const [admins] = await conn.query(
-      "SELECT COUNT(*) AS c FROM encargados WHERE rol = 'admin' AND estado = 1 AND id_encargado <> ?",
-      [id]
-    );
-    if (Number(admins[0].c) === 0) {
-      return res.status(400).json({ mensaje: 'Debe existir al menos un administrador activo' });
-    }
+  if (actual.rol === 'admin' && rol !== 'admin' && !(await existeOtroAdminActivo(conn, id))) {
+    return res.status(400).json({ mensaje: 'Debe existir al menos un administrador activo' });
   }
 
   if (password) {
@@ -185,11 +194,12 @@ exports.editar = async (req, res) => {
   const rolAnterior = actual.rol === 'admin' ? 'Administrador' : 'Operador';
   const rolNuevo = rol === 'admin' ? 'Administrador' : 'Operador';
   const cambios = [];
-  [['Nombre', 'nombre', nombre], ['Apellido', 'apellido', apellido], ['Cargo', 'cargo', cargo]].forEach(function (par) {
-    if (String(actual[par[1]] || '') !== String(par[2] || '')) {
-      cambios.push(par[0] + ': "' + (actual[par[1]] || '—') + '" → "' + par[2] + '"');
-    }
-  });
+  const detalleCampos = describirCambios(actual, { nombre, apellido, cargo }, [
+    ['Nombre', 'nombre'],
+    ['Apellido', 'apellido'],
+    ['Cargo', 'cargo']
+  ]);
+  if (detalleCampos) cambios.push(detalleCampos);
   if (actual.rol !== rol) cambios.push('Rol: "' + rolAnterior + '" → "' + rolNuevo + '"');
   if (password) cambios.push('Contraseña actualizada');
   auditoria.registrar(req, {
@@ -222,14 +232,8 @@ exports.cambiarEstado = async (req, res) => {
   if (rows.length === 0) {
     return res.status(404).json({ mensaje: 'Usuario no encontrado' });
   }
-  if (!activo && rows[0].rol === 'admin') {
-    const [admins] = await conn.query(
-      "SELECT COUNT(*) AS c FROM encargados WHERE rol = 'admin' AND estado = 1 AND id_encargado <> ?",
-      [id]
-    );
-    if (Number(admins[0].c) === 0) {
-      return res.status(400).json({ mensaje: 'Debe existir al menos un administrador activo' });
-    }
+  if (!activo && rows[0].rol === 'admin' && !(await existeOtroAdminActivo(conn, id))) {
+    return res.status(400).json({ mensaje: 'Debe existir al menos un administrador activo' });
   }
 
   await conn.query(

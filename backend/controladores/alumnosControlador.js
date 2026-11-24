@@ -2,6 +2,7 @@
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 const auditoria = require('../utils/auditoria');
+const { describirCambios } = require('../utils/diffCampos');
 const httpError = require('../utils/httpError');
 const { withTransaction } = require('../utils/transaccion');
 
@@ -152,18 +153,18 @@ exports.editar = async (req, res) => {
     [nuevo.nombre, nuevo.apellido, nuevo.carrera, nuevo.curso, nuevo.turno, req.params.id]
   );
 
-  const prev = prevRows[0];
-  const cambios = [];
-  [['Nombre', 'nombre'], ['Apellido', 'apellido'], ['Bachillerato', 'carrera'], ['Curso', 'curso'], ['Turno', 'turno']].forEach(function (par) {
-    if (String(prev[par[1]] || '') !== String(nuevo[par[1]] || '')) {
-      cambios.push(par[0] + ': "' + (prev[par[1]] || '—') + '" → "' + (nuevo[par[1]] || '—') + '"');
-    }
-  });
+  const detalle = describirCambios(prevRows[0], nuevo, [
+    ['Nombre', 'nombre'],
+    ['Apellido', 'apellido'],
+    ['Bachillerato', 'carrera'],
+    ['Curso', 'curso'],
+    ['Turno', 'turno']
+  ]) || 'Sin cambios';
   auditoria.registrar(req, {
     accion: 'EDITAR',
     entidad: 'alumno',
     id_entidad: req.params.id,
-    detalle: cambios.length ? cambios.join(' · ') : 'Sin cambios'
+    detalle
   });
   res.json({ mensaje: 'Alumno actualizado' });
 };
