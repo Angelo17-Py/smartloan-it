@@ -11,23 +11,30 @@
     <script src="/js/utils.js" defer></script>
     <style>
         /* Estilos específicos del historial (las bases comunes están en modules.css) */
+        /* Barra de herramientas con pestañas y filtros. */
         .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+        /* Pestañas de préstamos, devoluciones y auditoría. */
         .tabs{display:flex;gap:3px;background:var(--surface);padding:4px;border-radius:10px}
         .tab{padding:8px 20px;border-radius:8px;font-weight:700;font-size:var(--text-sm);cursor:pointer;transition:all var(--duration-fast) var(--ease-out);color:var(--dim);border:none;background:none}
         .tab.active{background:var(--primary);color:var(--on-primary)}
+        /* Filtros por estado del préstamo. */
         .filters{display:flex;gap:6px;flex-wrap:wrap}
         .fb{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-weight:700;font-size:var(--text-xs);cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
         .fb.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
         .fb:hover:not(.active){background:var(--surface);color:var(--text);}
+        /* Buscador y contador de coincidencias. */
         .search-bar input{font-size:var(--text-sm);}
         .search-count{font-size:var(--text-xs);color:var(--dim);white-space:nowrap;font-weight:700;}
+        /* Códigos, textos secundarios y resaltado de la búsqueda. */
         .code{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2px 7px;font-weight:800;font-size:0.78rem;font-family:var(--mono);color:var(--text);white-space:nowrap;}
         .sub-text{font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
         .em{text-align:center;padding:40px;color:var(--dim);font-size:var(--text-sm);}
         .highlight{background:var(--primary-glow);border-radius:3px;padding:0 2px;}
+        /* Botón de eliminación de registros. */
         .btn-del-row{background:none;border:none;color:var(--danger);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:var(--text-xs);font-weight:700;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
         .btn-del-row:hover{background:var(--danger-bg);}
 
+        /* Ajustes responsive de la barra de herramientas y las tablas. */
         @media(max-width:900px){main{padding:20px 16px}}
         @media(max-width:600px){
             main{padding:var(--space-3)!important}
@@ -92,21 +99,21 @@
 <!-- Script de funciones de API -->
 <script src="/js/api.js"></script>
 <script>
-// Verificamos si el usuario inició sesión
+// Verifica la sesión activa; sin encargado se vuelve al login.
 if(!localStorage.getItem('encargado')) window.location.href='/';
-// Guardamos todos los préstamos y devoluciones que vienen del servidor
+// Datos recibidos del servidor para las tres tablas.
 let prestamos=[],devs=[],auditoria=[];
-// Controlamos qué pestaña está activa y qué filtro
+// Pestaña y filtro seleccionados por el usuario.
 let tabAct='p',filtAct='todos';
 
-// Resaltamos el texto que el usuario buscó dentro de los resultados
+/** Escapa el texto y resalta de forma segura las coincidencias de la búsqueda. */
 function resaltar(texto,q){
     if(!q||!texto) return esc(texto)||'—';
     var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
     return esc(texto).replace(re,'<span class="highlight">$1</span>');
 }
 
-// Cargamos los préstamos y devoluciones desde el servidor
+/** Descarga préstamos y devoluciones y reconstruye sus tablas. */
 async function cargar(){
     try{
         let pr=await apiFetch('/prestamos');
@@ -121,14 +128,14 @@ async function cargar(){
     }
 }
 
-// Filtramos los préstamos según la pestaña activa (todos/activos/vencidos/devueltos)
+/** Aplica el filtro de estado y la búsqueda de texto a los préstamos. */
 function getPrestFiltrados(){
     var ahora=new Date();
     var d=prestamos.slice();
     if(filtAct==='activos')   d=d.filter(function(p){return p.estado==='ACTIVO';});
     if(filtAct==='vencidos')  d=d.filter(function(p){return p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;});
     if(filtAct==='devueltos') d=d.filter(function(p){return p.estado==='DEVUELTO';});
-    // También filtramos por lo que el usuario escribió en el buscador
+    // La búsqueda ignora mayúsculas y tildes mediante normalizeText.
     var q=normalizeText(document.getElementById('busq').value).trim();
     if(q){
         d=d.filter(function(p){
@@ -150,7 +157,7 @@ function getPrestFiltrados(){
     return d;
 }
 
-// Filtramos las devoluciones por el texto de búsqueda
+/** Filtra las devoluciones por alumno, equipo, daño o intervinientes. */
 function getDevFiltrados(){
     var q=normalizeText(document.getElementById('busq').value).trim();
     if(!q) return devs.slice();
@@ -175,7 +182,7 @@ function getDevFiltrados(){
     });
 }
 
-// Mostramos la tabla de préstamos
+/** Genera la tabla de préstamos con su estado y resaltado de búsqueda. */
 function renderP(){
     var ahora=new Date();
     var d=getPrestFiltrados();
@@ -186,7 +193,7 @@ function renderP(){
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     var html=header+'<table style="width:100%"><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th></tr></thead><tbody>';
     d.forEach(function(p,i){
-        // Calculamos si cada préstamo está vencido
+        // Un préstamo activo cuya fecha estimada ya pasó se muestra vencido.
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
         var sc='animate-fi-'+Math.min(i+1,10);
@@ -205,7 +212,7 @@ function renderP(){
     w.innerHTML=html;
 }
 
-// Mostramos la tabla de devoluciones
+/** Genera la tabla de devoluciones con daños, multas y total cobrado. */
 function renderD(){
     var d=getDevFiltrados();
     var q=document.getElementById('busq').value.trim();
@@ -236,7 +243,7 @@ function renderD(){
     w.innerHTML=html;
 }
 
-// Cargamos el registro de auditoría (solo administradores)
+/** Carga el registro de auditoría; solo se invoca para administradores. */
 async function cargarAuditoria(){
     try{
         var r=await apiFetch('/auditoria');
@@ -246,7 +253,7 @@ async function cargarAuditoria(){
     }catch(e){}
 }
 
-// Filtramos la auditoría por el texto de búsqueda
+/** Filtra la auditoría por usuario, acción, módulo o detalle. */
 function getAudFiltrados(){
     var q=normalizeText(document.getElementById('busq').value).trim();
     if(!q) return auditoria.slice();
@@ -260,7 +267,7 @@ function getAudFiltrados(){
     });
 }
 
-// Mostramos la tabla de auditoría
+/** Genera la tabla de auditoría y traduce acciones y módulos. */
 function renderA(){
     var d=getAudFiltrados();
     var q=document.getElementById('busq').value.trim();
@@ -268,6 +275,7 @@ function renderA(){
     var header='<div class="table-header"><span>Registro de auditoría</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='a') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
+    // Color del badge por acción y nombre legible del módulo.
     var map={'CREAR':'badge-success','ELIMINAR':'badge-danger','EDITAR':'badge-warn','ESTADO':'badge-warn','DESACTIVAR':'badge-danger','ACTIVAR':'badge-success','LOGIN':'badge-info'};
     var modulos={'sesion':'Sesión','alumno':'Alumno','equipo':'Equipo','prestamo':'Préstamo','devolucion':'Devolución','usuario':'Usuario','configuracion':'Configuración'};
     var html=header+'<table style="width:100%"><thead><tr><th scope="col">Fecha y hora</th><th scope="col">Usuario</th><th scope="col">Acción</th><th scope="col">Módulo</th><th scope="col">Detalle</th></tr></thead><tbody>';
@@ -287,14 +295,14 @@ function renderA(){
     w.innerHTML=html;
 }
 
-// Ejecutamos la búsqueda cada vez que el usuario escribe
+/** Vuelve a renderizar la tabla de la pestaña activa al buscar. */
 function buscar(){
     if(tabAct==='p') renderP();
     else if(tabAct==='d') renderD();
     else renderA();
 }
 
-// Cambiamos entre las pestañas del historial
+/** Cambia de pestaña, adapta el buscador y anima la tabla visible. */
 function setTab(t,el){
     tabAct=t;
     document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
@@ -304,6 +312,7 @@ function setTab(t,el){
     tp.style.display=t==='p'?'block':'none';
     td.style.display=t==='d'?'block':'none';
     ta.style.display=t==='a'?'block':'none';
+    // Fuerza el reinicio de la animación de entrada de la tabla elegida.
     if(t==='p'){tp.style.animation='none';void tp.offsetWidth;tp.style.animation='fi 0.35s var(--ease-out) both';}
     else if(t==='d'){td.style.animation='none';void td.offsetWidth;td.style.animation='fi 0.35s var(--ease-out) both';}
     else{ta.style.animation='none';void ta.offsetWidth;ta.style.animation='fi 0.35s var(--ease-out) both';}
@@ -317,7 +326,7 @@ function setTab(t,el){
     else renderA();
 }
 
-// Cambiamos el filtro (todos, activos, vencidos, devueltos)
+/** Aplica el filtro de estado elegido y repinta los préstamos. */
 function setF(f,el){
     filtAct=f;
     document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active');});
@@ -325,7 +334,8 @@ function setF(f,el){
     renderP();
 }
 
-// Confirmamos y eliminamos un préstamo
+// Eliminación de registros con confirmación previa.
+/** Confirma y elimina un préstamo junto con sus datos asociados. */
 function eliminarPrestamo(id){
     showConfirm('Eliminar el pr\u00e9stamo #'+id+'\n\nSe borrar\u00e1n todos los datos asociados (incluyendo devoluci\u00f3n si existe).\nEsta acci\u00f3n no se puede deshacer.',function(){
     apiFetch('/prestamos/'+id,{method:'DELETE'}).then(function(r){
@@ -334,7 +344,7 @@ function eliminarPrestamo(id){
     }).catch(function(){st('Error de conexión','t-err');});
     });
 }
-// Confirmamos y eliminamos una devolución
+/** Confirma y elimina una devolución, reactivando el préstamo y el equipo. */
 function eliminarDevolucion(id){
     showConfirm('Eliminar la devoluci\u00f3n #'+id+'\n\nEl pr\u00e9stamo se reactivar\u00e1 y el equipo volver\u00e1 a estar disponible.\nEsta acci\u00f3n no se puede deshacer.',function(){
     apiFetch('/devoluciones/'+id,{method:'DELETE'}).then(function(r){
@@ -343,7 +353,7 @@ function eliminarDevolucion(id){
     }).catch(function(){st('Error de conexión','t-err');});
     });
 }
-// Inicializamos todo cuando la página carga
+// Inicialización: muestra auditoría solo a administradores y carga las tablas.
 window.onload=function(){ var admin=localStorage.getItem('rol')==='admin'; if(admin){document.body.classList.add('role-admin');document.getElementById('tab-aud').style.display='';} cargar(); if(admin) cargarAuditoria(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SmartLoan IT - Consola Profesional de Gestión de Recursos Tecnológicos.">
     <script>
+    // Detecta recargas para que el panel restaure la posición de scroll manualmente.
     (function(){
         try{
             var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
@@ -22,6 +23,7 @@
     <script src="/js/utils.js" defer></script>
     <script src="/js/vendor/chart.umd.min.js"></script>
     <style>
+        /* Variables locales de color, tipografía y animación del panel. */
         :root{
             --dash-quiet:#a49b87;--dash-faint:#8a816e;
             --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Instrument Sans','Helvetica Neue',Helvetica,sans-serif;
@@ -32,15 +34,19 @@
             --letter-space-wide:-.011em;
             --letter-space-tight:-.025em;
         }
+        /* Ajustes de contraste para el tema claro. */
         :root.light{--dash-quiet:#6f6755;--dash-faint:#7a7159}
         @media (prefers-color-scheme:light){:root:not(.dark){--dash-quiet:#6f6755;--dash-faint:#7a7159}}
+        /* El panel usa su propio layout con barra lateral. */
         .dashboard-layout{display:block!important}
         .dashboard-layout .main{margin-left:0!important}
         .dashboard-layout .topbar{display:none!important}
         .dashboard-layout .main{padding:28px max(24px,calc((100vw - 1360px)/2)) 36px}
         .main-content{display:flex;flex-direction:column;max-width:1360px;width:100%;margin:0 auto}
+        /* Marca de tiempo de la última actualización de datos. */
         .last-updated{min-height:1.6em;font-size:10.5px;color:var(--dash-quiet);text-align:right;margin-top:8px;font-variant-numeric:tabular-nums}
 
+        /* Cabecera con saludo, reloj y acciones de sesión. */
         .dash-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid var(--border)}
 
         .dash-header-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
@@ -53,25 +59,30 @@
 
         .qa-label{line-height:1.25;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+        /* Aviso de error de carga con acción para reintentar. */
         .data-error{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 14px;border:1px solid var(--danger-bg);border-radius:10px;background:var(--danger-bg);color:var(--danger);font-size:12px;margin-bottom:20px}
         .data-error[hidden]{display:none}
         .data-error button{height:30px;padding:0 12px;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
         .data-error button:hover{background:var(--danger);color:#fff}
 
+        /* Rejilla principal: actividad a la izquierda y tarjetas a la derecha. */
         .dash-workspace{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
         .dash-left{display:flex;flex-direction:column;gap:24px;min-width:0}
         .dash-right{display:flex;flex-direction:column;gap:24px;min-width:0}
 
 
 
+        /* Historial de movimientos recientes. */
         .activity-feed{display:flex;flex-direction:column;min-width:0}
         .feed-empty .btn-sm:hover{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 
+        /* Tarjetas laterales: gráfico, configuración y exportación. */
         .rc-card{border-radius:16px;background:var(--card);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-card)}
         .rc-card .rc-header{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--border)}
         .rc-card .rc-header .rc-tag{font-size:10px;font-weight:600;color:var(--dash-quiet);letter-spacing:.02em;padding:3px 8px;border-radius:var(--radius-full);border:1px solid var(--border);white-space:nowrap}
         .rc-card .rc-body{padding:16px 20px}
 
+        /* Gráfico de dona con total central y leyenda de estados. */
         .donut-figure{position:relative;width:min(100%,180px);aspect-ratio:1;margin:2px auto 0}
         .donut-figure canvas{display:block;width:100%!important;height:100%!important}
         .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
@@ -79,6 +90,7 @@
         .donut-legend i{width:6px;height:6px;border-radius:2px;flex:0 0 auto}
         #donutEmpty{padding:24px 0;min-height:210px}
 
+        /* Editor de la multa diaria por retraso (solo administradores). */
         #config-section .rc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;align-items:end}
         .cfg-display{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
         .cfg-display-label{display:flex;flex-direction:column;min-width:0}
@@ -99,6 +111,7 @@
         html.role-lectura #config-section .rc-body{grid-template-columns:1fr}
 
 
+        /* Animaciones de entrada escalonadas del panel. */
         @keyframes lineUp{from{transform:translateY(112%)}to{transform:translateY(0)}}
         @keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         @keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -111,6 +124,7 @@
         body.page-loaded .dash-right .rc-card:nth-child(1){animation:cardIn 1s var(--ease) .38s both}
         body.page-loaded .dash-right .rc-card:nth-child(2){animation:cardIn 1s var(--ease) .46s both}
 
+        /* Adaptación del panel a resoluciones medianas y móviles. */
         @media(max-width:1180px){
             .dash-workspace{grid-template-columns:1fr}
             .dash-right{display:grid;grid-template-columns:1fr 1fr}
@@ -143,14 +157,16 @@
             .dash-greeting .greet-line{transform:none!important;animation:none!important}
             body:not(.page-loaded) main > .main-content{opacity:1!important;transform:none!important}
         }
-        /* ===== REDISEÑO DASHBOARD ===== */
+        /* Variables del rediseño: barra lateral y colores de estado. */
         :root{--dash-sidebar:264px;--dash-line:rgba(237,230,211,.085);--dash-green:#55b88a;--dash-amber:#d6a84b;--dash-coral:#e06b5f;--dash-muted:#8f8878}
         .layout.dashboard-layout{display:block!important;min-height:100vh;background:var(--bg)}
+        /* Barra lateral fija con marca, navegación y datos del colegio. */
         .dash-sidebar{position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;width:var(--dash-sidebar);padding:24px 14px 20px;background:linear-gradient(180deg,#17140e 0%,#12100b 100%);border-right:1px solid var(--dash-line)}
         .dash-sidebar .dash-brand{display:flex;align-items:center;gap:12px;padding:0 10px 26px;margin:0;text-decoration:none;color:var(--text);font-size:12px;font-weight:500;letter-spacing:normal;text-transform:none}
         .dash-sidebar .dash-brand span{color:inherit;font-size:inherit;letter-spacing:normal}
         .dash-brand strong{display:block;color:#efe9da;font-size:15px;font-weight:650;letter-spacing:-.01em;text-transform:none;line-height:1.1}
         .dash-brand small{display:block;margin-top:4px;color:var(--dash-muted);font-size:9px;font-weight:500;letter-spacing:.01em;line-height:1.3;white-space:nowrap}
+        /* Elementos de navegación y estado activo del módulo actual. */
         .dash-nav{display:flex;flex-direction:column;gap:3px}
         .dash-nav-item{position:relative;display:flex;align-items:center;gap:12px;height:46px;padding:0 13px;border-radius:8px;color:var(--dash-muted);font-family:var(--font);font-size:12.5px;font-weight:560;text-decoration:none;transition:background var(--duration-fast) var(--ease-out),color var(--duration-fast) var(--ease-out)}
         .dash-nav-item svg{width:18px;height:18px;flex:0 0 auto;color:var(--dash-muted);transition:color var(--duration-fast) var(--ease-out)}
@@ -159,13 +175,16 @@
         .dash-nav-item.active{background:linear-gradient(90deg,rgba(200,162,75,.13),rgba(200,162,75,.025));color:var(--primary)}
         .dash-nav-item.active svg{color:var(--primary)}
         .dash-nav-item.active::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:2px;background:var(--primary)}
+        /* Pie de la barra lateral con la identidad del colegio. */
         .dash-sidebar-footer{display:flex;align-items:center;gap:10px;margin-top:auto;padding:18px 10px 0;border-top:1px solid var(--dash-line);color:var(--text-secondary)}
         .dash-sidebar-footer svg{width:20px;height:20px;flex:0 0 auto;color:var(--dash-muted)}
         .dash-sidebar-footer strong{display:block;font-size:11px;font-weight:600;line-height:1.25}
         .dash-sidebar-footer span{display:block;margin-top:2px;font-size:9.5px;color:var(--dash-muted)}
         .dash-sidebar-backdrop{display:none}
+        /* Área principal desplazada por el ancho de la barra lateral. */
         .dashboard-layout .main{margin-left:var(--dash-sidebar)!important;padding:30px 34px 36px!important;min-height:100vh}
         .main-content{max-width:1380px!important}
+        /* Cabecera del panel: saludo, fecha, tema y usuario. */
         .dash-header{display:flex!important;align-items:flex-start!important;justify-content:space-between;gap:24px;padding-bottom:24px!important;margin-bottom:0!important;border-bottom:1px solid var(--dash-line)!important}
         .dash-header-left{display:flex;align-items:flex-start;gap:14px;min-width:0}
         .dash-menu-btn{display:none;width:40px;height:40px;place-items:center;flex:0 0 auto;margin-top:2px;border:1px solid var(--dash-line);border-radius:8px;background:transparent;color:var(--text-secondary);cursor:pointer}
@@ -187,6 +206,7 @@
         .dash-logout{height:36px;padding:0 2px;border:0;background:transparent;color:var(--text-secondary);font-family:var(--font);font-size:11.5px;font-weight:550;cursor:pointer}
         .dash-logout:hover{color:var(--danger)}
         .data-error{margin-top:16px;margin-bottom:0}
+        /* Indicadores superiores del inventario y los préstamos. */
         .dash-overview{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:1px solid var(--dash-line)}
         .overview-stat{display:flex;align-items:flex-start;gap:13px;min-width:0;padding:26px 24px;border-left:1px solid var(--dash-line)}
         .overview-stat:first-child{padding-left:0;border-left:0}
@@ -199,10 +219,12 @@
         .stat-num{display:block;color:var(--text);font-size:28px;font-weight:560;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
         .stat-label{display:block;margin-top:5px;color:var(--text-secondary);font-size:11.5px;font-weight:550;line-height:1.3}
         .stat-note{display:block;margin-top:3px;color:var(--dash-muted);font-size:9.5px;line-height:1.35}
+        /* Distribución del espacio de trabajo en dos columnas. */
         .dash-workspace{display:grid!important;grid-template-columns:minmax(0,1.58fr) minmax(0,1fr)!important;gap:22px!important;padding-top:24px;align-items:start}
         .dash-left,.dash-right{min-width:0}
         .dash-right{display:flex!important;flex-direction:column;gap:18px!important}
         .activity-feed{min-width:0}
+        /* Tarjeta de actividad reciente y sus filas. */
         .activity-card{background:var(--card);border:1px solid var(--dash-line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-card)}
         .activity-card-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;border-bottom:1px solid var(--dash-line)}
         .activity-title-wrap{display:flex;align-items:center;gap:10px;min-width:0}
@@ -213,6 +235,7 @@
         #live-time-lbl{color:var(--dash-muted);font-size:10.5px;white-space:nowrap}
         .activity-headrow{display:grid;grid-template-columns:48px minmax(165px,1.5fr) minmax(90px,1fr) 78px 80px;gap:6px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--dash-line);background:rgba(237,230,211,.018);color:var(--dash-muted);font-size:8.5px;font-weight:650;letter-spacing:.12em;text-transform:uppercase}
         .activity-card .feed-list{display:flex;flex-direction:column;min-height:0;background:transparent;border:0;border-radius:0;overflow:visible;flex:1}
+        /* Fila de actividad: hora, equipo, alumno, acción y estado. */
         .feed-item{display:grid;grid-template-columns:48px minmax(165px,1.5fr) minmax(90px,1fr) 78px 80px;grid-template-areas:none;grid-auto-flow:row;gap:6px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--dash-line);transition:background var(--duration-fast) var(--ease-out)}
         .feed-item:last-child{border-bottom:0}
         .feed-item:hover{background:rgba(237,230,211,.025)}
@@ -229,6 +252,7 @@
         .feed-status.s-active{background:rgba(214,168,75,.12);color:var(--dash-amber)}
         .feed-status.s-returned{background:rgba(85,184,138,.12);color:var(--dash-green)}
         .feed-status.s-late{background:rgba(224,107,95,.12);color:var(--dash-coral)}
+        /* Estado vacío cuando todavía no hay movimientos. */
         .feed-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:250px;padding:30px 20px;text-align:center;gap:6px}
         .feed-empty-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--dash-muted);margin-bottom:2px}
         .feed-empty-title{color:var(--text-secondary);font-size:12px;font-weight:600}
@@ -241,6 +265,7 @@
         .rc-card .rc-header h3{flex:1;margin:0;color:var(--text);font-size:12.5px;font-weight:600;letter-spacing:-.01em}
         .rc-tag{padding:3px 9px;border:1px solid var(--dash-line);border-radius:100px;color:var(--dash-muted);font-size:9px;font-weight:550;white-space:nowrap}
         .rc-body{padding:17px 18px}
+        /* Distribución del gráfico y su leyenda. */
         .chart-body{display:grid;grid-template-columns:minmax(140px,.9fr) minmax(0,1fr);align-items:center;gap:16px}
         .donut-figure{width:min(100%,154px);margin:0 auto}
         .donut-center strong{font-family:var(--font);font-size:2rem!important;font-weight:560!important;line-height:1;color:var(--text);letter-spacing:-.04em!important}
@@ -273,6 +298,7 @@
         .cfg-input-group .btn-cfg-save{height:32px;padding:0 12px;border:0;border-radius:5px;background:var(--primary);color:var(--on-primary);font-family:var(--font);font-size:10.5px;font-weight:600;cursor:pointer}
         .cfg-input-group .btn-cfg-save:hover{background:var(--primary-hover)}
         .cfg-input-group .btn-cfg-save.saved{background:var(--success)}
+        /* Acceso a la exportación de datos y última ejecución. */
         .export-card{display:flex;align-items:center;gap:12px;width:100%;padding:16px 18px;border:1px solid var(--dash-line);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;text-align:left;font-family:var(--font);transition:background var(--duration-fast) var(--ease-out),border-color var(--duration-fast) var(--ease-out)}
         .export-card:hover{background:var(--card-hover);border-color:var(--border-hover)}
         .export-icon{width:32px;height:32px;display:grid;place-items:center;flex:0 0 auto;border-radius:7px;background:var(--primary-glow);color:var(--primary)}
@@ -283,9 +309,11 @@
         .export-chevron{width:16px;height:16px;color:var(--dash-muted);flex:0 0 auto}
         .last-updated{margin-top:18px;text-align:right;color:var(--dash-muted);font-size:10px}
         .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+        /* Los usuarios de solo lectura no ven controles administrativos. */
         html.role-lectura .cfg-input-section{display:none!important}
         html.role-lectura .cfg-toggle{display:none}
         html.role-lectura .admin-nav{display:none}
+        /* Animaciones escalonadas de carga del panel. */
         .dash-header,.dash-overview,.activity-card,.dash-right .rc-card,.export-card{opacity:0}
         body.page-loaded .dash-header{animation:riseIn .7s var(--ease) .04s both}
         body.page-loaded .dash-overview{animation:riseIn .8s var(--ease) .12s both}
@@ -293,6 +321,7 @@
         body.page-loaded .dash-right .rc-card:nth-child(1){animation:cardIn .9s var(--ease) .25s both}
         body.page-loaded .dash-right .rc-card:nth-child(2){animation:cardIn .9s var(--ease) .32s both}
         body.page-loaded .export-card{animation:riseIn .8s var(--ease) .38s both}
+        /* Adaptación del rediseño a tablets y móviles. */
         @media(max-width:1180px){
             .dash-overview{grid-template-columns:repeat(3,minmax(0,1fr))}
             .overview-stat:nth-child(4){border-left:0;padding-left:0}
@@ -359,7 +388,7 @@
             .dash-header,.dash-overview,.activity-card,.dash-right .rc-card,.export-card{opacity:1!important;transform:none!important;animation:none!important}
         }
 
-        /* ===== ESCALA TIPOGRÁFICA UNIFICADA CON LOS MÓDULOS ===== */
+        /* Escala tipográfica compartida con los demás módulos. */
         .dash-brand strong{font-size:var(--text-base)}
         .dash-brand small{font-size:var(--text-xs)}
         .dash-greeting{font-size:var(--text-2xl)!important}
@@ -388,6 +417,7 @@
         .feed-empty .btn-sm{font-size:var(--text-xs)}
     </style>
     <script>
+    // Aplica el modo de solo lectura antes de pintar la página según el rol guardado.
     (function(){
         try{
             var e = JSON.parse(localStorage.getItem('encargado') || '{}');
@@ -401,6 +431,7 @@
 
 <div class="layout dashboard-layout" id="layout">
 
+    <!-- Barra lateral de navegación entre los módulos del sistema -->
     <aside class="dash-sidebar" id="dashSidebar" aria-label="Navegación principal">
         <a class="dash-brand" href="/home/dashboard.html">
             <span><strong>SmartLoanIT</strong><small>Gestión de Recursos Tecnológicos</small></span>
@@ -445,7 +476,7 @@
     <main class="main">
         <div class="main-content">
 
-            <!-- DASHBOARD HEADER -->
+            <!-- Cabecera del panel con saludo, fecha y acciones de sesión -->
             <header class="dash-header">
                 <div class="dash-header-left">
                     <button class="dash-menu-btn" id="menuBtn" type="button" onclick="toggleSidebar()" aria-label="Abrir menú" aria-controls="dashSidebar" aria-expanded="false">
@@ -474,11 +505,13 @@
                 </div>
             </header>
 
+            <!-- Aviso de error de carga con opción de reintentar -->
             <div class="data-error" id="dataError" role="alert" hidden>
                 <span id="dataErrorText">No se pudieron cargar los datos.</span>
                 <button type="button" onclick="cargarTodo()">Reintentar</button>
             </div>
 
+            <!-- Indicadores del inventario: equipos, préstamos y alumnos -->
             <section class="dash-overview" aria-label="Resumen del inventario">
                 <div class="overview-stat">
                     <span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg></span>
@@ -522,13 +555,13 @@
                 </div>
             </section>
 
-            <!-- WORKSPACE: LEFT + RIGHT -->
+            <!-- Espacio de trabajo: actividad reciente y tarjetas laterales -->
             <div class="dash-workspace">
 
-                <!-- LEFT COLUMN -->
+                <!-- Columna izquierda -->
                 <div class="dash-left">
 
-                    <!-- ACTIVITY FEED -->
+                    <!-- Historial de los últimos movimientos -->
                     <section class="activity-feed" aria-labelledby="activity-title">
                         <div class="activity-card">
                             <div class="activity-card-head">
@@ -551,10 +584,10 @@
                     </section>
                 </div>
 
-                <!-- RIGHT COLUMN -->
+                <!-- Columna derecha: gráfico, configuración y exportación -->
                 <div class="dash-right">
 
-                    <!-- DONUT CHART -->
+                    <!-- Gráfico de distribución de equipos por estado -->
                     <div class="rc-card">
                         <div class="rc-header">
                             <span class="rc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/></svg></span>
@@ -582,7 +615,7 @@
                         </div>
                     </div>
 
-                    <!-- CONFIG PANEL -->
+                    <!-- Configuración de la multa diaria por retraso -->
                     <div class="rc-card" id="config-section">
                         <div class="rc-header">
                             <span class="rc-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.42 1.42-.06-.06a1.7 1.7 0 00-1.88-.34 1.7 1.7 0 00-1.03 1.55V20h-2v-.09A1.7 1.7 0 0012.4 18.4a1.7 1.7 0 00-1.88.34l-.06.06-1.42-1.42.06-.06A1.7 1.7 0 009.44 15a1.7 1.7 0 00-1.55-1.03H8v-2h.09A1.7 1.7 0 009.44 11a1.7 1.7 0 00-.34-1.88l-.06-.06 1.42-1.42.06.06A1.7 1.7 0 0012.4 8a1.7 1.7 0 001.03-1.55V6h2v.09A1.7 1.7 0 0016.4 7.6a1.7 1.7 0 001.88-.34l.06-.06 1.42 1.42-.06.06A1.7 1.7 0 0019.4 11c.2.6.77 1 1.55 1H21v2h-.09A1.7 1.7 0 0019.4 15z"/></svg></span>
@@ -608,6 +641,7 @@
                         </div>
                     </div>
 
+                    <!-- Exportación de préstamos, devoluciones y alumnos a Excel -->
                     <button class="export-card" id="exportBtnGrid" onclick="exportarExcel()" type="button">
                         <span class="export-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></span>
                         <span class="export-copy"><span class="qa-label">Exportar Excel</span><span id="lastExport">—</span></span>
@@ -632,21 +666,26 @@
 
 <script src="/js/api.js"></script>
 <script>
+// Exige una sesión activa; de lo contrario vuelve al login.
 var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
 if(!enc.nombre) window.location.href = '/';
 
+// Instancia única de Chart.js para poder actualizarla o destruirla.
 var donutChartInstance = null;
 
+/** Abre y cierra el menú lateral en pantallas pequeñas. */
 function toggleSidebar(){
     var open = document.body.classList.toggle('sidebar-open');
     var btn = document.getElementById('menuBtn');
     if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
+/** Cierra el menú lateral y restablece su estado accesible. */
 function closeSidebar(){
     document.body.classList.remove('sidebar-open');
     var btn = document.getElementById('menuBtn');
     if(btn) btn.setAttribute('aria-expanded', 'false');
 }
+/** Muestra u oculta el editor de la multa diaria. */
 function toggleConfig(){
     var section = document.getElementById('cfgInputSection');
     var btn = document.getElementById('cfgToggle');
@@ -657,12 +696,14 @@ function toggleConfig(){
     if(open){ var input = document.getElementById('multa-input'); if(input) input.focus(); }
 }
 
-// ---------- CHARTS ----------
+// Gráfico de dona: colores, leyenda y renderizado con Chart.js.
+/** Lee una variable CSS para que el gráfico respete el tema activo. */
 function cssVar(name, fallback){
     var value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     return value || fallback || '';
 }
 
+/** Actualiza cifras, porcentajes y etiqueta accesible de la leyenda. */
 function actualizarLeyendaDonut(disponibles, prestados, mant, total){
     var pct = function(v){ return total ? Math.round((v / total) * 100) + '%' : '0%'; };
     var values = [
@@ -679,6 +720,7 @@ function actualizarLeyendaDonut(disponibles, prestados, mant, total){
     if(canvas) canvas.setAttribute('aria-label', 'Distribución de equipos: ' + disponibles + ' disponibles, ' + prestados + ' prestados y ' + mant + ' en mantenimiento.');
 }
 
+/** Crea el gráfico de dona y desactiva la animación si el usuario la reduce. */
 function crearDonut(labels, data, colors) {
     var canvas = document.getElementById('donutChart');
     if(!canvas) return;
@@ -735,6 +777,7 @@ function crearDonut(labels, data, colors) {
     });
 }
 
+/** Sustituye el gráfico por el estado vacío cuando no hay equipos. */
 function mostrarDonutVacio(){
     var canvas = document.getElementById('donutChart'); if(canvas) canvas.style.display = 'none';
     var empty = document.getElementById('donutEmpty'); if(empty) empty.style.display = 'flex';
@@ -744,9 +787,11 @@ function mostrarDonutVacio(){
     actualizarLeyendaDonut(0, 0, 0, 0);
 }
 
-// ---------- DATA ----------
+// Carga de datos y estado del panel.
+// Última información válida recibida del servidor.
 var cacheData = { equipos: [], prestamos: [], alumnos: [] };
 
+/** Muestra u oculta el aviso de error de carga. */
 function mostrarErrorDatos(mensaje){
     var el = document.getElementById('dataError');
     if(!el) return;
@@ -759,12 +804,14 @@ function mostrarErrorDatos(mensaje){
     }
 }
 
+/** Carga equipos, préstamos y alumnos en paralelo y refresca la interfaz. */
 async function cargarTodo(){
     var [er, pr, ar] = await Promise.all([
         apiFetchBackground('/equipos'),
         apiFetchBackground('/prestamos'),
         apiFetchBackground('/alumnos')
     ]);
+    // Si falla una fuente se conserva su última versión en caché.
     var fallos = (er ? 0 : 1) + (pr ? 0 : 1) + (ar ? 0 : 1);
     if(fallos === 3){
         mostrarErrorDatos('No se pudieron cargar los datos. Revisá la conexión.');
@@ -777,11 +824,13 @@ async function cargarTodo(){
     actualizarUI();
 }
 
+/** Recalcula indicadores, gráfico y actividad a partir de los datos en caché. */
 function actualizarUI(){
     var eq = cacheData.equipos;
     var pr = cacheData.prestamos;
     var al = cacheData.alumnos;
     var total = eq.length;
+    // Conteos por estado del equipo y préstamos vigentes.
     var prestados = eq.filter(function(e){ return e.estado === 'Prestado'; }).length;
     var disponibles = eq.filter(function(e){ return e.estado === 'Disponible'; }).length;
     var mant = eq.filter(function(e){ return e.estado === 'En mantenimiento'; }).length;
@@ -832,6 +881,7 @@ function actualizarUI(){
     settleDashboardScroll();
 }
 
+/** Anima un contador desde su valor actual hasta el objetivo. */
 function animarNumero(id, target) {
     var el = document.getElementById(id);
     if(!el) return;
@@ -848,7 +898,8 @@ function animarNumero(id, target) {
     requestAnimationFrame(step);
 }
 
-// ---------- ACTIVITY FEED ----------
+// Actividad reciente: préstamos, devoluciones y altas de equipos.
+/** Devuelve la hora en formato local o un guion si la fecha no es válida. */
 function formatHora(dateStr) {
     if (!dateStr) return '—';
     var d = new Date(dateStr);
@@ -856,6 +907,7 @@ function formatHora(dateStr) {
     return d.toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
+/** Elige un icono representativo según el tipo de equipo. */
 function equipmentIcon(tipo) {
     var t = (tipo || '').toLowerCase();
     if (t.indexOf('laptop') >= 0 || t.indexOf('notebook') >= 0) {
@@ -867,6 +919,7 @@ function equipmentIcon(tipo) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="3" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>';
 }
 
+/** Combina préstamos, devoluciones y altas para mostrar los últimos 5 movimientos. */
 function renderActivityFeed(prestamos, equipos) {
     var wrapper = document.getElementById('stream-wrapper');
     if (!wrapper) return;
@@ -899,6 +952,7 @@ function renderActivityFeed(prestamos, equipos) {
             statusCls: status === 'Mantenimiento' ? 's-late' : (status === 'Prestado' ? 's-active' : 's-returned')
         });
     });
+    // Descarta fechas inválidas y ordena del movimiento más reciente al más antiguo.
     events = events.filter(function(e) { return e.date && !isNaN(new Date(e.date).getTime()); })
         .sort(function(a, b) { return new Date(b.date) - new Date(a.date); })
         .slice(0, 5);
@@ -922,7 +976,8 @@ function renderActivityFeed(prestamos, equipos) {
     }).join('');
 }
 
-// ---------- EXPORT ----------
+// Exportación a Excel y registro de la última exportación.
+/** Descarga el libro Excel y guarda la fecha y los conteos en localStorage. */
 async function exportarExcel(){
     var btn = document.getElementById('exportBtnGrid');
     var label = btn.querySelector('.qa-label');
@@ -932,6 +987,7 @@ async function exportarExcel(){
     try {
         var r = await apiFetch('/exportar');
         if(!r.ok){ st('Error al exportar', 't-err'); resetExportBtn(); return; }
+        // Los conteos viajan en cabeceras para mostrarlos luego en el panel.
         var loanCount = r.headers.get('X-Export-Loans');
         var returnCount = r.headers.get('X-Export-Returns');
         var studentCount = r.headers.get('X-Export-Students');
@@ -957,6 +1013,7 @@ async function exportarExcel(){
     }
 }
 
+/** Muestra el tiempo relativo y los conteos de la última exportación. */
 function actualizarInfoExportacion(){
     var raw = localStorage.getItem('ultimaExportacion');
     if(!raw){
@@ -978,6 +1035,7 @@ function actualizarInfoExportacion(){
     }
 }
 
+/** Convierte una fecha ISO en texto relativo legible en español. */
 function formatearTiempoRelativo(iso){
     var ahora = new Date(), fecha = new Date(iso), diffMs = ahora - fecha, diffMin = Math.floor(diffMs / 60000), diffHoras = Math.floor(diffMs / 3600000), diffDias = Math.floor(diffMs / 86400000);
     if(diffMin < 1) return 'hace unos segundos';
@@ -988,7 +1046,8 @@ function formatearTiempoRelativo(iso){
     return fecha.toLocaleDateString('es-PY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
-// ---------- CLOCK ----------
+// Reloj de la cabecera.
+/** Pinta la fecha y la hora actuales en el encabezado. */
 function actualizarReloj(){
     var ahora = new Date();
     var dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -1003,13 +1062,15 @@ function actualizarReloj(){
 actualizarReloj();
 setInterval(actualizarReloj, 60000);
 
-// ---------- POLLING ----------
+// Actualización periódica de datos.
 var refreshInterval;
+/** Carga los datos de inmediato y programa la siguiente actualización. */
 function startPolling(){
     if(refreshInterval) clearInterval(refreshInterval);
     cargarTodo();
     refreshInterval = setInterval(cargarTodo, 30000);
 }
+// Pausa el sondeo cuando la pestaña está oculta y lo reanuda al volver.
 document.addEventListener('visibilitychange', function(){
     if(document.hidden && refreshInterval){
         clearInterval(refreshInterval);
@@ -1026,13 +1087,15 @@ window.addEventListener('scroll', function(){
     if(st) st.classList.toggle('show', window.scrollY > 400);
 });
 
-// ---------- CONFIG ----------
+// Configuración de la multa por retraso.
+/** Refleja en pantalla el monto vigente de la multa diaria. */
 function actualizarDisplayMulta(valor){
     var v = document.getElementById('multaValor');
     var display = valor ? fn(parseInt(valor)) : '—';
     if (v) v.textContent = display;
 }
 
+/** Obtiene la multa diaria configurada y actualiza el formulario. */
 async function cargarConfig(){
     try{
         var r = await apiFetch('/configuracion');
@@ -1046,11 +1109,13 @@ async function cargarConfig(){
     } catch(e){ /* ignore */ }
 }
 
+/** Formatea el monto ingresado con separadores de miles. */
 function fmtMonto(el){
     var v = el.value.replace(/\./g,'').replace(/\D/g,'');
     el.value = v !== '' ? Number(v).toLocaleString('es-PY') : '';
 }
 
+/** Valida y guarda la nueva multa diaria en el servidor. */
 async function guardarMulta(){
     var val = document.getElementById('multa-input').value.replace(/\./g,'').trim();
     if(!val || isNaN(val) || parseInt(val) < 0){ st('Ingresa un valor válido mayor o igual a 0','t-err'); return; }
@@ -1066,10 +1131,11 @@ async function guardarMulta(){
     setTimeout(function(){ btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('saved'); }, 2000);
 }
 
-// ---------- RESTAURACIÓN DEL SCROLL ----------
+// Restauración de la posición de scroll al recargar.
 var DASH_SCROLL_KEY = 'smartloan.dashScroll';
 var dashScrollState = null;
 
+/** Guarda la posición vertical y si el usuario estaba al final de la página. */
 function saveDashboardScroll(){
     try{
         var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
@@ -1080,6 +1146,7 @@ function saveDashboardScroll(){
     }catch(e){}
 }
 
+/** Recupera la posición solo si la navegación actual es una recarga. */
 function readDashboardScroll(){
     try{
         var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
@@ -1093,6 +1160,7 @@ function readDashboardScroll(){
     }catch(e){ return null; }
 }
 
+/** Aplica la posición guardada sin animación para evitar parpadeos. */
 function applyDashboardScroll(){
     if(!dashScrollState) return;
     var root = document.documentElement;
@@ -1104,6 +1172,7 @@ function applyDashboardScroll(){
     root.style.scrollBehavior = previousBehavior;
 }
 
+/** Reintenta el ajuste tras cargar las fuentes y libera el estado temporal. */
 function settleDashboardScroll(){
     if(!dashScrollState) return;
     applyDashboardScroll();
@@ -1120,6 +1189,7 @@ function settleDashboardScroll(){
 dashScrollState = readDashboardScroll();
 if(dashScrollState){
     applyDashboardScroll();
+    // Si el usuario intenta desplazarse, se cancela la restauración pendiente.
     ['wheel','touchmove'].forEach(function(evt){
         window.addEventListener(evt, function(){
             dashScrollState = null;
@@ -1128,11 +1198,12 @@ if(dashScrollState){
     });
 }
 
-// ---------- INIT ----------
+// Inicialización del panel.
 window.onload = function(){
     var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
     var rol = localStorage.getItem('rol');
     if(rol === 'admin') document.body.classList.add('role-admin');
+    // Pinta el nombre, el rol y el avatar del encargado conectado.
     if(enc.nombre){
         var inicial = enc.nombre[0].toUpperCase();
         var sa = document.getElementById('s-avatar'); if(sa) sa.textContent = inicial;
@@ -1147,6 +1218,7 @@ window.onload = function(){
     cargarConfig();
     initTheme();
     startPolling();
+    // Accesos rápidos usados por el buscador global.
     var paginasSpotlight = [
         {label:'Equipos',sub:'Gestión de activos tecnológicos',url:'/equipos/equipos.html'},
         {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
@@ -1156,6 +1228,7 @@ window.onload = function(){
     ];
     if(rol === 'admin') paginasSpotlight.push({label:'Usuarios',sub:'Administración de usuarios',url:'/usuarios/usuarios.html'});
     initSpotlight(paginasSpotlight);
+    // Al cambiar de tema se recrea el gráfico para tomar los colores nuevos.
     var themeObserver = new MutationObserver(function(){
         if(donutChartInstance){ donutChartInstance.destroy(); donutChartInstance = null; }
         if(cacheData.equipos.length || cacheData.prestamos.length || cacheData.alumnos.length) actualizarUI();

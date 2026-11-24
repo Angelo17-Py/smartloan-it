@@ -1,7 +1,9 @@
+# Archivos que no deben versionarse: dependencias, secretos, configuración local y ruido de herramientas.
+
 # Dependencias
 node_modules/
 
-# Variables de entorno
+# Variables de entorno: contienen credenciales reales, nunca se suben.
 .env
 
 # IDE

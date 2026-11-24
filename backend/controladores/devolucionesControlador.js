@@ -1,7 +1,15 @@
+// Controlador de devoluciones: cálculo de multas por retraso y daños, y reversión.
 const db = require('../db');
 const auditoria = require('../utils/auditoria');
 
-// Registra una nueva devolución: calcula días de retraso, multas y total a cobrar
+/**
+ * Registra la devolución de un préstamo activo.
+ * Calcula días de retraso, multa y daño, y deja que los triggers actualicen
+ * el estado del préstamo y del equipo.
+ * @param {import('express').Request} req Body: id_prestamo, estado_equipo, daño y observaciones.
+ * @param {import('express').Response} res Totales calculados o error 400/404/500.
+ * @returns {Promise<void>}
+ */
 exports.crear = async (req, res) => {
   try {
     const { id_prestamo, estado_equipo, tiene_dano, tipo_dano,
@@ -24,7 +32,8 @@ exports.crear = async (req, res) => {
         return res.status(404).json({ mensaje: 'Préstamo no encontrado o ya devuelto' });
       }
 
-      // Calculamos la multa: primero usamos la del préstamo, sino la de configuración
+      // Se usa la multa fijada al crear el préstamo para no alterar cálculos
+      // históricos si luego cambia la configuración; si falta, se usa la actual.
       let MULTA = prestamos[0].multa_base != null ? parseFloat(prestamos[0].multa_base) : null;
       if (MULTA == null || isNaN(MULTA)) {
         const [cfg] = await tx.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
@@ -38,8 +47,11 @@ exports.crear = async (req, res) => {
       const multa = dias * MULTA;
       const dano = tiene_dano ? (parseFloat(monto_dano) || 0) : 0;
       const total = multa + dano;
+      // Fecha en hora de Paraguay con el formato DATETIME que espera MySQL.
       const fmt = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T', ' ').slice(0, 19);
 
+      // El trigger actualizar_estado_devolucion marca el préstamo como DEVUELTO
+      // y deja el equipo Disponible o En mantenimiento según tenga_dano.
       const [result] = await tx.query(
         `INSERT INTO devoluciones (id_prestamo,id_encargado,fecha_devolucion,estado_equipo,tiene_dano,
          tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion)
@@ -67,7 +79,13 @@ exports.crear = async (req, res) => {
   }
 };
 
-// Elimina una devolución y reactiva el préstamo como ACTIVO
+/**
+ * Elimina una devolución y revierte sus efectos: el préstamo vuelve a ACTIVO
+ * y el equipo se libera si no queda ningún otro préstamo activo.
+ * @param {import('express').Request} req Parámetro :id de la devolución.
+ * @param {import('express').Response} res Confirmación o error 404/500.
+ * @returns {Promise<void>}
+ */
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
@@ -89,6 +107,7 @@ exports.eliminar = async (req, res) => {
         'SELECT p.id_equipo FROM prestamos p WHERE p.id_prestamo = ?', [idPrestamo]
       );
       await tx.query('DELETE FROM devoluciones WHERE id_devolucion = ?', [id]);
+      // Se deshace el efecto del trigger de devolución sobre el préstamo.
       await tx.query("UPDATE prestamos SET estado = 'ACTIVO' WHERE id_prestamo = ?", [idPrestamo]);
       // Si el equipo no tiene otros préstamos activos, lo devolvemos a Disponible
       if (eq.length > 0) {
@@ -120,10 +139,16 @@ exports.eliminar = async (req, res) => {
   }
 };
 
-// Lista todas las devoluciones con datos del préstamo, alumno, equipo y encargados
+/**
+ * Lista todas las devoluciones con datos del préstamo, alumno, equipo y encargados.
+ * @param {import('express').Request} req Petición HTTP autenticada.
+ * @param {import('express').Response} res Arreglo de devoluciones o error 500.
+ * @returns {Promise<void>}
+ */
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
+    // Se aliasean los dos encargados: quien prestó y quien recibió la devolución.
     const [rows] = await conn.query(`
       SELECT d.*, p.fecha_prestamo, p.fecha_devolucion_estimada, p.codigo_prestamo,
         e.nombre AS equipo, e.tipo, e.marca,

@@ -1,8 +1,14 @@
+// Controlador de equipos: inventario, disponibilidad, estado e historial.
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 const auditoria = require('../utils/auditoria');
 
-// Lista todos los equipos, ordenados por ID
+/**
+ * Lista todos los equipos ordenados por ID.
+ * @param {import('express').Request} req Petición HTTP autenticada.
+ * @param {import('express').Response} res Arreglo de equipos o error 500.
+ * @returns {Promise<void>}
+ */
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -14,7 +20,12 @@ exports.listar = async (req, res) => {
     }
 };
 
-// Lista solo equipos disponibles para préstamo
+/**
+ * Lista solo los equipos con estado Disponible, aptos para un nuevo préstamo.
+ * @param {import('express').Request} req Petición HTTP autenticada.
+ * @param {import('express').Response} res Arreglo de equipos disponibles o error 500.
+ * @returns {Promise<void>}
+ */
 exports.disponibles = async (req, res) => {
   try {
     const conn = await db;
@@ -26,7 +37,13 @@ exports.disponibles = async (req, res) => {
   }
 };
 
-// Crea un nuevo equipo en la base de datos
+/**
+ * Crea un equipo nuevo. El estado inicial lo asigna la base como Disponible;
+ * el cliente solo envía datos descriptivos.
+ * @param {import('express').Request} req Body: nombre, tipo, marca, descripcion.
+ * @param {import('express').Response} res Confirmación o error 400/500.
+ * @returns {Promise<void>}
+ */
 exports.crear = async (req, res) => {
   try {
     const { nombre, tipo, marca, descripcion } = req.body;
@@ -48,14 +65,21 @@ exports.crear = async (req, res) => {
     }
 };
 
-// Elimina un equipo solo si no tiene ningún historial de préstamos
+/**
+ * Elimina un equipo solo si nunca tuvo préstamos, para no romper el historial.
+ * La verificación y el borrado se ejecutan en una transacción.
+ * @param {import('express').Request} req Parámetro :id del equipo.
+ * @param {import('express').Response} res Confirmación o error 400/500.
+ * @returns {Promise<void>}
+ */
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
-      // El historial de préstamos/devoluciones no debe perderse al eliminar un equipo
+      // El historial de préstamos/devoluciones no debe perderse al eliminar un equipo.
+      // FOR UPDATE bloquea las filas de préstamos del equipo durante la verificación.
       const [historial] = await tx.query(
         'SELECT COUNT(*) AS total FROM prestamos WHERE id_equipo = ? FOR UPDATE', [id]
       );
@@ -84,9 +108,16 @@ exports.eliminar = async (req, res) => {
   }
 };
 
-// Cambia el estado manual de un equipo solo permite: Disponible ↔ En mantenimiento
+/**
+ * Cambia manualmente el estado de un equipo.
+ * Solo admite Disponible <-> En mantenimiento; Prestado lo gestionan los préstamos.
+ * @param {import('express').Request} req Body: estado numérico; parámetro :id.
+ * @param {import('express').Response} res Confirmación o error 400/404/500.
+ * @returns {Promise<void>}
+ */
 exports.cambiarEstado = async (req, res) => {
   try {
+    // El formulario envía códigos numéricos; se traducen a los valores del ENUM.
     const estadoMap = {1:'Disponible', 2:'Prestado', 3:'En mantenimiento'};
     const estado = estadoMap[req.body.estado];
     if (!estado) {
@@ -122,10 +153,16 @@ exports.cambiarEstado = async (req, res) => {
     }
 };
 
-// Historial de préstamos de un equipo específico
+/**
+ * Devuelve el historial de préstamos de un equipo con los datos del alumno.
+ * @param {import('express').Request} req Parámetro :id del equipo.
+ * @param {import('express').Response} res Arreglo de préstamos o error 500.
+ * @returns {Promise<void>}
+ */
 exports.historial = async (req, res) => {
   try {
     const conn = await db;
+    // LEFT JOIN: los préstamos activos todavía no tienen devolución registrada.
     const [rows] = await conn.query(`
       SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
         p.estado AS estado_prestamo, p.estado_inicial_equipo, p.motivo, p.accesorios,
@@ -146,12 +183,19 @@ exports.historial = async (req, res) => {
     }
 };
 
-// Actualiza los datos de un equipo existente
+/**
+ * Actualiza los datos descriptivos de un equipo y audita los cambios.
+ * El estado no se modifica por esta vía.
+ * @param {import('express').Request} req Body con los datos; parámetro :id del equipo.
+ * @param {import('express').Response} res Confirmación, 404 si no existe, 400/500.
+ * @returns {Promise<void>}
+ */
 exports.editar = async (req, res) => {
   try {
     const { nombre, tipo, marca, descripcion } = req.body;
     if (!nombre || !tipo || !marca || !descripcion) return res.status(400).json({ mensaje: 'Datos incompletos' });
     const conn = await db;
+    // Se lee el estado previo para verificar existencia y calcular el diff de auditoría.
     const [prevRows] = await conn.query(
       'SELECT nombre, tipo, marca, descripcion FROM equipos WHERE id_equipo = ?', [req.params.id]
     );

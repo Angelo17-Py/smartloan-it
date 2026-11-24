@@ -413,12 +413,12 @@
 <div class="toast" id="toast"></div>
 <script src="/js/api.js"></script>
 <script>
-// Verificamos si el usuario inició sesión, si no lo redirigimos al login
+// Verifica la sesión activa; sin encargado se vuelve al login.
 if(!localStorage.getItem('encargado')) window.location.href='/';
-// Valor por defecto de la multa por día (Gs. 10,000)
+// Multa diaria de respaldo si la configuración no está disponible.
 var MULTA=10000;
 
-// Cargamos el valor de la multa desde la configuración del sistema
+/** Obtiene la multa diaria configurada; conserva el valor por defecto si falla. */
 async function cargarMulta(){
     try{
         var r=await apiFetch('/configuracion');
@@ -428,12 +428,12 @@ async function cargarMulta(){
         if(cfg) MULTA=parseInt(cfg.valor)||10000;
     }catch(e){ MULTA=10000; }
 }
-// Guardamos el préstamo que estamos procesando actualmente
+// Préstamo seleccionado que se está procesando.
 let pActual=null;
-// Limpiamos los mensajes de error del formulario
+/** Quita el estado de error de un campo y su mensaje. */
 function clearFD(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
 
-// Cargamos la lista de préstamos activos del servidor
+/** Carga los préstamos activos y marca cuáles están vencidos. */
 async function cargarActivos(){
     const lista=document.getElementById('lista');
     try{
@@ -441,7 +441,7 @@ async function cargarActivos(){
         if(!r.ok){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';return;}
         const activos=(await r.json()).filter(p=>p.estado==='ACTIVO');
         if(!activos.length){lista.innerHTML='<p class="em">No hay préstamos activos pendientes de devolución</p>';return;}
-        // Calculamos si cada préstamo está vencido
+        // Calcula el retraso en días completos para cada préstamo.
         const ahora=new Date();
         lista.innerHTML=activos.map((p,i)=>{
             const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
@@ -458,13 +458,13 @@ async function cargarActivos(){
     }catch(e){lista.innerHTML='<p class="em">Error al conectar con el servidor</p>';}
 }
 
-// Cuando el usuario hace click en un préstamo, lo seleccionamos
+/** Marca visualmente el préstamo elegido y carga su detalle. */
 async function selec(id){
     document.querySelectorAll('.pres-item').forEach(el=>el.classList.remove('sel'));
     document.getElementById(`item-${id}`)?.classList.add('sel');
     await cargarPres(id);
 }
-// Buscamos préstamos por nombre del alumno
+/** Busca préstamos activos por nombre, apellido o código del alumno. */
 async function buscar(){
     const q=normalizeText(document.getElementById('idp').value).trim();
     if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
@@ -473,6 +473,7 @@ async function buscar(){
         const r=await apiFetch('/prestamos');
         if(!r.ok){st('Error al buscar');return;}
         const todos=await r.json();
+        // Acepta nombre y apellido en cualquier orden, además del código.
         const activos=todos.filter(function(p){
             var nombreCompleto = normalizeText((p.alumno_nombre||'') + ' ' + (p.alumno_apellido||''));
             var nombreInverso  = normalizeText((p.alumno_apellido||'') + ' ' + (p.alumno_nombre||''));
@@ -506,7 +507,7 @@ async function buscar(){
     }catch(e){st('Error de conexión');}
     finally{btn.disabled=false;btn.textContent='Buscar';}
 }
-// Cargamos los detalles del préstamo seleccionado desde el servidor
+/** Obtiene el detalle actualizado del préstamo y abre el paso 2. */
 async function cargarPres(id){
     try{
         const r=await apiFetch(`/prestamos/${id}`);
@@ -515,10 +516,10 @@ async function cargarPres(id){
     }catch(e){st('Error de conexión');}
 }
 
-// Mostramos los datos del préstamo y el formulario de devolución
+/** Presenta los datos del préstamo y prepara el formulario de devolución. */
 function mostrar(){
     const p=pActual,ahora=new Date(),v=new Date(p.fecha_devolucion_estimada);
-    // Calculamos los días de retraso y la multa
+    // Días de retraso completos para estimar la multa.
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     document.getElementById('ig').innerHTML=`
         <div class="if"><span>Pr\u00e9stamo</span><strong>${p.codigo_prestamo||'#'+p.id_prestamo}</strong></div>
@@ -534,6 +535,7 @@ function mostrar(){
         <div class="if"><span>Estado inicial</span><strong>${esc(p.estado_inicial_equipo||'\u2014')}</strong></div>
         <div class="if"><span>Encargado</span><strong>${esc(p.encargado_nombre||'')} ${esc(p.encargado_apellido||'')}</strong></div>`;
     const ra=document.getElementById('ra');
+    // Usa la multa guardada en el préstamo; si no existe, la configuración actual.
     var multaPreview=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
     if(ret>0){document.getElementById('rat').textContent=`Retraso de ${ret} día(s) — Multa estimada: Gs. ${fn(ret*multaPreview)}`;ra.style.display='flex';}
     else ra.style.display='none';
@@ -546,7 +548,7 @@ function mostrar(){
     setStep(2);updRes();checkFormComplete();
 }
 
-// Volvemos a la pantalla de selección de préstamos
+/** Vuelve al paso 1 y limpia la selección y el formulario. */
 function volver(){
     pActual=null;
     if(location.search) history.replaceState(null,'',location.pathname);
@@ -558,13 +560,13 @@ function volver(){
     setStep(1);resetForm();
 }
 
-// Cuando cambia el estado del equipo, verificamos si hay daños
+/** Activa automáticamente la sección de daños si el equipo se marca como dañado. */
 function onEstado(){
     if(document.getElementById('estado').value==='3'){document.getElementById('dano').checked=true;document.getElementById('ds').classList.add('show');}
     updRes();
     checkFormComplete();
 }
-// Mostramos u ocultamos la sección de daños
+/** Muestra u oculta la sección de daños y limpia sus campos al cerrarla. */
 function togDano(){
     const c=document.getElementById('dano').checked;
     document.getElementById('ds').classList.toggle('show',c);
@@ -572,15 +574,17 @@ function togDano(){
     updRes();
     checkFormComplete();
 }
-// Formateamos el monto con puntos cada mil
+/** Formatea el monto con separadores de miles. */
 function fmtMonto(el){var v=el.value.replace(/\./g,'').replace(/\D/g,'');el.value=v!==''?Number(v).toLocaleString('es-PY'):'';}
+/** Devuelve el valor numérico de un campo sin separadores de miles. */
 function _rv(id){return document.getElementById(id).value.replace(/\./g,'');}
-// Actualizamos el resumen de cobros (multa + daños)
+/** Recalcula y muestra multa por retraso, daños y total a cobrar. */
 function updRes(){
     if(!pActual)return;
     const v=new Date(pActual.fecha_devolucion_estimada),ahora=new Date();
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     var multaUsar=pActual.multa_base!=null?parseInt(pActual.multa_base):MULTA;
+    // La multa se calcula por día de retraso; el daño solo suma si está marcado.
     const mul=ret*multaUsar,dan=document.getElementById('dano').checked?(parseFloat(_rv('mdano'))||0):0;
     document.getElementById('rmpd').textContent=`Gs. ${fn(multaUsar)}`;
     document.getElementById('rd').textContent=`${ret} día(s)`;
@@ -590,7 +594,7 @@ function updRes(){
     document.getElementById('cobros').classList.add('show');
 }
 
-// Revisamos si el formulario está completo para habilitar el botón
+/** Habilita el procesamiento solo con conformidad, daños y accesorios completos. */
 function checkFormComplete(){
     const btn=document.getElementById('btn');
     if(!pActual){btn.disabled=true;return;}
@@ -607,7 +611,7 @@ function checkFormComplete(){
     btn.disabled=false;
 }
 
-// Validamos los campos antes de enviar
+/** Valida daños, accesorios y conformidad antes de enviar la devolución. */
 function validarDev(){
     let ok=true;
     const dano=document.getElementById('dano').checked;
@@ -627,7 +631,7 @@ function validarDev(){
     return ok;
 }
 
-// Enviamos la devolución al servidor
+/** Envía la devolución, bloquea el botón y arma el comprobante final. */
 async function procesar(){
     if(!pActual||!validarDev())return;
     const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Procesando...';
@@ -666,6 +670,7 @@ async function procesar(){
                 document.getElementById('r-mdano').textContent=`Gs. ${fn(d.monto_dano)}`;
             }
             document.getElementById('r-tot').textContent=`Gs. ${fn(d.total_cobro)}`;
+            // El sello resume el resultado: normal, con daño o con retraso.
             const stamp=document.getElementById('r-stamp');
             stamp.className='stamp-badge';
             let stampText='DEVUELTO';
@@ -691,11 +696,11 @@ async function procesar(){
     }catch(e){st('Error de conexión');btn.disabled=false;btn.textContent='Procesar devolución';}
 }
 
-// Reiniciamos para procesar otra devolución
+/** Recarga la página para procesar otra devolución. */
 function nueva(){
     window.location.href = '/devoluciones/devoluciones.html';
 }
-// Reseteamos los campos del formulario
+/** Restablece los campos y mensajes del formulario de devolución. */
 function resetForm(){
     document.getElementById('estado').value='1';document.getElementById('obs').value='';
     document.getElementById('dano').checked=false;document.getElementById('ds').classList.remove('show');
@@ -704,7 +709,7 @@ function resetForm(){
     document.getElementById('btn').textContent='Procesar devolución';checkFormComplete();
     ['tdano','mdano','odano','conf','accesorios'].forEach(f=>clearFD(f));
 }
-// Controlamos los pasos del wizard (1, 2, 3)
+/** Actualiza el indicador visual del asistente de tres pasos. */
 function setStep(n){
     for(let i=1;i<=3;i++){const s=document.getElementById(`s${i}`);s.classList.remove('active','done');if(i<n)s.classList.add('done');else if(i===n)s.classList.add('active');}
     document.getElementById('l12').classList.toggle('done',n>1);
@@ -712,7 +717,7 @@ function setStep(n){
 }
 // Atajo de teclado para buscar al presionar Enter
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
-// Inicialización cuando la página carga
+// Inicialización: carga la multa y, si llega ?prestamo=, selecciona ese préstamo.
 window.onload=function(){ document.body.classList.add('role-user'); if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargarMulta(); cargarActivos().then(function(){ var pid=new URLSearchParams(location.search).get('prestamo'); if(pid) selec(parseInt(pid,10)); }); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
 </script>
 </body>

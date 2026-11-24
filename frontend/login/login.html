@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=DM+Mono:wght@300;400;500&display=swap">
     <script src="/js/utils.js" defer></script>
     <style>
+        /* Base del acceso: reset, tema local y fondo institucional. */
         *{margin:0;padding:0;box-sizing:border-box}
         html{background:var(--bg)}
         body.login-page{
@@ -48,12 +49,14 @@
             -moz-osx-font-smoothing:grayscale;
             text-rendering:optimizeLegibility;
         }
+        /* Textura sutil superpuesta; no intercepta la interacción. */
         body.login-page::after{
             content:'';position:fixed;inset:0;z-index:60;pointer-events:none;
             opacity:.035;mix-blend-mode:overlay;
             background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
         }
 
+        /* Barra superior con la marca del sistema. */
         .login-nav{
             position:absolute;inset:0 0 auto 0;z-index:4;
             display:flex;align-items:center;justify-content:space-between;
@@ -72,6 +75,7 @@
         .wordmark-text{display:flex;align-items:baseline;gap:6px;font-size:15.5px;font-weight:560;letter-spacing:-.03em}
         .wordmark-text .it{font-size:11px;font-weight:500;letter-spacing:.14em;color:var(--muted)}
 
+        /* Distribución de dos columnas: presentación y tarjeta de acceso. */
         .login-shell{
             position:relative;z-index:2;
             display:grid;grid-template-columns:minmax(0,1.12fr) minmax(390px,.88fr);
@@ -81,6 +85,7 @@
             padding:clamp(92px,11vh,128px) clamp(24px,5vw,72px) clamp(32px,5vh,56px);
         }
 
+        /* Columna editorial: título animado línea por línea. */
         .editorial{display:flex;flex-direction:column;justify-content:center;max-width:680px}
 
         h1{
@@ -93,6 +98,7 @@
         body.page-loaded h1 .line:nth-child(2)>span{animation:lineUp 1s var(--ease) .28s both}
         body.page-loaded h1 .line:nth-child(3)>span{animation:lineUp 1s var(--ease) .36s both}
 
+        /* Texto introductorio y pie editorial con referencia a ODS 4. */
         .lede{
             max-width:46ch;margin-top:clamp(22px,3.2vh,32px);
             font-size:clamp(1rem,1.15vw,1.12rem);line-height:1.66;
@@ -113,6 +119,7 @@
         }
         .ods b{font-weight:520;color:var(--ink-soft)}
 
+        /* Columna derecha y tarjeta de inicio de sesión. */
         .access{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%}
         .access-card{
             position:relative;width:min(100%,432px);
@@ -133,6 +140,7 @@
             opacity:.05;mix-blend-mode:screen;
             background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23m)' opacity='.5'/%3E%3C/svg%3E");
         }
+        /* Encabezado, subtítulo y campos del formulario de acceso. */
         .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
         .card-eyebrow{
             font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:.005em;
@@ -144,6 +152,7 @@
         }
         .card-sub{margin:10px 0 22px;font-size:13px;line-height:1.5;color:var(--card-muted)}
 
+        /* Campos con estados de foco, error y autocompletado del navegador. */
         .field{margin-bottom:18px}
         .label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
         .field label{
@@ -190,6 +199,7 @@
             transition:background-color 5000s ease-in-out 0s;
             box-shadow:inset 0 0 0 1000px var(--login-card);
         }
+        /* Botón para revelar la contraseña y error por campo. */
         .eye{
             position:absolute;right:8px;top:50%;transform:translateY(-50%);
             width:38px;height:38px;display:grid;place-items:center;
@@ -201,6 +211,7 @@
         .field-err{display:none;margin-top:7px;font-size:11.5px;color:color-mix(in srgb,var(--danger) 72%,var(--text))}
         .field-err.show{display:block}
 
+        /* Botón de envío y su indicador de carga. */
         .login-btn{
             position:relative;width:100%;height:54px;margin-top:6px;
             display:flex;align-items:center;justify-content:center;gap:10px;
@@ -226,6 +237,7 @@
         .login-btn.loading .btn-text,.login-btn.loading .btn-arrow{display:none}
         .login-btn.loading .spinner{display:block}
 
+        /* Error general de autenticación y nota al pie de la tarjeta. */
         .err{
             display:none;align-items:flex-start;gap:7px;
             font-size:12px;line-height:1.45;color:color-mix(in srgb,var(--danger) 72%,var(--text));
@@ -236,6 +248,7 @@
         .access-note{font-size:12px;color:var(--muted);text-align:center;opacity:0}
         body.page-loaded .access-note{animation:riseIn .8s var(--ease) .6s both}
 
+        /* Animaciones de entrada, carga y sacudida ante error. */
         @keyframes lineUp{from{transform:translateY(112%)}to{transform:translateY(0)}}
         @keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
         @keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
@@ -248,10 +261,12 @@
         }
         .shake{animation:shake .4s var(--ease)}
 
+        /* Foco visible para navegación por teclado. */
         :focus-visible{outline:2px solid var(--primary);outline-offset:3px}
         .login-btn:focus-visible{outline-color:var(--text)}
         .eye:focus-visible{outline-offset:0}
 
+        /* Ajustes responsive para tablet, móvil y preferencia de movimiento reducido. */
         @media (max-width:1080px){
             .login-shell{grid-template-columns:minmax(0,1fr) minmax(360px,.92fr);gap:40px}
             h1{font-size:clamp(2.4rem,5.3vw,4rem)}
@@ -280,6 +295,7 @@
     </style>
 </head>
 <body class="login-page">
+<!-- Encabezado con la marca institucional. -->
 <header class="login-nav">
     <a class="wordmark" href="/" aria-label="SmartLoan IT">
         <span class="wordmark-mark" aria-hidden="true">S</span>
@@ -287,6 +303,7 @@
     </a>
 </header>
 
+<!-- Composición principal: mensaje institucional y acceso. -->
 <div class="login-shell" role="main">
     <section class="editorial" aria-labelledby="hero-title">
         <h1 id="hero-title">
@@ -303,6 +320,7 @@
         </div>
     </section>
 
+    <!-- Acceso institucional: formulario, avisos y créditos. -->
     <section class="access" aria-labelledby="access-title">
         <div class="access-card">
             <div class="card-head">
@@ -313,6 +331,7 @@
             </div>
             <p class="card-sub">Usá tu código de encargado y contraseña para entrar.</p>
 
+            <!-- Credenciales del encargado; la validación se realiza en JS. -->
             <form id="login-form" onsubmit="event.preventDefault();login();" novalidate>
                 <div class="field">
                     <div class="label-row">
@@ -357,15 +376,18 @@
 
 <script src="/js/api.js"></script>
 <script>
+// Restringe el código a dígitos y oculta el error al corregir.
 document.getElementById('codigo').addEventListener('input',function(){
     this.value=this.value.replace(/[^0-9]/g,'');
     clearErr('codigo');
 });
 document.getElementById('password').addEventListener('input',function(){clearErr('pass');});
+// Agiliza el ingreso pasando el foco a la contraseña con Enter.
 document.getElementById('codigo').addEventListener('keydown',function(e){
     if(e.key==='Enter'){e.preventDefault();document.getElementById('password').focus();}
 });
 
+/** Alterna la visibilidad de la contraseña y actualiza su etiqueta accesible. */
 function togglePass(){
     const inp=document.getElementById('password');
     const svg=document.getElementById('eye-svg');
@@ -380,10 +402,12 @@ function togglePass(){
         svg.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     }
 }
+/** Limpia el estado de error de un campo del formulario. */
 function clearErr(field){
     document.getElementById('err-'+field).classList.remove('show');
     document.getElementById('wrap-'+field).classList.remove('error');
 }
+/** Verifica los campos obligatorios y muestra los errores correspondientes. */
 function validar(){
     let ok=true;
     const codigo=document.getElementById('codigo').value.trim();
@@ -392,6 +416,10 @@ function validar(){
     if(!pass){document.getElementById('err-pass').classList.add('show');document.getElementById('wrap-pass').classList.add('error');ok=false;}
     return ok;
 }
+/**
+ * Autentica al encargado contra la API, guarda la sesión local y redirige
+ * al dashboard. Bloquea el botón mientras espera la respuesta.
+ */
 async function login(){
     document.getElementById('err').classList.remove('show');
     if(!validar())return;
@@ -403,6 +431,7 @@ async function login(){
         const res=await apiFetch('/encargados/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({codigo,password}),skipAuthRedirect:true});
         const data=await safeJson(res);
         if(res.ok&&data.token){
+            // Sesión válida: se persisten usuario y rol antes de navegar.
             localStorage.removeItem('token');
             localStorage.setItem('encargado',JSON.stringify(data.usuario));
             localStorage.setItem('rol',data.usuario.rol||'lectura');
@@ -420,6 +449,7 @@ async function login(){
         btn.disabled=false;btn.classList.remove('loading');
     }
 }
+// Aplica el tema guardado antes de mostrar la pantalla.
 document.addEventListener('DOMContentLoaded',function(){if(typeof initTheme==='function')initTheme();});
 </script>
 </body>

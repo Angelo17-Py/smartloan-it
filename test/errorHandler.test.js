@@ -1,7 +1,10 @@
+// Verifica que el manejador global no filtre detalles internos en errores 500
+// y que conserve los mensajes controlados de los errores 4xx.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const errorHandler = require('../backend/middleware/errorHandler');
 
+// Doble mínimo de respuesta Express para capturar el código y el cuerpo enviados.
 function respuesta() {
   return {
     statusCode: 200,
@@ -11,6 +14,8 @@ function respuesta() {
   };
 }
 
+// El mensaje original (posible SQL o ruta interna) no debe llegar al cliente.
+// console.error se silencia para mantener limpia la salida de la prueba.
 test('oculta el mensaje interno en errores 500', () => {
   const res = respuesta();
   const originalError = console.error;
@@ -26,6 +31,7 @@ test('oculta el mensaje interno en errores 500', () => {
   assert.equal(res.body.mensaje, 'Error interno del servidor');
 });
 
+// Los errores de validación (4xx) usan err.mensaje como texto público seguro.
 test('conserva mensajes controlados en errores 4xx', () => {
   const res = respuesta();
   const originalError = console.error;

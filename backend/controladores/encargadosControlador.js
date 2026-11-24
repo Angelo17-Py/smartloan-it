@@ -1,3 +1,4 @@
+// Controlador de encargados: autenticación, sesión y administración de usuarios.
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const { generarToken } = require('../middleware/auth');
@@ -6,7 +7,13 @@ const { opcionesCookieToken } = require('../utils/cookies');
 const { crearLogout } = require('../utils/sesion');
 const auditoria = require('../utils/auditoria');
 
-// Inicio de sesión: verifica código y contraseña, devuelve token JWT
+/**
+ * Inicia sesión verificando código y contraseña, y devuelve un JWT.
+ * Soporta contraseñas bcrypt y migra a hash las antiguas en texto plano.
+ * @param {import('express').Request} req Body: codigo, password.
+ * @param {import('express').Response} res Token y datos del usuario; 400/401/500.
+ * @returns {Promise<void>}
+ */
 exports.login = async (req, res) => {
   try {
     const { codigo, password } = req.body;
@@ -38,17 +45,21 @@ exports.login = async (req, res) => {
       return res.status(401).json({ mensaje: 'Código o contraseña incorrectos' });
     }
     const token = generarToken(encargado);
+    // La respuesta incluye el token de sesión: no debe almacenarse en caché.
     res.set('Cache-Control', 'no-store');
+    // Cookie httpOnly de 12 horas (vigencia por defecto del JWT).
     res.cookie('sl_token', token, Object.assign({}, opcionesCookieToken(), {
       maxAge: 12 * 60 * 60 * 1000
     }));
     req.encargado = { id: encargado.id_encargado, codigo: encargado.codigo };
+    // Se audita el acceso sin registrar la contraseña.
     auditoria.registrar(req, {
       accion: 'LOGIN',
       entidad: 'sesion',
       id_entidad: encargado.codigo,
       detalle: `${encargado.nombre} ${encargado.apellido} (${encargado.rol || 'admin'})`
     });
+    // Se excluyen password y token_version de la respuesta.
     const { password: _, token_version: __, ...datos } = encargado;
     res.json({ token, usuario: datos });
   } catch (err) {
@@ -57,10 +68,19 @@ exports.login = async (req, res) => {
   }
 };
 
-// Cierra la sesión actual e invalida todos los tokens del usuario
+/**
+ * Cierra la sesión actual e invalida todos los tokens emitidos al usuario,
+ * incrementando su token_version. Reutiliza la fábrica crearLogout.
+ * @type {import('express').RequestHandler}
+ */
 exports.logout = crearLogout(async function () { return db; });
 
-// Lista todos los encargados, activos e inactivos (sin contraseña)
+/**
+ * Lista todos los encargados, activos e inactivos, sin exponer la contraseña.
+ * @param {import('express').Request} req Petición HTTP autenticada como admin.
+ * @param {import('express').Response} res Arreglo de usuarios o error 500.
+ * @returns {Promise<void>}
+ */
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -76,13 +96,20 @@ exports.listar = async (req, res) => {
   }
 };
 
-// Crea un nuevo usuario del sistema
+/**
+ * Crea un usuario del sistema con contraseña hasheada.
+ * Valida el formato del código y la longitud mínima de la contraseña.
+ * @param {import('express').Request} req Body: codigo, nombre, apellido, cargo, rol, password.
+ * @param {import('express').Response} res Usuario creado o error 400/409/500.
+ * @returns {Promise<void>}
+ */
 exports.crear = async (req, res) => {
   try {
     const codigo = s(req.body.codigo, 10);
     const nombre = s(req.body.nombre, 100);
     const apellido = s(req.body.apellido, 100);
     const cargo = s(req.body.cargo, 100) || 'Encargado de Recursos Tecnológicos';
+    // Solo se aceptan los dos roles definidos; cualquier otro valor cae en lectura.
     const rol = req.body.rol === 'admin' ? 'admin' : 'lectura';
     const password = typeof req.body.password === 'string' ? req.body.password : '';
     if (!codigo || !nombre || !apellido || !password) {
@@ -94,6 +121,7 @@ exports.crear = async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres' });
     }
+    // El hash con costo 10 evita guardar la contraseña en texto plano.
     const hash = await bcrypt.hash(password, 10);
     const conn = await db;
     const [result] = await conn.query(
@@ -116,7 +144,13 @@ exports.crear = async (req, res) => {
   }
 };
 
-// Actualiza datos, rol y opcionalmente la contraseña de un usuario
+/**
+ * Actualiza datos, rol y, opcionalmente, la contraseña de un usuario.
+ * Protege la regla de negocio de mantener al menos un administrador activo.
+ * @param {import('express').Request} req Body con los datos; parámetro :id del usuario.
+ * @param {import('express').Response} res Confirmación o error 400/404/409/500.
+ * @returns {Promise<void>}
+ */
 exports.editar = async (req, res) => {
   try {
     const id = req.params.id;
@@ -160,7 +194,8 @@ exports.editar = async (req, res) => {
         [nombre, apellido, cargo, rol, id]
       );
     }
-    // Invalidar sesiones anteriores cuando cambia la contraseña o el rol
+    // Invalidar sesiones anteriores cuando cambia la contraseña o el rol:
+    // el próximo request del usuario fallará la comparación de token_version.
     if (password || actual.rol !== rol) {
       await conn.query('UPDATE encargados SET token_version = token_version + 1 WHERE id_encargado = ?', [id]);
     }
@@ -190,7 +225,14 @@ exports.editar = async (req, res) => {
   }
 };
 
-// Activa o desactiva un usuario
+/**
+ * Activa o desactiva un usuario.
+ * Impide desactivar la propia cuenta o al último administrador activo,
+ * y revoca sus sesiones incrementando token_version.
+ * @param {import('express').Request} req Body: activo (boolean); parámetro :id.
+ * @param {import('express').Response} res Confirmación o error 400/404/500.
+ * @returns {Promise<void>}
+ */
 exports.cambiarEstado = async (req, res) => {
   try {
     const id = req.params.id;
@@ -214,6 +256,7 @@ exports.cambiarEstado = async (req, res) => {
         return res.status(400).json({ mensaje: 'Debe existir al menos un administrador activo' });
       }
     }
+    // El incremento de token_version revoca cualquier sesión abierta del usuario.
     await conn.query(
       'UPDATE encargados SET estado = ?, token_version = token_version + 1 WHERE id_encargado = ?',
       [activo ? 1 : 0, id]

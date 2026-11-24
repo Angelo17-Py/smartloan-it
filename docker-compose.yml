@@ -1,21 +1,27 @@
+# Entorno local: MySQL + aplicación Node. Requiere un .env con DB_PASSWORD y JWT_SECRET.
 version: '3.8'
 
 services:
+  # Base de datos. La contraseña es obligatoria: el sufijo :? detiene el arranque si falta.
   mysql:
     image: mysql:8.0
     container_name: smartloan-mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Definí DB_PASSWORD en el archivo .env}
+    # 3307 en el host evita chocar con un MySQL local que ya use el 3306.
     ports:
       - "3307:3306"
+    # Volumen con nombre para conservar los datos entre reinicios y recreaciones.
     volumes:
       - mysql_data:/var/lib/mysql
+    # Evita que la app arranque antes de que MySQL acepte conexiones.
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # Servidor Express. Se construye con Dockerfile.local y monta el código del host.
   app:
     build:
       dockerfile: Dockerfile.local
@@ -23,6 +29,7 @@ services:
     ports:
       - "1002:1002"
     environment:
+      # DB_HOST usa el nombre del servicio, resuelto por la red interna de Compose.
       PORT: 1002
       DB_HOST: mysql
       DB_PORT: 3306
@@ -30,15 +37,19 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:?Definí DB_PASSWORD en el archivo .env}
       DB_NAME: prestamos_db
       JWT_SECRET: ${JWT_SECRET}
+    # Espera el healthcheck de MySQL antes de iniciar la app.
     depends_on:
       mysql:
         condition: service_healthy
     volumes:
+      # Código en vivo para desarrollo; node_modules queda dentro del contenedor.
       - .:/app
       - /app/node_modules
     working_dir: /app
+    # Comando entre comillas y con > para que Compose lo trate como una sola línea.
     command: >
       sh -c "node backend/server.js"
 
+# Volumen persistente de MySQL, definido por Compose en lugar del host.
 volumes:
   mysql_data:

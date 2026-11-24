@@ -10,16 +10,20 @@
     <link rel="stylesheet" href="/css/modules.css">
     <script src="/js/utils.js" defer></script>
     <style>
-        /* Reglas específicas de usuarios (las comunes están en modules.css) */
+        /* Ajustes propios de la vista; los estilos comunes viven en modules.css. */
+        /* Rejilla del formulario de alta de usuarios. */
         .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
         .form-grid .ig{min-width:0;}
         .form-actions{display:flex;align-items:flex-end;}
+        /* Tabla, textos auxiliares y chip de la cuenta propia. */
         td{overflow-wrap:anywhere;}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
         .sub{display:block;font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
         .yo-chip{display:inline-block;padding:3px 9px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-size:10px;font-weight:700;}
         .pw-hint{font-size:var(--text-xs);color:var(--dim);margin-top:4px;}
+        /* Aviso mostrado a usuarios sin permisos de administración. */
         .no-access{display:none;text-align:center;padding:80px 20px;color:var(--dim)}
+        /* Adaptación responsive de la rejilla, el formulario y la tabla. */
         @media(max-width:1000px){.form-grid{grid-template-columns:1fr 1fr}}
         @media(max-width:760px){.form-grid{grid-template-columns:1fr}main{padding:20px 16px}}
         @media(max-width:600px){.form-card{padding:14px 16px}.search-bar{padding:var(--space-2) var(--space-3)}table{table-layout:auto}}
@@ -33,13 +37,16 @@
         <div><h1>Usuarios del Sistema</h1><p>Administración de encargados, roles y contraseñas.</p></div>
     </div>
 
+    <!-- Restricción de acceso: solo administradores ven la gestión. -->
     <div class="no-access" id="no-access" style="display:none">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:16px;opacity:0.4"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--text)">Acceso restringido</h2>
         <p style="font-size:var(--text-sm);max-width:360px;margin:0 auto">Solo los administradores pueden gestionar usuarios del sistema.</p>
     </div>
 
+    <!-- Contenido de gestión: alta, búsqueda y listado de usuarios. -->
     <div id="page" style="display:none">
+        <!-- Alta de usuarios; la contraseña se valida y confirma en JS. -->
         <div class="form-card reveal">
             <div class="form-card-title">Registrar nuevo usuario</div>
             <div class="form-grid">
@@ -54,11 +61,13 @@
             </div>
         </div>
 
+        <!-- Filtro local sobre los usuarios ya cargados. -->
         <div class="search-bar reveal">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input id="busq" placeholder="Buscar por código, nombre, cargo o rol..." oninput="filtrar()">
         </div>
 
+        <!-- Listado dinámico; el cuerpo se completa desde render(). -->
         <div class="table-wrap reveal">
             <div class="table-header"><span>Usuarios registrados</span><span class="table-count" id="count">0 usuarios</span></div>
             <table><colgroup><col style="width:11%"><col style="width:25%"><col style="width:23%"><col style="width:13%"><col style="width:11%"><col style="width:17%"></colgroup>
@@ -68,6 +77,7 @@
     </div>
 </main>
 
+<!-- Edición del usuario seleccionado; la contraseña es opcional. -->
 <div class="mo" id="mo-edit">
     <div class="md">
         <div class="mh"><h3>Editar usuario</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
@@ -88,16 +98,23 @@
     </div>
 </div>
 
+<!-- Avisos temporales de resultado. -->
 <div class="toast" id="toast"></div>
 <script src="/js/api.js"></script>
 <script>
+// Control de sesión: sin encargado guardado se vuelve al login.
 if(!localStorage.getItem('encargado')) window.location.href = '/';
+// Encargado autenticado, usado para identificar la cuenta propia.
 var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
+// Caché de usuarios recibidos del servidor.
 var usuarios = [];
+// Identificador del usuario abierto en el modal de edición.
 var editId = null;
 
+/** Indica si el usuario está habilitado para iniciar sesión. */
 function esActivo(u){ return Number(u.estado) === 1; }
 
+/** Carga los usuarios desde la API y actualiza la tabla. */
 async function cargar(){
     try{
         var r = await apiFetch('/encargados');
@@ -109,6 +126,7 @@ async function cargar(){
     }
 }
 
+/** Renderiza el listado y protege la cuenta propia de cambios de estado. */
 function render(data){
     var tb = document.getElementById('tb');
     document.getElementById('count').textContent = data.length + ' usuario' + (data.length === 1 ? '' : 's');
@@ -116,8 +134,10 @@ function render(data){
         tb.innerHTML = '<tr class="empty-row"><td colspan="6">No hay usuarios registrados.</td></tr>';
         return;
     }
+    // Los datos se escapan con esc() antes de insertarse como HTML.
     tb.innerHTML = data.map(function(u,i){
         var activo = esActivo(u);
+        // La propia cuenta no puede desactivarse desde este listado.
         var esYo = String(u.id_encargado) === String(enc.id_encargado);
         var nombreCompleto = esc((u.nombre || '') + ' ' + (u.apellido || ''));
         var rol = u.rol === 'admin' ? '<span class="badge badge-primary">Administrador</span>' : '<span class="badge badge-info">Operador</span>';
@@ -140,6 +160,7 @@ function render(data){
     }).join('');
 }
 
+/** Filtra la caché local por código, nombre, cargo o rol. */
 function filtrar(){
     var q = normalizeText(document.getElementById('busq').value).trim();
     if(!q){ render(usuarios); return; }
@@ -151,6 +172,7 @@ function filtrar(){
     }));
 }
 
+/** Alterna el estado de error visual de un campo y su mensaje. */
 function marcarError(id, mostrar){
     var el = document.getElementById(id);
     var fe = document.getElementById('ferr-' + id);
@@ -159,6 +181,7 @@ function marcarError(id, mostrar){
     fe.classList.toggle('show', !!mostrar);
 }
 
+/** Habilita el alta según campos obligatorios, longitud y coincidencia de contraseñas. */
 function checkNuevoUsuario(){
     var codigo = document.getElementById('n-codigo').value.trim();
     var nombre = document.getElementById('n-nombre').value.trim();
@@ -171,6 +194,7 @@ function checkNuevoUsuario(){
     document.getElementById('btnCrear').disabled = !ok;
 }
 
+/** Habilita el guardado; la contraseña nueva es opcional pero debe coincidir. */
 function checkEditUsuario(){
     var nombre = document.getElementById('e-nombre').value.trim();
     var apellido = document.getElementById('e-apellido').value.trim();
@@ -182,12 +206,14 @@ function checkEditUsuario(){
     document.getElementById('btnGuardar').disabled = !(nombre && apellido && passOk);
 }
 
+/** Restablece el formulario de alta a su estado inicial. */
 function limpiarNuevo(){
     ['n-codigo','n-nombre','n-apellido','n-cargo','n-password','n-password2'].forEach(function(id){ document.getElementById(id).value = ''; });
     document.getElementById('n-rol').value = 'lectura';
     checkNuevoUsuario();
 }
 
+/** Valida y registra un nuevo usuario en la API. */
 async function crear(){
     var codigo = document.getElementById('n-codigo').value.trim();
     var nombre = document.getElementById('n-nombre').value.trim();
@@ -223,6 +249,7 @@ async function crear(){
     finally{ btn.disabled = false; btn.textContent = '+ Registrar usuario'; }
 }
 
+/** Abre el modal de edición y enfoca el campo indicado. */
 function abrirEditar(id, enfocarPassword){
     var u = usuarios.find(function(x){ return x.id_encargado == id; });
     if(!u) return;
@@ -242,11 +269,13 @@ function abrirEditar(id, enfocarPassword){
     }, 100);
 }
 
+/** Cierra el modal y descarta el usuario en edición. */
 function cerrarEdit(){
     document.getElementById('mo-edit').classList.remove('show');
     editId = null;
 }
 
+/** Limpia los mensajes de error del formulario de edición. */
 function limpiarErroresEdit(){
     ['e-nombre','e-apellido','e-password','e-password2'].forEach(function(id){
         document.getElementById(id).classList.remove('err');
@@ -254,6 +283,7 @@ function limpiarErroresEdit(){
     });
 }
 
+/** Valida y envía los cambios del usuario; la contraseña solo se envía si se completa. */
 async function guardarEdit(){
     if(!editId) return;
     var nombre = document.getElementById('e-nombre').value.trim();
@@ -289,6 +319,7 @@ async function guardarEdit(){
     finally{ btn.disabled = false; btn.textContent = 'Guardar cambios'; }
 }
 
+/** Activa o desactiva un usuario tras confirmar la acción. */
 function cambiarEstado(id, activo){
     var u = usuarios.find(function(x){ return x.id_encargado == id; });
     if(!u) return;
@@ -306,6 +337,7 @@ function cambiarEstado(id, activo){
     });
 }
 
+// Aplica el tema y restringe la vista completa al rol administrador.
 window.onload = function(){
     initTheme();
     if(localStorage.getItem('rol') !== 'admin'){

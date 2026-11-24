@@ -1,8 +1,10 @@
+// Controlador de préstamos: alta con validaciones, alertas, consulta y anulación.
 const db = require('../db');
 const { s } = require('../utils/sanitize');
 const auditoria = require('../utils/auditoria');
 
-// Formatea fechas a string MySQL (YYYY-MM-DD HH:MM:SS) en zona horaria de Paraguay
+// Formatea fechas a string MySQL (YYYY-MM-DD HH:MM:SS) en zona horaria de Paraguay.
+// El formato es ordenable lexicográficamente, lo que permite comparar fechas como texto.
 const fmt = (d) => {
   if (!d) return null;
   if (typeof d === 'string') return d.replace('T', ' ').slice(0, 19);
@@ -10,11 +12,18 @@ const fmt = (d) => {
   return str.replace('T', ' ').slice(0, 19);
 };
 
-// Crea un nuevo préstamo: valida datos, calcula multa base y registra
+/**
+ * Crea un préstamo tras validar fechas, contrato, estado inicial y disponibilidad.
+ * Guarda una copia de la multa vigente (multa_base) para calcular devoluciones futuras.
+ * @param {import('express').Request} req Body con alumno, equipo, fechas y estado inicial.
+ * @param {import('express').Response} res Código/id generados o error 400/500.
+ * @returns {Promise<void>}
+ */
 exports.crear = async (req, res) => {
   try {
     const { id_alumno, id_equipo, fecha_prestamo, fecha_devolucion_estimada,
             estado_inicial_equipo, accesorios, motivo, observaciones, acepto_contrato } = req.body;
+    // El formulario envía códigos numéricos que se traducen al estado real del equipo.
     const estadoIniMap = {1:'Excelente', 2:'Bueno', 3:'Dañado'};
     const estadoIni = estadoIniMap[estado_inicial_equipo];
     if (!estadoIni) {
@@ -26,6 +35,7 @@ exports.crear = async (req, res) => {
     if (!acepto_contrato) {
       return res.status(400).json({ mensaje: 'El alumno debe aceptar el contrato' });
     }
+    // Desde aquí las fechas se manejan como string MySQL, comparables lexicográficamente.
     const ahora = new Date();
     const ahoraStr = fmt(ahora);
     // Fecha y hora en que se realizó el préstamo (por defecto, el momento actual)
@@ -49,11 +59,14 @@ exports.crear = async (req, res) => {
       return res.status(400).json({ mensaje: 'La fecha de devolución debe ser posterior a la fecha actual y a la del préstamo' });
     }
     const conn = await db;
-    // Obtenemos la multa por día desde configuración
+    // Se congela la multa por día vigente; las devoluciones usan este valor
+    // aunque la configuración cambie después.
     const [cfg] = await conn.query("SELECT valor FROM configuracion WHERE clave='multa_por_dia'");
     let multaBase = cfg.length ? parseFloat(cfg[0].valor) : 10000;
     if (multaBase == null || isNaN(multaBase) || multaBase < 0) multaBase = 10000;
     // Generamos código correlativo (PRE-001, PRE-002...)
+    // Nota: esta consulta corre fuera de una transacción, así que FOR UPDATE
+    // no garantiza por sí solo la unicidad ante altas concurrentes.
     const [maxRow] = await conn.query('SELECT MAX(CAST(SUBSTRING(codigo_prestamo, 5) AS UNSIGNED)) AS max_num FROM prestamos FOR UPDATE');
     const maxNum = maxRow[0].max_num || 0;
     const codigoPrestamo = 'PRE-' + String(maxNum + 1).padStart(3, '0');
@@ -81,7 +94,12 @@ exports.crear = async (req, res) => {
   }
 };
 
-// Lista todos los préstamos con datos del alumno, equipo y encargado
+/**
+ * Lista todos los préstamos con datos del alumno, equipo y encargado.
+ * @param {import('express').Request} req Petición HTTP autenticada.
+ * @param {import('express').Response} res Arreglo de préstamos o error 500.
+ * @returns {Promise<void>}
+ */
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -104,12 +122,20 @@ exports.listar = async (req, res) => {
   }
 };
 
-// Lista préstamos activos vencidos o próximos a vencer (ventana de 48 horas)
+/**
+ * Lista préstamos activos vencidos o que vencen dentro de las próximas 48 horas.
+ * Devuelve también el total y la cantidad de vencidos para el panel de alertas.
+ * @param {import('express').Request} req Petición HTTP autenticada.
+ * @param {import('express').Response} res Objeto { alertas, total, vencidos } o error 500.
+ * @returns {Promise<void>}
+ */
 exports.alertas = async (req, res) => {
   try {
     const conn = await db;
     const ahoraStr = fmt(new Date());
+    // Ventana de aviso: 48 horas desde ahora.
     const umbralStr = fmt(new Date(Date.now() + 48 * 60 * 60 * 1000));
+    // minutos_restantes negativo indica que el préstamo ya está vencido.
     const [rows] = await conn.query(`
       SELECT p.id_prestamo, p.codigo_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
         a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
@@ -132,7 +158,13 @@ exports.alertas = async (req, res) => {
   }
 };
 
-// Elimina un préstamo y su devolución asociada, libera el equipo si no tiene más préstamos activos
+/**
+ * Elimina un préstamo y su devolución asociada, liberando el equipo si
+ * no tiene otros préstamos activos. Todo ocurre en una transacción.
+ * @param {import('express').Request} req Parámetro :id del préstamo.
+ * @param {import('express').Response} res Confirmación o error 404/500.
+ * @returns {Promise<void>}
+ */
 exports.eliminar = async (req, res) => {
   try {
     const id = req.params.id;
@@ -151,6 +183,7 @@ exports.eliminar = async (req, res) => {
     const tx = await db.getConnection();
     try {
       await tx.beginTransaction();
+      // Borrado en cascada manual: primero la devolución por la clave foránea.
       await tx.query('DELETE FROM devoluciones WHERE id_prestamo = ?', [id]);
       await tx.query('DELETE FROM prestamos WHERE id_prestamo = ?', [id]);
       // Si el equipo no tiene otros préstamos activos, lo devolvemos a Disponible
@@ -183,7 +216,12 @@ exports.eliminar = async (req, res) => {
   }
 };
 
-// Busca un préstamo activo por ID (para mostrar el comprobante)
+/**
+ * Busca un préstamo ACTIVO por ID para mostrar el comprobante.
+ * @param {import('express').Request} req Parámetro :id del préstamo.
+ * @param {import('express').Response} res Préstamo encontrado o 404/500.
+ * @returns {Promise<void>}
+ */
 exports.buscar = async (req, res) => {
   try {
     const conn = await db;

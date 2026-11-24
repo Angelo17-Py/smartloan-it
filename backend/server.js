@@ -1,5 +1,6 @@
 // Punto de entrada del servidor Express de SmartLoan IT
 console.log('Iniciando SmartLoan IT...');
+// Carga .env antes de importar módulos que leen variables de entorno al inicializarse.
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const express = require('express');
 const cors    = require('cors');
@@ -18,8 +19,10 @@ process.on('unhandledRejection', (reason) => {
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 1002;
 
+// Oculta la cabecera X-Powered-By para no revelar el framework usado.
 app.disable('x-powered-by');
-// Necesario si la app corre detrás de un proxy (Railway, Nginx, etc.)
+// Necesario si la app corre detrás de un proxy (Railway, Nginx, etc.);
+// sin esto req.ip sería la IP del proxy y el rate limiting no distinguiría clientes.
 app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : false);
 
 // CORS cerrado por defecto: mismo origen. Configurar CORS_ORIGIN para frontends externos.
@@ -28,6 +31,8 @@ const allowedOrigins = (process.env.CORS_ORIGIN || '')
   .map(function(origin) { return origin.trim(); })
   .filter(Boolean);
 
+// Cabeceras de seguridad globales: mitigan sniffing de tipo MIME, clickjacking,
+// fuga de referrer y acceso a cámara, micrófono o ubicación.
 app.use(function(req, res, next) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -51,9 +56,11 @@ app.use(cors({
   credentials: true,
   maxAge: 86400
 }));
+// Limita el tamaño del body JSON para evitar consumos de memoria por cargas enormes.
 app.use(express.json({ limit: '100kb' }));
 
-// Sirve los archivos estáticos del frontend
+// Sirve el frontend desde ../frontend; si el archivo no existe, la petición continúa
+// hacia las rutas de la API montadas más abajo.
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Ruta raíz redirige al login
@@ -75,11 +82,16 @@ app.use('/devoluciones', require('./rutas/devoluciones'));
 app.use('/configuracion', require('./rutas/configuracion'));
 app.use('/auditoria',    require('./rutas/auditoria'));
 
-// Endpoint de exportación a Excel — requiere autenticación
+/**
+ * Exporta préstamos y devoluciones a un libro Excel.
+ * Requiere sesión válida y escribe el archivo en streaming sobre la respuesta
+ * para no duplicar en memoria el libro completo.
+ */
 app.get('/exportar', verificarToken, async (req, res) => {
   try {
     const conn = await db;
-    // Trae todos los préstamos con datos relacionados (alumno, equipo, encargado, devolución)
+    // Trae todos los préstamos con sus datos relacionados. El LEFT JOIN conserva
+    // los préstamos aún no devueltos, que quedan con las columnas de devolución en NULL.
     const [rows] = await conn.query(`
       SELECT
         p.id_prestamo,
@@ -142,7 +154,14 @@ app.get('/exportar', verificarToken, async (req, res) => {
       return 'Gs. ' + num.toLocaleString('es-PY');
     };
 
-    // Construye una hoja de Excel con encabezados estilizados y formato de filas
+    /**
+     * Construye una hoja con encabezados estilizados, filas alternadas y filtro.
+     * @param {object} ws Hoja de ExcelJS ya creada.
+     * @param {Array} columns Definición de anchos de columna.
+     * @param {string[]} headers Textos de la fila de encabezado.
+     * @param {Array} data Filas de origen.
+     * @param {Function} fmtRow Convierte una fila en celdas con valor y estilo.
+     */
     function buildSheet(ws, columns, headers, data, fmtRow) {
       ws.columns = columns;
       const hr = ws.getRow(1);
@@ -189,9 +208,7 @@ app.get('/exportar', verificarToken, async (req, res) => {
       ws.views = [{ state: 'frozen', ySplit: 1 }];
     }
 
-    // ============================================================
-    // HOJA 1: TODOS LOS PRÉSTAMOS
-    // ============================================================
+    // Hoja 1: todos los préstamos con su estado y datos relacionados.
     const ws1 = wb.addWorksheet('Prestamos');
     buildSheet(ws1,
       [
@@ -238,9 +255,7 @@ app.get('/exportar', verificarToken, async (req, res) => {
       }
     );
 
-    // ============================================================
-    // HOJA 2: SOLO DEVOLUCIONES (registros que tienen devolución)
-    // ============================================================
+    // Hoja 2: solo las filas que ya tienen una devolución registrada.
     const devRows = rows.filter(function(r) { return r.id_devolucion; });
     const ws2 = wb.addWorksheet('Devoluciones');
     buildSheet(ws2,
@@ -276,7 +291,7 @@ app.get('/exportar', verificarToken, async (req, res) => {
       }
     );
 
-    // Estadísticas para los headers de respuesta
+    // Totales expuestos como cabeceras para que el cliente muestre el resumen de la exportación.
     const loanCount = rows.length;
     const returnCount = devRows.length;
     const studentSet = new Set(rows.map(function(r) { return r.codigo_alumno; }));
@@ -297,14 +312,18 @@ app.get('/exportar', verificarToken, async (req, res) => {
   }
 });
 
-// Ruta comodín para capturar endpoints inexistentes
+// Ruta comodín para endpoints inexistentes: responde JSON antes del manejador de errores.
 app.use((req, res) => {
   res.status(404).json({ mensaje: 'Ruta no encontrada' });
 });
 
+// El manejador de errores se registra al final para recibir los next(err) de todo lo anterior.
 app.use(errorHandler);
 
-// Función que arranca el servidor: primero inicializa BD, luego escucha
+/**
+ * Inicializa el esquema de la base de datos y luego pone el servidor a escuchar.
+ * Si la inicialización falla se aborta el arranque para no operar con el esquema incompleto.
+ */
 async function start() {
   try {
     await initDatabase();
@@ -317,7 +336,7 @@ async function start() {
     console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
   });
 
-  // Cierre graceful: libera recursos al recibir señal de terminación
+  // Cierre graceful: deja de aceptar conexiones, cierra el pool de MySQL y termina.
   function shutdown(signal) {
     console.log(`\n${signal} recibido. Cerrando servidor...`);
     server.close(() => {

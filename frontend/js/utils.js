@@ -1,9 +1,12 @@
-/* ============================================
-   SmartLoan IT — Utilidades compartidas
-   Usadas en todas las páginas del frontend
-   ============================================ */
+// Utilidades compartidas por todas las páginas del frontend: UI, formato, sesión y búsqueda.
 
-// Muestra un toast (notificación flotante) con mensaje y tipo (t-ok, t-err, t-warn)
+/**
+ * Muestra un toast flotante y lo oculta automáticamente.
+ * Reutiliza el contenedor existente o lo crea una sola vez por página.
+ *
+ * @param {string} msg Texto a mostrar.
+ * @param {string} [t] Clase de estilo: t-ok, t-err o t-warn.
+ */
 function st(msg, t) {
   t = t || 't-ok';
   var e = document.getElementById('toast');
@@ -22,7 +25,11 @@ function st(msg, t) {
   e._t = setTimeout(function () { e.className = 'toast'; }, 3200);
 }
 
-// Limpia el estado de error de un campo del formulario
+/**
+ * Quita la marca de error de un campo y su mensaje asociado.
+ *
+ * @param {string} f Id del campo.
+ */
 function clearF(f) {
   var el = document.getElementById(f);
   if (el) el.classList.remove('err');
@@ -30,7 +37,12 @@ function clearF(f) {
   if (fer) fer.classList.remove('show');
 }
 
-// Limpia error de campos en modales (con prefijo tipo "edit-")
+/**
+ * Igual que clearF, pero para campos dentro de modales que usan un prefijo de id.
+ *
+ * @param {string} f Id base del campo.
+ * @param {string} [prefix] Prefijo del modal (ej. "edit-").
+ */
 function clearFE(f, prefix) {
   prefix = prefix || '';
   var el = document.getElementById(prefix + f);
@@ -39,7 +51,13 @@ function clearFE(f, prefix) {
   if (fer) fer.classList.remove('show');
 }
 
-// Controla cambios sin guardar en un formulario y advierte antes de salir
+/**
+ * Advierte antes de abandonar la página si el formulario tiene cambios sin guardar.
+ * El aviso nativo del navegador solo se dispara cuando el estado está sucio.
+ *
+ * @param {string} selector Selector de los campos o del formulario a vigilar.
+ * @returns {{markClean: Function, isDirty: Function}} Controles para consultar o resetear el estado.
+ */
 function initUnsavedChangesGuard(selector) {
   var dirty = false;
   window.addEventListener('beforeunload', function (e) {
@@ -56,7 +74,14 @@ function initUnsavedChangesGuard(selector) {
   };
 }
 
-// Formatea una fecha para mostrar en pantalla (dd/mm/aaaa hh:mm)
+/**
+ * Formatea una fecha para mostrarla en la interfaz.
+ * Normaliza el formato de MySQL ("YYYY-MM-DD HH:mm:ss") a ISO para que
+ * los navegadores lo interpreten de forma consistente.
+ *
+ * @param {string|Date|null} d Fecha a formatear.
+ * @returns {string} Fecha local en formato dd/mm/aaaa hh:mm, o guion si no hay valor.
+ */
 function ff(d) {
   if (!d) return '\u2014';
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(d)) d = d.replace(' ', 'T');
@@ -66,14 +91,25 @@ function ff(d) {
   });
 }
 
-// Formatea un número con separador de miles (estilo Paraguay)
+/**
+ * Formatea un número con separador de miles para montos y códigos.
+ *
+ * @param {number|string|null} n Valor numérico.
+ * @returns {string} Número localizado (es-PY) o "0" si no es válido.
+ */
 function fn(n) {
   if (n == null || isNaN(n)) return '0';
   if (typeof n === 'string') n = parseFloat(n);
   return Number(n).toLocaleString('es-PY');
 }
 
-// Muestra un mensaje de error con opción de reintentar
+/**
+ * Reemplaza el contenido de un contenedor por un estado de error visible,
+ * con la opción de ofrecer un botón de reintento.
+ *
+ * @param {string|HTMLElement} container Id o elemento donde renderizar.
+ * @param {{message?: string, retry?: string}} [opts] Mensaje y llamada JS para reintentar.
+ */
 function showError(container, opts) {
   opts = opts || {};
   var msg = opts.message || 'Ocurri\u00f3 un error al cargar los datos.';
@@ -93,7 +129,10 @@ function showError(container, opts) {
   el.innerHTML = html;
 }
 
-// Inicializa el tema oscuro/claro según preferencia guardada o del sistema
+/**
+ * Aplica el tema claro u oscuro al cargar la página.
+ * Prioriza la preferencia guardada y, si no existe, la del sistema operativo.
+ */
 function initTheme() {
   var saved = localStorage.getItem('theme');
   if (saved === 'light') {
@@ -110,7 +149,10 @@ function initTheme() {
   }
 }
 
-// Alterna entre tema claro y oscuro manualmente
+/**
+ * Alterna manualmente entre tema claro y oscuro y persiste la elección
+ * para mantenerla en las siguientes visitas.
+ */
 function toggleTheme() {
   document.documentElement.classList.toggle('light');
   if (document.documentElement.classList.contains('light')) {
@@ -121,12 +163,23 @@ function toggleTheme() {
   localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
 }
 
-// Verifica si el usuario autenticado tiene rol de administrador
+/**
+ * Indica si el usuario actual es administrador.
+ * Solo controla la visibilidad de la UI; el backend vuelve a validar el rol.
+ *
+ * @returns {boolean} true si el rol guardado en la sesión es "admin".
+ */
 function esAdmin() {
   return localStorage.getItem('rol') === 'admin';
 }
 
-// Parsea una respuesta HTTP a JSON, manejando errores silenciosamente
+/**
+ * Lee una respuesta como JSON sin que un cuerpo vacío rompa el flujo.
+ * Un 204 (sin contenido) se traduce a un objeto vacío.
+ *
+ * @param {Response} r Respuesta HTTP.
+ * @returns {Promise<Object>} Datos parseados o {} si no se pudo leer.
+ */
 async function safeJson(r) {
   if (r.status === 204) return {};
   if (!r) return {};
@@ -138,26 +191,47 @@ async function safeJson(r) {
   }
 }
 
-// Normaliza texto para búsqueda: quita acentos y pasa a minúsculas
+/**
+ * Normaliza texto para comparaciones de búsqueda.
+ * Quita acentos y mayúsculas para que las coincidencias no dependan de tildes.
+ *
+ * @param {string} s Texto original.
+ * @returns {string} Texto en minúsculas y sin diacríticos.
+ */
 function normalizeText(s) {
   if (!s) return '';
   return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
-// Escapa caracteres HTML para evitar XSS
+/**
+ * Escapa texto antes de insertarlo como HTML.
+ * Protege contra XSS cuando el contenido proviene del backend o del usuario.
+ *
+ * @param {*} t Valor a escapar.
+ * @returns {string} Texto seguro para interpolar en HTML.
+ */
 function esc(t) {
   return String(t).replace(/[&<>"']/g, function (m) {
     return m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m === '"' ? '&quot;' : '&#39;';
   });
 }
 
-/* Auto-resize textarea as user types */
+/**
+ * Ajusta la altura de un textarea a su contenido para evitar scroll interno.
+ *
+ * @param {HTMLTextAreaElement} el Textarea a redimensionar.
+ */
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = el.scrollHeight + 'px';
 }
 
-// Transición suave al navegar entre páginas con fade-out
+/**
+ * Navega tras una breve animación de salida.
+ * Evita el cambio si ya se está en la misma ruta.
+ *
+ * @param {string} url Destino de navegación.
+ */
 function fadeOutNavigate(url) {
   if (!url || url === window.location.pathname) return;
   document.body.classList.add('page-exit');
@@ -166,7 +240,11 @@ function fadeOutNavigate(url) {
   }, 300);
 }
 
-// Cierra la sesión del usuario actual
+/**
+ * Cierra la sesión del usuario.
+ * Invalida la cookie en el servidor y limpia el estado local incluso si la
+ * petición falla, para no dejar una sesión a medias en el navegador.
+ */
 function logout() {
   showConfirm('Cerrar sesi\u00f3n del sistema?', function () {
     fetch('/encargados/logout', { method: 'POST' }).catch(function () {}).finally(function () {
@@ -178,7 +256,13 @@ function logout() {
   });
 }
 
-/* Modal de confirmación personalizado (reemplaza al confirm() nativo) */
+/**
+ * Abre un modal de confirmación reutilizable y ejecuta el callback al aceptar.
+ * Reemplaza al confirm() nativo para mantener el estilo visual de la app.
+ *
+ * @param {string} msg Mensaje de la confirmación.
+ * @param {Function} onConfirm Acción a ejecutar si el usuario confirma.
+ */
 function showConfirm(msg, onConfirm) {
   var overlay = document.getElementById('confirm-modal');
   if (!overlay) {
@@ -218,12 +302,13 @@ function showConfirm(msg, onConfirm) {
   overlay.addEventListener('click', overlay._closeHandler);
 }
 
+// Oculta el modal de confirmación sin ejecutar la acción.
 function closeConfirm() {
   var overlay = document.getElementById('confirm-modal');
   if (overlay) overlay.classList.remove('show');
 }
 
-/* Restaura estilos del body al volver con el botón atrás (bfcache) */
+// Restaura los estilos de la página al volver con el botón atrás (bfcache).
 window.addEventListener('pageshow', function(e) {
   document.body.classList.remove('page-exit');
   document.body.style.opacity = '';
@@ -240,7 +325,13 @@ window.addEventListener('pageshow', function(e) {
   }
 });
 
-/* Sistema de búsqueda tipo Spotlight (similar a macOS) */
+/**
+ * Monta el buscador global tipo Spotlight.
+ * Combina las páginas estáticas recibidas con alumnos y equipos del backend,
+ * cargándolos una sola vez y filtrándolos localmente.
+ *
+ * @param {Array<Object>} pages Páginas navegables con label, sub y url.
+ */
 function initSpotlight(pages) {
   pages = pages || [];
   var overlay = document.createElement('div');
@@ -360,7 +451,7 @@ function initSpotlight(pages) {
   });
 }
 
-/* Intercepta clicks en enlaces internos para hacer transición suave */
+// Intercepta clics en enlaces internos para aplicar la transición de salida.
 document.addEventListener('click', function (e) {
   var el = e.target.closest('a[href]');
   if (!el || !el.href) return;
@@ -375,7 +466,7 @@ document.addEventListener('click', function (e) {
   fadeOutNavigate(el.href);
 });
 
-/* Inicializa animaciones de scroll reveal para elementos con clase .reveal */
+// Revela los elementos .reveal a medida que entran en el viewport.
 function initScrollReveal(){
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -388,7 +479,7 @@ function initScrollReveal(){
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 }
 
-/* Inicia la animación de entrada de la página al cargar */
+// Dispara la animación de entrada con doble frame para asegurar el repintado.
 function initPageEntrance(){
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){
@@ -397,7 +488,7 @@ function initPageEntrance(){
   });
 }
 
-/* ===== NOTIFICACIONES DE VENCIMIENTO ===== */
+// Panel de vencimientos: solo se monta en el dashboard con sesión activa.
 function initNotificaciones(){
   if(!localStorage.getItem('encargado')) return;
   if(!/\/home\/dashboard(\.html)?$/.test(window.location.pathname)) return;
@@ -544,7 +635,7 @@ function initNotificaciones(){
   document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') cargarAlertas(); });
 }
 
-/* Inicializa animaciones globales al cargar DOM */
+// Arranca las animaciones globales y las notificaciones al cargar el DOM.
 document.addEventListener('DOMContentLoaded', function(){
   initPageEntrance();
   initScrollReveal();

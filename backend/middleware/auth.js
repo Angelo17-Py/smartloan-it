@@ -1,5 +1,6 @@
-// Autenticación mediante JSON Web Tokens (JWT)
-// Se encarga de generar tokens al iniciar sesión y verificarlos en rutas protegidas
+// Autenticación mediante JSON Web Tokens (JWT).
+// Genera tokens al iniciar sesión y los valida en cada ruta protegida,
+// comprobando además que el usuario siga activo y que la sesión no haya sido revocada.
 const jwt = require('jsonwebtoken');
 
 // La clave JWT debe existir y tener longitud suficiente para firmar tokens seguros
@@ -9,7 +10,13 @@ if (!SECRET || SECRET.length < 32 || SECRET === 'coloca_un_secret_unico_aqui') {
   process.exit(1);
 }
 
-// Genera un token JWT con la identidad y la versión de sesión del encargado
+/**
+ * Firma un JWT con la identidad del encargado y la versión de sesión.
+ * La versión (`v`) permite invalidar tokens ya emitidos cuando se incrementa
+ * token_version en la base de datos (por ejemplo, al cerrar sesión).
+ * @param {object} usuario Fila de encargados con id_encargado, codigo, rol y token_version.
+ * @returns {string} Token firmado con HS256.
+ */
 function generarToken(usuario) {
   return jwt.sign(
     {
@@ -23,6 +30,14 @@ function generarToken(usuario) {
   );
 }
 
+/**
+ * Lee una cookie de la cabecera Cookie sin depender de middleware adicional.
+ * Se usa para aceptar el token guardado en la cookie httpOnly, que JavaScript
+ * del navegador no puede leer.
+ * @param {object} req Request de Express.
+ * @param {string} nombre Nombre de la cookie buscada.
+ * @returns {string|null} Valor decodificado o null si no existe.
+ */
 function leerCookie(req, nombre) {
   const raw = req.headers.cookie || '';
   const partes = raw.split(';');
@@ -35,8 +50,14 @@ function leerCookie(req, nombre) {
   return null;
 }
 
-// Consulta el estado actual del usuario; se carga de forma diferida para no
-// abrir conexiones a la base de datos en las pruebas unitarias.
+/**
+ * Recupera el usuario actual desde MySQL.
+ * La consulta se hace en cada petición protegida para detectar bajas, cambios de rol
+ * y revocaciones de sesión sin esperar a que expire el token.
+ * La conexión se carga de forma diferida para no abrirla en pruebas unitarias.
+ * @param {number} id Identificador del encargado.
+ * @returns {Promise<object|null>} Fila del encargado o null si no existe.
+ */
 async function buscarUsuarioActual(id) {
   const db = require('../db');
   const conn = await db;
@@ -47,7 +68,13 @@ async function buscarUsuarioActual(id) {
   return rows[0] || null;
 }
 
-// Crea el middleware con una función de búsqueda inyectable (útil para pruebas)
+/**
+ * Crea el middleware de verificación con una función de búsqueda inyectable,
+ * lo que permite sustituir la base de datos en las pruebas.
+ * Acepta el token en `Authorization: Bearer` o en la cookie `sl_token`.
+ * @param {Function} buscarUsuario Función que recibe el id y devuelve el usuario actual.
+ * @returns {Function} Middleware de Express.
+ */
 function crearVerificador(buscarUsuario) {
   return async function verificarToken(req, res, next) {
     const header = req.headers.authorization;
@@ -82,6 +109,8 @@ function crearVerificador(buscarUsuario) {
       return res.status(401).json({ mensaje: 'Sesión no válida o usuario desactivado' });
     }
 
+    // La versión del token debe coincidir con la de la BD; un logout la incrementa
+    // y deja inválidos todos los tokens emitidos antes.
     const versionToken = Number(decoded.v || 0);
     const versionActual = Number(usuario.token_version || 0);
     if (versionToken !== versionActual) {

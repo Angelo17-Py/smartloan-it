@@ -1,7 +1,8 @@
-// Limitadores de tasa (rate limiting) para proteger rutas de abuso
+// Limitadores de tasa para proteger las rutas de abuso y fuerza bruta.
+// express-rate-limit lleva un contador por IP dentro de cada ventana de tiempo.
 const rateLimit = require('express-rate-limit');
 
-// Límite general para APIs: máximo 30 solicitudes cada 15 minutos
+// Límite general de la API. Es amplio porque cubre la navegación normal de la aplicación.
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 30,
@@ -10,7 +11,7 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Límite para rutas de configuración: máximo 15 solicitudes cada 15 minutos
+// Límite más estricto para configuración: modifica parámetros globales del sistema.
 const configLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 15,
@@ -19,7 +20,8 @@ const configLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Límite de intentos fallidos de inicio de sesión: máximo 10 cada 15 minutos
+// Límite de intentos de inicio de sesión. Con skipSuccessfulRequests, los accesos
+// correctos no consumen cuota: solo cuentan los intentos fallidos.
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,

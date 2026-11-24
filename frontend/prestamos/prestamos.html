@@ -5,6 +5,7 @@
     <meta name="description" content="SmartLoan IT - Registro de préstamos de equipos tecnológicos con contrato de uso.">
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg?v=3">
     <title>SmartLoan IT | Préstamos</title>
+    <!-- La página gestiona su propia posición de scroll al recargar -->
     <script>if('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
@@ -140,7 +141,7 @@
             .receipt-modal-status span{display:none}
         }
 
-        /* ===== SEARCHABLE SELECT ===== */
+        /* Selector con búsqueda para alumno y equipo. */
         .ss-wrap{position:relative;width:100%}
         .ss-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--dim);font-family:var(--font);font-size:var(--text-sm);cursor:pointer;transition:border-color var(--duration-fast) var(--ease-out);text-align:left;gap:8px}
         .ss-trigger:hover{border-color:var(--border-hover)}
@@ -368,24 +369,24 @@
 <script src="/js/api.js"></script>
 <!-- JavaScript del formulario de préstamos -->
 <script>
-// Verificamos si el usuario inició sesión, si no lo mandamos al login
+// Verifica la sesión activa; sin encargado se vuelve al login.
 if(!localStorage.getItem('encargado')) window.location.href = '/';
-// Guardamos la lista de alumnos, equipos y el encargado actual
+// Datos disponibles para el formulario y encargado que registra.
 let alumnos = [], equipos = [], enc = null;
-// Advierte si hay cambios sin guardar al intentar salir
+// Guardián que advierte si hay cambios sin guardar al salir.
 var formGuard = null;
 
-// Cargamos los alumnos disponibles y los equipos desde el servidor
+/** Carga alumnos y equipos disponibles y completa los selectores. */
 async function cargar(){
     document.getElementById('alumno').innerHTML = '<option value="">Cargando alumnos...</option>';
     document.getElementById('equipo').innerHTML = '<option value="">Cargando equipos...</option>';
-    // Mostramos los datos del encargado que está registrando el préstamo
+    // Recupera al encargado que está registrando el préstamo.
     enc = JSON.parse(localStorage.getItem('encargado')||'{}');
     if(enc.id_encargado){
         document.getElementById('enc-nombre').textContent = `${enc.nombre} ${enc.apellido}`;
         document.getElementById('enc-codigo').textContent = `Código: ${enc.codigo} · ${enc.cargo||'Encargado'}`;
     }
-    // Pedimos los datos de alumnos y equipos al servidor
+    // Consulta ambas fuentes en paralelo para reducir la espera.
     const [ar,er] = await Promise.all([apiFetch('/alumnos/disponibles'),apiFetch('/equipos/disponibles')]);
     if(!ar.ok||!er.ok){st('Error al cargar datos','t-err');return;}
     alumnos = await safeJson(ar);
@@ -412,7 +413,7 @@ async function cargar(){
     checkFormComplete();
 }
 
-// Convierte un <select> en buscador con dropdown
+/** Convierte un select nativo en un desplegable con búsqueda y teclado. */
 function crearSelectBusqueda(id){
   const sel=document.getElementById(id);
   if(!sel||sel._ssInit)return;
@@ -433,6 +434,7 @@ function crearSelectBusqueda(id){
   sel.style.display='none';
   const input=drop.querySelector('.ss-search input');
   const list=drop.querySelector('.ss-options');
+  // Filtra las opciones por texto normalizado y muestra el código cuando existe.
   function render(f){
     var q=normalizeText(f||'');
     list.innerHTML='';
@@ -468,6 +470,7 @@ function crearSelectBusqueda(id){
     if(!wrap.contains(e.target))closeDrop();
   }
   input.addEventListener('input',function(){render(this.value);});
+  // Enter selecciona la primera coincidencia; Escape cierra el desplegable.
   input.addEventListener('keydown',function(e){
     if(e.key==='Enter'){
       var first=list.querySelector('.ss-opt:not(.sel)');
@@ -498,7 +501,7 @@ function crearSelectBusqueda(id){
   if(!realOpts.length){trigger.disabled=true;trigger.style.opacity='0.45';trigger.style.cursor='not-allowed';}
 }
 
-// Cuando el usuario selecciona un alumno, mostramos sus datos
+/** Muestra los datos del alumno seleccionado y refresca el resumen. */
 function onAlumno(){
     clearF('alumno');
     const id = parseInt(document.getElementById('alumno').value);
@@ -510,7 +513,7 @@ function onAlumno(){
     checkFormComplete();
 }
 
-// Actualizamos el resumen del préstamo en tiempo real
+/** Reconstruye el resumen en vivo con los datos ya elegidos. */
 function actualizarResumen(){
     const id_a=document.getElementById('alumno').value,id_e=document.getElementById('equipo').value,fechaPrestamo=document.getElementById('fecha_prestamo').value,fecha=document.getElementById('fecha_dev').value,motivo=document.getElementById('motivo').value.trim();
     if(!id_a||!id_e||!fecha){document.getElementById('resumen').classList.remove('show');return;}
@@ -525,7 +528,7 @@ function actualizarResumen(){
     document.getElementById('resumen').classList.add('show');
 }
 
-// Revisamos si todos los campos obligatorios están completos
+/** Habilita el botón solo con alumno, equipo, fechas, motivo y contrato. */
 function checkFormComplete(){
     const alumno=document.getElementById('alumno').value;
     const equipo=document.getElementById('equipo').value;
@@ -539,7 +542,7 @@ function checkFormComplete(){
     document.getElementById('btn').disabled=!completo;
 }
 
-// Validamos que los campos obligatorios no estén vacíos
+/** Valida campos obligatorios y coherencia de las fechas antes de enviar. */
 function validar(){
     let ok=true;
     [{id:'alumno'},{id:'equipo'},{id:'fecha_prestamo'},{id:'fecha_dev'},{id:'motivo'}].forEach(c=>{
@@ -548,6 +551,7 @@ function validar(){
     });
     const fechaPrestamo=document.getElementById('fecha_prestamo').value;
     const fechaDev=document.getElementById('fecha_dev').value;
+    // El préstamo no puede registrarse en el futuro ni devolverse antes de salir.
     if(fechaPrestamo&&new Date(fechaPrestamo)>new Date()){
         document.getElementById('fecha_prestamo').classList.add('err');
         document.getElementById('ferr-fecha_prestamo').classList.add('show');
@@ -564,7 +568,7 @@ function validar(){
     return ok;
 }
 
-// Función principal que envía el préstamo al servidor
+/** Valida, envía el préstamo y arma el comprobante con la respuesta. */
 async function registrar(){
     if(!validar())return;
     if(!enc?.id_encargado){st('Sesion no encontrada','t-err');return;}
@@ -587,6 +591,7 @@ async function registrar(){
         const d = await safeJson(r);
         // Si el registro fue exitoso
         if(r.ok){
+            // Evita la advertencia de cambios sin guardar al mostrar el comprobante.
             formGuard.markClean();
             // Ocultamos el formulario y mostramos el comprobante
             document.querySelector('.form-card').style.display='none';
@@ -636,22 +641,23 @@ async function registrar(){
     })();
 }
 
-// Imprimimos el comprobante
+/** Abre el diálogo de impresión del comprobante. */
 function imprimir(){
     window.print();
 }
 
-// Reiniciamos todo para registrar un nuevo préstamo
+/** Recarga la página para limpiar el formulario y el comprobante. */
 function nuevoPrestamo(){
     window.location.href = '/prestamos/prestamos.html';
 }
 
-// Configuración inicial cuando la página carga
+// Inicialización del formulario.
 window.onload=function(){
-    // Cualquier usuario autenticado puede registrar préstamos
+    // Cualquier usuario autenticado puede registrar préstamos.
     document.body.classList.add('role-user');
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
     formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
+    // Precarga la fecha actual y limita la devolución a partir de ese momento.
     const now=new Date(),pad=n=>String(n).padStart(2,'0');
     const fechaActual=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
     const fechaPrestamo=document.getElementById('fecha_prestamo');

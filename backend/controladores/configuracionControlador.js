@@ -1,7 +1,13 @@
+// Controlador de configuración: parámetros globales como la multa por día de retraso.
 const db = require('../db');
 const auditoria = require('../utils/auditoria');
 
-// Obtiene todas las configuraciones del sistema (multa por día, etc.)
+/**
+ * Lista todas las configuraciones del sistema (multa por día, etc.).
+ * @param {import('express').Request} req Petición HTTP autenticada.
+ * @param {import('express').Response} res Arreglo de claves y valores o error 500.
+ * @returns {Promise<void>}
+ */
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
@@ -13,7 +19,13 @@ exports.listar = async (req, res) => {
   }
 };
 
-// Actualiza el valor de una configuración por su clave
+/**
+ * Actualiza el valor de una configuración por su clave.
+ * Acepta números con puntos de miles o coma decimal y los normaliza.
+ * @param {import('express').Request} req Body: valor; parámetro :clave.
+ * @param {import('express').Response} res Confirmación, 400/404/500 según validación.
+ * @returns {Promise<void>}
+ */
 exports.actualizar = async (req, res) => {
   try {
     const { valor } = req.body;
@@ -33,6 +45,7 @@ exports.actualizar = async (req, res) => {
       return res.status(404).json({ mensaje: 'La clave de configuración no existe' });
     }
     const valorAnterior = existing[0].valor;
+    // Los montos se manejan en guaraníes enteros, por eso se redondea antes de guardar.
     const valorNuevo = String(Math.round(valNum));
     await conn.query('UPDATE configuracion SET valor=? WHERE clave=?', [valorNuevo, req.params.clave]);
     auditoria.registrar(req, {

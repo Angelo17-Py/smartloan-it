@@ -1,10 +1,11 @@
-/* ============================================================
-   SmartLoan IT - Comprobantes compartidos
-   Estilos comunes del comprobante y su modal, usados por
-   los módulos de préstamos y devoluciones.
-   ============================================================ */
+/* SmartLoan IT — Comprobantes compartidos: estilos del documento y de su modal,
+   usados por los módulos de préstamos y devoluciones. */
+
+/* Contenedor de página y rejilla de dos columnas para el formulario de consulta. */
 main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+/* El comprobante define sus propios tokens de papel y tinta para conservar
+   el aspecto de documento impreso también en el tema oscuro. */
 .receipt{
     --doc-paper:#f7f1e4;
     --doc-paper-deep:#f1e8d5;
@@ -21,12 +22,14 @@ main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
     box-shadow:0 30px 80px -32px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.55);
     font-family:var(--font);
 }
+/* Marca de agua diagonal con el nombre institucional. */
 .receipt::before{
     content:'SMARTLOAN IT';
     position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-24deg);
     color:rgba(36,29,11,.016);font-size:56px;font-weight:700;letter-spacing:.08em;
     white-space:nowrap;pointer-events:none;
 }
+/* Cabecera: identidad institucional, número de documento y estado. */
 .receipt-header{position:relative;padding:28px 36px 22px;background:linear-gradient(180deg,#fbf7ed,var(--doc-paper));border-bottom:1px solid var(--doc-line);}
 .rh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;}
 .rh-identity{display:flex;align-items:center;gap:12px;min-width:0;}
@@ -38,26 +41,32 @@ main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
 .rh-doc-label{color:var(--doc-muted);font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
 .rt-number{display:inline-block;padding:4px 9px;border:1px solid var(--doc-line);border-radius:3px;color:var(--doc-ink);background:rgba(255,255,255,.35);font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;}
 .rh-status{padding:2px 8px;border:1px solid rgba(47,107,69,.28);border-radius:20px;background:rgba(47,107,69,.08);color:#2f6b45;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+/* Título y subtítulo del documento. */
 .receipt-title{margin-top:22px;padding-top:16px;border-top:1px solid var(--doc-line);}
 .rt-kicker{display:block;color:var(--doc-gold);font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;}
 .receipt-title h3{margin:5px 0 0;color:var(--doc-ink);font-family:var(--font-display);font-size:22px;font-weight:560;letter-spacing:-.02em;line-height:1.05;}
 .rt-sub{margin:4px 0 0;color:var(--doc-muted);font-size:10px;line-height:1.4;}
+/* Cuerpo: las secciones se numeran solas con el contador rsec. */
 .receipt-body{position:relative;padding:24px 36px 8px;counter-reset:rsec;}
 .rsec{margin-bottom:22px;counter-increment:rsec;break-inside:avoid;}
 .rsec-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--doc-line);color:var(--doc-muted);font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;}
 .rsec-title::before{content:counter(rsec,decimal-leading-zero);color:var(--doc-gold);font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.04em;}
+/* Rejilla de pares etiqueta/valor; .cols-3 agrupa bloques de tres campos. */
 .rsec-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;}
 .rsec-grid.cols-3{grid-template-columns:repeat(3,1fr);}
 .rg-item{display:flex;flex-direction:column;gap:2px;min-width:0;padding:8px 0;border-bottom:1px solid var(--doc-line);}
 .rg-item.full{grid-column:1/-1;}
 .rg-item span{color:var(--doc-muted);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
 .rg-item strong{color:var(--doc-ink);font-size:11.5px;font-weight:600;line-height:1.35;overflow-wrap:anywhere;}
+/* Observaciones con barra lateral dorada. */
 .rsec-obs{position:relative;margin-top:2px;padding:10px 14px;border:1px solid var(--doc-line);border-left:3px solid var(--doc-gold);border-radius:0 3px 3px 0;background:rgba(36,29,11,.03);}
 .rsec-obs span{display:block;margin-bottom:4px;color:var(--doc-muted);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
 .rsec-obs p{margin:0;color:var(--doc-muted);font-size:9.5px;line-height:1.5;}
+/* Pie: sello de entrega, firmas, leyenda y metadatos. */
 .receipt-footer{position:relative;padding:18px 36px 22px;border-top:1px solid var(--doc-line);background:var(--doc-paper-deep);break-inside:avoid;}
 .receipt-stamp{margin-bottom:14px;text-align:center;}
 .stamp-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border:1px solid rgba(47,107,69,.3);border-radius:20px;background:rgba(47,107,69,.08);color:#2f6b45;font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
+/* Líneas para las firmas de entrega y recepción. */
 .sig-row{display:flex;justify-content:center;gap:48px;margin-bottom:16px;}
 .sig-field{flex:1;max-width:230px;text-align:center;}
 .sig-field span{display:block;margin-bottom:2px;color:var(--doc-muted);font-size:7.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
@@ -67,8 +76,10 @@ main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
 .receipt-legal .rl-date{color:var(--doc-muted);font-family:var(--mono);font-size:8.5px;letter-spacing:.03em;}
 .receipt-legal p{max-width:560px;margin:6px auto 0;color:var(--doc-muted);font-size:8px;line-height:1.45;}
 .rl-meta{display:flex;justify-content:space-between;gap:12px;margin-top:12px;padding-top:8px;border-top:1px solid var(--doc-line);color:var(--doc-muted);font-size:7px;letter-spacing:.12em;text-transform:uppercase;}
+/* Modal del comprobante: overlay fijo y visibilidad controlada por .show. */
 #resultado{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;padding:clamp(12px,3vw,28px);background:rgba(12,10,7,.78);backdrop-filter:blur(7px);}
 #resultado.show{display:flex;animation:modalFade .2s ease both;}
+/* Tarjeta del modal: cabecera y acciones fijas con cuerpo desplazable. */
 .receipt-modal-card{display:flex;flex-direction:column;width:min(880px,100%);max-height:min(88vh,1000px);overflow:hidden;border:1px solid var(--border);border-radius:14px;background:var(--bg-alt);box-shadow:0 32px 100px -32px rgba(0,0,0,.85);animation:modalIn .35s var(--ease-out) both;}
 .receipt-modal-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--card);}
 .receipt-modal-status{display:flex;align-items:center;gap:10px;min-width:0;color:var(--success);}
@@ -77,12 +88,16 @@ main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
 .receipt-modal-status span{display:block;margin-top:2px;color:var(--dim);font-size:11px;}
 .receipt-modal-close{width:34px;height:34px;flex-shrink:0;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--dim);font-size:21px;line-height:1;cursor:pointer;transition:background var(--duration-fast) var(--ease-out),color var(--duration-fast) var(--ease-out);}
 .receipt-modal-close:hover{background:var(--danger-bg);border-color:var(--danger);color:var(--danger);}
+/* Fondo oscuro fijo para enmarcar el papel en cualquier tema. */
 .receipt-modal-scroll{flex:1;min-height:0;overflow-y:auto;padding:22px;background:#0d0b08;overscroll-behavior:contain;}
 .receipt-modal-scroll .receipt{max-width:100%;margin:0 auto;box-shadow:0 18px 44px -24px rgba(0,0,0,.8);}
 .receipt-modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;padding:12px 20px;border-top:1px solid var(--border);background:var(--card);}
 .receipt-modal-actions .btn{min-width:150px;height:40px;}
+/* Evita que el fondo se desplace mientras el modal está abierto. */
 body.modal-open{overflow:hidden;}
+/* Animaciones de apertura del modal. */
 @keyframes modalFade{from{opacity:0}to{opacity:1}}
 @keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+/* Mismos controles de visibilidad por rol que modules.css. */
 .admin-only{display:none!important;}
 body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}

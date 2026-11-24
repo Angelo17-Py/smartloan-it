@@ -7,6 +7,8 @@
 CREATE DATABASE IF NOT EXISTS prestamos_db;
 USE prestamos_db;
 
+-- Encargados: personal que opera el sistema. codigo es el identificador de login,
+-- password guarda el hash bcrypt y token_version permite revocar sesiones activas.
 CREATE TABLE encargados (
     id_encargado   INT AUTO_INCREMENT PRIMARY KEY,
     codigo         VARCHAR(10) UNIQUE NOT NULL,
@@ -20,6 +22,7 @@ CREATE TABLE encargados (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Alumnos: solicitantes de préstamos. codigo_alumno es único para evitar duplicados.
 CREATE TABLE alumnos (
     id_alumno      INT AUTO_INCREMENT PRIMARY KEY,
     codigo_alumno  VARCHAR(20) UNIQUE NOT NULL,
@@ -32,6 +35,8 @@ CREATE TABLE alumnos (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Equipos: inventario prestable. El estado lo alternan los triggers según préstamos
+-- y devoluciones, por eso se controla desde la base y no solo desde la app.
 CREATE TABLE equipos (
     id_equipo      INT AUTO_INCREMENT PRIMARY KEY,
     nombre         VARCHAR(100) NOT NULL,
@@ -42,6 +47,8 @@ CREATE TABLE equipos (
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Préstamos: núcleo del sistema. Cada fila vincula un alumno, un equipo y el encargado
+-- que autoriza. Se conserva el estado inicial del equipo y las condiciones pactadas.
 CREATE TABLE prestamos (
     id_prestamo               INT AUTO_INCREMENT PRIMARY KEY,
     id_alumno                 INT NOT NULL,
@@ -56,14 +63,19 @@ CREATE TABLE prestamos (
     acepto_contrato           BOOLEAN DEFAULT FALSE,
     multa_base                DECIMAL(12,2) DEFAULT NULL,
     estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
+    -- Relaciones: el préstamo no puede existir sin alumno, equipo ni encargado válidos.
     FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
     FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
     FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado),
+    -- La devolución debe ser posterior a la entrega; se valida en la propia BD.
     CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)
 );
 
+-- Acelera los filtros por estado (activos/devueltos) usados en listados y alertas.
 CREATE INDEX idx_prestamos_estado ON prestamos(estado);
 
+-- Devoluciones: cierre de un préstamo. Registra el estado del equipo, daños,
+-- retraso y los montos calculados (daño, multa y total a cobrar).
 CREATE TABLE devoluciones (
     id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
     id_prestamo      INT NOT NULL,
@@ -78,10 +90,12 @@ CREATE TABLE devoluciones (
     monto_multa      DECIMAL(12,2) DEFAULT 0,
     total_cobro      DECIMAL(12,2) DEFAULT 0,
     observacion      VARCHAR(300),
+    -- Cada devolución pertenece a un préstamo y registra quién la recibió.
     FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo),
     FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
 );
 
+-- Configuración: parámetros editables sin recompilar, como la multa diaria.
 CREATE TABLE configuracion (
     id_config  INT AUTO_INCREMENT PRIMARY KEY,
     clave      VARCHAR(100) UNIQUE NOT NULL,
@@ -89,6 +103,8 @@ CREATE TABLE configuracion (
     descripcion VARCHAR(300)
 );
 
+-- Auditoría: rastro de acciones del sistema. Guarda el código del encargado aunque
+-- el usuario se elimine después, por eso la FK usa ON DELETE SET NULL.
 CREATE TABLE auditoria (
     id_auditoria      INT AUTO_INCREMENT PRIMARY KEY,
     id_encargado      INT DEFAULT NULL,
@@ -104,11 +120,14 @@ CREATE TABLE auditoria (
     FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado) ON DELETE SET NULL
 );
 
+-- Valor inicial de la multa por día de retraso; INSERT IGNORE evita duplicarlo al reiniciar.
 INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES
 ('multa_por_dia', '10000', 'Monto en guaraníes por día de retraso');
 
+-- Triggers: mantienen la consistencia del inventario aunque se inserte por fuera de la app.
 DELIMITER $$
 
+-- Bloquea el préstamo si el equipo no está disponible en el momento de insertar.
 CREATE TRIGGER validar_prestamo
 BEFORE INSERT ON prestamos
 FOR EACH ROW
@@ -121,6 +140,7 @@ BEGIN
     END IF;
 END$$
 
+-- Marca el equipo como "Prestado" en cuanto se registra el préstamo.
 CREATE TRIGGER actualizar_estado_prestamo
 AFTER INSERT ON prestamos
 FOR EACH ROW
@@ -128,6 +148,8 @@ BEGIN
     UPDATE equipos SET estado = 'Prestado' WHERE id_equipo = NEW.id_equipo;
 END$$
 
+-- Al devolver: si hubo daño el equipo pasa a mantenimiento; si no, vuelve a disponible.
+-- Además cierra el préstamo marcándolo como DEVUELTO.
 CREATE TRIGGER actualizar_estado_devolucion
 AFTER INSERT ON devoluciones
 FOR EACH ROW
@@ -153,12 +175,14 @@ DELIMITER ;
 -- ('1005', '<bcrypt_hash>', 'Aitana',  'Berenguer', 'Encargado de Recursos Tecnológicos', 'admin'),
 -- ('0000', '<bcrypt_hash>', 'Invitado','',           'Visualizador',                     'lectura')
 
--- Datos de ejemplo
+-- Datos de ejemplo: alumnos de prueba para probar búsquedas y préstamos.
+-- INSERT IGNORE permite reejecutar el script sin duplicar registros.
 INSERT IGNORE INTO alumnos (codigo_alumno, nombre, apellido, carrera, curso, turno) VALUES
 ('ALU001', 'María',   'González', 'Bachillerato Técnico en Informática',           '3° año', 'Mañana'),
 ('ALU002', 'Carlos',  'Mendoza',  'Bachillerato Técnico en Contabilidad',          '2° año', 'Tarde'),
 ('ALU003', 'Ana',     'Rivas',    'Bachillerato Científico en Ciencias Sociales',  '1° año', 'Mañana');
 
+-- Equipos de ejemplo con distintos tipos y marcas para el inventario inicial.
 INSERT IGNORE INTO equipos (nombre, tipo, marca, descripcion) VALUES
 ('ThinkPad X1 Carbon',   'Laptop', 'Lenovo',    '16GB RAM, SSD 512GB'),
 ('MacBook Pro 14',       'Laptop', 'Apple',     'M3 Pro, 18GB RAM'),

@@ -1,4 +1,7 @@
-// Rutas para gestión de préstamos de equipos
+// Rutas de préstamos de equipos.
+// Las lecturas solo requieren sesión; las escrituras usan apiLimiter y la
+// eliminación exige admin. requireAdmin siempre va después de verificarToken
+// porque consulta el rol ya cargado en req.encargado.
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/prestamosControlador');
@@ -6,15 +9,15 @@ const { verificarToken } = require('../middleware/auth');
 const requireAdmin = require('../middleware/requireAdmin');
 const { apiLimiter } = require('../middleware/rateLimiters');
 
-// Crea un nuevo préstamo (cualquier usuario autenticado)
+// Alta de préstamo: cualquier usuario autenticado, con límite de tasa.
 router.post('/',    verificarToken, apiLimiter, c.crear);
-// Lista todos los préstamos
+// Listado de todos los préstamos.
 router.get('/',     verificarToken, c.listar);
-// Alertas de vencimiento (préstamos vencidos o por vencer en las próximas 48 horas)
+// Debe declararse antes de /:id; si no, "alertas" se interpretaría como un ID.
 router.get('/alertas', verificarToken, c.alertas);
-// Busca un préstamo por ID (para el comprobante)
+// Comprobante de un préstamo activo.
 router.get('/:id',  verificarToken, c.buscar);
-// Elimina un préstamo (solo admin)
+// Anulación de préstamo con su devolución: solo admin.
 router.delete('/:id', verificarToken, requireAdmin, apiLimiter, c.eliminar);
 
 module.exports = router;

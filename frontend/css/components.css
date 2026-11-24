@@ -1,10 +1,9 @@
-/* ============================================
-   SmartLoan IT — Sistema de componentes
-   "Bitácora de préstamos" — paneles planos,
-   reglas de registro, numeración tabular
-   ============================================ */
+/* SmartLoan IT — Sistema de componentes compartidos: base, navegación,
+   formularios, botones, tablas, modales, avisos y layout del dashboard. */
+/* Estética "bitácora de préstamos": paneles planos, reglas de registro finas
+   y numeración tabular para mantener alineadas las cifras. */
 
-/* ---- RESET Y BASE ---- */
+/* Reset mínimo y base tipográfica; el degradado radial del body aporta la luz cálida. */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:var(--primary-glow)}
 body{
@@ -28,7 +27,7 @@ a{color:var(--primary);text-decoration:none}
 img{max-width:100%;display:block}
 ::selection{background:var(--primary);color:var(--on-primary)}
 
-/* ---- TIPOGRAFÍA — Instrument Sans en títulos y UI ---- */
+/* Títulos y cifras: familia display, peso de titular y tracking compacto. */
 h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
 .metric-card .mc-num,.dash-stat-num,.hero-stat-value,.cfg-display-value,
 .multa-value,.sidebar-brand-text,.mh h3,.confirm-box h3,.empty-state h3,
@@ -50,18 +49,18 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
   *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
 }
 
-/* ---- BARRA DE DESPLAZAMIENTO ---- */
+/* Barra de desplazamiento fina y discreta. */
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--dim)}
 
-/* ---- BOTÓN VOLVER ARRIBA ---- */
+/* Botón flotante "volver arriba"; .show lo hace visible desde JS. */
 .scroll-top{position:fixed;bottom:var(--space-8);right:var(--space-8);z-index:100;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--dim);cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transition:all var(--duration-normal) var(--ease-out);box-shadow:var(--shadow-md);will-change:transform,opacity}
 .scroll-top.show{opacity:1;pointer-events:all}
 .scroll-top:hover{color:var(--primary);border-color:var(--primary);transform:translateY(-2px)}
 
-/* ---- BARRA DE NAVEGACIÓN SUPERIOR ---- */
+/* Barra superior fija de páginas internas y controles de sesión. */
 .nav{
   position:sticky;top:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
@@ -113,7 +112,7 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
   .brand{font-size:var(--text-base)!important;gap:var(--space-2)}
 }
 
-/* ---- TARJETAS (CARDS) — fichas planas ---- */
+/* Tarjetas base: fondo, borde, radio y elevación comunes a los paneles. */
 .card{
   background:var(--card);
   border:1px solid var(--card-border);
@@ -130,7 +129,7 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
 }
 .card-header h2{font-size:var(--text-xl);font-weight:var(--heading-weight);letter-spacing:var(--letter-space-tight)}
 
-/* ---- ENCABEZADO DE PÁGINA ---- */
+/* Cabecera de página con icono, título y descripción. */
 .page-header{
   display:flex;align-items:center;gap:var(--space-4);
   margin-bottom:var(--space-6);
@@ -152,7 +151,7 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
 }
 .page-header p{font-size:var(--text-sm);color:var(--dim);margin-top:2px}
 
-/* ---- FORMULARIOS ---- */
+/* Formularios: etiquetas, errores en línea y rejillas de campos adaptables. */
 .form-group{margin-bottom:var(--space-4)}
 .form-label{
   display:block;font-size:var(--text-xs);font-weight:700;
@@ -171,7 +170,7 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
   .form-row,.form-row-3{grid-template-columns:1fr}
 }
 
-/* ---- BOTONES — sellos planos ---- */
+/* Botones: variantes de acción, tamaños e iconos; :disabled anula el realce. */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
   padding:11px 22px;border-radius:var(--radius-sm);border:none;
@@ -246,7 +245,7 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
 .btn-save:active:not(:disabled){transform:translateY(1px)}
 .btn-save:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
 
-/* ---- BADGES (etiquetas de estado) — marcador de registro ---- */
+/* Badges de estado; el punto ::before usa currentColor para heredar el color. */
 .badge{
   display:inline-flex;align-items:center;gap:var(--space-1);
   padding:3px 10px;border-radius:var(--radius-full);
@@ -260,7 +259,7 @@ h1,h2,.page-header h1,.card-header h2,.section-header h2,.hero-left h1,
 .badge-primary{background:var(--primary-glow);color:var(--primary)}
 .badge::before{content:'';width:6px;height:6px;border-radius:2px;background:currentColor;flex-shrink:0}
 
-/* ---- TABLAS — hojas de registro ---- */
+/* Tablas de registro: cabecera fija, hover de fila y celdas de acciones centradas. */
 .table-wrap{overflow-x:auto;border-radius:var(--radius-xl);background:var(--card);border:1px solid var(--border)}
 .table-wrap table{width:100%;border-collapse:collapse}
 .table-wrap td:last-child{white-space:nowrap;text-align:center}
@@ -282,7 +281,7 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
 .ac .chip{height:32px;padding:0 14px;font-family:var(--font);font-weight:600;display:inline-flex;align-items:center;justify-content:center;background:var(--surface);color:var(--dim);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:var(--text-xs)}
 .table-empty td{text-align:center;padding:var(--space-10) var(--space-4);color:var(--dim);font-size:var(--text-sm)}
 
-/* ---- MODAL PERSONALIZADO ---- */
+/* Modal genérico; .show activa la visibilidad y la animación de entrada. */
 .mo{position:fixed;inset:0;background:var(--overlay);z-index:1000;display:grid;place-items:center;padding:20px;opacity:0;pointer-events:none;transition:opacity var(--duration-normal) var(--ease-out);will-change:opacity}
 .mo.show{opacity:1;pointer-events:all}
 .mo.show .md{animation:scaleIn var(--duration-normal) var(--ease-out) both}
@@ -293,7 +292,7 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
 .mc:hover{background:var(--surface);color:var(--text)}
 .mform{display:flex;flex-direction:column;gap:var(--space-4)}
 
-/* ---- TOAST (notificación flotante) ---- */
+/* Notificación flotante; las variantes t-* definen el color semántico. */
 .toast{
   position:fixed;bottom:var(--space-8);left:50%;transform:translateX(-50%);
   z-index:300;padding:12px 24px;border-radius:var(--radius-full);
@@ -315,7 +314,7 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
   .toast.show{transform:translateY(0)}
 }
 
-/* ---- ESQUELETOS DE CARGA (skeleton) ---- */
+/* Esqueletos de carga con brillo animado mientras llegan los datos. */
 .skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--card) 50%,var(--surface) 75%);background-size:200% 100%;animation:skeleton-load 1.5s infinite;border-radius:var(--radius-sm)}
 .skeleton-line{height:16px;margin-bottom:12px;border-radius:4px}
 .skeleton-line:last-child{margin-bottom:0}
@@ -326,7 +325,7 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
 .skeleton-metric .skeleton-line:last-child{width:60%;height:32px}
 @keyframes skeleton-load{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ---- ESTADO VACÍO (sin datos) ---- */
+/* Estado vacío con icono, mensaje y llamada a la acción. */
 .empty-state{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:var(--space-12) var(--space-4);text-align:center;
@@ -336,7 +335,7 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
 .empty-state p{font-size:var(--text-sm);color:var(--muted);margin-bottom:var(--space-5);max-width:400px}
 .empty-state .btn{margin-top:var(--space-2)}
 
-/* ---- INDICADOR DE PASOS (wizard) ---- */
+/* Indicador de pasos del asistente; .active y .done colorean el progreso. */
 .steps{display:flex;justify-content:center;gap:0;margin-bottom:var(--space-6)}
 .step{
   display:flex;align-items:center;gap:var(--space-3);
@@ -363,22 +362,22 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
   .step:not(:last-child)::after{width:20px}
 }
 
-/* ---- PUNTOS DE ESTADO (dots) ---- */
+/* Puntos de color para resumir estados en listas y leyendas. */
 .dot{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:6px;flex-shrink:0}
 .dot-green{background:var(--success)}.dot-red{background:var(--danger)}
 .dot-amber{background:var(--warn)}.dot-indigo{background:var(--primary)}
 
-/* ---- TEXTO DE ESTADO ATRASADO ---- */
+/* Fuerza el color de alerta en textos marcados como atrasados. */
 .late{color:var(--danger)!important}
 
-/* ---- CHIP (etiqueta de código) ---- */
+/* Chip compacto para códigos y etiquetas secundarias. */
 .chip{
   display:inline-flex;align-items:center;gap:var(--space-1);
   padding:2px 10px;border-radius:var(--radius-sm);font-family:var(--font);
   font-size:var(--text-xs);background:var(--surface);color:var(--dim);border:1px solid var(--border);
 }
 
-/* ---- BANNER DE ALERTA ---- */
+/* Banners de aviso; .alert-hide permite ocultarlos desde JS. */
 .alert{
   display:flex;align-items:center;gap:var(--space-3);
   padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);
@@ -388,7 +387,7 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
 .alert-info{background:var(--info-bg);color:var(--info)}
 .alert-hide{display:none}
 
-/* ---- ANIMACIONES ---- */
+/* Keyframes reutilizables: entradas, sacudida, pulso, brillo y conteo. */
 @keyframes fi{
   from{opacity:0;transform:translateY(12px) scale(0.98)}
   to{opacity:1;transform:translateY(0) scale(1)}
@@ -416,7 +415,8 @@ th.ac,td.ac{text-align:center;white-space:nowrap;vertical-align:middle}
   100%{background-position:100% 50%}
 }
 
-/* Page entrance: body gets .page-loaded after JS runs */
+/* Entrada de página: JS añade .page-loaded y anima los hijos de main
+   con retardos escalonados (hasta el décimo). */
 body:not(.page-loaded) main > *{opacity:0;transform:translateY(12px)}
 body.page-loaded main > *{animation:fi 0.55s var(--ease-out) both}
 body.page-loaded main > *:nth-child(1){animation-delay:0.03s}
@@ -430,7 +430,7 @@ body.page-loaded main > *:nth-child(8){animation-delay:0.24s}
 body.page-loaded main > *:nth-child(9){animation-delay:0.27s}
 body.page-loaded main > *:nth-child(10){animation-delay:0.3s}
 
-/* Table row stagger entrance */
+/* Aparición escalonada de filas; desde la 11 comparten un único retardo. */
 body.page-loaded .table-wrap tbody tr{animation:fi-up 0.4s var(--ease-out) both}
 body.page-loaded .table-wrap tbody tr:nth-child(1){animation-delay:0.04s}
 body.page-loaded .table-wrap tbody tr:nth-child(2){animation-delay:0.07s}
@@ -457,18 +457,18 @@ body.page-loaded .table-wrap tbody tr:nth-child(n+11){animation-delay:0.34s}
 .animate-fi-10{animation-delay:0.4s}
 .animate-shake{animation:shake 0.4s var(--ease-out)}
 
-/* ---- MAGNIFY (hover lift sutil) ---- */
+/* Realce sutil al pasar el cursor sobre tarjetas interactivas. */
 .magnify{transition:transform var(--duration-normal) var(--ease-spring),box-shadow var(--duration-normal) var(--ease-out),border-color var(--duration-normal) var(--ease-out)}
 .magnify:hover{transform:translateY(-3px);box-shadow:var(--shadow-glow-strong)}
 
-/* ---- ENTRANCE STAGGER PARA METRIC CARDS ---- */
+/* Entrada escalonada de las tarjetas de métricas del dashboard. */
 body.page-loaded .bento-metrics .metric-card{animation:fi-up 0.5s var(--ease-out) both}
 body.page-loaded .bento-metrics .metric-card:nth-child(1){animation-delay:0.06s}
 body.page-loaded .bento-metrics .metric-card:nth-child(2){animation-delay:0.10s}
 body.page-loaded .bento-metrics .metric-card:nth-child(3){animation-delay:0.14s}
 body.page-loaded .bento-metrics .metric-card:nth-child(4){animation-delay:0.18s}
 
-/* ---- ENTRANCE STAGGER PARA DASHBOARD STATS ---- */
+/* Entrada escalonada de los contadores del dashboard. */
 body.page-loaded .dash-stats .dash-stat{animation:fi-up 0.5s var(--ease-out) both}
 body.page-loaded .dash-stats .dash-stat:nth-child(1){animation-delay:0.06s}
 body.page-loaded .dash-stats .dash-stat:nth-child(2){animation-delay:0.10s}
@@ -476,7 +476,7 @@ body.page-loaded .dash-stats .dash-stat:nth-child(3){animation-delay:0.14s}
 body.page-loaded .dash-stats .dash-stat:nth-child(4){animation-delay:0.18s}
 body.page-loaded .dash-stats .dash-stat:nth-child(5){animation-delay:0.22s}
 
-/* ---- ENTRANCE STAGGER PARA ACTION CARDS ---- */
+/* Entrada escalonada de las acciones rápidas. */
 body.page-loaded .bento-actions .action-card{animation:fi-up 0.4s var(--ease-out) both}
 body.page-loaded .bento-actions .action-card:nth-child(1){animation-delay:0.05s}
 body.page-loaded .bento-actions .action-card:nth-child(2){animation-delay:0.08s}
@@ -484,7 +484,7 @@ body.page-loaded .bento-actions .action-card:nth-child(3){animation-delay:0.11s}
 body.page-loaded .bento-actions .action-card:nth-child(4){animation-delay:0.14s}
 body.page-loaded .bento-actions .action-card:nth-child(5){animation-delay:0.17s}
 
-/* ---- ENTRANCE STAGGER PARA DASHBOARD AF-GRID ---- */
+/* Entrada escalonada de las tarjetas del bloque af-grid. */
 body.page-loaded .af-grid .af-card{animation:fi-up 0.4s var(--ease-out) both}
 body.page-loaded .af-grid .af-card:nth-child(1){animation-delay:0.05s}
 body.page-loaded .af-grid .af-card:nth-child(2){animation-delay:0.08s}
@@ -492,48 +492,48 @@ body.page-loaded .af-grid .af-card:nth-child(3){animation-delay:0.11s}
 body.page-loaded .af-grid .af-card:nth-child(4){animation-delay:0.14s}
 body.page-loaded .af-grid .af-card:nth-child(5){animation-delay:0.17s}
 
-/* ---- ENTRANCE STAGGER PARA CHART CARDS ---- */
+/* Entrada de los paneles de gráficos. */
 body.page-loaded .bento-charts .glass{animation:fi 0.5s var(--ease-out) both}
 body.page-loaded .bento-charts .glass:nth-child(1){animation-delay:0.1s}
 body.page-loaded .bento-charts .glass:nth-child(2){animation-delay:0.16s}
 
-/* ---- ENTRANCE STAGGER PARA DASHBOARD RIGHT COLUMN ---- */
+/* Entrada de la columna derecha del dashboard. */
 body.page-loaded .dash-right .rc-card{animation:fi-up 0.5s var(--ease-out) both}
 body.page-loaded .dash-right .rc-card:nth-child(1){animation-delay:0.08s}
 body.page-loaded .dash-right .rc-card:nth-child(2){animation-delay:0.14s}
 
-/* ---- ENTRANCE STAGGER PARA ADMIN CARDS ---- */
+/* Entrada de las tarjetas de administración. */
 body.page-loaded .bento-admin .glass{animation:fi 0.5s var(--ease-out) both}
 body.page-loaded .bento-admin .glass:nth-child(1){animation-delay:0.08s}
 body.page-loaded .bento-admin .glass:nth-child(2){animation-delay:0.14s}
 
-/* ---- TRANSICIÓN MEJORADA PARA INPUTS ---- */
+/* Realce del borde al pasar el cursor por campos de formulario. */
 .ig input:not([type=checkbox]):not([type=radio]):hover,.ig select:hover,.ig textarea:hover{border-color:var(--border-hover)}
 
-/* ---- TRANSICIÓN MEJORADA PARA BADGES ---- */
+/* Microinteracción de badges al pasar el cursor. */
 .badge{transition:all var(--duration-fast) var(--ease-out)}
 .badge:hover{transform:translateY(-1px);filter:brightness(1.1)}
 
-/* ---- TRANSICIÓN MEJORADA PARA CHIPS ---- */
+/* Microinteracción de chips al pasar el cursor. */
 .chip{transition:all var(--duration-fast) var(--ease-out)}
 .chip:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-glow)}
 
-/* ---- TRANSICIÓN MEJORADA PARA STEPPER ---- */
+/* Transición del texto de los pasos del asistente. */
 .step .label{transition:color var(--duration-normal) var(--ease-out)}
 
-/* ---- TRANSICIÓN MEJORADA PARA BREADCRUMBS ---- */
+/* Subrayado animado de las migas de pan. */
 .breadcrumbs a{position:relative}
 .breadcrumbs a::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:1px;background:var(--primary);transition:width var(--duration-normal) var(--ease-out)}
 .breadcrumbs a:hover::after{width:100%}
 
-/* ---- TRANSICIÓN FLUIDA DE TEMA (propiedades clave) ---- */
+/* Clase temporal para animar el cambio de tema de forma uniforme. */
 .theme-transitioning,
 .theme-transitioning *{transition:background-color var(--duration-slow) var(--ease-out),border-color var(--duration-normal) var(--ease-out),color var(--duration-normal) var(--ease-out),box-shadow var(--duration-normal) var(--ease-out)!important}
 
-/* ---- CHART.JS TRANSITION ENHANCE ---- */
+/* Transición de opacidad de los canvas de gráficos. */
 canvas{transition:opacity var(--duration-normal) var(--ease-out)}
 
-/* ---- TARJETA DE FORMULARIO ---- */
+/* Tarjeta de formulario y utilidades asociadas: acciones, fila vacía y cabecera de tabla. */
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-bottom:var(--space-5)}
 .form-card-title{font-size:var(--text-sm);font-weight:700;color:var(--text-secondary);letter-spacing:0.5px;margin-bottom:var(--space-4)}
 .btn-wrap{margin-top:var(--space-3);display:flex;justify-content:flex-end}
@@ -541,41 +541,42 @@ canvas{transition:opacity var(--duration-normal) var(--ease-out)}
 .table-header{display:flex;justify-content:space-between;align-items:center;padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border);font-weight:700;font-size:var(--text-sm)}
 .table-count{font-size:var(--text-xs);font-weight:400;color:var(--dim)}
 
-/* ---- NÚMERO CORRELATIVO — sello de registro ---- */
+/* Número correlativo y chip de código con cifras tabulares. */
 .num{color:var(--dim);font-weight:700;font-size:0.85rem;font-variant-numeric:tabular-nums}
 .code-chip{background:var(--primary-glow);border:1px solid var(--border-glow);border-radius:6px;padding:3px 9px;font-weight:800;font-size:0.82rem;font-family:var(--mono);color:var(--primary);font-variant-numeric:tabular-nums}
 
-/* ---- CONTENEDOR DE WIZARD ---- */
+/* Contenedor centrado del asistente. */
 .wizard{max-width:var(--max-width-narrow);margin:0 auto;padding:var(--space-4)}
 
-/* ---- CONTENEDOR RESPONSIVE ---- */
+/* Contenedor general con ancho máximo. */
 .container{max-width:var(--max-width);margin:0 auto;padding:var(--space-4)}
 
-/* ---- ESTADO DE ERROR EN INPUTS ---- */
+/* Marca visual de campo con error de validación. */
 input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shadow:0 0 0 3px var(--danger-bg)!important}
 
-/* ---- GRUPO DE CAMPOS (IG) ---- */
+/* Grupo de campo (label + control) y estilos de inputs, selects y textareas. */
 .ig{margin-bottom:var(--space-4)}
 .form-row .ig .btn{width:100%;padding:10px 14px;font-size:var(--text-sm)}
 .ig label{display:block;font-size:var(--text-xs);font-weight:700;letter-spacing:0.5px;color:var(--text-secondary);margin-bottom:var(--space-2)}
 .ig input:not([type=checkbox]):not([type=radio]),.ig select,.ig textarea,.ig input[type=datetime-local]{width:100%;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:var(--text-sm);transition:border-color var(--duration-fast) var(--ease-out),box-shadow var(--duration-fast) var(--ease-out);outline:none;appearance:none;-webkit-appearance:none}
+/* La flecha del select es un SVG embebido para no depender de otra petición. */
 .ig select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a918b' d='M6 8.825L1.175 4 2.238 2.938 6 6.7 9.763 2.937 10.825 4z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
 .ig input:focus,.ig select:focus,.ig textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
 
-/* ---- ANIMACIÓN DE ENTRADA DEL COMPROBANTE ---- */
+/* Entrada del comprobante tras generarlo. */
 .receipt-enter{animation:slideUp 0.4s var(--ease-out) both}
 
-/* ---- TRANSICIÓN DE ENTRADA/SALIDA ---- */
+/* Salida de página antes de navegar; se desactivan los clics durante la transición. */
 .page-exit{opacity:0;transition:opacity var(--duration-normal) var(--ease-out);will-change:opacity;pointer-events:none}
 
-/* ---- MIGAS DE PAN ---- */
+/* Migas de pan con separador y elemento actual resaltado. */
 .breadcrumbs{display:flex;align-items:center;gap:6px;margin-bottom:var(--space-4);font-size:var(--text-xs);color:var(--muted);font-weight:600}
 .breadcrumbs a{color:var(--dim);text-decoration:none;transition:color var(--duration-fast)}
 .breadcrumbs a:hover{color:var(--primary)}
 .breadcrumbs .sep{color:var(--muted);font-size:10px}
 .breadcrumbs .current{color:var(--text)}
 
-/* ---- ESTILOS DE IMPRESIÓN ---- */
+/* Impresión: oculta controles y fuerza papel blanco para los comprobantes. */
 @media print{
   .nav,.comp-btns,.res-btns,.toast{display:none!important}
   body{background:#fff;color:#000;font-size:10pt;line-height:1.5}
@@ -585,7 +586,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .receipt-title{margin-bottom:16px}
 }
 
-/* ---- BÚSQUEDA SPOTLIGHT (Ctrl+K) ---- */
+/* Búsqueda rápida tipo spotlight (Ctrl+K): overlay y lista de resultados. */
 .spotlight-overlay{position:fixed;inset:0;z-index:500;display:flex;justify-content:center;padding-top:15vh;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity var(--duration-normal) var(--ease-out);will-change:opacity}
 .spotlight-overlay.show{opacity:1;pointer-events:all}
 .spotlight{width:100%;max-width:640px;background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-lg);max-height:60vh;display:flex;flex-direction:column;animation:scaleIn var(--duration-fast) var(--ease-out);will-change:transform,opacity}
@@ -602,7 +603,8 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .spotlight-shortcuts{display:flex;gap:var(--space-2);padding:var(--space-3) var(--space-5);border-top:1px solid var(--border);font-size:var(--text-xs);color:var(--muted)}
 .spotlight-shortcuts kbd{padding:2px 6px;background:var(--surface);border-radius:3px;font-family:var(--mono);font-size:10px;border:1px solid var(--border)}
 
-/* ---- NOTIFICACIONES DE VENCIMIENTO ---- */
+/* Campana y panel de vencimientos; .late y .soon marcan la urgencia.
+   En móvil el panel pasa a hoja inferior. */
 .notif-wrap{position:relative;display:flex;align-items:center;flex-shrink:0;margin-left:auto}
 .dash-header-right .notif-wrap{margin-left:0}
 .notif-btn{position:relative;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--border);border-radius:50%;background:transparent;color:var(--dim);cursor:pointer;transition:color var(--duration-fast) var(--ease-out),border-color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out)}
@@ -643,21 +645,21 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 }
 @media print{.notif-wrap{display:none!important}}
 
-/* ---- ACCIONES DESLIZABLES (touch) ---- */
+/* Acciones deslizables en táctil; .open revela los botones laterales. */
 .swipe-container{position:relative;overflow:hidden;touch-action:pan-y}
 .swipe-actions{position:absolute;top:0;right:0;bottom:0;display:flex;transform:translateX(100%);transition:transform var(--duration-normal) var(--ease-out)}
 .swipe-actions.open{transform:translateX(0)}
 .swipe-action{width:72px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:var(--text-xs);cursor:pointer}
 
-/* ---- BOTÓN DE CAMBIO DE TEMA ---- */
+/* Botón de cambio de tema claro/oscuro. */
 .btn-theme{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--dim);display:flex;align-items:center;transition:all var(--duration-fast) var(--ease-out);flex-shrink:0}
 .btn-theme:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-glow)}
 
-/* ---- BOTÓN DE CERRAR SESIÓN ---- */
+/* Botón de cierre de sesión en tono de peligro. */
 .btn-logout{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all var(--duration-normal) var(--ease-out);flex-shrink:0}
 .btn-logout:hover{background:var(--danger);color:#fff;transform:translateY(-1px)}
 
-/* ---- MODAL DE CONFIRMACIÓN ---- */
+/* Modal de confirmación; el velo bloquea la interfaz hasta responder. */
 .confirm-overlay{position:fixed;inset:0;z-index:2000;background:var(--overlay);display:grid;place-items:center;padding:20px;opacity:0;pointer-events:none;transition:opacity var(--duration-normal) var(--ease-out);will-change:opacity}
 .confirm-overlay.show{opacity:1;pointer-events:all}
 .confirm-overlay.show .confirm-box{animation:scaleIn var(--duration-fast) var(--ease-out) both}
@@ -668,7 +670,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .confirm-box .cb-btns{display:flex;gap:var(--space-3)}
 .confirm-box .cb-btns .btn{flex:1}
 
-/* ---- LAYOUT DEL DASHBOARD ---- */
+/* Estructura del dashboard: contenido a la derecha de la barra lateral. */
 .layout{display:flex;min-height:100vh}
 .main{margin-left:var(--sidebar-width);flex:1;padding:28px 32px 40px;min-width:0;transition:margin var(--duration-normal) var(--ease-out)}
 .topbar{display:none;position:sticky;top:0;z-index:100;height:var(--nav-height);padding:0 var(--space-4);background:var(--bg-alt);border-bottom:1px solid var(--border);align-items:center;gap:var(--space-3)}
@@ -681,7 +683,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .topbar{display:flex}
 }
 
-/* ---- BARRA LATERAL (SIDEBAR) — panel de control ---- */
+/* Barra lateral fija; en móvil se oculta y se abre con .open. */
 .sidebar{position:fixed;left:0;top:0;width:var(--sidebar-width);height:100vh;z-index:200;display:flex;flex-direction:column;background:var(--bg-alt);border-right:1px solid var(--glass-border);box-shadow:inset -16px 0 24px -24px rgba(0,0,0,0.9);transition:transform var(--duration-normal) var(--ease-out);will-change:transform}
 .sidebar-brand{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-5) var(--space-4);border-bottom:1px solid var(--glass-border)}
 .sidebar-brand-icon{width:34px;height:34px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--on-primary)}
@@ -705,11 +707,11 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .sidebar.open{transform:translateX(0)}
 }
 
-/* ---- TARJETA CON EFECTO PANEL ---- */
+/* Tarjeta contenedora con borde suave y realce al pasar el cursor. */
 .glass{background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius-lg);transition:all var(--duration-normal) var(--ease-out);position:relative;box-shadow:var(--shadow-card)}
 .glass:hover{border-color:var(--border-hover);transform:translateY(-1px)}
 
-/* ---- SECCIÓN HERO (banner principal) ---- */
+/* Cabecera hero del dashboard: degradado y barra de acento a la izquierda. */
 .hero-glass{position:relative;overflow:hidden;padding:var(--space-8) var(--space-8);margin-bottom:var(--space-6);border-radius:var(--radius-xl);background:linear-gradient(100deg,var(--bg-alt) 0%,var(--card) 55%,var(--surface) 100%);border:1px solid var(--glass-border)}
 .hero-glass::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--primary);pointer-events:none}
 .hero-inner{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-6);flex-wrap:wrap}
@@ -723,10 +725,10 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .hero-stat-value{font-size:var(--text-xl);font-weight:var(--heading-weight);color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
 .hero-stat-label{font-size:var(--text-xs);color:var(--muted);font-weight:600;letter-spacing:0.5px}
 
-/* ---- TÍTULO DE SECCIÓN ---- */
+/* Rótulo de sección con tracking amplio. */
 .section-title{font-size:var(--text-xs);letter-spacing:1px;color:var(--text-secondary);font-weight:800;margin-bottom:var(--space-4);padding-top:var(--space-2)}
 
-/* ---- TARJETAS DE MÉTRICAS (bento) — contadores ---- */
+/* Métricas del dashboard en rejilla bento con icono, cifra y tendencia. */
 .bento-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-8)}
 .metric-card{position:relative;padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden}
 .metric-card .mc-top{display:flex;align-items:flex-start;justify-content:space-between}
@@ -743,7 +745,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 @media(max-width:1024px){.bento-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.bento-metrics{grid-template-columns:1fr}}
 
-/* ---- GRÁFICOS (bento) ---- */
+/* Paneles de gráficos del dashboard. */
 .bento-charts{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-8)}
 .bento-charts .glass{padding:var(--space-5)}
 .bento-charts .glass h3{font-size:var(--text-sm);font-weight:var(--heading-weight);color:var(--text);margin-bottom:var(--space-4)}
@@ -751,7 +753,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-10);color:var(--dim);font-size:var(--text-sm);gap:var(--space-3)}
 @media(max-width:768px){.bento-charts{grid-template-columns:1fr}}
 
-/* ---- ACCIONES RÁPIDAS (bento) ---- */
+/* Accesos rápidos del dashboard. */
 .bento-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-3);margin-bottom:var(--space-8)}
 .action-card{display:flex;flex-direction:column;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-3);cursor:pointer;text-align:center;transition:all var(--duration-normal) var(--ease-out)}
 .action-card:hover{transform:translateY(-2px);border-color:var(--primary);background:var(--primary-glow)}
@@ -762,7 +764,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 @media(max-width:900px){.bento-actions{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:500px){.bento-actions{grid-template-columns:repeat(2,1fr)}}
 
-/* ---- ADMINISTRACIÓN (bento admin) ---- */
+/* Administración: exportación de datos, configuración y multas. */
 .bento-admin{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)}
 .bento-admin .glass{padding:var(--space-6)}
 .bento-admin .admin-card-header{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-2)}
@@ -813,16 +815,14 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .cfg-note{font-size:var(--text-xs);color:var(--dim);line-height:1.5;padding-top:var(--space-3)}
 @media(max-width:600px){.bento-admin{grid-template-columns:1fr}}
 
-/* ---- AJUSTES DE CHART.JS ---- */
+/* Ajuste del tooltip de Chart.js para que no capture el puntero. */
 .chartjs-tooltip{opacity:1;pointer-events:none}
 
-/* ---- SCROLL REVEAL ---- */
+/* Aparición progresiva al hacer scroll; JS añade .revealed. */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity var(--duration-slow) var(--ease-out),transform var(--duration-slow) var(--ease-out)}
 .reveal.revealed{opacity:1;transform:translateY(0)}
 
-/* ==========================================
-   RESPONSIVE GLOBAL — Teléfonos
-   ========================================== */
+/* Ajustes responsive globales para tablet y teléfono. */
 
 @media(max-width:768px){
   .btn,.btn-sm,.btn-icon,.btn-del{min-height:40px;min-width:40px}
@@ -890,7 +890,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .brand-icon svg{width:12px;height:12px}
 }
 
-/* ---- Landscape phone compact ---- */
+/* Móvil en horizontal: reduce alturas para ganar espacio útil. */
 @media(orientation:landscape) and (max-height:500px){
   .page-header{padding-bottom:var(--space-2)!important}
   .page-header h1{font-size:var(--text-base)!important}
@@ -903,7 +903,7 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .form-card{padding:var(--space-3)!important}
 }
 
-/* ---- PWA standalone (home screen) ---- */
+/* PWA en modo standalone: respeta los márgenes seguros del dispositivo. */
 @media all and (display-mode:standalone){
   body{padding-top:env(safe-area-inset-top,0)}
   main{padding-bottom:env(safe-area-inset-bottom,0)}

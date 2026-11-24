@@ -1,13 +1,16 @@
-// Rutas para consultar el registro de auditoría del sistema
+// Rutas de auditoría.
+// Solo administradores: verificarToken valida la sesión y requireAdmin exige
+// el rol, porque el registro expone actividad de todos los usuarios.
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { verificarToken } = require('../middleware/auth');
 const requireAdmin = require('../middleware/requireAdmin');
 
-// Lista las acciones registradas (solo administradores)
+// Lista las acciones registradas (solo administradores).
 router.get('/', verificarToken, requireAdmin, async (req, res) => {
   try {
+    // El límite se normaliza a un entero entre 1 y 500 antes de interpolarlo en el SQL.
     let limit = parseInt(req.query.limit, 10);
     if (isNaN(limit) || limit < 1) limit = 200;
     if (limit > 500) limit = 500;

@@ -10,26 +10,25 @@
     <link rel="stylesheet" href="/css/modules.css">
     <script src="/js/utils.js" defer></script>
     <style>
-        /* Reglas específicas de alumnos (las comunes están en modules.css) */
+        /* Ajustes propios de la vista; los estilos comunes viven en modules.css. */
         td:nth-child(3),td:nth-child(2){overflow-wrap:break-word;word-break:break-word}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
-        /* En pantallas chicas los formularios se apilan verticalmente */
+        /* Adaptación responsive del formulario y de la tabla. */
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}main{padding:20px 16px;}}
         @media(max-width:600px){.form-card{padding:14px 16px}.search-bar{padding:var(--space-2) var(--space-3)}}
         @media(max-width:480px){.form-card{padding:10px 12px}.search-bar{padding:var(--space-1) var(--space-2)}.g2m{gap:8px}}
     </style>
 </head>
 <body>
-<!-- Contenido principal -->
+<!-- Vista de alumnos: alta, búsqueda y listado. -->
 <main>
-    <!-- Migas de pan para saber dónde estamos -->
+    <!-- Navegación de contexto hacia el dashboard. -->
     <div class="breadcrumbs"><a href="/home/dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Alumnos</span></div>
-    <!-- Encabezado de la página con icono y descripción -->
     <div class="page-header">
         <div class="page-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
         <div><h1>Gestión de Alumnos</h1><p>Registro de alumnos para solicitar equipos.</p></div>
     </div>
-    <!-- Formulario para registrar un nuevo alumno (solo visible para admin) -->
+    <!-- Alta de alumnos; el rol admin habilita su visualización. -->
     <div class="form-card admin-only reveal">
         <div class="form-card-title">Registrar nuevo alumno</div>
         <div class="form-row">
@@ -50,12 +49,12 @@
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Registrar alumno</button></div>
         </div>
     </div>
-    <!-- Barra de búsqueda para filtrar alumnos -->
+    <!-- Filtro local sobre los alumnos ya cargados. -->
     <div class="search-bar reveal">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="busq" placeholder="Buscar por nombre, apellido, código, bachillerato o turno..." oninput="filtrar()">
     </div>
-    <!-- Tabla que muestra la lista de alumnos -->
+    <!-- Listado dinámico: el cuerpo se completa desde render(). -->
     <div class="table-wrap reveal">
         <div class="table-header"><span>Lista de alumnos</span><span class="table-count" id="count">0 alumnos</span></div>
         <table><colgroup><col style="width:5%"><col style="width:11%"><col style="width:25%"><col style="width:27%"><col style="width:10%"><col style="width:9%"><col style="width:13%"></colgroup><thead><tr><th scope="col">#</th><th scope="col">Codigo</th><th scope="col">Alumno</th><th scope="col">Bachillerato</th><th scope="col">Curso</th><th scope="col">Turno</th><th scope="col">Acciones</th></tr></thead>
@@ -63,52 +62,47 @@
     </div>
 </main>
 
-<!-- Modal para editar un alumno existente -->
+<!-- Edición del alumno seleccionado en la tabla. -->
 <div class="mo" id="mo-edit">
     <div class="md">
         <div class="mh"><h3>Editar alumno</h3><button class="mc" onclick="cerrarEdit()">&#215;</button></div>
         <div class="mform">
-            <!-- Campos de nombre y apellido en dos columnas -->
             <div class="g2m">
                 <div class="ig"><label>Nombre</label><input id="edit-nombre" placeholder="Ej: Maria" maxlength="100" oninput="clearFE('nombre','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-nombre">Ingresa el nombre</div></div>
                 <div class="ig"><label>Apellido</label><input id="edit-apellido" placeholder="Ej: Lopez" maxlength="100" oninput="clearFE('apellido','edit-');checkEditAlumno()"><div class="ferr" id="ferr-edit-apellido">Ingresa el apellido</div></div>
             </div>
-            <!-- Selector de bachillerato -->
             <div class="ig"><label>Bachillerato</label>
                 <select id="edit-carrera" onchange="clearFE('carrera','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Bachillerato Científico en Ciencias Sociales</option><option>Bachillerato Técnico en Informática</option><option>Bachillerato Técnico en Marketing</option><option>Bachillerato Técnico en Contabilidad</option></select>
                 <div class="ferr" id="ferr-edit-carrera">Selecciona el bachillerato</div>
             </div>
-            <!-- Selector de curso -->
             <div class="ig"><label>Curso</label>
                 <select id="edit-curso" onchange="clearFE('curso','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>1° año</option><option>2° año</option><option>3° año</option></select>
                 <div class="ferr" id="ferr-edit-curso">Selecciona el curso</div>
             </div>
-            <!-- Selector de turno -->
             <div class="ig"><label>Turno</label>
                 <select id="edit-turno" onchange="clearFE('turno','edit-');checkEditAlumno()"><option value="">Seleccionar</option><option>Mañana</option><option>Tarde</option></select>
                 <div class="ferr" id="ferr-edit-turno">Selecciona el turno</div>
             </div>
-            <!-- Botón para guardar los cambios -->
             <button type="button" class="btn-save" id="btnGuardarAlu" onclick="guardarAlumno()">Guardar cambios</button>
         </div>
     </div>
 </div>
 
-<!-- Mensaje que aparece temporalmente (toast) -->
+<!-- Avisos temporales de resultado. -->
 <div class="toast" id="toast"></div>
 <script src="/js/api.js"></script>
 <script>
-// Verificamos si el usuario inició sesión, si no lo mandamos al login
+// Control de sesión: sin encargado guardado se vuelve al login.
 if(!localStorage.getItem('encargado')) window.location.href = '/';
 
-// Esta variable guarda todos los alumnos que vienen del servidor
+// Caché de alumnos recibidos del servidor.
 let todos = [];
-// Guarda el id del alumno que estamos editando
+// Identificador del alumno abierto en el modal de edición.
 let alumnoEditandoId = null;
-// Advierte si hay cambios sin guardar al intentar salir
+// Guardia de cambios sin guardar del formulario de alta.
 var formGuard = null;
 
-// Revisamos si los campos del formulario están llenos para habilitar el botón de registro
+/** Habilita el alta solo cuando todos los campos están completos. */
 function checkNuevoAlumno(){
     const nombre=document.getElementById('nombre').value.trim();
     const apellido=document.getElementById('apellido').value.trim();
@@ -118,7 +112,7 @@ function checkNuevoAlumno(){
     document.getElementById('btnAdd').disabled=!(nombre&&apellido&&carrera&&curso&&turno);
 }
 
-// Revisamos si los campos del formulario de edición están completos
+/** Habilita el guardado solo con los campos de edición completos. */
 function checkEditAlumno(){
     const nombre=document.getElementById('edit-nombre').value.trim();
     const apellido=document.getElementById('edit-apellido').value.trim();
@@ -128,7 +122,7 @@ function checkEditAlumno(){
     document.getElementById('btnGuardarAlu').disabled=!(nombre&&apellido&&carrera&&curso&&turno);
 }
 
-// Validamos que ningún campo esté vacío antes de enviar
+/** Valida los campos obligatorios del alta y marca los errores en pantalla. */
 function validarNuevo(){
     let ok = true;
     ['nombre','apellido','carrera','curso','turno'].forEach(f => {
@@ -142,7 +136,7 @@ function validarNuevo(){
     return ok;
 }
 
-// Cargamos la lista de alumnos desde el servidor
+/** Carga los alumnos desde la API y actualiza la tabla. */
 async function cargar(){
     document.getElementById('tb').innerHTML = '<tr><td colspan="7"><div style="padding:20px"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></td></tr>';
     try {
@@ -155,16 +149,18 @@ async function cargar(){
     }
 }
 
-// Mostramos los alumnos en la tabla, uno por uno
+/** Renderiza el listado, el estado vacío y las acciones según el rol. */
 function render(data){
     document.getElementById('count').textContent = `${data.length} alumno${data.length!==1?'s':''}`;
     const tb = document.getElementById('tb');
-    // Si no hay alumnos, mostramos un mensaje
+    // Estado vacío cuando no hay registros.
     if(!data.length){
         tb.innerHTML = '<tr class="empty-row"><td colspan="7">No hay alumnos registrados. Agrega el primero usando el formulario.</td></tr>';
         return;
     }
+    // Las acciones de baja solo se muestran a administradores.
     var admin = esAdmin();
+    // Los datos se escapan con esc() antes de insertarse como HTML.
     tb.innerHTML = data.map((a,i) => {
         var sc='animate-fi-'+(Math.min(i+1,10));return `
         <tr class="${sc}">
@@ -178,11 +174,10 @@ function render(data){
         </tr>`;}).join('');
 }
 
-// Buscamos alumnos mientras el usuario escribe en el buscador
+/** Filtra la caché local por coincidencia normalizada en varios campos. */
 function filtrar(){
     const q = normalizeText(document.getElementById('busq').value).trim();
     if(!q){ render(todos); return; }
-    // Filtramos los alumnos que coinciden con lo que se buscó
     const filtrados = todos.filter(a =>
         normalizeText(a.nombre).includes(q) ||
         normalizeText(a.apellido).includes(q) ||
@@ -197,7 +192,7 @@ function filtrar(){
     render(filtrados);
 }
 
-// Enviamos los datos del nuevo alumno al servidor
+/** Registra un alumno en la API y refresca el listado. */
 async function crear(){
     if(!validarNuevo()) return;
     const btn = document.getElementById('btnAdd');
@@ -217,7 +212,7 @@ async function crear(){
         const d = await safeJson(r);
         if (r.ok) {
             formGuard.markClean();
-            // Limpiamos el formulario después de registrar
+            // Alta exitosa: se vacía el formulario y se recarga la tabla.
             document.getElementById('nombre').value = '';
             document.getElementById('apellido').value = '';
             document.getElementById('carrera').value = '';
@@ -234,14 +229,14 @@ async function crear(){
     btn.disabled = false; btn.textContent = '+ Registrar alumno';
 }
 
-// Confirmamos antes de eliminar un alumno
+/** Pide confirmación antes de desactivar un alumno. */
 function confirmarEliminar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
     showConfirm('Desactivar al alumno "'+a.nombre+' '+a.apellido+'"\n\nDejar\u00e1 de aparecer en el listado, pero su historial de pr\u00e9stamos y devoluciones se conservar\u00e1.',function(){ eliminar(id); });
 }
 
-// Le decimos al servidor que elimine el alumno
+/** Ejecuta la baja lógica del alumno; el historial se conserva. */
 async function eliminar(id){
     try {
         const r = await apiFetch(`/alumnos/${id}`, {method:'DELETE'});
@@ -253,7 +248,7 @@ async function eliminar(id){
     }
 }
 
-// Abrimos el modal para editar los datos del alumno
+/** Abre el modal con los datos del alumno seleccionado. */
 function abrirEditar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
@@ -273,12 +268,13 @@ function abrirEditar(id){
     document.getElementById('mo-edit').classList.add('show');
 }
 
-// Cerramos el modal de edición
+/** Cierra el modal y descarta el alumno en edición. */
 function cerrarEdit(){
     document.getElementById('mo-edit').classList.remove('show');
     alumnoEditandoId = null;
 }
 
+/** Valida y envía los cambios del alumno editado. */
 async function guardarAlumno(){
     const n  = document.getElementById('edit-nombre').value.trim();
     const ap = document.getElementById('edit-apellido').value.trim();
@@ -316,7 +312,7 @@ async function guardarAlumno(){
     }
 }
 
-// Configuramos todo cuando la página termina de cargar
+// Inicializa permisos visuales, protección de cambios y datos de la vista.
 window.onload = function(){
     document.body.classList.add('role-user');
     if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');

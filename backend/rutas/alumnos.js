@@ -1,4 +1,7 @@
-// Rutas para gestión de alumnos
+// Rutas de alumnos.
+// Orden de middlewares: verificarToken autentica y carga req.encargado antes de
+// llegar al controlador; requireAdmin va después porque depende de ese dato.
+// apiLimiter se aplica solo a escrituras para frenar abuso sin limitar las lecturas.
 const express = require('express');
 const router  = express.Router();
 const c       = require('../controladores/alumnosControlador');
@@ -6,17 +9,17 @@ const { verificarToken } = require('../middleware/auth');
 const requireAdmin = require('../middleware/requireAdmin');
 const { apiLimiter } = require('../middleware/rateLimiters');
 
-// Lista alumnos disponibles para préstamo (sin paginación, filtrados)
+// Alumnos sin préstamo activo, usados por el formulario de nuevo préstamo.
 router.get('/disponibles',   verificarToken, c.disponibles);
-// Lista completa de alumnos con paginación y búsqueda
+// Listado completo de alumnos activos.
 router.get('/',              verificarToken, c.listar);
-// Crea un alumno nuevo (cualquier usuario autenticado)
+// Alta de alumno: cualquier usuario autenticado, con límite de tasa.
 router.post('/',             verificarToken, apiLimiter, c.crear);
-// Elimina un alumno (solo admin)
+// Baja lógica: solo admin; el límite se consume únicamente si pasó el permiso.
 router.delete('/:id',        verificarToken, requireAdmin, apiLimiter, c.eliminar);
-// Edita datos de un alumno (cualquier usuario autenticado)
+// Edición de datos: cualquier usuario autenticado.
 router.put('/:id',           verificarToken, apiLimiter, c.editar);
-// Historial de préstamos de un alumno específico
+// Historial de préstamos del alumno.
 router.get('/:id/historial', verificarToken, c.historial);
 
 module.exports = router;

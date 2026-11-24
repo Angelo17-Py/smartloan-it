@@ -1,28 +1,37 @@
-/* ============================================================
-   SmartLoan IT - Estilos compartidos de módulos
-   Formularios, búsqueda y tablas reutilizados por alumnos,
-   equipos, usuarios e historial.
-   ============================================================ */
+/* SmartLoan IT — Estilos compartidos de módulos: formularios, búsqueda y tablas
+   reutilizados por alumnos, equipos, usuarios e historial. */
+
+/* Contenedor de página: centra el contenido con un margen lateral mínimo de 24 px. */
 main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
+/* Tarjeta y rótulo de los formularios de filtro. */
 .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:16px;}
 .form-card-title{font-size:var(--text-xs);letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:12px;}
+/* Fila de filtros: los campos se reparten el ancho y se envuelven si no caben. */
 .form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
 .form-row .ig{flex:1;min-width:130px;}
 .btn-wrap{padding:0;display:flex;align-items:flex-end;}
+/* Barra de búsqueda con icono; el input ocupa el espacio restante. */
 .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:8px 14px;margin-bottom:12px;}
 .search-bar svg{color:var(--dim);flex-shrink:0;}
 .search-bar input{background:none;border:none;color:var(--text);font-size:0.9rem;outline:none;flex:1;padding:0;}
 .search-bar input::placeholder{color:var(--dim);}
+/* Tabla de resultados y su cabecera con contador. */
 .table-wrap{border-radius:14px;overflow:hidden;}
 .table-header{padding:10px 18px;display:flex;justify-content:space-between;align-items:center;}
 .table-header span{font-size:var(--text-xs);letter-spacing:2px;font-weight:700;color:var(--dim);}
 .table-count{background:var(--primary-glow);color:var(--primary);border-radius:20px;padding:2px 8px;font-size:var(--text-xs);font-weight:800;}
+/* Tabla al 100 % con reparto fijo de columnas. */
 table{width:100%;table-layout:fixed;border-collapse:collapse;}
 th{padding:10px 12px;font-size:var(--text-xs);letter-spacing:1.5px;color:var(--muted);font-weight:700;text-align:center;}
 td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--border);vertical-align:middle;text-align:center;}
 .num{color:var(--dim);font-weight:700;font-size:var(--text-sm);}
+/* Celdas de acciones centradas y sin saltos de línea. */
 .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
+/* Visibilidad por rol: las páginas añaden role-user (y role-admin si procede)
+   a <body>; .admin-only se muestra con cualquiera de esas clases. */
 .admin-only{display:none!important;}
 body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
+/* Rejilla de dos columnas para formularios y detalles. */
 .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* Refuerza la animación de entrada del modal compartido. */
 .mo .md{animation:fi var(--duration-normal) var(--ease-out);}

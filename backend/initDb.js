@@ -2,7 +2,13 @@
 const db = require('./db');
 const bcrypt = require('bcryptjs');
 
-// Espera a que MySQL esté disponible (útil cuando los contenedores arrancan juntos)
+/**
+ * Reintenta la conexión hasta que MySQL esté disponible.
+ * Útil cuando el servidor y la base arrancan a la vez en contenedores separados.
+ * @param {number} intentos Cantidad máxima de intentos.
+ * @param {number} intervalo Espera en milisegundos entre intentos.
+ * @throws {Error} Si se agotan los intentos sin conexión.
+ */
 async function esperarMySQL(intentos = 30, intervalo = 2000) {
   for (let i = 1; i <= intentos; i++) {
     try {
@@ -18,14 +24,17 @@ async function esperarMySQL(intentos = 30, intervalo = 2000) {
   }
 }
 
+/**
+ * Crea el esquema, aplica migraciones y cargas iniciales de forma idempotente.
+ * Se ejecuta en cada arranque, así que todas las operaciones deben poder repetirse.
+ * @returns {Promise<void>}
+ */
 async function initDatabase() {
   await esperarMySQL();
   const conn = await db;
   console.log('Inicializando base de datos...');
 
-  // =============================================================
-  // TABLAS PRINCIPALES
-  // =============================================================
+  // Tablas principales. Se crean solo si no existen para no alterar datos previos.
 
   // Tabla de encargados (usuarios del sistema)
   await conn.query(`
@@ -139,10 +148,8 @@ async function initDatabase() {
     )
   `);
 
-  // =============================================================
-  // MIGRACIONES PARA BASES DE DATOS EXISTENTES
-  // Cada una envuelta en try/catch para no romper si ya se aplicaron
-  // =============================================================
+  // Migraciones para bases ya creadas. Cada sentencia va aislada en try/catch:
+  // si la columna, el índice o la restricción ya existe, se registra el error y se continúa.
   try { await conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 1 fallo (no critico):', e.message); }
   try { await conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"); } catch (e) { console.error('Migracion 2 fallo (no critico):', e.message); }
   try { await conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 3 fallo (no critico):', e.message); }
@@ -195,9 +202,8 @@ async function initDatabase() {
     }
   } catch (e) { console.error('Migracion 22 fallo (no critico):', e.message); }
 
-  // =============================================================
-  // TRIGGERS
-  // =============================================================
+  // Triggers que mantienen sincronizados los estados de equipos y préstamos.
+  // Se recrean en cada arranque para que la definición vigente sea siempre la del código.
 
   // Evita prestar un equipo que no esté disponible
   await conn.query('DROP TRIGGER IF EXISTS validar_prestamo');
@@ -244,18 +250,15 @@ async function initDatabase() {
     END
   `);
 
-  // =============================================================
-  // USUARIOS INICIALES
-  // En desarrollo se mantienen los usuarios de ejemplo.
-  // En producción no se crean credenciales conocidas: si no existe
-  // ningún administrador activo, se exige crearlo desde variables de entorno.
-  // =============================================================
+  // Usuarios iniciales. En desarrollo se sincronizan cuentas de ejemplo; en producción
+  // no se crean credenciales conocidas y se exige un administrador por variables de entorno.
 
   const esProduccion = process.env.NODE_ENV === 'production';
   if (esProduccion) {
     const [admins] = await conn.query(
       "SELECT COUNT(*) AS c FROM encargados WHERE rol = 'admin' AND estado = 1"
     );
+    // Sin administradores activos se crea uno, validando antes el formato de las credenciales.
     if (Number(admins[0].c) === 0) {
       const codigo = String(process.env.ADMIN_INICIAL_CODIGO || '').trim();
       const password = String(process.env.ADMIN_INICIAL_PASSWORD || '');
@@ -300,18 +303,14 @@ async function initDatabase() {
     console.log('Encargados sincronizados');
   }
 
-  // =============================================================
-  // CONFIGURACIÓN INICIAL
-  // =============================================================
+  // Configuración base. INSERT IGNORE conserva los valores que el administrador haya cambiado.
 
   await conn.query(
     "INSERT IGNORE INTO configuracion (clave, valor, descripcion) VALUES (?, ?, ?)",
     ['multa_por_dia', '10000', 'Monto en guaraníes por día de retraso']
   );
 
-  // =============================================================
-  // DATOS DE EJEMPLO (solo en desarrollo y si las tablas están vacías)
-  // =============================================================
+  // Datos de ejemplo solo en desarrollo y únicamente si la tabla está vacía.
 
   if (!esProduccion) {
     const [aluCount] = await conn.query('SELECT COUNT(*) AS c FROM alumnos');

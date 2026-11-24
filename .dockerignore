@@ -1,5 +1,11 @@
+# Excluye del contexto de build lo que no debe copiarse a la imagen.
+
+# Dependencias locales: dentro del contenedor se instalan con npm install.
 node_modules
+# Historial y configuración de Git: no afectan la ejecución.
 .git
+# Secretos y variables de entorno: se inyectan en tiempo de ejecución.
 .env
+# Documentación: no es necesaria para servir la aplicación.
 *.md
 .gitignore
