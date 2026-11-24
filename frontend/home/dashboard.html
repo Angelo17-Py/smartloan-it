@@ -40,7 +40,6 @@
         /* El panel usa su propio layout con barra lateral. */
         .dashboard-layout{display:block!important}
         .dashboard-layout .main{margin-left:0!important}
-        .dashboard-layout .topbar{display:none!important}
         .dashboard-layout .main{padding:28px max(24px,calc((100vw - 1360px)/2)) 36px}
         .main-content{display:flex;flex-direction:column;max-width:1360px;width:100%;margin:0 auto}
         /* Marca de tiempo de la última actualización de datos. */
@@ -193,6 +192,11 @@
         .dash-greeting{font-size:clamp(2rem,3.2vw,2.55rem)!important;font-weight:560!important;letter-spacing:-.04em!important;line-height:1!important;color:var(--text);overflow:visible!important;padding-bottom:0!important;margin:0!important}
         .dash-greeting .greet-line{display:block;transform:none}
         .dash-role{margin-top:7px!important;color:var(--dash-muted)!important;font-size:11.5px!important;font-weight:500!important}
+        .dash-role-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:7px}
+        .dash-role-line .dash-role{margin-top:0!important}
+        .dash-role-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;border:1px solid var(--dash-line);background:var(--surface);color:var(--dash-muted);font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+        .dash-role-badge[hidden]{display:none!important}
+        .dash-role-badge.is-admin{color:var(--primary);border-color:var(--primary);background:var(--primary-glow)}
         .dash-header-right{display:flex;align-items:center;gap:18px;flex-shrink:0;padding-top:5px}
         .dash-clock{display:flex;align-items:center;gap:9px;padding-right:18px;border-right:1px solid var(--dash-line);color:var(--text-secondary);font-size:11.5px;font-variant-numeric:tabular-nums}
         .dash-clock svg{width:16px;height:16px;color:var(--dash-muted)}
@@ -485,7 +489,10 @@
                     <div>
                         <span class="dash-kicker">Bienvenido,</span>
                         <h1 class="dash-greeting"><span class="greet-line" id="welcome-msg">—</span></h1>
-                        <p class="dash-role" id="s-role-main">Encargado</p>
+                        <div class="dash-role-line">
+                            <p class="dash-role" id="s-role-main">Encargado</p>
+                            <span class="dash-role-badge" id="s-role-badge" hidden>Operador</span>
+                        </div>
                     </div>
                 </div>
                 <div class="dash-header-right">
@@ -1209,9 +1216,15 @@ window.onload = function(){
         var sa = document.getElementById('s-avatar'); if(sa) sa.textContent = inicial;
 
         var sn = document.getElementById('s-name'); if(sn) sn.textContent = enc.nombre + ' ' + (enc.apellido || '');
-        var fullRole = (enc.cargo || 'Encargado') + (rol !== 'admin' ? ' · Solo lectura' : '');
-        var sr = document.getElementById('s-role'); if(sr) sr.textContent = fullRole;
-        var srm = document.getElementById('s-role-main'); if(srm) srm.textContent = fullRole;
+        var cargo = enc.cargo || 'Encargado';
+        var sr = document.getElementById('s-role'); if(sr) sr.textContent = cargo;
+        var srm = document.getElementById('s-role-main'); if(srm) srm.textContent = cargo;
+        var srb = document.getElementById('s-role-badge');
+        if(srb){
+            srb.hidden = false;
+            srb.textContent = rol === 'admin' ? 'Administrador' : 'Operador';
+            srb.classList.toggle('is-admin', rol === 'admin');
+        }
         var wm = document.getElementById('welcome-msg'); if(wm) wm.textContent = enc.nombre || 'Bienvenido';
     }
     actualizarInfoExportacion();

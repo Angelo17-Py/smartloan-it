@@ -1,6 +1,6 @@
 // Rutas de préstamos de equipos.
 // Las lecturas solo requieren sesión; las escrituras usan apiLimiter y la
-// eliminación exige admin. requireAdmin siempre va después de verificarToken
+// anulación exige admin. requireAdmin siempre va después de verificarToken
 // porque consulta el rol ya cargado en req.encargado.
 const express = require('express');
 const router  = express.Router();
@@ -17,7 +17,7 @@ router.get('/',     verificarToken, c.listar);
 router.get('/alertas', verificarToken, c.alertas);
 // Comprobante de un préstamo activo.
 router.get('/:id',  verificarToken, c.buscar);
-// Anulación de préstamo con su devolución: solo admin.
-router.delete('/:id', verificarToken, requireAdmin, apiLimiter, c.eliminar);
+// Anulación lógica con motivo: solo admin. No borra el registro.
+router.patch('/:id/anular', verificarToken, requireAdmin, apiLimiter, c.anular);
 
 module.exports = router;

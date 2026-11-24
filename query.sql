@@ -63,6 +63,9 @@ CREATE TABLE prestamos (
     acepto_contrato           BOOLEAN DEFAULT FALSE,
     multa_base                DECIMAL(12,2) DEFAULT NULL,
     estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
+    anulado                   BOOLEAN NOT NULL DEFAULT FALSE,
+    motivo_anulacion          VARCHAR(300) DEFAULT NULL,
+    fecha_anulacion           DATETIME DEFAULT NULL,
     -- Relaciones: el préstamo no puede existir sin alumno, equipo ni encargado válidos.
     FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
     FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
@@ -73,6 +76,8 @@ CREATE TABLE prestamos (
 
 -- Acelera los filtros por estado (activos/devueltos) usados en listados y alertas.
 CREATE INDEX idx_prestamos_estado ON prestamos(estado);
+-- Los registros anulados se excluyen por defecto de listados y reportes.
+CREATE INDEX idx_prestamos_anulado ON prestamos(anulado);
 
 -- Devoluciones: cierre de un préstamo. Registra el estado del equipo, daños,
 -- retraso y los montos calculados (daño, multa y total a cobrar).
@@ -90,10 +95,16 @@ CREATE TABLE devoluciones (
     monto_multa      DECIMAL(12,2) DEFAULT 0,
     total_cobro      DECIMAL(12,2) DEFAULT 0,
     observacion      VARCHAR(300),
+    anulado          BOOLEAN NOT NULL DEFAULT FALSE,
+    motivo_anulacion VARCHAR(300) DEFAULT NULL,
+    fecha_anulacion  DATETIME DEFAULT NULL,
     -- Cada devolución pertenece a un préstamo y registra quién la recibió.
     FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo),
     FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
 );
+
+-- Los registros anulados se excluyen por defecto de listados y reportes.
+CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado);
 
 -- Configuración: parámetros editables sin recompilar, como la multa diaria.
 CREATE TABLE configuracion (

@@ -18,7 +18,6 @@
         /* Tabla, textos auxiliares y chip de la cuenta propia. */
         td{overflow-wrap:anywhere;}
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
-        .sub{display:block;font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
         .yo-chip{display:inline-block;padding:3px 9px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-size:10px;font-weight:700;}
         .pw-hint{font-size:var(--text-xs);color:var(--dim);margin-top:4px;}
         /* Aviso mostrado a usuarios sin permisos de administración. */
@@ -257,7 +256,11 @@ function abrirEditar(id, enfocarPassword){
     document.getElementById('e-nombre').value = u.nombre || '';
     document.getElementById('e-apellido').value = u.apellido || '';
     document.getElementById('e-cargo').value = u.cargo || '';
-    document.getElementById('e-rol').value = u.rol === 'admin' ? 'admin' : 'lectura';
+    var selRol = document.getElementById('e-rol');
+    selRol.value = u.rol === 'admin' ? 'admin' : 'lectura';
+    var esYo = String(u.id_encargado) === String(enc.id_encargado);
+    selRol.disabled = esYo;
+    selRol.title = esYo ? 'No puedes cambiar tu propio rol' : '';
     document.getElementById('e-password').value = '';
     document.getElementById('e-password2').value = '';
     limpiarErroresEdit();

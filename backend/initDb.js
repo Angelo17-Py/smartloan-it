@@ -25,6 +25,68 @@ async function esperarMySQL(intentos = 30, intervalo = 2000) {
 }
 
 /**
+ * Indica si una columna ya existe en la tabla indicada.
+ * @param {object} conn Conexión de MySQL.
+ * @param {string} tabla Nombre de la tabla.
+ * @param {string} columna Nombre de la columna.
+ * @returns {Promise<boolean>}
+ */
+async function existeColumna(conn, tabla, columna) {
+  const [filas] = await conn.query(
+    `SELECT 1 FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ? LIMIT 1`,
+    [tabla, columna]
+  );
+  return filas.length > 0;
+}
+
+/**
+ * Indica si un índice ya existe en la tabla indicada.
+ * @param {object} conn Conexión de MySQL.
+ * @param {string} tabla Nombre de la tabla.
+ * @param {string} indice Nombre del índice.
+ * @returns {Promise<boolean>}
+ */
+async function existeIndice(conn, tabla, indice) {
+  const [filas] = await conn.query(
+    `SELECT 1 FROM information_schema.STATISTICS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ? LIMIT 1`,
+    [tabla, indice]
+  );
+  return filas.length > 0;
+}
+
+/**
+ * Indica si una restricción ya existe en la tabla indicada.
+ * @param {object} conn Conexión de MySQL.
+ * @param {string} tabla Nombre de la tabla.
+ * @param {string} restriccion Nombre de la restricción.
+ * @returns {Promise<boolean>}
+ */
+async function existeRestriccion(conn, tabla, restriccion) {
+  const [filas] = await conn.query(
+    `SELECT 1 FROM information_schema.TABLE_CONSTRAINTS
+     WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = ? LIMIT 1`,
+    [tabla, restriccion]
+  );
+  return filas.length > 0;
+}
+
+/**
+ * Ejecuta una migración y solo informa los errores reales.
+ * @param {number} numero Número de la migración.
+ * @param {Function} fn Operación que aplica la migración.
+ * @returns {Promise<void>}
+ */
+async function migrar(numero, fn) {
+  try {
+    await fn();
+  } catch (err) {
+    console.error(`Migracion ${numero} fallo:`, err.message);
+  }
+}
+
+/**
  * Crea el esquema, aplica migraciones y cargas iniciales de forma idempotente.
  * Se ejecuta en cada arranque, así que todas las operaciones deben poder repetirse.
  * @returns {Promise<void>}
@@ -95,6 +157,9 @@ async function initDatabase() {
       acepto_contrato           BOOLEAN DEFAULT FALSE,
       multa_base                DECIMAL(12,2) DEFAULT NULL,
       estado                    ENUM('ACTIVO','DEVUELTO') DEFAULT 'ACTIVO',
+      anulado                   BOOLEAN NOT NULL DEFAULT FALSE,
+      motivo_anulacion          VARCHAR(300) DEFAULT NULL,
+      fecha_anulacion           DATETIME DEFAULT NULL,
       FOREIGN KEY (id_alumno)    REFERENCES alumnos(id_alumno),
       FOREIGN KEY (id_equipo)    REFERENCES equipos(id_equipo),
       FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)
@@ -116,6 +181,9 @@ async function initDatabase() {
       monto_multa      DECIMAL(12,2) DEFAULT 0,
       total_cobro      DECIMAL(12,2) DEFAULT 0,
       observacion      VARCHAR(300),
+      anulado          BOOLEAN NOT NULL DEFAULT FALSE,
+      motivo_anulacion VARCHAR(300) DEFAULT NULL,
+      fecha_anulacion  DATETIME DEFAULT NULL,
       FOREIGN KEY (id_prestamo) REFERENCES prestamos(id_prestamo)
     )
   `);
@@ -148,29 +216,57 @@ async function initDatabase() {
     )
   `);
 
-  // Migraciones para bases ya creadas. Cada sentencia va aislada en try/catch:
-  // si la columna, el índice o la restricción ya existe, se registra el error y se continúa.
-  try { await conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 1 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"); } catch (e) { console.error('Migracion 2 fallo (no critico):', e.message); }
-  try { await conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"); } catch (e) { console.error('Migracion 3 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"); } catch (e) { console.error('Migracion 4 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato"); } catch (e) { console.error('Migracion 5 fallo (no critico):', e.message); }
-  try { await conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"); } catch (e) { console.error('Migracion 6 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) NOT NULL"); } catch (e) { console.error('Migracion 7 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo"); } catch (e) { console.error('Migracion 8 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)"); } catch (e) { console.error('Migracion 9 fallo (no critico):', e.message); }
-  try { await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)"); } catch (e) { console.error('Migracion 10 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)"); } catch (e) { console.error('Migracion 12 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo"); } catch (e) { console.error('Migracion 13 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE prestamos ADD COLUMN codigo_prestamo VARCHAR(20) UNIQUE AFTER id_prestamo"); } catch (e) { console.error('Migracion 14 fallo (no critico):', e.message); }
-  try { await conn.query("UPDATE prestamos SET codigo_prestamo = CONCAT('PRE-', LPAD(id_prestamo, 3, '0')) WHERE codigo_prestamo IS NULL"); } catch (e) { console.error('Migracion 15 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE alumnos ADD COLUMN turno VARCHAR(20) DEFAULT 'Mañana' AFTER curso"); } catch (e) { console.error('Migracion 16 fallo (no critico):', e.message); }
-  try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Informática', curso='3° año', turno='Mañana' WHERE codigo_alumno='ALU001' AND carrera LIKE 'Ingenier%'"); } catch (e) { console.error('Migracion 17 fallo (no critico):', e.message); }
-  try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Contabilidad', curso='2° año', turno='Tarde' WHERE codigo_alumno='ALU002' AND carrera LIKE 'Administraci%'"); } catch (e) { console.error('Migracion 18 fallo (no critico):', e.message); }
-  try { await conn.query("UPDATE alumnos SET carrera='Bachillerato Científico en Ciencias Sociales', curso='1° año', turno='Mañana' WHERE codigo_alumno='ALU003' AND carrera='Medicina'"); } catch (e) { console.error('Migracion 19 fallo (no critico):', e.message); }
-  try { await conn.query("ALTER TABLE encargados ADD COLUMN token_version INT NOT NULL DEFAULT 0 AFTER estado"); } catch (e) { console.error('Migracion 20 fallo (no critico):', e.message); }
+  // Migraciones para bases ya creadas. Se ejecutan en cada arranque, por eso las
+  // columnas, índices y restricciones se verifican antes para no generar errores
+  // de "Duplicate" cuando la base ya está actualizada.
+  await migrar(1, () => conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"));
+  await migrar(2, () => conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"));
+  await migrar(3, () => conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"));
+  await migrar(4, () => conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"));
+  await migrar(5, async () => {
+    if (await existeColumna(conn, 'prestamos', 'multa_base')) return;
+    await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato");
+  });
+  await migrar(6, () => conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"));
+  await migrar(7, () => conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) NOT NULL"));
+  await migrar(8, async () => {
+    if (await existeColumna(conn, 'devoluciones', 'id_encargado')) return;
+    await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo");
+  });
+  await migrar(9, async () => {
+    if (await existeRestriccion(conn, 'devoluciones', 'fk_dev_encargado')) return;
+    await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)");
+  });
+  await migrar(10, async () => {
+    if (await existeIndice(conn, 'prestamos', 'idx_prestamos_estado')) return;
+    await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)");
+  });
+  await migrar(12, async () => {
+    if (await existeRestriccion(conn, 'prestamos', 'chk_fecha_dev')) return;
+    await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)");
+  });
+  await migrar(13, async () => {
+    if (await existeColumna(conn, 'encargados', 'rol')) return;
+    await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo");
+  });
+  await migrar(14, async () => {
+    if (await existeColumna(conn, 'prestamos', 'codigo_prestamo')) return;
+    await conn.query("ALTER TABLE prestamos ADD COLUMN codigo_prestamo VARCHAR(20) UNIQUE AFTER id_prestamo");
+  });
+  await migrar(15, () => conn.query("UPDATE prestamos SET codigo_prestamo = CONCAT('PRE-', LPAD(id_prestamo, 3, '0')) WHERE codigo_prestamo IS NULL"));
+  await migrar(16, async () => {
+    if (await existeColumna(conn, 'alumnos', 'turno')) return;
+    await conn.query("ALTER TABLE alumnos ADD COLUMN turno VARCHAR(20) DEFAULT 'Mañana' AFTER curso");
+  });
+  await migrar(17, () => conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Informática', curso='3° año', turno='Mañana' WHERE codigo_alumno='ALU001' AND carrera LIKE 'Ingenier%'"));
+  await migrar(18, () => conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Contabilidad', curso='2° año', turno='Tarde' WHERE codigo_alumno='ALU002' AND carrera LIKE 'Administraci%'"));
+  await migrar(19, () => conn.query("UPDATE alumnos SET carrera='Bachillerato Científico en Ciencias Sociales', curso='1° año', turno='Mañana' WHERE codigo_alumno='ALU003' AND carrera='Medicina'"));
+  await migrar(20, async () => {
+    if (await existeColumna(conn, 'encargados', 'token_version')) return;
+    await conn.query("ALTER TABLE encargados ADD COLUMN token_version INT NOT NULL DEFAULT 0 AFTER estado");
+  });
   // Limpia los índices UNIQUE duplicados que versiones anteriores agregaban en cada arranque
-  try {
+  await migrar(21, async () => {
     const [duplicados] = await conn.query(`
       SELECT s.INDEX_NAME
       FROM information_schema.STATISTICS s
@@ -190,9 +286,9 @@ async function initDatabase() {
       const nombre = String(fila.INDEX_NAME).replace(/`/g, '``');
       await conn.query('ALTER TABLE encargados DROP INDEX `' + nombre + '`');
     }
-  } catch (e) { console.error('Migracion 21 fallo (no critico):', e.message); }
+  });
   // Garantiza que exista exactamente la restricción UNIQUE necesaria sobre codigo
-  try {
+  await migrar(22, async () => {
     const [indices] = await conn.query('SHOW INDEX FROM encargados');
     const unicoCodigo = indices.some(function (i) {
       return i.Column_name === 'codigo' && Number(i.Non_unique) === 0;
@@ -200,7 +296,40 @@ async function initDatabase() {
     if (!unicoCodigo) {
       await conn.query('ALTER TABLE encargados ADD UNIQUE INDEX codigo (codigo)');
     }
-  } catch (e) { console.error('Migracion 22 fallo (no critico):', e.message); }
+  });
+  // Anulación lógica de préstamos y devoluciones: los registros se conservan.
+  await migrar(23, async () => {
+    if (await existeColumna(conn, 'prestamos', 'anulado')) return;
+    await conn.query('ALTER TABLE prestamos ADD COLUMN anulado BOOLEAN NOT NULL DEFAULT FALSE AFTER estado');
+  });
+  await migrar(24, async () => {
+    if (await existeColumna(conn, 'prestamos', 'motivo_anulacion')) return;
+    await conn.query('ALTER TABLE prestamos ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado');
+  });
+  await migrar(25, async () => {
+    if (await existeColumna(conn, 'prestamos', 'fecha_anulacion')) return;
+    await conn.query('ALTER TABLE prestamos ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion');
+  });
+  await migrar(26, async () => {
+    if (await existeColumna(conn, 'devoluciones', 'anulado')) return;
+    await conn.query('ALTER TABLE devoluciones ADD COLUMN anulado BOOLEAN NOT NULL DEFAULT FALSE AFTER observacion');
+  });
+  await migrar(27, async () => {
+    if (await existeColumna(conn, 'devoluciones', 'motivo_anulacion')) return;
+    await conn.query('ALTER TABLE devoluciones ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado');
+  });
+  await migrar(28, async () => {
+    if (await existeColumna(conn, 'devoluciones', 'fecha_anulacion')) return;
+    await conn.query('ALTER TABLE devoluciones ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion');
+  });
+  await migrar(29, async () => {
+    if (await existeIndice(conn, 'prestamos', 'idx_prestamos_anulado')) return;
+    await conn.query('CREATE INDEX idx_prestamos_anulado ON prestamos(anulado)');
+  });
+  await migrar(30, async () => {
+    if (await existeIndice(conn, 'devoluciones', 'idx_devoluciones_anulado')) return;
+    await conn.query('CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado)');
+  });
 
   // Triggers que mantienen sincronizados los estados de equipos y préstamos.
   // Se recrean en cada arranque para que la definición vigente sea siempre la del código.

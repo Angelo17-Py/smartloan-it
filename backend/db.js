@@ -29,7 +29,6 @@ const pool = mysql.createPool({
 
 // Verificamos la conexión al arrancar
 pool.getConnection().then(conn => {
-  console.log('MySQL conectado en ' + host + ':' + port);
   conn.release();
 }).catch(err => {
   console.error('Error conexión:', err.message);

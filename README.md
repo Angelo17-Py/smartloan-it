@@ -61,7 +61,7 @@ Está pensado para encargados de recursos tecnológicos de colegios e institucio
 | **Equipos** | Registro y edición de activos; estados `Disponible`, `Prestado` y `En mantenimiento`. El cambio manual solo se permite entre `Disponible` y `En mantenimiento`; la baja solo procede si no hay historial de préstamos. |
 | **Préstamos** | Selección de alumnos sin préstamo activo y equipos disponibles; aceptación del contrato, validación de fechas, código correlativo (`PRE-001`, `PRE-002`, …) y comprobante imprimible con firmas. |
 | **Devoluciones** | Búsqueda de préstamos activos, registro del estado del equipo y de daños, cálculo automático de días de retraso, multa y total a cobrar; comprobante imprimible. |
-| **Historial** | Tablas de préstamos y devoluciones con filtros y búsqueda. Incluye una pestaña de auditoría visible solo para administradores. |
+| **Historial** | Tablas de préstamos y devoluciones con filtros, búsqueda y anulaciones con motivo. Incluye una pestaña de auditoría visible solo para administradores. |
 | **Usuarios** | Solo administradores: alta, edición, cambio de rol y contraseña, activación y desactivación de encargados. |
 | **Configuración** | Solo administradores: edición de la multa diaria desde el dashboard. El cambio queda registrado en la auditoría. |
 | **Exportación** | Descarga de un archivo Excel (`.xlsx`) con hojas `Prestamos` y `Devoluciones`, formato de tablas, filtros y resumen de la última exportación. |
@@ -327,14 +327,14 @@ En la columna **Acceso**, `Autenticado` incluye a administradores y operadores; 
 | PUT | `/equipos/:id` | Edita un equipo | Autenticado |
 | PATCH | `/equipos/:id/estado` | Cambia el estado del equipo | Autenticado |
 | DELETE | `/equipos/:id` | Elimina un equipo sin historial | Admin |
-| GET | `/prestamos` | Lista préstamos | Autenticado |
+| GET | `/prestamos` | Lista préstamos vigentes; con `?incluir_anulados=1` incluye los anulados | Autenticado |
 | GET | `/prestamos/alertas` | Préstamos vencidos o por vencer en 48 h | Autenticado |
 | GET | `/prestamos/:id` | Busca un préstamo activo por ID | Autenticado |
 | POST | `/prestamos` | Registra un préstamo | Autenticado |
-| DELETE | `/prestamos/:id` | Elimina el préstamo y su devolución asociada | Admin |
-| GET | `/devoluciones` | Lista devoluciones | Autenticado |
+| PATCH | `/prestamos/:id/anular` | Anula un préstamo con motivo, sin borrar el registro | Admin |
+| GET | `/devoluciones` | Lista devoluciones vigentes; con `?incluir_anulados=1` incluye las anuladas | Autenticado |
 | POST | `/devoluciones` | Registra una devolución y calcula la multa | Autenticado |
-| DELETE | `/devoluciones/:id` | Elimina la devolución y reactiva el préstamo | Admin |
+| PATCH | `/devoluciones/:id/anular` | Anula una devolución y reactiva el préstamo | Admin |
 | GET | `/configuracion` | Lista los parámetros del sistema | Autenticado |
 | PUT | `/configuracion/:clave` | Actualiza un parámetro | Admin |
 | GET | `/auditoria?limit=` | Lista acciones registradas (máximo 500) | Admin |
@@ -345,8 +345,8 @@ Notas de uso:
 - `POST /prestamos` exige `acepto_contrato: true` y una fecha de devolución posterior a la fecha actual y a la del préstamo.
 - `PATCH /equipos/:id/estado` recibe `1` (Disponible), `2` (Prestado) o `3` (En mantenimiento). Solo permite alternar manualmente entre `1` y `3`.
 - `POST /devoluciones` calcula en el servidor los días de retraso y la multa. El monto de daño se registra como dato de la devolución y el total surge de multa + daño.
-- La eliminación de un préstamo borra también su devolución si existe; la eliminación de una devolución reactiva el préstamo.
-- `GET /exportar` genera las hojas `Prestamos` y `Devoluciones` y devuelve contadores en las cabeceras de la respuesta.
+- La anulación de préstamos y devoluciones exige un motivo de al menos 5 caracteres y conserva el registro. Para anular un préstamo con devolución vigente, primero debe anularse la devolución.
+- `GET /exportar` genera las hojas `Prestamos` y `Devoluciones` sin registros anulados, devuelve contadores en las cabeceras y registra la exportación en la auditoría.
 
 ## Base de datos
 
@@ -401,8 +401,8 @@ erDiagram
 
 | Rol en la base | Nombre en la interfaz | Alcance |
 |---|---|---|
-| `admin` | Administrador | Operación diaria, gestión de usuarios, configuración, auditoría y eliminaciones. |
-| `lectura` | Operador | Consulta, alta y edición de alumnos y equipos, registro de préstamos y devoluciones, cambios de estado y exportación. No accede a usuarios, configuración, auditoría ni eliminaciones. |
+| `admin` | Administrador | Operación diaria, gestión de usuarios, configuración, auditoría, eliminación de equipos sin historial y anulación de préstamos/devoluciones con motivo. No puede borrar historial ni cambiar su propio rol. |
+| `lectura` | Operador | Consulta, alta y edición de alumnos y equipos, registro de préstamos y devoluciones, cambios de estado y exportación. No accede a usuarios, configuración, auditoría, eliminaciones ni anulaciones. |
 
 La autorización se valida en el backend con `verificarToken` y `requireAdmin`. La interfaz oculta las acciones no permitidas, pero esa ocultación es solo visual: la API es la que impone los permisos.
 
@@ -413,6 +413,7 @@ La autorización se valida en el backend con `verificarToken` y `requireAdmin`. 
 - La autenticación principal usa la cookie `sl_token` con `HttpOnly`, `SameSite=Strict` y `Secure` cuando `NODE_ENV=production`. También se acepta `Authorization: Bearer`.
 - En cada solicitud protegida se consulta el usuario actual: estado, rol y `token_version`. El rol usado es el de la base, no el del token.
 - Desactivar una cuenta, cambiar su rol o su contraseña incrementa `token_version` e invalida los tokens anteriores. El logout también incrementa la versión, por lo que cierra todas las sesiones del usuario.
+- El administrador no puede cambiar su propio rol; otro administrador debe hacerlo. Tampoco puede desactivar su propia cuenta.
 - La validación de alta de usuarios exige contraseñas de al menos 6 caracteres; el administrador inicial de producción exige al menos 12.
 
 ### Protecciones implementadas
@@ -427,6 +428,7 @@ La autorización se valida en el backend con `verificarToken` y `requireAdmin`. 
 | Cabeceras | `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` y `Cross-Origin-Opener-Policy`; HSTS en producción |
 | Errores | Los errores 5xx devuelven un mensaje genérico y el detalle queda en los logs |
 | Datos | Consultas parametrizadas, sanitización de longitudes, escape de HTML en el frontend y transacciones con bloqueos en operaciones críticas |
+| Historial | Los préstamos y devoluciones se anulan con motivo; no se borran. Las exportaciones quedan registradas en la auditoría. |
 
 La protección CSRF se apoya en `SameSite=Strict` y en el CORS restringido; no se implementa un token CSRF explícito. El rate limiting usa el almacén en memoria de `express-rate-limit`, adecuado para una sola instancia.
 

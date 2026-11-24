@@ -1,6 +1,10 @@
 // Controlador de devoluciones: cálculo de multas por retraso y daños, y reversión.
 const db = require('../db');
+const { s } = require('../utils/sanitize');
 const auditoria = require('../utils/auditoria');
+
+// Formatea fechas a string MySQL (YYYY-MM-DD HH:MM:SS) en zona horaria de Paraguay.
+const fmt = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T', ' ').slice(0, 19);
 
 /**
  * Registra la devolución de un préstamo activo.
@@ -25,7 +29,7 @@ exports.crear = async (req, res) => {
       await tx.beginTransaction();
       // Bloqueamos el préstamo para evitar devoluciones duplicadas
       const [prestamos] = await tx.query(
-        'SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO" FOR UPDATE', [id_prestamo]
+        'SELECT * FROM prestamos WHERE id_prestamo=? AND estado="ACTIVO" AND anulado=0 FOR UPDATE', [id_prestamo]
       );
       if (prestamos.length === 0) {
         await tx.rollback();
@@ -47,9 +51,6 @@ exports.crear = async (req, res) => {
       const multa = dias * MULTA;
       const dano = tiene_dano ? (parseFloat(monto_dano) || 0) : 0;
       const total = multa + dano;
-      // Fecha en hora de Paraguay con el formato DATETIME que espera MySQL.
-      const fmt = (d) => new Date(d).toLocaleString('sv-SE', { timeZone: 'America/Asuncion' }).replace('T', ' ').slice(0, 19);
-
       // El trigger actualizar_estado_devolucion marca el préstamo como DEVUELTO
       // y deja el equipo Disponible o En mantenimiento según tenga_dano.
       const [result] = await tx.query(
@@ -80,62 +81,62 @@ exports.crear = async (req, res) => {
 };
 
 /**
- * Elimina una devolución y revierte sus efectos: el préstamo vuelve a ACTIVO
- * y el equipo se libera si no queda ningún otro préstamo activo.
- * @param {import('express').Request} req Parámetro :id de la devolución.
- * @param {import('express').Response} res Confirmación o error 404/500.
+ * Anula lógicamente una devolución y revierte sus efectos: el préstamo vuelve
+ * a ACTIVO y el equipo vuelve a figurar como prestado.
+ * El registro se conserva para mantener la trazabilidad.
+ * @param {import('express').Request} req Body: motivo; parámetro :id de la devolución.
+ * @param {import('express').Response} res Confirmación o error 400/404/500.
  * @returns {Promise<void>}
  */
-exports.eliminar = async (req, res) => {
+exports.anular = async (req, res) => {
+  const id = req.params.id;
+  const motivo = s(req.body && req.body.motivo, 300);
+  if (motivo.length < 5) {
+    return res.status(400).json({ mensaje: 'Indicá un motivo de al menos 5 caracteres' });
+  }
+  const tx = await db.getConnection();
   try {
-    const id = req.params.id;
-    const conn = await db;
-    const [devoluciones] = await conn.query(
-      `SELECT d.id_prestamo, p.codigo_prestamo
+    await tx.beginTransaction();
+    const [devoluciones] = await tx.query(
+      `SELECT d.id_prestamo, d.anulado, p.codigo_prestamo, p.id_equipo, p.anulado AS prestamo_anulado
        FROM devoluciones d
        JOIN prestamos p ON d.id_prestamo = p.id_prestamo
-       WHERE d.id_devolucion = ?`, [id]
+       WHERE d.id_devolucion = ? FOR UPDATE`, [id]
     );
     if (devoluciones.length === 0) {
+      await tx.rollback();
       return res.status(404).json({ mensaje: 'Devolución no encontrada' });
     }
-    const idPrestamo = devoluciones[0].id_prestamo;
-    const tx = await db.getConnection();
-    try {
-      await tx.beginTransaction();
-      const [eq] = await tx.query(
-        'SELECT p.id_equipo FROM prestamos p WHERE p.id_prestamo = ?', [idPrestamo]
-      );
-      await tx.query('DELETE FROM devoluciones WHERE id_devolucion = ?', [id]);
-      // Se deshace el efecto del trigger de devolución sobre el préstamo.
-      await tx.query("UPDATE prestamos SET estado = 'ACTIVO' WHERE id_prestamo = ?", [idPrestamo]);
-      // Si el equipo no tiene otros préstamos activos, lo devolvemos a Disponible
-      if (eq.length > 0) {
-        const [activos] = await tx.query(
-          'SELECT COUNT(*) AS c FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" AND id_prestamo != ?',
-          [eq[0].id_equipo, idPrestamo]
-        );
-        if (activos[0].c === 0) {
-          await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [eq[0].id_equipo]);
-        }
-      }
-      await tx.commit();
-      auditoria.registrar(req, {
-        accion: 'ELIMINAR',
-        entidad: 'devolucion',
-        id_entidad: id,
-        detalle: `Devolución eliminada · préstamo ${devoluciones[0].codigo_prestamo || '#' + idPrestamo} reactivado`
-      });
-      res.json({ mensaje: 'Devolución eliminada correctamente. Préstamo reactivado.' });
-    } catch (txErr) {
+    const d = devoluciones[0];
+    if (Number(d.anulado) === 1) {
       await tx.rollback();
-      throw txErr;
-    } finally {
-      tx.release();
+      return res.status(400).json({ mensaje: 'La devolución ya está anulada' });
     }
+    if (Number(d.prestamo_anulado) === 1) {
+      await tx.rollback();
+      return res.status(400).json({ mensaje: 'El préstamo asociado está anulado' });
+    }
+    await tx.query(
+      'UPDATE devoluciones SET anulado = 1, motivo_anulacion = ?, fecha_anulacion = ? WHERE id_devolucion = ?',
+      [motivo, fmt(new Date()), id]
+    );
+    // El préstamo vuelve a estar activo, por lo que el equipo vuelve a figurar prestado.
+    await tx.query("UPDATE prestamos SET estado = 'ACTIVO' WHERE id_prestamo = ?", [d.id_prestamo]);
+    await tx.query("UPDATE equipos SET estado = 'Prestado' WHERE id_equipo = ?", [d.id_equipo]);
+    await tx.commit();
+    auditoria.registrar(req, {
+      accion: 'ANULAR',
+      entidad: 'devolucion',
+      id_entidad: id,
+      detalle: `Motivo: ${motivo} · Devolución anulada · préstamo ${d.codigo_prestamo || '#' + d.id_prestamo} reactivado`
+    });
+    res.json({ mensaje: 'Devolución anulada correctamente. Préstamo reactivado.' });
   } catch (err) {
+    try { await tx.rollback(); } catch (rollbackErr) { /* la transacción ya pudo haberse cerrado */ }
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
+  } finally {
+    tx.release();
   }
 };
 
@@ -148,6 +149,8 @@ exports.eliminar = async (req, res) => {
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
+    // El historial pide incluir_anulados=1; el resto del sistema solo ve las vigentes.
+    const incluirAnulados = req.query.incluir_anulados === '1';
     // Se aliasean los dos encargados: quien prestó y quien recibió la devolución.
     const [rows] = await conn.query(`
       SELECT d.*, p.fecha_prestamo, p.fecha_devolucion_estimada, p.codigo_prestamo,
@@ -161,6 +164,7 @@ exports.listar = async (req, res) => {
       JOIN alumnos a   ON p.id_alumno   = a.id_alumno
       LEFT JOIN encargados enc_p ON p.id_encargado = enc_p.id_encargado
       LEFT JOIN encargados enc_d ON d.id_encargado = enc_d.id_encargado
+      ${incluirAnulados ? '' : 'WHERE d.anulado = 0'}
       ORDER BY d.fecha_devolucion DESC
     `);
     res.json(rows);

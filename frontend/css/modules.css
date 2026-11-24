@@ -9,7 +9,6 @@ main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
 /* Fila de filtros: los campos se reparten el ancho y se envuelven si no caben. */
 .form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
 .form-row .ig{flex:1;min-width:130px;}
-.btn-wrap{padding:0;display:flex;align-items:flex-end;}
 /* Barra de búsqueda con icono; el input ocupa el espacio restante. */
 .search-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:8px 14px;margin-bottom:12px;}
 .search-bar svg{color:var(--dim);flex-shrink:0;}
@@ -28,9 +27,12 @@ td{padding:10px 12px;font-size:var(--text-sm);border-bottom:1px solid var(--bord
 /* Celdas de acciones centradas y sin saltos de línea. */
 .ac{text-align:center;white-space:nowrap;vertical-align:middle;}
 /* Visibilidad por rol: las páginas añaden role-user (y role-admin si procede)
-   a <body>; .admin-only se muestra con cualquiera de esas clases. */
+   a <body>; .session-only se muestra con cualquier sesión y .admin-only solo
+   con rol administrador. */
+.session-only{display:none!important;}
+body.role-user .session-only,body.role-admin .session-only{display:revert!important;}
 .admin-only{display:none!important;}
-body.role-user .admin-only,body.role-admin .admin-only{display:revert!important;}
+body.role-admin .admin-only{display:revert!important;}
 /* Rejilla de dos columnas para formularios y detalles. */
 .g2m{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 /* Refuerza la animación de entrada del modal compartido. */

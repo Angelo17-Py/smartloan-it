@@ -166,13 +166,15 @@ exports.historial = async (req, res) => {
     const [rows] = await conn.query(`
       SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
         p.estado AS estado_prestamo, p.estado_inicial_equipo, p.motivo, p.accesorios,
+        p.anulado, p.motivo_anulacion, p.fecha_anulacion,
         a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
         a.carrera, a.curso, a.turno,
         d.fecha_devolucion, d.estado_equipo AS estado_devolucion,
+        d.anulado AS devolucion_anulada, d.motivo_anulacion AS devolucion_motivo_anulacion,
         d.dias_retraso, d.monto_multa, d.monto_dano, d.total_cobro, d.tiene_dano, d.tipo_dano
       FROM prestamos p
       JOIN alumnos a ON p.id_alumno = a.id_alumno
-      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo
+      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo AND d.anulado = 0
       WHERE p.id_equipo = ?
       ORDER BY p.fecha_prestamo DESC
     `, [req.params.id]);

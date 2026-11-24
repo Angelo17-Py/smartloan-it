@@ -103,6 +103,8 @@ exports.crear = async (req, res) => {
 exports.listar = async (req, res) => {
   try {
     const conn = await db;
+    // El historial pide incluir_anulados=1; el resto del sistema solo ve los vigentes.
+    const incluirAnulados = req.query.incluir_anulados === '1';
     const [rows] = await conn.query(`
       SELECT p.*, e.nombre AS equipo, e.tipo, e.marca, e.estado AS estado_equipo,
         a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso, a.turno,
@@ -111,8 +113,9 @@ exports.listar = async (req, res) => {
       FROM prestamos p
       JOIN equipos e ON p.id_equipo = e.id_equipo
       JOIN alumnos a ON p.id_alumno = a.id_alumno
-      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo
+      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo AND d.anulado = 0
       JOIN encargados enc ON p.id_encargado = enc.id_encargado
+      ${incluirAnulados ? '' : 'WHERE p.anulado = 0'}
       ORDER BY p.fecha_prestamo DESC
     `);
     res.json(rows);
@@ -144,7 +147,7 @@ exports.alertas = async (req, res) => {
       FROM prestamos p
       JOIN alumnos a ON p.id_alumno = a.id_alumno
       JOIN equipos e ON p.id_equipo = e.id_equipo
-      WHERE p.estado = 'ACTIVO' AND p.fecha_devolucion_estimada <= ?
+      WHERE p.estado = 'ACTIVO' AND p.anulado = 0 AND p.fecha_devolucion_estimada <= ?
       ORDER BY p.fecha_devolucion_estimada ASC
     `, [ahoraStr, umbralStr]);
     res.json({
@@ -159,60 +162,74 @@ exports.alertas = async (req, res) => {
 };
 
 /**
- * Elimina un préstamo y su devolución asociada, liberando el equipo si
- * no tiene otros préstamos activos. Todo ocurre en una transacción.
- * @param {import('express').Request} req Parámetro :id del préstamo.
- * @param {import('express').Response} res Confirmación o error 404/500.
+ * Anula lógicamente un préstamo, conservando el registro y su historial.
+ * No permite anular un préstamo que todavía tiene una devolución vigente:
+ * primero debe anularse la devolución para reactivar el préstamo.
+ * @param {import('express').Request} req Body: motivo; parámetro :id del préstamo.
+ * @param {import('express').Response} res Confirmación o error 400/404/500.
  * @returns {Promise<void>}
  */
-exports.eliminar = async (req, res) => {
+exports.anular = async (req, res) => {
+  const id = req.params.id;
+  const motivo = s(req.body && req.body.motivo, 300);
+  if (motivo.length < 5) {
+    return res.status(400).json({ mensaje: 'Indicá un motivo de al menos 5 caracteres' });
+  }
+  const tx = await db.getConnection();
   try {
-    const id = req.params.id;
-    const conn = await db;
-    const [prestamos] = await conn.query(
-      `SELECT p.id_equipo, p.codigo_prestamo, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
+    await tx.beginTransaction();
+    const [prestamos] = await tx.query(
+      `SELECT p.id_equipo, p.codigo_prestamo, p.anulado,
+         a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
          e.nombre AS equipo
        FROM prestamos p
        JOIN alumnos a ON p.id_alumno = a.id_alumno
        JOIN equipos e ON p.id_equipo = e.id_equipo
-       WHERE p.id_prestamo = ?`, [id]
+       WHERE p.id_prestamo = ? FOR UPDATE`, [id]
     );
     if (prestamos.length === 0) {
+      await tx.rollback();
       return res.status(404).json({ mensaje: 'Préstamo no encontrado' });
     }
-    const tx = await db.getConnection();
-    try {
-      await tx.beginTransaction();
-      // Borrado en cascada manual: primero la devolución por la clave foránea.
-      await tx.query('DELETE FROM devoluciones WHERE id_prestamo = ?', [id]);
-      await tx.query('DELETE FROM prestamos WHERE id_prestamo = ?', [id]);
-      // Si el equipo no tiene otros préstamos activos, lo devolvemos a Disponible
-      const idEquipo = prestamos[0].id_equipo;
-      const [activos] = await tx.query(
-        'SELECT COUNT(*) AS c FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" AND id_prestamo != ?',
-        [idEquipo, id]
-      );
-      if (activos[0].c === 0) {
-        await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [idEquipo]);
-      }
-      await tx.commit();
-      const p = prestamos[0];
-      auditoria.registrar(req, {
-        accion: 'ELIMINAR',
-        entidad: 'prestamo',
-        id_entidad: p.codigo_prestamo || id,
-        detalle: `${p.equipo} → ${p.alumno_nombre} ${p.alumno_apellido} · devolución asociada eliminada`
-      });
-      res.json({ mensaje: 'Préstamo eliminado correctamente' });
-    } catch (txErr) {
+    const p = prestamos[0];
+    if (Number(p.anulado) === 1) {
       await tx.rollback();
-      throw txErr;
-    } finally {
-      tx.release();
+      return res.status(400).json({ mensaje: 'El préstamo ya está anulado' });
     }
+    const [devoluciones] = await tx.query(
+      'SELECT id_devolucion FROM devoluciones WHERE id_prestamo = ? AND anulado = 0 LIMIT 1 FOR UPDATE',
+      [id]
+    );
+    if (devoluciones.length > 0) {
+      await tx.rollback();
+      return res.status(400).json({ mensaje: 'No se puede anular un préstamo con devolución registrada. Anulá primero la devolución.' });
+    }
+    await tx.query(
+      'UPDATE prestamos SET anulado = 1, motivo_anulacion = ?, fecha_anulacion = ? WHERE id_prestamo = ?',
+      [motivo, fmt(new Date()), id]
+    );
+    // Si el equipo no tiene otros préstamos activos, se libera.
+    const [activos] = await tx.query(
+      'SELECT COUNT(*) AS c FROM prestamos WHERE id_equipo = ? AND estado = "ACTIVO" AND anulado = 0 AND id_prestamo != ?',
+      [p.id_equipo, id]
+    );
+    if (Number(activos[0].c) === 0) {
+      await tx.query("UPDATE equipos SET estado = 'Disponible' WHERE id_equipo = ?", [p.id_equipo]);
+    }
+    await tx.commit();
+    auditoria.registrar(req, {
+      accion: 'ANULAR',
+      entidad: 'prestamo',
+      id_entidad: p.codigo_prestamo || id,
+      detalle: `Motivo: ${motivo} · ${p.equipo} → ${p.alumno_nombre} ${p.alumno_apellido}`
+    });
+    res.json({ mensaje: 'Préstamo anulado correctamente' });
   } catch (err) {
+    try { await tx.rollback(); } catch (rollbackErr) { /* la transacción ya pudo haberse cerrado */ }
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
+  } finally {
+    tx.release();
   }
 };
 
@@ -234,10 +251,10 @@ exports.buscar = async (req, res) => {
       JOIN equipos e ON p.id_equipo = e.id_equipo
       JOIN alumnos a ON p.id_alumno = a.id_alumno
       JOIN encargados enc ON p.id_encargado = enc.id_encargado
-      WHERE p.id_prestamo = ? AND p.estado = 'ACTIVO'
+      WHERE p.id_prestamo = ? AND p.estado = 'ACTIVO' AND p.anulado = 0
     `, [req.params.id]);
     if (rows.length === 0) {
-      return res.status(404).json({ mensaje: 'Préstamo no encontrado o ya devuelto' });
+      return res.status(404).json({ mensaje: 'Préstamo no encontrado, ya devuelto o anulado' });
     }
     res.json(rows[0]);
   } catch (err) {

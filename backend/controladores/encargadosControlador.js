@@ -173,6 +173,10 @@ exports.editar = async (req, res) => {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
     const actual = rows[0];
+    // La propia cuenta no puede cambiar su rol: evita bloqueos accidentales.
+    if (String(id) === String(req.encargado.id) && rol !== actual.rol) {
+      return res.status(400).json({ mensaje: 'No puedes cambiar tu propio rol' });
+    }
     // No permitir quedarse sin ningún administrador activo
     if (actual.rol === 'admin' && rol !== 'admin') {
       const [admins] = await conn.query(

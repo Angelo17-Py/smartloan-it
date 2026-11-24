@@ -34,7 +34,7 @@ exports.disponibles = async (req, res) => {
       SELECT * FROM alumnos
       WHERE estado = 1
       AND id_alumno NOT IN (
-        SELECT id_alumno FROM prestamos WHERE estado = 'ACTIVO'
+        SELECT id_alumno FROM prestamos WHERE estado = 'ACTIVO' AND anulado = 0
       )
       ORDER BY codigo_alumno
     `);
@@ -102,7 +102,7 @@ exports.eliminar = async (req, res) => {
       // Regla de negocio: no se desactiva un alumno con equipos sin devolver.
       // FOR UPDATE mantiene la fila bloqueada hasta confirmar o revertir.
       const [prestamosActivos] = await tx.query(
-        'SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" LIMIT 1 FOR UPDATE', [id]
+        'SELECT id_prestamo FROM prestamos WHERE id_alumno = ? AND estado = "ACTIVO" AND anulado = 0 LIMIT 1 FOR UPDATE', [id]
       );
       if (prestamosActivos.length > 0) {
         await tx.rollback();
@@ -142,14 +142,16 @@ exports.historial = async (req, res) => {
     const [rows] = await conn.query(`
       SELECT p.id_prestamo, p.fecha_prestamo, p.fecha_devolucion_estimada,
         p.estado AS estado_prestamo, p.estado_inicial_equipo, p.motivo, p.accesorios,
+        p.anulado, p.motivo_anulacion, p.fecha_anulacion,
         e.nombre AS equipo, e.tipo, e.marca,
         enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido,
         d.fecha_devolucion, d.estado_equipo AS estado_devolucion,
+        d.anulado AS devolucion_anulada, d.motivo_anulacion AS devolucion_motivo_anulacion,
         d.dias_retraso, d.monto_multa, d.monto_dano, d.total_cobro, d.tiene_dano, d.tipo_dano
       FROM prestamos p
       JOIN equipos e ON p.id_equipo = e.id_equipo
       JOIN encargados enc ON p.id_encargado = enc.id_encargado
-      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo
+      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo AND d.anulado = 0
       WHERE p.id_alumno = ?
       ORDER BY p.fecha_prestamo DESC
     `, [req.params.id]);

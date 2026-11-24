@@ -102,8 +102,6 @@
         .rc-table .rc-total td:last-child{color:var(--doc-gold);}
         .stamp-badge.late{border-color:rgba(138,59,44,.32);background:rgba(138,59,44,.08);color:#8a3b2c;}
         .stamp-badge.damage{border-color:rgba(138,90,22,.35);background:rgba(138,90,22,.08);color:#8a5a16;}
-        .result-success{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;color:var(--success);font-size:var(--text-sm);font-weight:700;}
-        .result-success svg{width:18px;height:18px;flex-shrink:0;}
         /* Estilos de impresión */
         @media print {
             @page{size:A4;margin:10mm 12mm;}
@@ -161,7 +159,7 @@
         /* Responsive */
         @media(max-width:600px){
             .receipt::before{display:none}
-            .g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:var(--space-3)!important}.receipt-wrap{width:100%!important}.stamp-badge{font-size:0.65rem;padding:4px 10px}
+            .g2{grid-template-columns:1fr}.res-grid{grid-template-columns:1fr}main{padding:var(--space-3)!important}.stamp-badge{font-size:0.65rem;padding:4px 10px}
             .ds{gap:4px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start}
             .dstep{flex-shrink:0;font-size:0.6rem}
             .dstep span{display:none}
@@ -205,7 +203,6 @@
             .stamp-badge{font-size:0.6rem;padding:3px 8px}
             .receipt-modal-status span{display:none}
             .dstep{font-size:0.55rem}
-            .result-success{font-size:var(--text-xs)}
         }
     </style>
 </head>
@@ -255,7 +252,7 @@
             </div>
         </div>
             <!-- Formulario de devolución -->
-            <div id="fd" class="admin-only">
+            <div id="fd" class="session-only">
             <div class="card">
                 <div class="section-title">Estado del equipo al retorno</div>
                 <div class="g2">

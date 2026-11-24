@@ -1,12 +1,13 @@
 // Punto de entrada del servidor Express de SmartLoan IT
 console.log('Iniciando SmartLoan IT...');
 // Carga .env antes de importar módulos que leen variables de entorno al inicializarse.
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+require('dotenv').config({ path: require('path').join(__dirname, '../.env'), quiet: true });
 const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
 const db      = require('./db');
 const ExcelJS = require('exceljs');
+const auditoria = require('./utils/auditoria');
 const errorHandler = require('./middleware/errorHandler');
 const { verificarToken } = require('./middleware/auth');
 const initDatabase = require('./initDb');
@@ -127,7 +128,8 @@ app.get('/exportar', verificarToken, async (req, res) => {
       JOIN alumnos a    ON p.id_alumno    = a.id_alumno
       JOIN equipos e    ON p.id_equipo    = e.id_equipo
       JOIN encargados enc ON p.id_encargado = enc.id_encargado
-      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo
+      LEFT JOIN devoluciones d ON p.id_prestamo = d.id_prestamo AND d.anulado = 0
+      WHERE p.anulado = 0
       ORDER BY p.fecha_prestamo DESC
     `);
 
@@ -306,6 +308,13 @@ app.get('/exportar', verificarToken, async (req, res) => {
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
     await wb.xlsx.write(res);
+
+    auditoria.registrar(req, {
+      accion: 'EXPORTAR',
+      entidad: 'sistema',
+      id_entidad: null,
+      detalle: `Exportación Excel: ${loanCount} préstamos, ${returnCount} devoluciones, ${studentCount} alumnos`
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -327,7 +336,6 @@ app.use(errorHandler);
 async function start() {
   try {
     await initDatabase();
-    console.log('Base de datos inicializada correctamente');
   } catch (err) {
     console.error('Error al inicializar BD:', err.message);
     process.exit(1);
