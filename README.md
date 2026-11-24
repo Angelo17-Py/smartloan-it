@@ -14,7 +14,6 @@ Registra alumnos y equipos, controla la disponibilidad, genera comprobantes y ca
   <a href="https://www.mysql.com/"><img src="https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8"></a>
   <a href="https://developer.mozilla.org/docs/Web/JavaScript"><img src="https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript vanilla"></a>
   <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker"></a>
-  <a href="https://github.com/Angelo17-Py/smartloan-it/actions/workflows/ci.yml"><img src="https://github.com/Angelo17-Py/smartloan-it/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 </p>
 
 <sub>Proyecto académico · 2026</sub>
@@ -77,7 +76,7 @@ La interfaz incluye tema oscuro y claro con persistencia, búsqueda Spotlight (`
 | Frontend | HTML5, CSS3 y JavaScript | Interfaz sin framework ni paso de compilación |
 | Frontend | Chart.js 4.4.7 (incluido localmente) | Gráfico donut del dashboard |
 | Frontend | Instrument Sans y DM Mono | Tipografías de la interfaz |
-| Backend | Node.js 22 | Entorno de ejecución (CI y Docker) |
+| Backend | Node.js 22 | Entorno de ejecución (Docker y local) |
 | Backend | Express 5.2.1 | API REST y servidor de archivos estáticos |
 | Backend | mysql2 3.20.0 | Pool de conexiones a MySQL |
 | Backend | jsonwebtoken 9.0.3 | Autenticación con JWT (HS256) |
@@ -87,7 +86,6 @@ La interfaz incluye tema oscuro y claro con persistencia, búsqueda Spotlight (`
 | Backend | cors 2.8.6 y dotenv 17.4.2 | Control de orígenes y variables de entorno |
 | Base de datos | MySQL 8.0 | Persistencia relacional y triggers de estado |
 | Pruebas | `node:test` | 25 pruebas unitarias de autenticación, permisos, errores, logout y utilidades |
-| CI | GitHub Actions | `npm ci` y `npm test` en cada push y pull request |
 | Infraestructura | Docker, Docker Compose y Railway (Nixpacks) | Ejecución local y despliegue |
 
 ## Arquitectura
@@ -143,7 +141,6 @@ smartloan-it/
 │   ├── historial/historial.html
 │   └── usuarios/usuarios.html
 ├── test/                         # Pruebas unitarias con node:test
-├── .github/workflows/ci.yml      # Integración continua
 ├── docker-compose.yml            # MySQL + aplicación para desarrollo local
 ├── Dockerfile.local              # Imagen Node.js usada por Docker Compose
 ├── railway.json                  # Configuración de despliegue en Railway
@@ -160,7 +157,7 @@ smartloan-it/
 
 ## Requisitos
 
-- **Node.js 22 o superior** (el CI y la imagen Docker usan Node 22).
+- **Node.js 22 o superior** (la imagen Docker usa Node 22).
 - **npm**.
 - **MySQL 8.0** si se ejecuta de forma local, o **Docker Desktop** si se usa Docker Compose.
 - **Git**.
@@ -467,7 +464,6 @@ SmartLoan IT es un proyecto académico y demostrativo, funcional, desarrollado d
 Verificado en el repositorio:
 
 - `npm test` ejecuta **25 pruebas unitarias** y todas pasan localmente.
-- El flujo de CI está configurado en GitHub Actions con `npm ci` y `npm test`.
 - La aplicación incluye configuración de Docker Compose y Railway, además de inicialización automática del esquema.
 
 Limitaciones conocidas:
