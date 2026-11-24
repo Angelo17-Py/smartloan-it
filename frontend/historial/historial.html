@@ -142,7 +142,7 @@ async function cargar(){
         devs=await safeJson(dr);
         renderP();renderD();
     }catch(e){
-        showError(document.getElementById('tp'),{message:'No se pudieron cargar los datos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
+        showError(document.getElementById('tp'),{message:'No se pudieron cargar los datos. Verifica la conexión con el servidor.',retry:'cargar()'});
         showError(document.getElementById('td'),{message:'',retry:null});
     }
 }
@@ -441,7 +441,7 @@ async function confirmarAnular(){
 // Inicialización: muestra auditoría solo a administradores y carga las tablas.
 window.onload=function(){
     initPage({
-        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        spotlight: [{label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
         onReady: function(){
             if(admin) document.getElementById('tab-aud').style.display='';
             cargar();

@@ -145,7 +145,7 @@ async function cargar(){
         todos = await safeJson(r);
         render(todos);
     } catch(e){
-        showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los alumnos. Verifica la conexi\u00f3n con el servidor.',retry:'cargar()'});
+        showError(document.getElementById('tb').parentElement,{message:'No se pudieron cargar los alumnos. Verifica la conexión con el servidor.',retry:'cargar()'});
     }
 }
 
@@ -233,7 +233,7 @@ async function crear(){
 function confirmarEliminar(id){
     const a = todos.find(x => x.id_alumno === id);
     if(!a) return;
-    showConfirm('Desactivar al alumno "'+a.nombre+' '+a.apellido+'"\n\nDejar\u00e1 de aparecer en el listado, pero su historial de pr\u00e9stamos y devoluciones se conservar\u00e1.',function(){ eliminar(id); });
+    showConfirm('Desactivar al alumno "'+a.nombre+' '+a.apellido+'"\n\nDejará de aparecer en el listado, pero su historial de préstamos y devoluciones se conservará.',function(){ eliminar(id); });
 }
 
 /** Ejecuta la baja lógica del alumno; el historial se conserva. */
@@ -315,7 +315,7 @@ async function guardarAlumno(){
 // Inicializa permisos visuales, protección de cambios y datos de la vista.
 window.onload = function(){
     initPage({
-        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        spotlight: [{label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
         onReady: function(){
             formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
             cargar();

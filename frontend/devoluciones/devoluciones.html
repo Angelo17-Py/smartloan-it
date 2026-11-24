@@ -487,7 +487,7 @@ async function buscar(){
         } else {
             const lista=document.getElementById('lista');
             const ahora=new Date();
-            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' pr\u00e9stamos encontrados \u2014 selecciona uno:</div>'+
+            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' préstamos encontrados — selecciona uno:</div>'+
             activos.map(function(p,i){
                 const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
                 const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
@@ -519,17 +519,17 @@ function mostrar(){
     // Días de retraso completos para estimar la multa.
     const ret=ahora>v?Math.ceil((ahora-v)/(1000*60*60*24)):0;
     document.getElementById('ig').innerHTML=`
-        <div class="if"><span>Pr\u00e9stamo</span><strong>${p.codigo_prestamo||'#'+p.id_prestamo}</strong></div>
+        <div class="if"><span>Préstamo</span><strong>${p.codigo_prestamo||'#'+p.id_prestamo}</strong></div>
         <div class="if"><span>Alumno</span><strong>${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)}</strong></div>
         <div class="if"><span>Codigo</span><strong>${esc(p.codigo_alumno)}</strong></div>
-        <div class="if"><span>Bachillerato</span><strong>${esc(p.carrera||'\u2014')}</strong></div>
-        <div class="if"><span>Curso</span><strong>${esc(p.curso||'\u2014')}</strong></div>
-        <div class="if"><span>Turno</span><strong>${esc(p.turno||'\u2014')}</strong></div>
+        <div class="if"><span>Bachillerato</span><strong>${esc(p.carrera||'—')}</strong></div>
+        <div class="if"><span>Curso</span><strong>${esc(p.curso||'—')}</strong></div>
+        <div class="if"><span>Turno</span><strong>${esc(p.turno||'—')}</strong></div>
         <div class="if"><span>Equipo</span><strong>${esc(p.equipo)}</strong></div>
         <div class="if"><span>Tipo / Marca</span><strong>${esc(p.tipo)} &middot; ${esc(p.marca)}</strong></div>
-        <div class="if"><span>Fecha pr\u00e9stamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
+        <div class="if"><span>Fecha préstamo</span><strong>${ff(p.fecha_prestamo)}</strong></div>
         <div class="if"><span>Vencimiento</span><strong style="${ret>0?'color:var(--danger)':''}">${ff(p.fecha_devolucion_estimada)}</strong></div>
-        <div class="if"><span>Estado inicial</span><strong>${esc(p.estado_inicial_equipo||'\u2014')}</strong></div>
+        <div class="if"><span>Estado inicial</span><strong>${esc(p.estado_inicial_equipo||'—')}</strong></div>
         <div class="if"><span>Encargado</span><strong>${esc(p.encargado_nombre||'')} ${esc(p.encargado_apellido||'')}</strong></div>`;
     const ra=document.getElementById('ra');
     // Usa la multa guardada en el préstamo; si no existe, la configuración actual.
@@ -717,7 +717,7 @@ document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter
 // Inicialización: carga la multa y, si llega ?prestamo=, selecciona ese préstamo.
 window.onload=function(){
     initPage({
-        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        spotlight: [{label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
         onReady: function(){
             cargarMulta();
             cargarActivos().then(function(){

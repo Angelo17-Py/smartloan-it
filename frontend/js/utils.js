@@ -83,7 +83,7 @@ function initUnsavedChangesGuard(selector) {
  * @returns {string} Fecha local en formato dd/mm/aaaa hh:mm, o guion si no hay valor.
  */
 function ff(d) {
-  if (!d) return '\u2014';
+  if (!d) return '—';
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(d)) d = d.replace(' ', 'T');
   return new Date(d).toLocaleString('es-PY', {
     day: '2-digit', month: '2-digit', year: 'numeric',
@@ -112,7 +112,7 @@ function fn(n) {
  */
 function showError(container, opts) {
   opts = opts || {};
-  var msg = opts.message || 'Ocurri\u00f3 un error al cargar los datos.';
+  var msg = opts.message || 'Ocurrió un error al cargar los datos.';
   var retry = opts.retry || null;
 
   var el = typeof container === 'string' ? document.getElementById(container) : container;
@@ -170,7 +170,7 @@ function initPage(opciones) {
 }
 
 /**
- * Alterna manualmente entre tema claro y oscuro y persiste la elecci��n
+ * Alterna manualmente entre tema claro y oscuro y persiste la elección
  * para mantenerla en las siguientes visitas.
  */
 function toggleTheme() {
@@ -266,7 +266,7 @@ function fadeOutNavigate(url) {
  * petición falla, para no dejar una sesión a medias en el navegador.
  */
 function logout() {
-  showConfirm('Cerrar sesi\u00f3n del sistema?', function () {
+  showConfirm('Cerrar sesión del sistema?', function () {
     fetch('/encargados/logout', { method: 'POST' }).catch(function () {}).finally(function () {
       localStorage.removeItem('encargado');
       localStorage.removeItem('token');
@@ -292,7 +292,7 @@ function showConfirm(msg, onConfirm) {
     overlay.innerHTML =
       '<div class="confirm-box">' +
       '<div class="cb-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
-      '<h3>Confirmar acci\u00f3n</h3>' +
+      '<h3>Confirmar acción</h3>' +
       '<p id="confirm-msg"></p>' +
       '<div class="cb-btns">' +
       '<button class="btn btn-secondary" id="confirm-cancel">Cancelar</button>' +
@@ -359,9 +359,9 @@ function initSpotlight(pages) {
   overlay.id = 'spotlight';
   overlay.innerHTML =
     '<div class="spotlight">' +
-    '<input class="spotlight-input" id="sp-input" type="text" placeholder="Buscar alumnos, equipos, prestamos\u2026" autocomplete="off" spellcheck="false">' +
-    '<div class="spotlight-results" id="sp-results"><div class="spotlight-empty">Escribe para buscar\u2026</div></div>' +
-    '<div class="spotlight-shortcuts"><kbd>\u2191</kbd><kbd>\u2193</kbd> navegar <kbd>\u23CE</kbd> abrir <kbd>Esc</kbd> cerrar</div>' +
+    '<input class="spotlight-input" id="sp-input" type="text" placeholder="Buscar alumnos, equipos, prestamos…" autocomplete="off" spellcheck="false">' +
+    '<div class="spotlight-results" id="sp-results"><div class="spotlight-empty">Escribe para buscar…</div></div>' +
+    '<div class="spotlight-shortcuts"><kbd>↑</kbd><kbd>↓</kbd> navegar <kbd>⏎</kbd> abrir <kbd>Esc</kbd> cerrar</div>' +
     '</div>';
   document.body.appendChild(overlay);
 
@@ -379,7 +379,7 @@ function initSpotlight(pages) {
     overlay.classList.add('show');
     overlay.style.pointerEvents = 'all';
     input.value = '';
-    results.innerHTML = '<div class="spotlight-empty">Escribe para buscar\u2026</div>';
+    results.innerHTML = '<div class="spotlight-empty">Escribe para buscar…</div>';
     idx = -1;
     setTimeout(function () { input.focus(); }, 100);
   }
@@ -404,7 +404,7 @@ function initSpotlight(pages) {
 
   async function search(q) {
     q = q.trim();
-    if (!q) { results.innerHTML = '<div class="spotlight-empty">Escribe para buscar\u2026</div>'; return; }
+    if (!q) { results.innerHTML = '<div class="spotlight-empty">Escribe para buscar…</div>'; return; }
     idx = -1;
     var nq = normalizeText(q);
     var allPages = pages.slice();
@@ -421,7 +421,7 @@ function initSpotlight(pages) {
           var name = normalizeText(a.nombre + ' ' + a.apellido);
           var code = normalizeText(a.codigo_alumno || '');
           if (name.includes(nq) || code.includes(nq)) {
-            allPages.push({ label: a.codigo_alumno + ' \u2014 ' + a.nombre + ' ' + a.apellido, sub: [a.carrera, a.curso, a.turno].filter(Boolean).join(' · ') || 'Alumno', url: '/alumnos/alumnos.html' });
+            allPages.push({ label: a.codigo_alumno + ' — ' + a.nombre + ' ' + a.apellido, sub: [a.carrera, a.curso, a.turno].filter(Boolean).join(' · ') || 'Alumno', url: '/alumnos/alumnos.html' });
           }
         });
       }
@@ -429,7 +429,7 @@ function initSpotlight(pages) {
         spotlightCache.equipos.forEach(function (e) {
           var name = normalizeText(e.nombre + ' ' + e.marca);
           if (name.includes(nq)) {
-            allPages.push({ label: e.nombre, sub: e.tipo + ' \u2022 ' + e.marca, url: '/equipos/equipos.html' });
+            allPages.push({ label: e.nombre, sub: e.tipo + ' • ' + e.marca, url: '/equipos/equipos.html' });
           }
         });
       }
@@ -438,7 +438,7 @@ function initSpotlight(pages) {
       return normalizeText(p.label + ' ' + p.sub).includes(nq);
     });
     if (!filtered.length) {
-      results.innerHTML = '<div class="spotlight-empty">Sin resultados para \u201c' + q + '\u201d</div>';
+      results.innerHTML = '<div class="spotlight-empty">Sin resultados para “' + q + '”</div>';
       return;
     }
     results.innerHTML = filtered.map(function (p, i) {
