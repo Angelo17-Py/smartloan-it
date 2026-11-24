@@ -237,10 +237,12 @@
         .activity-title-wrap h2{margin:0;color:var(--text);font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
         .activity-title-wrap p{margin:3px 0 0;color:var(--dash-muted);font-size:10.5px;line-height:1.3}
         #live-time-lbl{color:var(--dash-muted);font-size:10.5px;white-space:nowrap}
-        .activity-headrow{display:grid;grid-template-columns:48px minmax(165px,1.5fr) minmax(90px,1fr) 78px 80px;gap:6px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--dash-line);background:rgba(237,230,211,.018);color:var(--dash-muted);font-size:8.5px;font-weight:650;letter-spacing:.12em;text-transform:uppercase}
+        .activity-headrow{display:grid;grid-template-columns:60px minmax(0,1.6fr) minmax(0,1fr) 92px 104px;column-gap:16px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--dash-line);background:rgba(237,230,211,.018);color:var(--dash-muted);font-size:8.5px;font-weight:650;letter-spacing:.12em;text-transform:uppercase}
+        .activity-headrow span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .activity-headrow span:last-child{text-align:right}
         .activity-card .feed-list{display:flex;flex-direction:column;min-height:0;background:transparent;border:0;border-radius:0;overflow:visible;flex:1}
         /* Fila de actividad: hora, equipo, alumno, acción y estado. */
-        .feed-item{display:grid;grid-template-columns:48px minmax(165px,1.5fr) minmax(90px,1fr) 78px 80px;grid-template-areas:none;grid-auto-flow:row;gap:6px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--dash-line);transition:background var(--duration-fast) var(--ease-out)}
+        .feed-item{display:grid;grid-template-columns:60px minmax(0,1.6fr) minmax(0,1fr) 92px 104px;grid-template-areas:none;grid-auto-flow:row;column-gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--dash-line);transition:background var(--duration-fast) var(--ease-out)}
         .feed-item:last-child{border-bottom:0}
         .feed-item:hover{background:rgba(237,230,211,.025)}
         .feed-time{grid-area:auto;color:var(--dash-muted);font-size:10.5px;font-family:var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -577,7 +579,7 @@
                                     <div><h2 id="activity-title">Actividad reciente</h2><p>Últimos movimientos del colegio</p></div>
                                 </div>
                             </div>
-                            <div class="activity-headrow" aria-hidden="true"><span>Hora</span><span>Equipo</span><span>Alumno / Usuario</span><span>Acción</span><span>Estado</span></div>
+                            <div class="activity-headrow" aria-hidden="true"><span>Hora</span><span>Equipo</span><span>Alumno</span><span>Acción</span><span>Estado</span></div>
                             <div class="feed-list" id="stream-wrapper">
                                 <div class="feed-empty" id="feed-empty">
                                     <span class="feed-empty-icon" aria-hidden="true">

@@ -20,6 +20,12 @@
         .empty-row td{text-align:center;color:var(--dim);padding:40px!important;}
         .yo-chip{display:inline-block;padding:3px 9px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-size:10px;font-weight:700;}
         .pw-hint{font-size:var(--text-xs);color:var(--dim);margin-top:4px;}
+        /* Campo de contraseña con botón para mostrar u ocultar lo que se escribe. */
+        .pw-field{position:relative;}
+        .pw-field input{padding-right:66px;}
+        .pw-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);height:26px;padding:0 8px;border:0;border-radius:5px;background:transparent;color:var(--dim);font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.02em;cursor:pointer;transition:color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out);}
+        .pw-toggle:hover,.pw-toggle:focus-visible{color:var(--primary);background:var(--primary-glow);outline:none;}
+        .pw-toggle.is-visible{color:var(--primary);}
         /* Aviso mostrado a usuarios sin permisos de administración. */
         .no-access{display:none;text-align:center;padding:80px 20px;color:var(--dim)}
         /* Adaptación responsive de la rejilla, el formulario y la tabla. */
@@ -54,8 +60,8 @@
                 <div class="ig"><label>Apellido</label><input id="n-apellido" placeholder="Ej: López" maxlength="100" oninput="clearF('n-apellido');checkNuevoUsuario()" onblur="marcarError('n-apellido',!this.value.trim())"><div class="ferr" id="ferr-n-apellido">Ingresa el apellido</div></div>
                 <div class="ig"><label>Cargo</label><input id="n-cargo" placeholder="Encargado de Recursos Tecnológicos" maxlength="100"></div>
                 <div class="ig"><label>Rol</label><select id="n-rol"><option value="lectura">Operador</option><option value="admin">Administrador</option></select></div>
-                <div class="ig"><label>Contraseña</label><input type="password" id="n-password" placeholder="Mínimo 6 caracteres" maxlength="100" oninput="clearF('n-password');checkNuevoUsuario()" onblur="marcarError('n-password',!this.value||this.value.length<6)"><div class="ferr" id="ferr-n-password">Ingresa una contraseña de al menos 6 caracteres</div></div>
-                <div class="ig"><label>Confirmar contraseña</label><input type="password" id="n-password2" placeholder="Repetí la contraseña" maxlength="100" oninput="clearF('n-password2');checkNuevoUsuario()" onblur="marcarError('n-password2',!this.value||this.value!==document.getElementById('n-password').value)"><div class="ferr" id="ferr-n-password2">Las contraseñas no coinciden</div></div>
+                <div class="ig"><label>Contraseña</label><div class="pw-field"><input type="password" id="n-password" placeholder="Mínimo 6 caracteres" maxlength="100" oninput="clearF('n-password');checkNuevoUsuario()" onblur="marcarError('n-password',!this.value||this.value.length<6)"><button type="button" class="pw-toggle" onclick="togglePassword('n-password',this)" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">Ver</button></div><div class="ferr" id="ferr-n-password">Ingresa una contraseña de al menos 6 caracteres</div></div>
+                <div class="ig"><label>Confirmar contraseña</label><div class="pw-field"><input type="password" id="n-password2" placeholder="Repetí la contraseña" maxlength="100" oninput="clearF('n-password2');checkNuevoUsuario()" onblur="marcarError('n-password2',!this.value||this.value!==document.getElementById('n-password').value)"><button type="button" class="pw-toggle" onclick="togglePassword('n-password2',this)" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">Ver</button></div><div class="ferr" id="ferr-n-password2">Las contraseñas no coinciden</div></div>
                 <div class="form-actions"><button type="button" class="btn btn-primary" id="btnCrear" onclick="crear()" disabled>+ Registrar usuario</button></div>
             </div>
         </div>
@@ -87,8 +93,8 @@
             </div>
             <div class="ig"><label>Cargo</label><input id="e-cargo" maxlength="100"></div>
             <div class="ig"><label>Rol</label><select id="e-rol"><option value="lectura">Operador</option><option value="admin">Administrador</option></select></div>
-            <div class="ig"><label>Nueva contraseña</label><input type="password" id="e-password" placeholder="Dejar vacío para conservar la actual" maxlength="100" oninput="clearFE('e-password');checkEditUsuario()" onblur="marcarError('e-password',this.value&&this.value.length<6)"><div class="pw-hint">Mínimo 6 caracteres. Solo se cambia si escribís una contraseña nueva.</div><div class="ferr" id="ferr-e-password">La contraseña debe tener al menos 6 caracteres</div></div>
-            <div class="ig"><label>Confirmar nueva contraseña</label><input type="password" id="e-password2" placeholder="Repetí la nueva contraseña" maxlength="100" oninput="clearFE('e-password2');checkEditUsuario()" onblur="marcarError('e-password2',(this.value||document.getElementById('e-password').value)&&this.value!==document.getElementById('e-password').value)"><div class="ferr" id="ferr-e-password2">Las contraseñas no coinciden</div></div>
+            <div class="ig"><label>Nueva contraseña</label><div class="pw-field"><input type="password" id="e-password" placeholder="Dejar vacío para conservar la actual" maxlength="100" oninput="clearFE('e-password');checkEditUsuario()" onblur="marcarError('e-password',this.value&&this.value.length<6)"><button type="button" class="pw-toggle" onclick="togglePassword('e-password',this)" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">Ver</button></div><div class="pw-hint">Mínimo 6 caracteres. La contraseña actual no se puede mostrar; solo se reemplaza si escribís una nueva.</div><div class="ferr" id="ferr-e-password">La contraseña debe tener al menos 6 caracteres</div></div>
+            <div class="ig"><label>Confirmar nueva contraseña</label><div class="pw-field"><input type="password" id="e-password2" placeholder="Repetí la nueva contraseña" maxlength="100" oninput="clearFE('e-password2');checkEditUsuario()" onblur="marcarError('e-password2',(this.value||document.getElementById('e-password').value)&&this.value!==document.getElementById('e-password').value)"><button type="button" class="pw-toggle" onclick="togglePassword('e-password2',this)" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">Ver</button></div><div class="ferr" id="ferr-e-password2">Las contraseñas no coinciden</div></div>
             <div class="res-btns" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
                 <button type="button" class="btn btn-secondary" onclick="cerrarEdit()">Cancelar</button>
                 <button type="button" class="btn btn-primary" id="btnGuardar" onclick="guardarEdit()" disabled>Guardar cambios</button>
@@ -109,6 +115,38 @@ var enc = JSON.parse(localStorage.getItem('encargado') || '{}');
 var usuarios = [];
 // Identificador del usuario abierto en el modal de edición.
 var editId = null;
+
+/** Muestra u oculta el contenido de un campo de contraseña. */
+function togglePassword(id, btn){
+    var input = document.getElementById(id);
+    if(!input) return;
+    var mostrar = input.type === 'password';
+    input.type = mostrar ? 'text' : 'password';
+    btn.classList.toggle('is-visible', mostrar);
+    btn.textContent = mostrar ? 'Ocultar' : 'Ver';
+    btn.setAttribute('aria-pressed', mostrar ? 'true' : 'false');
+    var label = mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+    input.focus();
+}
+
+/** Restablece los campos de contraseña a su estado oculto. */
+function resetPasswordToggles(ids){
+    ids.forEach(function(id){
+        var input = document.getElementById(id);
+        if(!input) return;
+        input.type = 'password';
+        var btn = input.parentElement ? input.parentElement.querySelector('.pw-toggle') : null;
+        if(btn){
+            btn.classList.remove('is-visible');
+            btn.textContent = 'Ver';
+            btn.setAttribute('aria-pressed', 'false');
+            btn.setAttribute('aria-label', 'Mostrar contraseña');
+            btn.setAttribute('title', 'Mostrar contraseña');
+        }
+    });
+}
 
 /** Indica si el usuario está habilitado para iniciar sesión. */
 function esActivo(u){ return Number(u.estado) === 1; }
@@ -209,6 +247,7 @@ function checkEditUsuario(){
 function limpiarNuevo(){
     ['n-codigo','n-nombre','n-apellido','n-cargo','n-password','n-password2'].forEach(function(id){ document.getElementById(id).value = ''; });
     document.getElementById('n-rol').value = 'lectura';
+    resetPasswordToggles(['n-password','n-password2']);
     checkNuevoUsuario();
 }
 
@@ -263,6 +302,7 @@ function abrirEditar(id, enfocarPassword){
     selRol.title = esYo ? 'No puedes cambiar tu propio rol' : '';
     document.getElementById('e-password').value = '';
     document.getElementById('e-password2').value = '';
+    resetPasswordToggles(['e-password','e-password2']);
     limpiarErroresEdit();
     checkEditUsuario();
     document.getElementById('mo-edit').classList.add('show');
