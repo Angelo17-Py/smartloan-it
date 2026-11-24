@@ -715,7 +715,18 @@ function setStep(n){
 // Atajo de teclado para buscar al presionar Enter
 document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
 // Inicialización: carga la multa y, si llega ?prestamo=, selecciona ese préstamo.
-window.onload=function(){ document.body.classList.add('role-user'); if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin'); cargarMulta(); cargarActivos().then(function(){ var pid=new URLSearchParams(location.search).get('prestamo'); if(pid) selec(parseInt(pid,10)); }); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+window.onload=function(){
+    initPage({
+        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        onReady: function(){
+            cargarMulta();
+            cargarActivos().then(function(){
+                var pid=new URLSearchParams(location.search).get('prestamo');
+                if(pid) selec(parseInt(pid,10));
+            });
+        }
+    });
+};
 </script>
 </body>
 </html>

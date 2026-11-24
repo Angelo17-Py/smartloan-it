@@ -216,120 +216,85 @@ async function initDatabase() {
     )
   `);
 
-  // Migraciones para bases ya creadas. Se ejecutan en cada arranque, por eso las
-  // columnas, índices y restricciones se verifican antes para no generar errores
-  // de "Duplicate" cuando la base ya está actualizada.
-  await migrar(1, () => conn.query("UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'"));
-  await migrar(2, () => conn.query("ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'"));
-  await migrar(3, () => conn.query("UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'"));
-  await migrar(4, () => conn.query("ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL"));
-  await migrar(5, async () => {
-    if (await existeColumna(conn, 'prestamos', 'multa_base')) return;
-    await conn.query("ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato");
-  });
-  await migrar(6, () => conn.query("UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0"));
-  await migrar(7, () => conn.query("ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) NOT NULL"));
-  await migrar(8, async () => {
-    if (await existeColumna(conn, 'devoluciones', 'id_encargado')) return;
-    await conn.query("ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo");
-  });
-  await migrar(9, async () => {
-    if (await existeRestriccion(conn, 'devoluciones', 'fk_dev_encargado')) return;
-    await conn.query("ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)");
-  });
-  await migrar(10, async () => {
-    if (await existeIndice(conn, 'prestamos', 'idx_prestamos_estado')) return;
-    await conn.query("CREATE INDEX idx_prestamos_estado ON prestamos(estado)");
-  });
-  await migrar(12, async () => {
-    if (await existeRestriccion(conn, 'prestamos', 'chk_fecha_dev')) return;
-    await conn.query("ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)");
-  });
-  await migrar(13, async () => {
-    if (await existeColumna(conn, 'encargados', 'rol')) return;
-    await conn.query("ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo");
-  });
-  await migrar(14, async () => {
-    if (await existeColumna(conn, 'prestamos', 'codigo_prestamo')) return;
-    await conn.query("ALTER TABLE prestamos ADD COLUMN codigo_prestamo VARCHAR(20) UNIQUE AFTER id_prestamo");
-  });
-  await migrar(15, () => conn.query("UPDATE prestamos SET codigo_prestamo = CONCAT('PRE-', LPAD(id_prestamo, 3, '0')) WHERE codigo_prestamo IS NULL"));
-  await migrar(16, async () => {
-    if (await existeColumna(conn, 'alumnos', 'turno')) return;
-    await conn.query("ALTER TABLE alumnos ADD COLUMN turno VARCHAR(20) DEFAULT 'Mañana' AFTER curso");
-  });
-  await migrar(17, () => conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Informática', curso='3° año', turno='Mañana' WHERE codigo_alumno='ALU001' AND carrera LIKE 'Ingenier%'"));
-  await migrar(18, () => conn.query("UPDATE alumnos SET carrera='Bachillerato Técnico en Contabilidad', curso='2° año', turno='Tarde' WHERE codigo_alumno='ALU002' AND carrera LIKE 'Administraci%'"));
-  await migrar(19, () => conn.query("UPDATE alumnos SET carrera='Bachillerato Científico en Ciencias Sociales', curso='1° año', turno='Mañana' WHERE codigo_alumno='ALU003' AND carrera='Medicina'"));
-  await migrar(20, async () => {
-    if (await existeColumna(conn, 'encargados', 'token_version')) return;
-    await conn.query("ALTER TABLE encargados ADD COLUMN token_version INT NOT NULL DEFAULT 0 AFTER estado");
-  });
-  // Limpia los índices UNIQUE duplicados que versiones anteriores agregaban en cada arranque
-  await migrar(21, async () => {
-    const [duplicados] = await conn.query(`
-      SELECT s.INDEX_NAME
-      FROM information_schema.STATISTICS s
-      WHERE s.TABLE_SCHEMA = DATABASE()
-        AND s.TABLE_NAME = 'encargados'
-        AND s.COLUMN_NAME = 'codigo'
-        AND s.NON_UNIQUE = 0
-        AND s.INDEX_NAME LIKE 'codigo\\_%'
-        AND (
-          SELECT COUNT(*) FROM information_schema.STATISTICS s2
-          WHERE s2.TABLE_SCHEMA = s.TABLE_SCHEMA
-            AND s2.TABLE_NAME = s.TABLE_NAME
-            AND s2.INDEX_NAME = s.INDEX_NAME
-        ) = 1
-    `);
-    for (const fila of duplicados) {
-      const nombre = String(fila.INDEX_NAME).replace(/`/g, '``');
-      await conn.query('ALTER TABLE encargados DROP INDEX `' + nombre + '`');
-    }
-  });
-  // Garantiza que exista exactamente la restricción UNIQUE necesaria sobre codigo
-  await migrar(22, async () => {
-    const [indices] = await conn.query('SHOW INDEX FROM encargados');
-    const unicoCodigo = indices.some(function (i) {
-      return i.Column_name === 'codigo' && Number(i.Non_unique) === 0;
+  // Migraciones para bases ya creadas. Los tipos "columna", "indice" y
+  // "restriccion" verifican su existencia antes de ejecutar el SQL.
+  const migraciones = [
+    { n: 1, sql: "UPDATE prestamos SET estado_inicial_equipo = 'Dañado' WHERE estado_inicial_equipo = 'Daniado'" },
+    { n: 2, sql: "ALTER TABLE prestamos MODIFY COLUMN estado_inicial_equipo ENUM('Excelente','Bueno','Dañado') DEFAULT 'Excelente'" },
+    { n: 3, sql: "UPDATE devoluciones SET estado_equipo = 'Dañado' WHERE estado_equipo = 'Daniado'" },
+    { n: 4, sql: "ALTER TABLE devoluciones MODIFY COLUMN estado_equipo ENUM('Excelente','Bueno','Dañado') NOT NULL" },
+    { n: 5, tipo: 'columna', tabla: 'prestamos', nombre: 'multa_base', sql: "ALTER TABLE prestamos ADD COLUMN multa_base DECIMAL(12,2) DEFAULT NULL AFTER acepto_contrato" },
+    { n: 6, sql: "UPDATE prestamos SET multa_base = NULL WHERE multa_base = 0" },
+    { n: 7, sql: "ALTER TABLE encargados MODIFY COLUMN codigo VARCHAR(10) NOT NULL" },
+    { n: 8, tipo: 'columna', tabla: 'devoluciones', nombre: 'id_encargado', sql: "ALTER TABLE devoluciones ADD COLUMN id_encargado INT DEFAULT NULL AFTER id_prestamo" },
+    { n: 9, tipo: 'restriccion', tabla: 'devoluciones', nombre: 'fk_dev_encargado', sql: "ALTER TABLE devoluciones ADD CONSTRAINT fk_dev_encargado FOREIGN KEY (id_encargado) REFERENCES encargados(id_encargado)" },
+    { n: 10, tipo: 'indice', tabla: 'prestamos', nombre: 'idx_prestamos_estado', sql: "CREATE INDEX idx_prestamos_estado ON prestamos(estado)" },
+    { n: 12, tipo: 'restriccion', tabla: 'prestamos', nombre: 'chk_fecha_dev', sql: "ALTER TABLE prestamos ADD CONSTRAINT chk_fecha_dev CHECK (fecha_devolucion_estimada > fecha_prestamo)" },
+    { n: 13, tipo: 'columna', tabla: 'encargados', nombre: 'rol', sql: "ALTER TABLE encargados ADD COLUMN rol VARCHAR(20) DEFAULT 'admin' AFTER cargo" },
+    { n: 14, tipo: 'columna', tabla: 'prestamos', nombre: 'codigo_prestamo', sql: "ALTER TABLE prestamos ADD COLUMN codigo_prestamo VARCHAR(20) UNIQUE AFTER id_prestamo" },
+    { n: 15, sql: "UPDATE prestamos SET codigo_prestamo = CONCAT('PRE-', LPAD(id_prestamo, 3, '0')) WHERE codigo_prestamo IS NULL" },
+    { n: 16, tipo: 'columna', tabla: 'alumnos', nombre: 'turno', sql: "ALTER TABLE alumnos ADD COLUMN turno VARCHAR(20) DEFAULT 'Mañana' AFTER curso" },
+    { n: 17, sql: "UPDATE alumnos SET carrera='Bachillerato Técnico en Informática', curso='3° año', turno='Mañana' WHERE codigo_alumno='ALU001' AND carrera LIKE 'Ingenier%'" },
+    { n: 18, sql: "UPDATE alumnos SET carrera='Bachillerato Técnico en Contabilidad', curso='2° año', turno='Tarde' WHERE codigo_alumno='ALU002' AND carrera LIKE 'Administraci%'" },
+    { n: 19, sql: "UPDATE alumnos SET carrera='Bachillerato Científico en Ciencias Sociales', curso='1° año', turno='Mañana' WHERE codigo_alumno='ALU003' AND carrera='Medicina'" },
+    { n: 20, tipo: 'columna', tabla: 'encargados', nombre: 'token_version', sql: "ALTER TABLE encargados ADD COLUMN token_version INT NOT NULL DEFAULT 0 AFTER estado" },
+    // Limpia los índices UNIQUE duplicados que versiones anteriores agregaban en cada arranque.
+    {
+      n: 21,
+      ejecutar: async (c) => {
+        const [duplicados] = await c.query(`
+          SELECT s.INDEX_NAME
+          FROM information_schema.STATISTICS s
+          WHERE s.TABLE_SCHEMA = DATABASE()
+            AND s.TABLE_NAME = 'encargados'
+            AND s.COLUMN_NAME = 'codigo'
+            AND s.NON_UNIQUE = 0
+            AND s.INDEX_NAME LIKE 'codigo\\_%'
+            AND (
+              SELECT COUNT(*) FROM information_schema.STATISTICS s2
+              WHERE s2.TABLE_SCHEMA = s.TABLE_SCHEMA
+                AND s2.TABLE_NAME = s.TABLE_NAME
+                AND s2.INDEX_NAME = s.INDEX_NAME
+            ) = 1
+        `);
+        for (const fila of duplicados) {
+          const nombre = String(fila.INDEX_NAME).replace(/`/g, '``');
+          await c.query('ALTER TABLE encargados DROP INDEX `' + nombre + '`');
+        }
+      }
+    },
+    // Garantiza que exista exactamente la restricción UNIQUE necesaria sobre codigo.
+    {
+      n: 22,
+      ejecutar: async (c) => {
+        const [indices] = await c.query('SHOW INDEX FROM encargados');
+        const unicoCodigo = indices.some(function (i) {
+          return i.Column_name === 'codigo' && Number(i.Non_unique) === 0;
+        });
+        if (!unicoCodigo) {
+          await c.query('ALTER TABLE encargados ADD UNIQUE INDEX codigo (codigo)');
+        }
+      }
+    },
+    { n: 23, tipo: 'columna', tabla: 'prestamos', nombre: 'anulado', sql: 'ALTER TABLE prestamos ADD COLUMN anulado BOOLEAN NOT NULL DEFAULT FALSE AFTER estado' },
+    { n: 24, tipo: 'columna', tabla: 'prestamos', nombre: 'motivo_anulacion', sql: 'ALTER TABLE prestamos ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado' },
+    { n: 25, tipo: 'columna', tabla: 'prestamos', nombre: 'fecha_anulacion', sql: 'ALTER TABLE prestamos ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion' },
+    { n: 26, tipo: 'columna', tabla: 'devoluciones', nombre: 'anulado', sql: 'ALTER TABLE devoluciones ADD COLUMN anulado BOOLEAN NOT NULL DEFAULT FALSE AFTER observacion' },
+    { n: 27, tipo: 'columna', tabla: 'devoluciones', nombre: 'motivo_anulacion', sql: 'ALTER TABLE devoluciones ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado' },
+    { n: 28, tipo: 'columna', tabla: 'devoluciones', nombre: 'fecha_anulacion', sql: 'ALTER TABLE devoluciones ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion' },
+    { n: 29, tipo: 'indice', tabla: 'prestamos', nombre: 'idx_prestamos_anulado', sql: 'CREATE INDEX idx_prestamos_anulado ON prestamos(anulado)' },
+    { n: 30, tipo: 'indice', tabla: 'devoluciones', nombre: 'idx_devoluciones_anulado', sql: 'CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado)' }
+  ];
+
+  for (const m of migraciones) {
+    await migrar(m.n, async () => {
+      if (m.tipo === 'columna' && await existeColumna(conn, m.tabla, m.nombre)) return;
+      if (m.tipo === 'indice' && await existeIndice(conn, m.tabla, m.nombre)) return;
+      if (m.tipo === 'restriccion' && await existeRestriccion(conn, m.tabla, m.nombre)) return;
+      if (m.ejecutar) return m.ejecutar(conn);
+      await conn.query(m.sql);
     });
-    if (!unicoCodigo) {
-      await conn.query('ALTER TABLE encargados ADD UNIQUE INDEX codigo (codigo)');
-    }
-  });
-  // Anulación lógica de préstamos y devoluciones: los registros se conservan.
-  await migrar(23, async () => {
-    if (await existeColumna(conn, 'prestamos', 'anulado')) return;
-    await conn.query('ALTER TABLE prestamos ADD COLUMN anulado BOOLEAN NOT NULL DEFAULT FALSE AFTER estado');
-  });
-  await migrar(24, async () => {
-    if (await existeColumna(conn, 'prestamos', 'motivo_anulacion')) return;
-    await conn.query('ALTER TABLE prestamos ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado');
-  });
-  await migrar(25, async () => {
-    if (await existeColumna(conn, 'prestamos', 'fecha_anulacion')) return;
-    await conn.query('ALTER TABLE prestamos ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion');
-  });
-  await migrar(26, async () => {
-    if (await existeColumna(conn, 'devoluciones', 'anulado')) return;
-    await conn.query('ALTER TABLE devoluciones ADD COLUMN anulado BOOLEAN NOT NULL DEFAULT FALSE AFTER observacion');
-  });
-  await migrar(27, async () => {
-    if (await existeColumna(conn, 'devoluciones', 'motivo_anulacion')) return;
-    await conn.query('ALTER TABLE devoluciones ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado');
-  });
-  await migrar(28, async () => {
-    if (await existeColumna(conn, 'devoluciones', 'fecha_anulacion')) return;
-    await conn.query('ALTER TABLE devoluciones ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion');
-  });
-  await migrar(29, async () => {
-    if (await existeIndice(conn, 'prestamos', 'idx_prestamos_anulado')) return;
-    await conn.query('CREATE INDEX idx_prestamos_anulado ON prestamos(anulado)');
-  });
-  await migrar(30, async () => {
-    if (await existeIndice(conn, 'devoluciones', 'idx_devoluciones_anulado')) return;
-    await conn.query('CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado)');
-  });
+  }
 
   // Triggers que mantienen sincronizados los estados de equipos y préstamos.
   // Se recrean en cada arranque para que la definición vigente sea siempre la del código.

@@ -440,12 +440,14 @@ async function confirmarAnular(){
 
 // Inicialización: muestra auditoría solo a administradores y carga las tablas.
 window.onload=function(){
-    document.body.classList.add('role-user');
-    if(admin){document.body.classList.add('role-admin');document.getElementById('tab-aud').style.display='';}
-    cargar();
-    if(admin) cargarAuditoria();
-    initTheme();
-    initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
+    initPage({
+        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        onReady: function(){
+            if(admin) document.getElementById('tab-aud').style.display='';
+            cargar();
+            if(admin) cargarAuditoria();
+        }
+    });
 };
 </script>
 </body>

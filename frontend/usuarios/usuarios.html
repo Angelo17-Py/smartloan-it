@@ -384,22 +384,25 @@ function cambiarEstado(id, activo){
 
 // Aplica el tema y restringe la vista completa al rol administrador.
 window.onload = function(){
-    initTheme();
-    if(localStorage.getItem('rol') !== 'admin'){
-        document.getElementById('no-access').style.display = 'block';
-        return;
-    }
-    document.getElementById('page').style.display = 'block';
-    checkNuevoUsuario();
-    cargar();
-    initSpotlight([
-        {label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'},
-        {label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},
-        {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
-        {label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},
-        {label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},
-        {label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}
-    ]);
+    initPage({
+        spotlight: localStorage.getItem('rol') === 'admin' ? [
+            {label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'},
+            {label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},
+            {label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},
+            {label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},
+            {label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},
+            {label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'}
+        ] : null,
+        onReady: function(){
+            if(localStorage.getItem('rol') !== 'admin'){
+                document.getElementById('no-access').style.display = 'block';
+                return;
+            }
+            document.getElementById('page').style.display = 'block';
+            checkNuevoUsuario();
+            cargar();
+        }
+    });
 };
 </script>
 </body>

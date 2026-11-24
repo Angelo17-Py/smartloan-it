@@ -314,10 +314,14 @@ async function guardarAlumno(){
 
 // Inicializa permisos visuales, protección de cambios y datos de la vista.
 window.onload = function(){
-    document.body.classList.add('role-user');
-    if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
-    formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
-    cargar(); checkNuevoAlumno(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
+    initPage({
+        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Pr\u00e9stamos',sub:'Registrar pr\u00e9stamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        onReady: function(){
+            formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
+            cargar();
+            checkNuevoAlumno();
+        }
+    });
 };
 </script>
 </body>

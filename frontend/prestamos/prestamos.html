@@ -652,17 +652,20 @@ function nuevoPrestamo(){
 
 // Inicialización del formulario.
 window.onload=function(){
-    // Cualquier usuario autenticado puede registrar préstamos.
-    document.body.classList.add('role-user');
-    if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
-    formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
-    // Precarga la fecha actual y limita la devolución a partir de ese momento.
-    const now=new Date(),pad=n=>String(n).padStart(2,'0');
-    const fechaActual=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
-    const fechaPrestamo=document.getElementById('fecha_prestamo');
-    fechaPrestamo.value=fechaActual;
-    document.getElementById('fecha_dev').min=fechaActual;
-    cargar(); checkFormComplete(); initTheme(); initSpotlight([{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]);
+    initPage({
+        spotlight: [{label:'Equipos',sub:'Gesti\u00f3n de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devoluci\u00f3n',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        onReady: function(){
+            formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
+            // Precarga la fecha actual y limita la devolución a partir de ese momento.
+            const now=new Date(),pad=n=>String(n).padStart(2,'0');
+            const fechaActual=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
+            const fechaPrestamo=document.getElementById('fecha_prestamo');
+            fechaPrestamo.value=fechaActual;
+            document.getElementById('fecha_dev').min=fechaActual;
+            cargar();
+            checkFormComplete();
+        }
+    });
 };
 </script>
 </body>

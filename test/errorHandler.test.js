@@ -47,3 +47,23 @@ test('conserva mensajes controlados en errores 4xx', () => {
   assert.equal(res.statusCode, 400);
   assert.equal(res.body.mensaje, 'Solicitud inválida');
 });
+
+// Los errores conocidos de MySQL se traducen a respuestas públicas controladas.
+test('mapea códigos duplicados de MySQL a 409', () => {
+  const res = respuesta();
+  const err = new Error('Duplicate entry');
+  err.code = 'ER_DUP_ENTRY';
+  errorHandler(err, {}, res, function () {});
+  assert.equal(res.statusCode, 409);
+  assert.equal(res.body.mensaje, 'El código ya está registrado');
+});
+
+test('usa el mensaje del trigger en errores 400', () => {
+  const res = respuesta();
+  const err = new Error('Trigger error');
+  err.code = 'ER_SIGNAL_EXCEPTION';
+  err.sqlMessage = 'El equipo no está disponible para préstamo';
+  errorHandler(err, {}, res, function () {});
+  assert.equal(res.statusCode, 400);
+  assert.equal(res.body.mensaje, 'El equipo no está disponible para préstamo');
+});

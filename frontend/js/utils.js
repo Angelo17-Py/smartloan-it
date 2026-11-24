@@ -150,7 +150,27 @@ function initTheme() {
 }
 
 /**
- * Alterna manualmente entre tema claro y oscuro y persiste la elección
+ * Inicializa una página autenticada: aplica el rol visual, el tema y el buscador global.
+ * @param {object} opciones Configuración opcional de la página.
+ * @param {Array} [opciones.spotlight] Páginas disponibles en el buscador.
+ * @param {Function} [opciones.onReady] Código específico que se ejecuta al finalizar.
+ */
+function initPage(opciones) {
+  opciones = opciones || {};
+  if (!localStorage.getItem('encargado')) {
+    window.location.href = '/';
+    return;
+  }
+  var rol = localStorage.getItem('rol');
+  document.body.classList.add('role-user');
+  if (rol === 'admin') document.body.classList.add('role-admin');
+  initTheme();
+  if (opciones.spotlight) initSpotlight(opciones.spotlight);
+  if (typeof opciones.onReady === 'function') opciones.onReady();
+}
+
+/**
+ * Alterna manualmente entre tema claro y oscuro y persiste la elecci��n
  * para mantenerla en las siguientes visitas.
  */
 function toggleTheme() {

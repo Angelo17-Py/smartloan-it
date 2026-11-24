@@ -341,10 +341,15 @@ async function guardarEquipo(){
 
 // Inicializa permisos visuales, protección de cambios y datos de la vista.
 window.onload = function(){
-    document.body.classList.add('role-user');
-    if(localStorage.getItem('rol')==='admin') document.body.classList.add('role-admin');
-    formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
-    cargar(); checkNuevoEquipo(); initTheme(); initSpotlight([{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}]); };
+    initPage({
+        spotlight: [{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
+        onReady: function(){
+            formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
+            cargar();
+            checkNuevoEquipo();
+        }
+    });
+};
 </script>
 </body>
 </html>

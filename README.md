@@ -86,7 +86,7 @@ La interfaz incluye tema oscuro y claro con persistencia, búsqueda Spotlight (`
 | Backend | exceljs 4.4.0 | Generación de archivos Excel |
 | Backend | cors 2.8.6 y dotenv 17.4.2 | Control de orígenes y variables de entorno |
 | Base de datos | MySQL 8.0 | Persistencia relacional y triggers de estado |
-| Pruebas | `node:test` | 23 pruebas unitarias de autenticación, permisos, logout y utilidades |
+| Pruebas | `node:test` | 25 pruebas unitarias de autenticación, permisos, errores, logout y utilidades |
 | CI | GitHub Actions | `npm ci` y `npm test` en cada push y pull request |
 | Infraestructura | Docker, Docker Compose y Railway (Nixpacks) | Ejecución local y despliegue |
 
@@ -466,7 +466,7 @@ SmartLoan IT es un proyecto académico y demostrativo, funcional, desarrollado d
 
 Verificado en el repositorio:
 
-- `npm test` ejecuta **23 pruebas unitarias** y todas pasan localmente.
+- `npm test` ejecuta **25 pruebas unitarias** y todas pasan localmente.
 - El flujo de CI está configurado en GitHub Actions con `npm ci` y `npm test`.
 - La aplicación incluye configuración de Docker Compose y Railway, además de inicialización automática del esquema.
 

@@ -101,5 +101,3 @@ body.modal-open{overflow:hidden;}
 /* Mismos controles de visibilidad por rol que modules.css. */
 .session-only{display:none!important;}
 body.role-user .session-only,body.role-admin .session-only{display:revert!important;}
-.admin-only{display:none!important;}
-body.role-admin .admin-only{display:revert!important;}
