@@ -1,4 +1,4 @@
-/* SmartLoan IT — Sistema de componentes compartidos: base, tarjetas,
+/* SmartLoanIT — Sistema de componentes compartidos: base, tarjetas,
    formularios, botones, tablas, modales, avisos y layout del dashboard. */
 /* Estética "bitácora de préstamos": paneles planos, reglas de registro finas
    y numeración tabular para mantener alineadas las cifras. */
@@ -355,14 +355,11 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 .breadcrumbs .sep{color:var(--muted);font-size:10px}
 .breadcrumbs .current{color:var(--text)}
 
-/* Impresión: oculta controles y fuerza papel blanco para los comprobantes. */
+/* Impresión: oculta controles comunes. Los comprobantes definen sus propias
+   reglas de impresión en cada módulo para conservar el diseño del documento. */
 @media print{
   .res-btns,.toast{display:none!important}
   body{background:#fff;color:#000;font-size:10pt;line-height:1.5}
-  .receipt{box-shadow:none;border:1px solid #ccc;max-width:100%;padding:20px;margin:0}
-  .rsec-grid{gap:10px 20px}
-  .sig-row{margin-top:24px;gap:40px}
-  .receipt-title{margin-bottom:16px}
 }
 
 /* Búsqueda rápida tipo spotlight (Ctrl+K): overlay y lista de resultados. */

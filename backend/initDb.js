@@ -106,7 +106,7 @@ async function initDatabase() {
       password       VARCHAR(100) NOT NULL,
       nombre         VARCHAR(100) NOT NULL,
       apellido       VARCHAR(100) NOT NULL,
-      cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnológicos',
+      cargo          VARCHAR(100) DEFAULT 'Encargado de Equipos Institucionales',
       estado         BOOLEAN DEFAULT TRUE,
       token_version  INT NOT NULL DEFAULT 0,
       fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -295,7 +295,8 @@ async function initDatabase() {
     { n: 39, tipo: 'columna', tabla: 'devoluciones', nombre: 'metodo_pago', sql: 'ALTER TABLE devoluciones ADD COLUMN metodo_pago VARCHAR(30) DEFAULT NULL' },
     { n: 40, tipo: 'columna', tabla: 'devoluciones', nombre: 'fecha_pago', sql: 'ALTER TABLE devoluciones ADD COLUMN fecha_pago DATETIME DEFAULT NULL' },
     { n: 41, tipo: 'columna', tabla: 'devoluciones', nombre: 'motivo_condonacion', sql: 'ALTER TABLE devoluciones ADD COLUMN motivo_condonacion VARCHAR(300) DEFAULT NULL' },
-    { n: 42, sql: "UPDATE devoluciones SET estado_pago='Pagado' WHERE total_cobro=0 AND estado_pago='Pendiente'" }
+    { n: 42, sql: "UPDATE devoluciones SET estado_pago='Pagado' WHERE total_cobro=0 AND estado_pago='Pendiente'" },
+    { n: 43, sql: "UPDATE encargados SET cargo = 'Encargado de Equipos Institucionales' WHERE cargo = 'Encargado de Recursos Tecnológicos'" }
   ];
 
   for (const m of migraciones) {
@@ -391,11 +392,11 @@ async function initDatabase() {
     const hash = await bcrypt.hash('Adm1n2026', 10);
     const viewerHash = await bcrypt.hash('V1su4l#2026', 10);
     const usuarios = [
-      ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Recursos Tecnológicos', 'admin'],
-      ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Recursos Tecnológicos', 'lectura'],
-      ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Recursos Tecnológicos', 'lectura'],
-      ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Recursos Tecnológicos', 'lectura'],
-      ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Recursos Tecnológicos', 'lectura'],
+      ['1001', hash, 'Angelo',  'Caballero',    'Encargado de Equipos Institucionales', 'admin'],
+      ['1002', hash, 'Elian',   'Valtierra',    'Encargado de Equipos Institucionales', 'lectura'],
+      ['1003', hash, 'Naira',   'Soldevila',    'Encargado de Equipos Institucionales', 'lectura'],
+      ['1004', hash, 'Gael',    'Monteserín',   'Encargado de Equipos Institucionales', 'lectura'],
+      ['1005', hash, 'Aitana',  'Berenguer',    'Encargado de Equipos Institucionales', 'lectura'],
       ['0000', viewerHash, 'Invitado', '', 'Visualizador', 'lectura'],
     ];
     for (const u of usuarios) {

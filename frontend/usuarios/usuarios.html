@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SmartLoan IT - Administración de usuarios del sistema.">
+    <meta name="description" content="SmartLoanIT - Administración de usuarios del sistema.">
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg?v=3">
-    <title>SmartLoan IT | Usuarios</title>
+    <title>SmartLoanIT | Usuarios</title>
     <link rel="stylesheet" href="/css/tokens.css">
     <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/modules.css">
@@ -60,7 +60,7 @@
                 <div class="ig"><label>Código</label><input id="n-codigo" placeholder="Ej: 1006" maxlength="10" oninput="clearF('n-codigo');checkNuevoUsuario()" onblur="marcarError('n-codigo',!this.value.trim())"><div class="ferr" id="ferr-n-codigo">Ingresa el código</div></div>
                 <div class="ig"><label>Nombre</label><input id="n-nombre" placeholder="Ej: María" maxlength="100" oninput="clearF('n-nombre');checkNuevoUsuario()" onblur="marcarError('n-nombre',!this.value.trim())"><div class="ferr" id="ferr-n-nombre">Ingresa el nombre</div></div>
                 <div class="ig"><label>Apellido</label><input id="n-apellido" placeholder="Ej: López" maxlength="100" oninput="clearF('n-apellido');checkNuevoUsuario()" onblur="marcarError('n-apellido',!this.value.trim())"><div class="ferr" id="ferr-n-apellido">Ingresa el apellido</div></div>
-                <div class="ig"><label>Cargo</label><input id="n-cargo" placeholder="Encargado de Recursos Tecnológicos" maxlength="100"></div>
+                <div class="ig"><label>Cargo</label><input id="n-cargo" placeholder="Encargado de Equipos Institucionales" maxlength="100"></div>
                 <div class="ig"><label>Rol</label><select id="n-rol"><option value="lectura">Operador</option><option value="admin">Administrador</option></select></div>
                 <div class="ig"><label>Contraseña</label><div class="pw-field"><input type="password" id="n-password" placeholder="Mínimo 6 caracteres" maxlength="100" oninput="clearF('n-password');checkNuevoUsuario()" onblur="marcarError('n-password',!this.value||this.value.length<6)"><button type="button" class="pw-toggle" onclick="togglePassword('n-password',this)" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">Ver</button></div><div class="ferr" id="ferr-n-password">Ingresa una contraseña de al menos 6 caracteres</div></div>
                 <div class="ig"><label>Confirmar contraseña</label><div class="pw-field"><input type="password" id="n-password2" placeholder="Repetí la contraseña" maxlength="100" oninput="clearF('n-password2');checkNuevoUsuario()" onblur="marcarError('n-password2',!this.value||this.value!==document.getElementById('n-password').value)"><button type="button" class="pw-toggle" onclick="togglePassword('n-password2',this)" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">Ver</button></div><div class="ferr" id="ferr-n-password2">Las contraseñas no coinciden</div></div>

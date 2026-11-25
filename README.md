@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="frontend/img/favicon.svg" alt="SmartLoan IT" width="64" height="64">
+<img src="frontend/img/favicon.svg" alt="SmartLoanIT" width="64" height="64">
 
-# SmartLoan IT
+# SmartLoanIT
 
 **Sistema de gestión de préstamos de equipos tecnológicos para instituciones educativas**
 
@@ -43,11 +43,11 @@ Registra alumnos y equipos, controla la disponibilidad, genera comprobantes y ca
 
 ## Descripción
 
-SmartLoan IT es una aplicación web para administrar el ciclo completo de préstamo de recursos tecnológicos en una institución educativa: laptops, PCs y periféricos. Centraliza el inventario, el registro de alumnos, la salida y devolución de equipos, el cálculo de multas y la auditoría de las operaciones.
+SmartLoanIT es una aplicación web para administrar el ciclo completo de préstamo de equipos institucionales en una institución educativa: laptops, PCs y periféricos. Centraliza el inventario, el registro de alumnos, la salida y devolución de equipos, el cálculo de multas y la auditoría de las operaciones.
 
-El problema que resuelve es la dispersión de registros manuales: sin un sistema centralizado se pierde el rastro de quién tiene cada equipo, cuándo debe devolverlo y en qué condiciones lo recibió. SmartLoan IT reemplaza ese seguimiento por un flujo único con estados, validaciones y comprobantes imprimibles.
+El problema que resuelve es la dispersión de registros manuales: sin un sistema centralizado se pierde el rastro de quién tiene cada equipo, cuándo debe devolverlo y en qué condiciones lo recibió. SmartLoanIT reemplaza ese seguimiento por un flujo único con estados, validaciones y comprobantes imprimibles.
 
-Está pensado para encargados de recursos tecnológicos de colegios e instituciones educativas. La interfaz está en español, usa guaraníes (Gs.) como moneda y registra las fechas en la zona horaria de Paraguay (`America/Asuncion`).
+Está pensado para encargados de equipos institucionales de colegios e instituciones educativas. La interfaz está en español, usa guaraníes (Gs.) como moneda y registra las fechas en la zona horaria de Paraguay (`America/Asuncion`).
 
 ## Funcionalidades
 
@@ -63,7 +63,7 @@ Está pensado para encargados de recursos tecnológicos de colegios e institucio
 | **Historial** | Tablas de préstamos y devoluciones con filtros, búsqueda y anulaciones con motivo. Incluye una pestaña de auditoría visible solo para administradores. |
 | **Usuarios** | Solo administradores: alta, edición, cambio de rol y contraseña, activación y desactivación de encargados. |
 | **Configuración** | Solo administradores: edición de la multa diaria desde el dashboard. El cambio queda registrado en la auditoría. |
-| **Exportación** | Descarga de un archivo Excel (`.xlsx`) con hojas `Prestamos` y `Devoluciones`, formato de tablas, filtros y resumen de la última exportación. |
+| **Exportación** | Descarga de un archivo Excel (`.xlsx`) con hojas `Resumen`, `Préstamos` y `Devoluciones`, indicadores, filtros, totales y formato institucional. |
 
 La interfaz incluye tema oscuro y claro con persistencia, búsqueda Spotlight (`Ctrl`/`Cmd` + `K`), notificaciones tipo toast, modales de confirmación, diseño responsive y estilos de impresión para los comprobantes.
 
@@ -90,7 +90,7 @@ La interfaz incluye tema oscuro y claro con persistencia, búsqueda Spotlight (`
 
 ## Arquitectura
 
-SmartLoan IT es un monolito web. Express sirve las páginas del frontend y expone la API JSON en el mismo origen; no hay una SPA ni un bundler. Las rutas delegan en controladores, los middlewares aplican autenticación, autorización y límites de solicitudes, y MySQL mantiene la consistencia del inventario mediante triggers.
+SmartLoanIT es un monolito web. Express sirve las páginas del frontend y expone la API JSON en el mismo origen; no hay una SPA ni un bundler. Las rutas delegan en controladores, los middlewares aplican autenticación, autorización y límites de solicitudes, y MySQL mantiene la consistencia del inventario mediante triggers.
 
 ```mermaid
 flowchart LR
@@ -122,7 +122,7 @@ smartloan-it/
 │   ├── controladores/            # Lógica de negocio por módulo
 │   ├── middleware/               # Autenticación, rol admin, rate limiting y errores
 │   ├── rutas/                    # Definición de endpoints y permisos
-│   └── utils/                    # Sanitización, auditoría, cookies y logout
+│   └── utils/                    # Sanitización, auditoría, cookies, logout y reporte Excel
 ├── frontend/
 │   ├── css/                      # Tokens de diseño, componentes y estilos de impresión
 │   ├── js/
@@ -152,7 +152,7 @@ smartloan-it/
 
 - **`backend/`** concentra la API, la inicialización del esquema y las reglas de negocio. La lógica está separada en controladores de alumnos, equipos, préstamos, devoluciones, encargados y configuración.
 - **`frontend/`** contiene páginas estáticas independientes y recursos compartidos. Cada módulo tiene su propio HTML; la comunicación con el backend se hace por `fetch`.
-- **`test/`** agrupa las pruebas de autenticación, permisos, logout, manejo de errores y sanitización.
+- **`test/`** agrupa las pruebas de autenticación, permisos, logout, manejo de errores, sanitización y generación del reporte Excel.
 - **`query.sql`** es una referencia manual del esquema. La aplicación no lo ejecuta; la inicialización real ocurre al arrancar el servidor.
 
 ## Requisitos
@@ -343,7 +343,7 @@ Notas de uso:
 - `PATCH /equipos/:id/estado` recibe `1` (Disponible), `2` (Prestado) o `3` (En mantenimiento). Solo permite alternar manualmente entre `1` y `3`.
 - `POST /devoluciones` calcula en el servidor los días de retraso y la multa. El monto de daño se registra como dato de la devolución y el total surge de multa + daño.
 - La anulación de préstamos y devoluciones exige un motivo de al menos 5 caracteres y conserva el registro. Para anular un préstamo con devolución vigente, primero debe anularse la devolución.
-- `GET /exportar` genera las hojas `Prestamos` y `Devoluciones` sin registros anulados, devuelve contadores en las cabeceras y registra la exportación en la auditoría.
+- `GET /exportar` genera las hojas `Resumen`, `Préstamos` y `Devoluciones` sin registros anulados, devuelve contadores en las cabeceras y registra la exportación en la auditoría.
 
 ## Base de datos
 
@@ -459,7 +459,7 @@ Cuando estén disponibles, guardar las imágenes en `docs/screenshots/` y enlaza
 
 ## Estado del proyecto
 
-SmartLoan IT es un proyecto académico y demostrativo, funcional, desarrollado durante 2026. Incluye medidas de seguridad para producción, pero no se presenta como un producto terminado ni como una plataforma lista para operar sin una revisión adicional.
+SmartLoanIT es un proyecto académico y demostrativo, funcional, desarrollado durante 2026. Incluye medidas de seguridad para producción, pero no se presenta como un producto terminado ni como una plataforma lista para operar sin una revisión adicional.
 
 Verificado en el repositorio:
 

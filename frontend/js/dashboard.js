@@ -328,7 +328,7 @@ async function exportarExcel(){
         var a = document.createElement('a');
         a.href = url;
         var hoy = (new Date()).toISOString().slice(0, 10);
-        a.download = 'smartloan_exportacion_' + hoy + '.xlsx';
+        a.download = 'SmartLoanIT_Reporte_' + hoy + '.xlsx';
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
         var ahora = new Date();

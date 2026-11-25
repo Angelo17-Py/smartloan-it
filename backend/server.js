@@ -1,5 +1,5 @@
-// Punto de entrada del servidor Express de SmartLoan IT
-console.log('Iniciando SmartLoan IT...');
+// Punto de entrada del servidor Express de SmartLoanIT
+console.log('Iniciando SmartLoanIT...');
 // Carga .env antes de importar módulos que leen variables de entorno al inicializarse.
 require('dotenv').config({ path: require('path').join(__dirname, '../.env'), quiet: true });
 const express = require('express');
@@ -70,7 +70,7 @@ app.get('/', (req, res) => {
 
 // Endpoint de salud para monitoreo
 app.get('/health', (req, res) => {
-  res.json({ estado: 'ok', servicio: 'SmartLoan IT', timestamp: new Date().toISOString() });
+  res.json({ estado: 'ok', servicio: 'SmartLoanIT', timestamp: new Date().toISOString() });
 });
 
 // Montaje de las rutas de la API
@@ -110,7 +110,7 @@ async function start() {
     process.exit(1);
   }
   const server = app.listen(PORT, () => {
-    console.log(`SmartLoan IT corriendo en puerto ${PORT}`);
+    console.log(`SmartLoanIT corriendo en puerto ${PORT}`);
   });
 
   // Cierre graceful: deja de aceptar conexiones, cierra el pool de MySQL y termina.

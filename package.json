@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "node --watch backend/server.js",
-    "test": "node --test test/sanitize.test.js test/auth.test.js test/requireAdmin.test.js test/logout.test.js test/errorHandler.test.js"
+    "test": "node --test test/sanitize.test.js test/auth.test.js test/requireAdmin.test.js test/logout.test.js test/errorHandler.test.js test/reporteExcel.test.js"
   },
   "keywords": [],
   "author": "",

@@ -1,4 +1,4 @@
-/* SmartLoan IT — Comprobantes compartidos: estilos del documento y de su modal,
+/* SmartLoanIT — Comprobantes compartidos: estilos del documento y de su modal,
    usados por los módulos de préstamos y devoluciones. */
 
 /* Contenedor de página y rejilla de dos columnas para el formulario de consulta. */
@@ -24,7 +24,7 @@ main{padding:28px max(24px,calc((100vw - 1440px)/2));width:100%;max-width:none}
 }
 /* Marca de agua diagonal con el nombre institucional. */
 .receipt::before{
-    content:'SMARTLOAN IT';
+    content:'SMARTLOANIT';
     position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-24deg);
     color:rgba(36,29,11,.016);font-size:56px;font-weight:700;letter-spacing:.08em;
     white-space:nowrap;pointer-events:none;

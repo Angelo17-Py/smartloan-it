@@ -1,5 +1,5 @@
 -- Sistema de Gestión de Préstamos de Equipos Tecnológicos
--- SmartLoan IT - Colegios de Paraguay
+-- SmartLoanIT - Colegios de Paraguay
 -- ATENCION: Este schema se genera automaticamente via initDb.js al iniciar la app.
 -- Este archivo es solo para referencia o para inicializar la BD manualmente.
 -- Los passwords deben generarse con bcrypt (ver initDb.js para los valores actualizados).
@@ -15,7 +15,7 @@ CREATE TABLE encargados (
     password       VARCHAR(100) NOT NULL,
     nombre         VARCHAR(100) NOT NULL,
     apellido       VARCHAR(100) NOT NULL,
-    cargo          VARCHAR(100) DEFAULT 'Encargado de Recursos Tecnológicos',
+    cargo          VARCHAR(100) DEFAULT 'Encargado de Equipos Institucionales',
     rol            VARCHAR(20) DEFAULT 'admin',
     estado         BOOLEAN DEFAULT TRUE,
     token_version  INT NOT NULL DEFAULT 0,
@@ -179,11 +179,11 @@ DELIMITER ;
 
 -- NOTA: Los passwords deben generarse con bcrypt (ver initDb.js).
 -- Usuarios del sistema (admin: Adm1n2026, invitado: V1su4l#2026):
--- ('1001', '<bcrypt_hash>', 'Angelo',  'Caballero', 'Encargado de Recursos Tecnológicos', 'admin'),
--- ('1002', '<bcrypt_hash>', 'Elian',   'Valtierra', 'Encargado de Recursos Tecnológicos', 'admin'),
--- ('1003', '<bcrypt_hash>', 'Naira',   'Soldevila', 'Encargado de Recursos Tecnológicos', 'admin'),
--- ('1004', '<bcrypt_hash>', 'Gael',    'Monteserín','Encargado de Recursos Tecnológicos', 'admin'),
--- ('1005', '<bcrypt_hash>', 'Aitana',  'Berenguer', 'Encargado de Recursos Tecnológicos', 'admin'),
+-- ('1001', '<bcrypt_hash>', 'Angelo',  'Caballero', 'Encargado de Equipos Institucionales', 'admin'),
+-- ('1002', '<bcrypt_hash>', 'Elian',   'Valtierra', 'Encargado de Equipos Institucionales', 'admin'),
+-- ('1003', '<bcrypt_hash>', 'Naira',   'Soldevila', 'Encargado de Equipos Institucionales', 'admin'),
+-- ('1004', '<bcrypt_hash>', 'Gael',    'Monteserín','Encargado de Equipos Institucionales', 'admin'),
+-- ('1005', '<bcrypt_hash>', 'Aitana',  'Berenguer', 'Encargado de Equipos Institucionales', 'admin'),
 -- ('0000', '<bcrypt_hash>', 'Invitado','',           'Visualizador',                     'lectura')
 
 -- Datos de ejemplo: alumnos de prueba para probar búsquedas y préstamos.

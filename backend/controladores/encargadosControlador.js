@@ -105,7 +105,7 @@ exports.crear = async (req, res) => {
   const codigo = s(req.body.codigo, 10);
   const nombre = s(req.body.nombre, 100);
   const apellido = s(req.body.apellido, 100);
-  const cargo = s(req.body.cargo, 100) || 'Encargado de Recursos Tecnológicos';
+  const cargo = s(req.body.cargo, 100) || 'Encargado de Equipos Institucionales';
   const rol = req.body.rol === 'admin' ? 'admin' : 'lectura';
   const password = typeof req.body.password === 'string' ? req.body.password : '';
 
@@ -144,7 +144,7 @@ exports.editar = async (req, res) => {
   const id = req.params.id;
   const nombre = s(req.body.nombre, 100);
   const apellido = s(req.body.apellido, 100);
-  const cargo = s(req.body.cargo, 100) || 'Encargado de Recursos Tecnológicos';
+  const cargo = s(req.body.cargo, 100) || 'Encargado de Equipos Institucionales';
   const rol = req.body.rol === 'admin' ? 'admin' : 'lectura';
   const password = typeof req.body.password === 'string' ? req.body.password : '';
 
