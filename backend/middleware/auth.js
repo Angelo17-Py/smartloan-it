@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 // La clave JWT debe existir y tener longitud suficiente para firmar tokens seguros
 const SECRET = process.env.JWT_SECRET;
-if (!SECRET || SECRET.length < 32 || SECRET === 'coloca_un_secret_unico_aqui') {
+if (!SECRET || SECRET.length < 32 || SECRET === 'coloca_un_secret_unico_aqui' || SECRET === 'secreto_de_ejemplo_de_32_caracteres_o_mas') {
   console.error('JWT_SECRET inválido o demasiado corto. Definí un secreto único de al menos 32 caracteres en .env.');
   process.exit(1);
 }

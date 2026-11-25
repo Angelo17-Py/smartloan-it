@@ -1,8 +1,8 @@
 -- Sistema de Gestión de Préstamos de Equipos Tecnológicos
 -- SmartLoanIT - Colegios de Paraguay
--- ATENCION: Este schema se genera automaticamente via initDb.js al iniciar la app.
--- Este archivo es solo para referencia o para inicializar la BD manualmente.
--- Los passwords deben generarse con bcrypt (ver initDb.js para los valores actualizados).
+-- Este schema se genera también desde initDb.js al iniciar la aplicación.
+-- El archivo sirve como referencia para inicializar la base de datos manualmente.
+-- Los passwords se almacenan como hash bcrypt; initDb.js contiene los valores actualizados.
 
 CREATE DATABASE IF NOT EXISTS prestamos_db;
 USE prestamos_db;
@@ -80,7 +80,7 @@ CREATE INDEX idx_prestamos_estado ON prestamos(estado);
 CREATE INDEX idx_prestamos_anulado ON prestamos(anulado);
 
 -- Devoluciones: cierre de un préstamo. Registra el estado del equipo, daños,
--- retraso y los montos calculados (daño, multa y total a cobrar).
+-- retraso y los montos calculados (daño, multa y total aplicado).
 CREATE TABLE devoluciones (
     id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
     codigo_devolucion VARCHAR(20) UNIQUE,
@@ -178,8 +178,8 @@ END$$
 
 DELIMITER ;
 
--- NOTA: Los passwords deben generarse con bcrypt (ver initDb.js).
--- Usuarios del sistema (admin: Adm1n2026, invitado: V1su4l#2026):
+-- Los passwords se almacenan como hash bcrypt (ver initDb.js).
+-- Usuarios del sistema; los valores de acceso están definidos en initDb.js.
 -- ('1001', '<bcrypt_hash>', 'Angelo',  'Caballero', 'Encargado de Equipos Institucionales', 'admin'),
 -- ('1002', '<bcrypt_hash>', 'Elian',   'Valtierra', 'Encargado de Equipos Institucionales', 'admin'),
 -- ('1003', '<bcrypt_hash>', 'Naira',   'Soldevila', 'Encargado de Equipos Institucionales', 'admin'),

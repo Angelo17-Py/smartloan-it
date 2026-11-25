@@ -42,8 +42,7 @@
         .actions-cell{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
         .btn-ver{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:700;cursor:pointer;transition:border-color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out);}
         .btn-ver:hover{border-color:var(--primary);background:var(--primary-glow);}
-        /* Las tablas de movimientos pueden tener muchas columnas: permitir
-           desplazamiento horizontal en vez de recortar las acciones. */
+        /* Desplazamiento horizontal para tablas con muchas columnas. */
         #tp,#td{overflow-x:auto;}
         #tp table,#td table{table-layout:auto;}
 
@@ -264,7 +263,7 @@ function renderP(){
     w.innerHTML=html;
 }
 
-/** Genera la tabla de devoluciones con daños, multas y total cobrado. */
+/** Genera la tabla de devoluciones con daños, multas y total aplicado. */
 function renderD(){
     var d=getDevFiltrados();
     var q=document.getElementById('busq').value.trim();

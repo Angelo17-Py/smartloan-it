@@ -1,5 +1,4 @@
 // Generación del libro Excel de reportes de SmartLoanIT.
-// Vive fuera del controlador para poder probar el libro sin conexión a MySQL.
 const ExcelJS = require('exceljs');
 
 // Paleta institucional compartida con los comprobantes y el panel.

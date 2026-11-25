@@ -214,7 +214,7 @@
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
             <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
         </div>
-        <!-- Comprobante de préstamo (se muestra después de registrar) -->
+        <!-- Comprobante de préstamo (registro o reimpresión) -->
         <div id="resultado" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title">
         <div class="receipt-modal-card">
         <div class="receipt-modal-head">
@@ -517,10 +517,10 @@ function crearSelectBusqueda(id){
 function onAlumno(){
     clearF('alumno');
     const id = parseInt(document.getElementById('alumno').value);
-    const ai = document.getElementById('alu-info');
-    if(!id){ai.classList.remove('show');checkFormComplete();return;}
+    const aluInfo = document.getElementById('alu-info');
+    if(!id){aluInfo.classList.remove('show');checkFormComplete();return;}
     const a = alumnos.find(x=>x.id_alumno==id);
-    if(a){document.getElementById('alu-code').textContent=a.codigo_alumno;document.getElementById('alu-detail').textContent=`${a.carrera||'Bachillerato'} · ${a.curso||'—'} · ${a.turno||'—'}`;ai.classList.add('show');}
+    if(a){document.getElementById('alu-code').textContent=a.codigo_alumno;document.getElementById('alu-detail').textContent=`${a.carrera||'Bachillerato'} · ${a.curso||'—'} · ${a.turno||'—'}`;aluInfo.classList.add('show');}
     actualizarResumen();
     checkFormComplete();
 }
