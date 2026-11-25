@@ -38,6 +38,7 @@ module.exports = async function exportarExcel(req, res) {
         enc.nombre AS encargado_nombre,
         enc.apellido AS encargado_apellido,
         d.id_devolucion,
+        d.codigo_devolucion,
         d.fecha_devolucion,
         d.estado_equipo AS estado_devolucion,
         d.tiene_dano,

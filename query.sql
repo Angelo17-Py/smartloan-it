@@ -83,6 +83,7 @@ CREATE INDEX idx_prestamos_anulado ON prestamos(anulado);
 -- retraso y los montos calculados (daño, multa y total a cobrar).
 CREATE TABLE devoluciones (
     id_devolucion    INT AUTO_INCREMENT PRIMARY KEY,
+    codigo_devolucion VARCHAR(20) UNIQUE,
     id_prestamo      INT NOT NULL,
     id_encargado     INT DEFAULT NULL,
     fecha_devolucion DATETIME NOT NULL,

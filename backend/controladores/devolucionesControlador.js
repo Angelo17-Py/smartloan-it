@@ -90,6 +90,12 @@ exports.crear = async (req, res) => {
     const total = multa + totalDanos + montoAcc;
     const fecha = fmt(ahora);
 
+    // Folio de devolución consecutivo, independiente del folio del préstamo.
+    const [maxDev] = await tx.query(
+      'SELECT MAX(CAST(SUBSTRING(codigo_devolucion, 5) AS UNSIGNED)) AS max_num FROM devoluciones FOR UPDATE'
+    );
+    const codigoDevolucion = 'REC-' + String((maxDev[0].max_num || 0) + 1).padStart(3, '0');
+
     // Valida el estado de pago y completa los datos del cobro.
     const pagoReq = pago || {};
     let estadoPago = pagoReq.estado ? String(pagoReq.estado) : 'Pendiente';
@@ -125,12 +131,12 @@ exports.crear = async (req, res) => {
     const tieneDano = listaDanos.length > 0;
 
     const [result] = await tx.query(
-      `INSERT INTO devoluciones (id_prestamo,id_encargado,fecha_devolucion,estado_equipo,tiene_dano,
+      `INSERT INTO devoluciones (codigo_devolucion,id_prestamo,id_encargado,fecha_devolucion,estado_equipo,tiene_dano,
        tipo_dano,observacion_dano,monto_dano,dias_retraso,monto_multa,total_cobro,observacion,
        accesorios_devueltos,accesorios_faltantes,monto_accesorios,danos_detalle,
        estado_pago,monto_pagado,metodo_pago,fecha_pago,motivo_condonacion)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [id_prestamo, req.encargado.id || null, fecha, estadoEq, tieneDano ? 1 : 0,
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [codigoDevolucion, id_prestamo, req.encargado.id || null, fecha, estadoEq, tieneDano ? 1 : 0,
        tipoResumen, obsResumen, totalDanos, dias, multa, total, s(observacion, 300) || null,
        s(accDevueltos.join(', '), 300) || null, s(accFaltantes.join(', '), 300) || null, montoAcc,
        listaDanos.length ? JSON.stringify(listaDanos) : null,
@@ -138,7 +144,8 @@ exports.crear = async (req, res) => {
     );
 
     return {
-      id: result.insertId, dias, multa, dano: totalDanos, accesorios: montoAcc, total, fecha,
+      id: result.insertId, codigo: codigoDevolucion,
+      dias, multa, dano: totalDanos, accesorios: montoAcc, total, fecha,
       estadoPago, montoPagado, metodoPago, motivoCondonacion,
       accDevueltos, accFaltantes, listaDanos
     };
@@ -148,11 +155,12 @@ exports.crear = async (req, res) => {
     accion: 'CREAR',
     entidad: 'devolucion',
     id_entidad: resultado.id,
-    detalle: `Préstamo #${id_prestamo} · ${resultado.dias} día(s) de retraso · multa Gs. ${resultado.multa} · daños Gs. ${resultado.dano} · accesorios Gs. ${resultado.accesorios} · total Gs. ${resultado.total} · pago ${resultado.estadoPago}`
+    detalle: `Devolución ${resultado.codigo} · Préstamo #${id_prestamo} · ${resultado.dias} día(s) de retraso · multa Gs. ${resultado.multa} · daños Gs. ${resultado.dano} · accesorios Gs. ${resultado.accesorios} · total Gs. ${resultado.total} · pago ${resultado.estadoPago}`
   });
   res.json({
     mensaje: 'Devolucion registrada',
     id_devolucion: resultado.id,
+    codigo_devolucion: resultado.codigo,
     dias_retraso: resultado.dias,
     monto_multa: resultado.multa,
     monto_dano: resultado.dano,

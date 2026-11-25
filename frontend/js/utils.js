@@ -84,11 +84,25 @@ function initUnsavedChangesGuard(selector) {
  * @returns {string} Fecha local en formato dd/mm/aaaa hh:mm, o guion si no hay valor.
  */
 function ff(d) {
-  if (!d) return '—';
+  if (!d) return '-';
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(d)) d = d.replace(' ', 'T');
   return new Date(d).toLocaleString('es-PY', {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit', hour12: false
+  }).replace(',', ' ·');
+}
+
+/**
+ * Formatea solo la fecha (dd/mm/aaaa), sin hora.
+ *
+ * @param {string|Date|null} d Fecha a formatear.
+ * @returns {string}
+ */
+function fd(d) {
+  if (!d) return '-';
+  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(d)) d = d.replace(' ', 'T');
+  return new Date(d).toLocaleDateString('es-PY', {
+    day: '2-digit', month: '2-digit', year: 'numeric'
   });
 }
 

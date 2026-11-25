@@ -54,7 +54,7 @@ test('genera las hojas del reporte con sus encabezados y filtros', () => {
   assert.equal(prestamos.getCell('A5').value, 'Préstamo');
   assert.ok(prestamos.autoFilter);
   const devoluciones = wb.getWorksheet('Devoluciones');
-  assert.equal(devoluciones.getCell('P5').value, 'Total cobrado');
+  assert.equal(devoluciones.getCell('P5').value, 'Total aplicado');
   assert.ok(devoluciones.autoFilter);
 });
 

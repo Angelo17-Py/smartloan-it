@@ -84,6 +84,7 @@ exports.crear = async (req, res) => {
     codigo_prestamo: codigoPrestamo,
     id_prestamo: result.insertId,
     fecha_prestamo: fechaPrestamoStr,
+    fecha_aceptacion: ahoraStr,
     multa_base: multaBase
   });
 };
@@ -100,7 +101,7 @@ exports.listar = async (req, res) => {
   const [rows] = await conn.query(`
     SELECT p.*, e.nombre AS equipo, e.tipo, e.marca, e.estado AS estado_equipo,
       a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido, a.carrera, a.curso, a.turno,
-      d.id_devolucion, d.fecha_devolucion,
+      d.id_devolucion, d.codigo_devolucion, d.fecha_devolucion,
       enc.codigo AS codigo_encargado, enc.nombre AS encargado_nombre, enc.apellido AS encargado_apellido
     FROM prestamos p
     JOIN equipos e ON p.id_equipo = e.id_equipo

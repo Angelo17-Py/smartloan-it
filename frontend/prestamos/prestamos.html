@@ -44,12 +44,6 @@
         /* Aviso cuando no hay opciones disponibles */
         .aviso{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:0.82rem;color:var(--dim);font-weight:600;margin-top:6px;display:none;}
         .aviso.show{display:block;}
-        /* Términos del contrato (solo préstamos) */
-        .rsec-contract{padding:14px 16px;border:1px solid var(--doc-line);border-radius:3px;background:rgba(36,29,11,.025);color:var(--doc-muted);font-size:9.5px;line-height:1.55;}
-        .rsec-contract strong{display:block;margin-bottom:6px;color:var(--doc-ink);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
-        .rsec-contract ol{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;margin:0;padding-left:18px;}
-        .rsec-contract li{padding-left:2px;}
-        .rsec-contract li::marker{color:var(--doc-gold);font-weight:700;}
         /* Atajos rápidos para la fecha de devolución. */
         .date-presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
         .date-presets button{padding:4px 9px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--dim);font-family:var(--font);font-size:0.7rem;font-weight:700;cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
@@ -68,95 +62,20 @@
         .acc-chip.active{background:var(--primary-glow);border-color:var(--primary);color:var(--primary)}
         /* Botón de reintento cuando falla la carga de catálogos. */
         .aviso .aviso-btn{margin-left:8px;padding:4px 10px;border:1px solid var(--primary);border-radius:6px;background:var(--primary-glow);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:800;cursor:pointer}
-        /* Estilos de impresión */
-        @media print {
-            @page{size:A4;margin:10mm 12mm}
-            *{margin:0;padding:0;box-sizing:border-box;background:transparent!important}
-            html,body{background:white!important;color:black!important;font-size:9pt}
-            nav,.form-card,.page-header,.breadcrumbs,.receipt-modal-head,.receipt-modal-actions,.toast,.btn-wrap{display:none!important}
-            main{max-width:100%!important;padding:0!important;margin:0!important}
-            #resultado{position:static!important;display:block!important;max-width:100%!important;padding:0!important;background:none!important;backdrop-filter:none!important;z-index:auto!important;}
-            .receipt-modal-card{display:block!important;width:auto!important;max-height:none!important;border:none!important;border-radius:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;animation:none!important;}
-            .receipt-modal-scroll{padding:0!important;background:none!important;overflow:visible!important;}
-            .receipt{border:none!important;border-top:3px solid #9a7726!important;border-radius:0!important;background:white!important;box-shadow:none!important;break-inside:avoid;}
-            .receipt::before{display:none!important}
-            .receipt-header{padding:0 0 10px!important;border-bottom:1px solid #bbb!important;background:white!important}
-            .rh-mark{border-color:#9a7726!important;color:#7a5e1b!important;background:white!important;width:34px!important;height:34px!important}
-            .rh-mark svg{width:18px!important;height:18px!important}
-            .rh-identity h2{color:black!important;font-size:14pt!important}
-            .rh-sub{color:#555!important;font-size:7pt!important}
-            .rh-doc-label{color:#666!important;font-size:6.5pt!important}
-            .rt-number{color:black!important;background:white!important;border:1px solid #999!important;font-size:7.5pt!important;padding:2px 7px!important}
-            .rh-status{color:#1f5c38!important;border-color:#8aa995!important;background:white!important;font-size:6pt!important}
-            .receipt-title{margin-top:12px!important;padding-top:10px!important;border-top:1px solid #ccc!important}
-            .rt-kicker{color:#7a5e1b!important;font-size:6.5pt!important}
-            .receipt-title h3{color:black!important;font-size:15pt!important}
-            .rt-sub{color:#555!important;font-size:7.5pt!important}
-            .receipt-body{padding:12px 0 0!important;counter-reset:rsec}
-            .rsec{margin-bottom:10px!important;break-inside:avoid}
-            .rsec-title{color:#555!important;border-bottom-color:#ccc!important;font-size:7pt!important;margin-bottom:6px!important;padding-bottom:4px!important}
-            .rsec-title::before{color:#7a5e1b!important;font-size:7pt!important}
-            .rsec-grid{gap:0 18px!important}
-            .rg-item{padding:4px 0!important;border-bottom-color:#ddd!important}
-            .rg-item span{color:#666!important;font-size:6.5pt!important}
-            .rg-item strong{color:black!important;font-size:8pt!important}
-            .rsec-contract{border:1px solid #ccc!important;background:#fcfbf8!important;padding:8px 10px!important;color:#333!important;font-size:7pt!important;line-height:1.35!important}
-            .rsec-contract strong{color:black!important;font-size:6.5pt!important}
-            .rsec-contract ol{gap:2px 18px!important}
-            .rsec-obs{border:1px solid #ccc!important;border-left:2px solid #9a7726!important;background:#fcfbf8!important;padding:6px 9px!important;margin-top:8px!important}
-            .rsec-obs span{color:#666!important;font-size:6pt!important}
-            .rsec-obs p{color:#333!important;font-size:7pt!important}
-            .receipt-footer{padding:12px 0 0!important;border-top:2px solid #9a7726!important;background:white!important;break-inside:avoid}
-            .receipt-stamp{margin-bottom:8px!important}
-            .stamp-badge{color:#1f5c38!important;border-color:#8aa995!important;background:white!important;font-size:6pt!important;padding:2px 10px!important}
-            .sig-row{gap:32px!important;margin-bottom:8px!important}
-            .sig-field span{color:#555!important;font-size:6.5pt!important}
-            .sig-field .sig-line{border-bottom-color:black!important;height:24px!important}
-            .sig-field small{font-size:7pt!important}
-            .receipt-legal{padding-top:6px!important;border-top-color:#ddd!important}
-            .receipt-legal .rl-date{color:#555!important;font-size:6.5pt!important}
-            .receipt-legal p{color:#666!important;font-size:6.5pt!important;line-height:1.3!important;max-width:100%!important}
-            .rl-meta{color:#666!important;font-size:5.5pt!important;margin-top:6px!important;padding-top:4px!important;border-top-color:#ddd!important}
-        }
         /* Responsive */
         @media(max-width:900px){
             .g3{grid-template-columns:1fr 1fr}
         }
         @media(max-width:600px){
-            .receipt::before{display:none}
             .g2,.g3{grid-template-columns:1fr}main{padding:var(--space-3)!important}
-            .receipt-header{padding:22px 20px 18px}
-            .rh-top{flex-direction:column;align-items:flex-start;gap:14px}
-            .rh-doc{align-items:flex-start;text-align:left}
-            .rh-identity h2{font-size:16px}
-            .receipt-title h3{font-size:19px}
-            .receipt-body{padding:20px 20px 6px}
-            .rsec-grid,.rsec-grid.cols-3{grid-template-columns:1fr}
-            .rg-item.full{grid-column:auto}
-            .rsec-contract ol{grid-template-columns:1fr}
-            .receipt-footer{padding:16px 20px 18px}
-            .sig-row{flex-direction:column;gap:18px;align-items:stretch}
-            .sig-field{max-width:100%}
-            .rl-meta{flex-direction:column;align-items:center;gap:4px}
             .res-grid{grid-template-columns:1fr}
             .enc-banner{padding:10px 12px}
             .contract-box{font-size:0.75rem;padding:10px 12px}
-            #resultado{padding:8px}
-            .receipt-modal-card{width:100%;max-height:94dvh;border-radius:12px}
-            .receipt-modal-head{padding:12px 14px}
-            .receipt-modal-scroll{padding:12px}
-            .receipt-modal-actions{padding:10px 14px}
-            .receipt-modal-actions .btn{flex:1;min-width:0;width:auto;height:42px}
         }
         @media(max-width:480px){
-            .receipt-header{padding:18px 16px 16px}
-            .receipt-body{padding:16px 16px 4px}
-            .receipt-footer{padding:14px 16px 16px}
-            .receipt-title h3{font-size:18px}
             .contract-box{font-size:0.7rem;padding:8px 10px}
             .enc-banner{padding:8px 10px}
             .res-grid{grid-template-columns:1fr}
-            .receipt-modal-status span{display:none}
         }
 
         /* Selector con búsqueda para alumno y equipo. */
@@ -301,12 +220,13 @@
         <div class="receipt-modal-head">
             <div class="receipt-modal-status">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                <div><strong id="receipt-modal-title">Préstamo registrado</strong><span>Comprobante listo para imprimir</span></div>
+                <div><strong id="receipt-modal-title">Préstamo registrado</strong><span id="receipt-modal-subtitle">Comprobante listo para imprimir</span></div>
             </div>
             <button type="button" class="receipt-modal-close" onclick="nuevoPrestamo()" aria-label="Cerrar comprobante">&times;</button>
         </div>
         <div class="receipt-modal-scroll">
         <div class="receipt" id="receipt" role="document" aria-label="Comprobante de préstamo">
+            <div class="print-runner" aria-hidden="true"><span>SmartLoanIT</span><span id="r-runner-folio">PRE-0000</span></div>
             <!-- Encabezado del comprobante -->
             <div class="receipt-header">
                 <div class="rh-top">
@@ -320,53 +240,50 @@
                         </div>
                     </div>
                     <div class="rh-doc">
-                        <span class="rh-doc-label">Comprobante N.°</span>
+                        <span class="rh-doc-label">N.°</span>
                         <span class="rt-number" id="r-recibo">PRE-0000</span>
-                        <span class="rh-status">Vigente</span>
                     </div>
                 </div>
                 <div class="receipt-title">
-                    <span class="rt-kicker">Constancia institucional</span>
-                    <h3>COMPROBANTE DE PRÉSTAMO</h3>
-                    <p class="rt-sub">Entrega de equipo tecnológico para uso académico</p>
+                    <h3>Comprobante de préstamo</h3>
+                    <p class="rt-sub" id="r-registro">Préstamo registrado el —</p>
+                </div>
+                <div class="receipt-highlight">
+                    <div class="rh-highlight-main">
+                        <span class="rh-label">Devolución prevista</span>
+                        <strong id="r-entrega-prevista">—</strong>
+                    </div>
                 </div>
             </div>
             <!-- Cuerpo del comprobante con datos -->
             <div class="receipt-body">
-                <!-- Datos del alumno -->
                 <div class="rsec">
-                    <div class="rsec-title">Datos del alumno</div>
-                    <div class="rsec-grid cols-3">
+                    <div class="rsec-title">Alumno</div>
+                    <div class="rsec-grid">
                         <div class="rg-item full"><span>Nombre y apellido</span><strong id="r-alu">—</strong></div>
-                        <div class="rg-item"><span>Código</span><strong id="r-cod">—</strong></div>
-                        <div class="rg-item"><span>Curso</span><strong id="r-cur">—</strong></div>
-                        <div class="rg-item"><span>Turno</span><strong id="r-turno">—</strong></div>
+                        <div class="rg-item"><span>Código de alumno</span><strong id="r-cod">—</strong></div>
+                        <div class="rg-item"><span>Curso y turno</span><strong id="r-cur-turno">—</strong></div>
                         <div class="rg-item full"><span>Bachillerato</span><strong id="r-car">—</strong></div>
                     </div>
                 </div>
-                <!-- Datos del equipo -->
                 <div class="rsec">
-                    <div class="rsec-title">Datos del equipo</div>
-                    <div class="rsec-grid cols-3">
+                    <div class="rsec-title">Equipo y accesorios</div>
+                    <div class="rsec-grid">
                         <div class="rg-item full"><span>Equipo</span><strong id="r-eq">—</strong></div>
-                        <div class="rg-item"><span>Tipo</span><strong id="r-tipo">—</strong></div>
-                        <div class="rg-item"><span>Marca</span><strong id="r-marca">—</strong></div>
-                        <div class="rg-item"><span>Estado inicial</span><strong id="r-est">—</strong></div>
-                        <div class="rg-item full"><span>Accesorios</span><strong id="r-acc">—</strong></div>
+                        <div class="rg-item"><span>Tipo y marca</span><strong id="r-tm">—</strong></div>
+                        <div class="rg-item"><span>Condición de entrega</span><strong id="r-est">—</strong></div>
+                        <div class="rg-item full"><span>Accesorios entregados</span><strong id="r-acc">—</strong></div>
                     </div>
                 </div>
-                <!-- Condiciones del préstamo -->
                 <div class="rsec">
                     <div class="rsec-title">Condiciones del préstamo</div>
                     <div class="rsec-grid">
                         <div class="rg-item full"><span>Motivo</span><strong id="r-mot">—</strong></div>
-                        <div class="rg-item"><span>Fecha de préstamo</span><strong id="r-fp">—</strong></div>
-                        <div class="rg-item"><span>Devolución estimada</span><strong id="r-fv">—</strong></div>
-                        <div class="rg-item"><span>Multa por día</span><strong>Gs. <span id="r-multa">0</span></strong></div>
+                        <div class="rg-item"><span>Tarifa por retraso</span><strong id="r-multa">—</strong></div>
                         <div class="rg-item"><span>Registrado por</span><strong id="r-enc">—</strong></div>
+                        <div class="rg-item full"><span>Aceptación registrada</span><strong id="r-aceptacion">—</strong></div>
                     </div>
                 </div>
-                <!-- Términos del contrato -->
                 <div class="rsec">
                     <div class="rsec-title">Términos y condiciones</div>
                     <div class="rsec-contract">
@@ -374,7 +291,6 @@
                         <ol id="contrato-recibo"></ol>
                     </div>
                 </div>
-                <!-- Observaciones adicionales -->
                 <div class="rsec-obs" id="r-obs-section" style="display:none">
                     <span>Observaciones</span>
                     <p id="r-obs-text">—</p>
@@ -382,22 +298,20 @@
             </div>
             <!-- Pie del comprobante con firmas -->
             <div class="receipt-footer">
-                <div class="receipt-stamp"><span class="stamp-badge">Préstamo activo</span></div>
                 <div class="sig-row">
                     <div class="sig-field"><span>Responsable de entrega</span><div class="sig-line"></div><small id="r-sig-enc">Firma</small></div>
                     <div class="sig-field"><span>Alumno receptor</span><div class="sig-line"></div><small id="r-sig-alu">Firma</small></div>
                 </div>
                 <div class="receipt-legal">
-                    <div class="rl-date" id="r-emision">—</div>
                     <p>Este comprobante es válido como constancia de préstamo de equipos tecnológicos. Al firmar, el alumno acepta los términos y condiciones del contrato de uso.</p>
-                    <div class="rl-meta"><span>SmartLoanIT</span><span>Documento generado automáticamente</span><span>Página 1 de 1</span></div>
+                    <div class="rl-meta"><span>SmartLoanIT</span><span>Documento generado automáticamente</span></div>
                 </div>
             </div>
         </div>
         </div>
         <div class="receipt-modal-actions">
-            <button class="btn btn-secondary" onclick="imprimir()">Imprimir comprobante</button>
-            <button class="btn btn-primary" onclick="nuevoPrestamo()">Nuevo préstamo</button>
+            <button class="btn btn-primary" onclick="imprimir()">Imprimir comprobante</button>
+            <button class="btn btn-secondary" onclick="nuevoPrestamo()">Nuevo préstamo</button>
         </div>
         </div>
     </div>
@@ -767,40 +681,21 @@ async function registrar(){
         if(r.ok){
             // Evita la advertencia de cambios sin guardar al mostrar el comprobante.
             formGuard.markClean();
-            // Ocultamos el formulario y mostramos el comprobante
             document.querySelector('.form-card').style.display='none';
-            const modalResultado = document.getElementById('resultado');
-            document.body.appendChild(modalResultado);
-            modalResultado.classList.add('show');
-            // Llenamos el comprobante con todos los datos del préstamo
-            const ahora=new Date();
-            const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
-            const numRec=String(d.id_prestamo).padStart(4,'0');
-            document.getElementById('r-recibo').textContent=d.codigo_prestamo||`PRE-${numRec}`;
-            document.getElementById('r-alu').textContent=`${a.nombre} ${a.apellido}`;
-            document.getElementById('r-cod').textContent=a.codigo_alumno;
-            document.getElementById('r-car').textContent=a.carrera||'—';
-            document.getElementById('r-cur').textContent=a.curso||'—';
-            document.getElementById('r-turno').textContent=a.turno||'—';
-            document.getElementById('r-eq').textContent=e.nombre;
-            document.getElementById('r-tipo').textContent=e.tipo;
-            document.getElementById('r-marca').textContent=e.marca;
-            document.getElementById('r-est').textContent=ESTADOS_EQUIPO[estado_ini]||'—';
-            document.getElementById('r-acc').textContent=accesorios||'Ninguno';
-            document.getElementById('r-mot').textContent=motivo;
-            document.getElementById('r-fp').textContent=ff(d.fecha_prestamo);
-            document.getElementById('r-fv').textContent=ff(fecha);
-            document.getElementById('r-enc').textContent=enc.nombre&&enc.apellido?`${enc.nombre} ${enc.apellido}`:'—';
-            document.getElementById('r-multa').textContent=fn(d.multa_base||10000);
-            const obsEl=document.getElementById('r-obs-section');
-            if(obs){obsEl.style.display='block';document.getElementById('r-obs-text').textContent=obs;}
-            document.getElementById('r-sig-enc').textContent=enc.nombre?`${enc.nombre} ${enc.apellido}`:'Firma';
-            document.getElementById('r-sig-alu').textContent=a.nombre?`${a.nombre} ${a.apellido}`:'Firma';
-            document.getElementById('r-emision').textContent=`Emitido: ${hoy}`;
-            // Mostramos el comprobante
-            document.getElementById('resultado').classList.add('show');
-            document.body.classList.add('modal-open');
-            document.querySelector('.receipt-modal-close').focus();
+            completarComprobante({
+                codigo_prestamo: d.codigo_prestamo,
+                id_prestamo: d.id_prestamo,
+                fecha_aceptacion: d.fecha_aceptacion || d.fecha_prestamo,
+                fecha_devolucion_estimada: fecha,
+                alumno_nombre: a.nombre, alumno_apellido: a.apellido,
+                codigo_alumno: a.codigo_alumno, carrera: a.carrera, curso: a.curso, turno: a.turno,
+                equipo: e.nombre, tipo: e.tipo, marca: e.marca,
+                estado_inicial_equipo: estado_ini, accesorios, motivo,
+                multa_base: d.multa_base,
+                encargado_nombre: enc.nombre, encargado_apellido: enc.apellido,
+                observaciones: obs
+            });
+            mostrarModalComprobante();
             btn.disabled=false;btn.textContent='Confirmar y registrar préstamo';
         } else {
             st(d.mensaje||'Error al registrar','t-err');
@@ -824,6 +719,83 @@ function nuevoPrestamo(){
     window.location.href = '/prestamos/prestamos.html';
 }
 
+/** Fecha y hora con separador institucional. */
+function fechaRegistro(v){
+    return v ? ff(v).replace(',', ' ·') : '—';
+}
+
+/** Completa el comprobante desde una fila de préstamo (registro nuevo o reimpresión). */
+function completarComprobante(d){
+    const set=function(id,valor){
+        const el=document.getElementById(id);
+        if(el) el.textContent=(valor===null||valor===undefined||valor==='')?'—':valor;
+    };
+    const codigo=d.codigo_prestamo||('PRE-'+String(d.id_prestamo||0).padStart(3,'0'));
+    const nombreAlu=[d.alumno_nombre,d.alumno_apellido].filter(Boolean).join(' ');
+    const nombreEnc=[d.encargado_nombre,d.encargado_apellido].filter(Boolean).join(' ');
+    const estado=ESTADOS_EQUIPO[String(d.estado_inicial_equipo)]||d.estado_inicial_equipo;
+
+    set('r-recibo',codigo);
+    set('r-runner-folio',codigo);
+    set('r-registro','Préstamo registrado el '+fechaRegistro(d.fecha_aceptacion||d.fecha_prestamo));
+    set('r-entrega-prevista',fd(d.fecha_devolucion_estimada));
+    set('r-alu',nombreAlu);
+    set('r-cod',d.codigo_alumno);
+    set('r-cur-turno',[d.curso,d.turno].filter(Boolean).join(' · '));
+    set('r-car',d.carrera);
+    set('r-eq',d.equipo);
+    set('r-tm',[d.tipo,d.marca].filter(Boolean).join(' · '));
+    set('r-est',estado);
+    set('r-acc',d.accesorios||'Ninguno');
+    set('r-mot',d.motivo);
+    set('r-multa',d.multa_base!=null?'Gs. '+fn(d.multa_base)+' por día':'—');
+    set('r-enc',nombreEnc);
+    set('r-aceptacion',d.fecha_aceptacion?fechaRegistro(d.fecha_aceptacion):'—');
+    set('r-sig-enc',nombreEnc||'Firma');
+    set('r-sig-alu',nombreAlu||'Firma');
+
+    const obs=document.getElementById('r-obs-section');
+    if(d.observaciones){
+        obs.style.display='block';
+        document.getElementById('r-obs-text').textContent=d.observaciones;
+    }else{
+        obs.style.display='none';
+        document.getElementById('r-obs-text').textContent='—';
+    }
+}
+
+/** Muestra el modal del comprobante, ya completado. */
+function mostrarModalComprobante(){
+    const modal=document.getElementById('resultado');
+    document.body.appendChild(modal);
+    modal.classList.add('show');
+    document.body.classList.add('modal-open');
+    document.querySelector('.receipt-modal-close').focus();
+}
+
+/** Reimprime un comprobante cuando se llega desde el Historial con ?comprobante=... */
+async function abrirComprobanteDesdeURL(){
+    const codigo=new URLSearchParams(location.search).get('comprobante');
+    if(!codigo) return;
+    try{
+        const r=await apiFetch('/prestamos?incluir_anulados=1');
+        if(!r.ok){st('No se pudo cargar el comprobante','t-err');return;}
+        const lista=await safeJson(r);
+        const p=lista.find(function(x){
+            return String(x.codigo_prestamo)===String(codigo)||String(x.id_prestamo)===String(codigo);
+        });
+        if(!p){st('Comprobante no encontrado','t-err');return;}
+        if(formGuard) formGuard.markClean();
+        document.querySelector('.form-card').style.display='none';
+        completarComprobante(p);
+        document.getElementById('receipt-modal-title').textContent='Comprobante de préstamo';
+        document.getElementById('receipt-modal-subtitle').textContent='Reimpresión del comprobante';
+        mostrarModalComprobante();
+    }catch(e){
+        st('Error de conexión','t-err');
+    }
+}
+
 // Inicialización del formulario.
 window.onload=function(){
     initPage({
@@ -838,6 +810,7 @@ window.onload=function(){
             document.getElementById('fecha_dev').min=fechaActual;
             document.getElementById('fecha_dev').value=toDatetimeLocal(new Date(now.getTime()+24*60*60*1000));
             cargar();
+            abrirComprobanteDesdeURL();
             checkFormComplete();
         }
     });

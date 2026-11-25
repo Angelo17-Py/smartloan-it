@@ -301,7 +301,7 @@ function buildSummarySheet(wb, loans, returns, meta) {
 
   addKpiCard(ws, 8, 1, 'DEVOLUCIONES REGISTRADAS', returns.length, {});
   addKpiCard(ws, 8, 3, 'ALUMNOS ALCANZADOS', alumnos, {});
-  addKpiCard(ws, 8, 5, 'TOTAL COBRADO', cobrado, { money: true });
+  addKpiCard(ws, 8, 5, 'TOTAL APLICADO', cobrado, { money: true });
   addKpiCard(ws, 8, 7, 'SALDO PENDIENTE', saldo, {
     money: true,
     accent: saldo > 0 ? COL.amber : COL.green,
@@ -311,7 +311,7 @@ function buildSummarySheet(wb, loans, returns, meta) {
   ws.getRow(7).height = 6;
   ws.getRow(10).height = 10;
 
-  addSectionBar(ws, 11, 1, 4, 'COBROS REGISTRADOS (Gs.)');
+  addSectionBar(ws, 11, 1, 4, 'LIQUIDACIONES REGISTRADAS (Gs.)');
   addSectionBar(ws, 11, 6, 8, 'SITUACIÓN DE PRÉSTAMOS');
 
   const headers = [
@@ -332,7 +332,7 @@ function buildSummarySheet(wb, loans, returns, meta) {
   addSummaryRow(ws, 13, 1, 3, 4, 'Multas por retraso', multasRegistradas, { money: true });
   addSummaryRow(ws, 14, 1, 3, 4, 'Daños', danos, { money: true });
   addSummaryRow(ws, 15, 1, 3, 4, 'Accesorios faltantes', accesorios, { money: true });
-  addSummaryRow(ws, 16, 1, 3, 4, 'Total cobrado', cobrado, {
+  addSummaryRow(ws, 16, 1, 3, 4, 'Total aplicado', cobrado, {
     money: true, bold: true, fill: COL.goldBg
   });
   addSummaryRow(ws, 17, 1, 3, 4, 'Total pagado', pagado, { money: true });
@@ -464,10 +464,10 @@ function buildReturnsSheet(wb, returns, meta) {
   });
 
   const headers = [
-    'N.° devolución', 'Préstamo', 'Código alumno', 'Alumno', 'Equipo', 'Fecha devolución',
+    'Devolución', 'Préstamo', 'Código alumno', 'Alumno', 'Equipo', 'Fecha devolución',
     'Estado equipo', 'Daño', 'Tipo de daño', 'Accesorios devueltos', 'Accesorios faltantes',
-    'Días de retraso', 'Multa', 'Monto daño', 'Monto accesorios', 'Total cobrado',
-    'Pagado', 'Saldo', 'Estado de pago', 'Método de pago', 'Observaciones'
+    'Días de retraso', 'Multa', 'Monto daño', 'Monto accesorios', 'Total aplicado',
+    'Monto pagado', 'Saldo pendiente', 'Estado de pago', 'Método de pago', 'Observaciones'
   ];
   addTableHeader(ws, 5, headers);
 
@@ -491,7 +491,7 @@ function buildReturnsSheet(wb, returns, meta) {
       const pagado = numero(r.monto_pagado);
       const saldo = r.estado_pago === 'Condonado' ? 0 : Math.max(total - pagado, 0);
       return [
-        { value: r.id_devolucion, align: 'center' },
+        { value: r.codigo_devolucion || ('REC-' + String(r.id_devolucion).padStart(3, '0')), align: 'center' },
         { value: r.codigo_prestamo || ('PRE-' + String(r.id_prestamo).padStart(3, '0')) },
         { value: r.codigo_alumno },
         { value: `${r.alumno_nombre || ''} ${r.alumno_apellido || ''}`.trim(), wrap: true },
@@ -509,7 +509,7 @@ function buildReturnsSheet(wb, returns, meta) {
         { value: total, numFmt: MONEY_FMT, align: 'right', bold: true },
         { value: pagado, numFmt: MONEY_FMT, align: 'right' },
         { value: saldo, numFmt: MONEY_FMT, align: 'right', bold: saldo > 0, color: saldo > 0 ? COL.red : COL.green },
-        { value: r.estado_pago, bold: true, color: pagoEstilo[r.estado_pago] || COL.ink },
+        { value: total === 0 ? 'Sin cobro' : r.estado_pago, bold: true, color: pagoEstilo[r.estado_pago] || COL.ink },
         { value: r.metodo_pago },
         { value: r.observacion_devolucion, wrap: true }
       ];

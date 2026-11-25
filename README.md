@@ -59,8 +59,8 @@ Está pensado para encargados de equipos institucionales de colegios e instituci
 | **Alumnos** | Alta con código automático (`ALU001`, `ALU002`, …), edición, búsqueda sin acentos y baja lógica que conserva el historial. |
 | **Equipos** | Registro y edición de activos; estados `Disponible`, `Prestado` y `En mantenimiento`. El cambio manual solo se permite entre `Disponible` y `En mantenimiento`; la baja solo procede si no hay historial de préstamos. |
 | **Préstamos** | Selección de alumnos sin préstamo activo y equipos disponibles; aceptación del contrato, validación de fechas, código correlativo (`PRE-001`, `PRE-002`, …) y comprobante imprimible con firmas. |
-| **Devoluciones** | Búsqueda de préstamos activos, registro del estado del equipo y de daños, cálculo automático de días de retraso, multa y total a cobrar; comprobante imprimible. |
-| **Historial** | Tablas de préstamos y devoluciones con filtros, búsqueda y anulaciones con motivo. Incluye una pestaña de auditoría visible solo para administradores. |
+| **Devoluciones** | Búsqueda de préstamos activos, registro del estado del equipo y de daños, cálculo automático de días de retraso, multa y total aplicado; comprobante imprimible con folio propio (`REC-001`). |
+| **Historial** | Tablas de préstamos y devoluciones con filtros, búsqueda, anulaciones con motivo y reimpresión de comprobantes desde cada movimiento. Incluye una pestaña de auditoría visible solo para administradores. |
 | **Usuarios** | Solo administradores: alta, edición, cambio de rol y contraseña, activación y desactivación de encargados. |
 | **Configuración** | Solo administradores: edición de la multa diaria desde el dashboard. El cambio queda registrado en la auditoría. |
 | **Exportación** | Descarga de un archivo Excel (`.xlsx`) con hojas `Resumen`, `Préstamos` y `Devoluciones`, indicadores, filtros, totales y formato institucional. |
@@ -341,7 +341,7 @@ Notas de uso:
 
 - `POST /prestamos` exige `acepto_contrato: true` y una fecha de devolución posterior a la fecha actual y a la del préstamo.
 - `PATCH /equipos/:id/estado` recibe `1` (Disponible), `2` (Prestado) o `3` (En mantenimiento). Solo permite alternar manualmente entre `1` y `3`.
-- `POST /devoluciones` calcula en el servidor los días de retraso y la multa. El monto de daño se registra como dato de la devolución y el total surge de multa + daño.
+- `POST /devoluciones` calcula en el servidor los días de retraso y la multa. El monto de daño y los accesorios faltantes se registran como datos de la devolución y el total aplicado surge de multa + daño + accesorios.
 - La anulación de préstamos y devoluciones exige un motivo de al menos 5 caracteres y conserva el registro. Para anular un préstamo con devolución vigente, primero debe anularse la devolución.
 - `GET /exportar` genera las hojas `Resumen`, `Préstamos` y `Devoluciones` sin registros anulados, devuelve contadores en las cabeceras y registra la exportación en la auditoría.
 
@@ -357,7 +357,7 @@ Motor: **MySQL 8.0**. Nombre predeterminado de la base: `prestamos_db`. Se recom
 | `alumnos` | Personas que solicitan equipos | `codigo_alumno` único (`ALU001`), datos académicos, `estado` |
 | `equipos` | Inventario tecnológico | `nombre`, `tipo`, `marca`, `estado` (`Disponible`, `Prestado`, `En mantenimiento`) |
 | `prestamos` | Salidas de equipos | `codigo_prestamo` único (`PRE-001`), fechas, contrato, `multa_base`, `estado` (`ACTIVO`, `DEVUELTO`) |
-| `devoluciones` | Retornos de equipos | `fecha_devolucion`, `estado_equipo`, daño, `dias_retraso`, `monto_multa`, `total_cobro` |
+| `devoluciones` | Retornos de equipos | `codigo_devolucion` único (`REC-001`), `fecha_devolucion`, `estado_equipo`, daño, `dias_retraso`, `monto_multa`, `total_cobro`, estado de pago |
 | `configuracion` | Parámetros del sistema | `clave` y `valor`; valor inicial: `multa_por_dia = 10000` |
 | `auditoria` | Trazabilidad de acciones | usuario, acción, entidad, detalle, IP y fecha |
 

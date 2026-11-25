@@ -38,6 +38,14 @@
         #ta th:nth-child(3),#ta td[data-label="Acción"]{text-align:center;}
         #ta td[data-label="Fecha"]{white-space:nowrap;}
         .table-wrap table tbody td.td-detalle{white-space:normal;overflow-wrap:anywhere;line-height:1.45;}
+        /* Acciones de cada movimiento: comprobante y anulación. */
+        .actions-cell{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+        .btn-ver{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:700;cursor:pointer;transition:border-color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out);}
+        .btn-ver:hover{border-color:var(--primary);background:var(--primary-glow);}
+        /* Las tablas de movimientos pueden tener muchas columnas: permitir
+           desplazamiento horizontal en vez de recortar las acciones. */
+        #tp,#td{overflow-x:auto;}
+        #tp table,#td table{table-layout:auto;}
 
         /* Ajustes responsive de la barra de herramientas y las tablas. */
         @media(max-width:900px){main{padding:20px 16px}}
@@ -172,6 +180,7 @@ function getPrestFiltrados(){
             return normalizeText(p.alumno_nombre||'').includes(q)||
                    normalizeText(p.alumno_apellido||'').includes(q)||
                    normalizeText(p.codigo_alumno||'').includes(q)||
+                   normalizeText(p.codigo_prestamo||'').includes(q)||
                    normalizeText(p.equipo||'').includes(q)||
                    normalizeText(p.marca||'').includes(q)||
                    normalizeText(p.motivo||'').includes(q)||
@@ -197,6 +206,8 @@ function getDevFiltrados(){
                normalizeText(d.alumno_apellido||'').includes(q)||
                normalizeText(d.codigo_alumno||'').includes(q)||
                normalizeText(d.equipo||'').includes(q)||
+               normalizeText(d.codigo_devolucion||'').includes(q)||
+               normalizeText(d.codigo_prestamo||'').includes(q)||
                normalizeText(d.tipo_dano||'').includes(q)||
                normalizeText(d.motivo_anulacion||'').includes(q)||
                (String(d.id_prestamo)===document.getElementById('busq').value.trim())||
@@ -223,30 +234,30 @@ function renderP(){
     var header='<div class="table-header"><span>Registro de préstamos</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='p') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var thAcciones=admin?'<th scope="col">Acciones</th>':'';
-    var html=header+'<table style="width:100%"><thead><tr><th scope="col">#</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th>'+thAcciones+'</tr></thead><tbody>';
+    var html=header+'<table style="width:100%"><thead><tr><th scope="col">Préstamo</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha préstamo</th><th scope="col">Vencimiento</th><th scope="col">Encargado</th><th scope="col">Motivo</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead><tbody>';
     d.forEach(function(p,i){
         // Un préstamo activo cuya fecha estimada ya pasó se muestra vencido.
         var venc=p.estado==='ACTIVO'&&new Date(p.fecha_devolucion_estimada)<ahora;
         var badge=p.anulado?'<span class="badge badge-danger">Anulado</span>':venc?'<span class="badge badge-danger">Vencido</span>':p.estado==='DEVUELTO'?'<span class="badge badge-success">Devuelto</span>':'<span class="badge badge-primary">Activo</span>';
         if(p.anulado&&p.motivo_anulacion) badge+='<div class="sub-text">Motivo: '+resaltar(p.motivo_anulacion,q)+'</div>';
-        var accion='';
-        if(admin){
-            if(p.anulado) accion='<span class="sub-text">Anulado</span>';
-            else if(p.estado!=='ACTIVO') accion='<span class="sub-text">Anulá la devolución</span>';
-            else accion='<button class="btn-sm btn-mant" onclick="abrirAnular(\'prestamo\','+p.id_prestamo+')">Anular</button>';
+        var acciones='';
+        if(!p.anulado){
+            acciones+='<button class="btn-ver" onclick="verComprobantePrestamo(\''+(p.codigo_prestamo||p.id_prestamo)+'\')">Ver comprobante</button>';
+            if(admin&&p.estado==='ACTIVO') acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'prestamo\','+p.id_prestamo+')">Anular</button>';
+        }else{
+            acciones='<span class="sub-text">Anulado</span>';
         }
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
-        html+='<td data-label="#"><span class="code">'+(p.codigo_prestamo||'#'+p.id_prestamo)+'</span></td>';
+        html+='<td data-label="Préstamo"><span class="code">'+(p.codigo_prestamo||'#'+p.id_prestamo)+'</span></td>';
         html+='<td data-label="Alumno"><strong>'+resaltar(p.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(p.alumno_nombre+' '+p.alumno_apellido,q)+'</div><div class="sub-text">'+(p.carrera||'—')+' · '+(p.curso||'—')+' · '+(p.turno||'—')+'</div></td>';
         html+='<td data-label="Equipo"><strong>'+resaltar(p.equipo,q)+'</strong><div class="sub-text">'+p.tipo+' &middot; '+p.marca+'</div></td>';
-        html+='<td data-label="Préstamo">'+ff(p.fecha_prestamo)+'</td>';
+        html+='<td data-label="Fecha préstamo">'+ff(p.fecha_prestamo)+'</td>';
         html+='<td data-label="Vence" style="'+(venc?'color:var(--danger);font-weight:700':'')+'">'+ff(p.fecha_devolucion_estimada)+'</td>';
         html+='<td data-label="Encargado" style="color:var(--dim);font-size:0.82rem">'+resaltar((p.encargado_nombre||'')+' '+(p.encargado_apellido||''),q)+'</td>';
         html+='<td data-label="Motivo" style="color:var(--dim);font-size:0.82rem">'+resaltar(p.motivo||'—',q)+'</td>';
         html+='<td data-label="Estado">'+badge+'</td>';
-        if(admin) html+='<td data-label="Acciones">'+accion+'</td>';
+        html+='<td data-label="Acciones"><div class="actions-cell">'+acciones+'</div></td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
@@ -261,34 +272,51 @@ function renderD(){
     var header='<div class="table-header"><span>Registro de devoluciones</span><span class="table-count">'+d.length+' registros</span></div>';
     if(tabAct==='d') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
-    var thAcciones=admin?'<th scope="col">Acciones</th>':'';
-    var html=header+'<table style="width:100%"><thead><tr><th scope="col">#Dev</th><th scope="col">#Pres</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado equipo</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total</th>'+thAcciones+'</tr></thead><tbody>';
+    var html=header+'<table style="width:100%"><thead><tr><th scope="col">Devolución</th><th scope="col">Préstamo</th><th scope="col">Alumno</th><th scope="col">Equipo</th><th scope="col">Fecha dev.</th><th scope="col">Registró</th><th scope="col">Recibió</th><th scope="col">Estado equipo</th><th scope="col">Daño</th><th scope="col">Multa</th><th scope="col">Total aplicado</th><th scope="col">Acciones</th></tr></thead><tbody>';
     d.forEach(function(dv,i){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
         var estadoRegistro=dv.anulado?'<div class="sub-text"><span class="badge badge-danger">Anulada</span>'+(dv.motivo_anulacion?' · '+resaltar(dv.motivo_anulacion,q):'')+'</div>':'';
-        var accion='';
-        if(admin){
-            accion=dv.anulado?'<span class="sub-text">Anulada</span>':'<button class="btn-sm btn-mant" onclick="abrirAnular(\'devolucion\','+dv.id_devolucion+')">Anular</button>';
+        var acciones='';
+        if(!dv.anulado){
+            acciones+='<button class="btn-ver" onclick="verComprobanteDevolucion(\''+(dv.codigo_devolucion||dv.id_devolucion)+'\')">Ver comprobante</button>';
+            if(admin) acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'devolucion\','+dv.id_devolucion+')">Anular</button>';
+        }else{
+            acciones='<span class="sub-text">Anulada</span>';
         }
+        var total=Number(dv.total_cobro)||0;
+        var pagado=Number(dv.monto_pagado)||0;
+        var saldo=dv.estado_pago==='Condonado'?0:Math.max(total-pagado,0);
+        var estadoCobro=total===0?'Sin cobro':(dv.estado_pago||'Pendiente');
+        var badgeCobro=estadoCobro==='Pagado'?'badge-success':estadoCobro==='Pendiente'?'badge-danger':estadoCobro==='Parcial'?'badge-warn':estadoCobro==='Condonado'?'badge-info':'badge-primary';
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
-        html+='<td data-label="#Dev"><span class="code">'+(dv.codigo_prestamo||'#'+dv.id_devolucion)+'</span>'+estadoRegistro+'</td>';
-        html+='<td data-label="#Pres"><span class="code">'+(dv.codigo_prestamo||'#'+dv.id_prestamo)+'</span></td>';
+        html+='<td data-label="Devolución"><span class="code">'+(dv.codigo_devolucion||('REC-'+String(dv.id_devolucion).padStart(3,'0')))+'</span>'+estadoRegistro+'</td>';
+        html+='<td data-label="Préstamo"><span class="code">'+(dv.codigo_prestamo||'#'+dv.id_prestamo)+'</span></td>';
         html+='<td data-label="Alumno"><strong>'+resaltar(dv.codigo_alumno,q)+'</strong><div class="sub-text">'+resaltar(dv.alumno_nombre+' '+dv.alumno_apellido,q)+'</div></td>';
         html+='<td data-label="Equipo"><strong>'+resaltar(dv.equipo,q)+'</strong><div class="sub-text">'+dv.tipo+'</div></td>';
-        html+='<td data-label="Devuelto">'+ff(dv.fecha_devolucion)+'</td>';
+        html+='<td data-label="Fecha devolución">'+ff(dv.fecha_devolucion)+'</td>';
         html+='<td data-label="Registró" style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_prestamo_nombre||'')+' '+(dv.enc_prestamo_apellido||''),q)+'</td>';
         html+='<td data-label="Recibió" style="color:var(--dim);font-size:0.82rem">'+resaltar((dv.enc_devolucion_nombre||'')+' '+(dv.enc_devolucion_apellido||''),q)+'</td>';
         html+='<td data-label="Estado equipo">'+dv.estado_equipo+'</td>';
         html+='<td data-label="Daño">'+danoCell+'</td>';
-        html+='<td data-label="Multa" style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs.'+fn(dv.monto_multa):'—')+'</td>';
-        html+='<td data-label="Total" style="font-weight:800;color:'+(dv.total_cobro>0?'var(--warn)':'var(--dim)')+'">Gs. '+fn(dv.total_cobro||0)+'</td>';
-        if(admin) html+='<td data-label="Acciones">'+accion+'</td>';
+        html+='<td data-label="Multa" style="'+multaStyle+'">'+(dv.dias_retraso>0?dv.dias_retraso+'d &middot; Gs. '+fn(dv.monto_multa):'—')+'</td>';
+        html+='<td data-label="Total aplicado"><strong>Gs. '+fn(total)+'</strong><div class="sub-text">Monto pagado: Gs. '+fn(pagado)+'</div><div class="sub-text">Saldo: Gs. '+fn(saldo)+'</div><div><span class="badge '+badgeCobro+'">'+esc(estadoCobro)+'</span></div></td>';
+        html+='<td data-label="Acciones"><div class="actions-cell">'+acciones+'</div></td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
     w.innerHTML=html;
+}
+
+/** Abre el comprobante de un préstamo en su módulo. */
+function verComprobantePrestamo(codigo){
+    window.location.href='/prestamos/prestamos.html?comprobante='+encodeURIComponent(codigo);
+}
+
+/** Abre el comprobante de una devolución en su módulo. */
+function verComprobanteDevolucion(codigo){
+    window.location.href='/devoluciones/devoluciones.html?comprobante='+encodeURIComponent(codigo);
 }
 
 /** Carga el registro de auditoría; solo se invoca para administradores. */
