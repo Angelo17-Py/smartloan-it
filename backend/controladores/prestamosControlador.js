@@ -13,6 +13,9 @@ const fmt = (d) => {
   return str.replace('T', ' ').slice(0, 19);
 };
 
+// Versión vigente del contrato que el alumno acepta al registrar el préstamo.
+const CONTRATO_VERSION = '1.0';
+
 /**
  * Crea un préstamo tras validar fechas, contrato, estado inicial y disponibilidad.
  * @param {import('express').Request} req Body con alumno, equipo, fechas y estado inicial.
@@ -64,10 +67,11 @@ exports.crear = async (req, res) => {
   const codigoPrestamo = 'PRE-' + String(maxNum + 1).padStart(3, '0');
   const [result] = await conn.query(
     `INSERT INTO prestamos (codigo_prestamo,id_alumno,id_equipo,id_encargado,fecha_prestamo,fecha_devolucion_estimada,
-     estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+     estado_inicial_equipo,accesorios,motivo,observaciones,acepto_contrato,multa_base,contrato_version,fecha_aceptacion)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     [codigoPrestamo, id_alumno, id_equipo, req.encargado.id, fechaPrestamoStr, devStr,
-     estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase]
+     estadoIni, s(accesorios, 300), s(motivo, 300), s(observaciones, 300), 1, multaBase,
+     CONTRATO_VERSION, ahoraStr]
   );
   auditoria.registrar(req, {
     accion: 'CREAR',

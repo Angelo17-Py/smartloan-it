@@ -50,6 +50,25 @@
         .rsec-contract ol{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;margin:0;padding-left:18px;}
         .rsec-contract li{padding-left:2px;}
         .rsec-contract li::marker{color:var(--doc-gold);font-weight:700;}
+        /* Atajos rápidos para la fecha de devolución. */
+        .date-presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+        .date-presets button{padding:4px 9px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--dim);font-family:var(--font);font-size:0.7rem;font-weight:700;cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
+        .date-presets button:hover{border-color:var(--primary);color:var(--primary)}
+        /* Contrato colapsable: el texto completo se despliega a demanda. */
+        .contract-details{margin-bottom:12px}
+        .contract-details summary{display:flex;align-items:center;gap:6px;padding:8px 0;color:var(--primary);font-size:var(--text-sm);font-weight:800;cursor:pointer;list-style:none}
+        .contract-details summary::-webkit-details-marker{display:none}
+        .contract-details summary::before{content:'▸';transition:transform var(--duration-fast) var(--ease-out)}
+        .contract-details[open] summary::before{transform:rotate(90deg)}
+        .contract-details .contract-box{margin-bottom:0}
+        /* Accesorios frecuentes como chips que completan el campo. */
+        .acc-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+        .acc-chip{padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--dim);font-family:var(--font);font-size:0.72rem;font-weight:700;cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
+        .acc-chip:hover{border-color:var(--primary);color:var(--primary)}
+        .acc-chip.active{background:var(--primary-glow);border-color:var(--primary);color:var(--primary)}
+        .opt-tag{font-weight:600;color:var(--muted);letter-spacing:0}
+        /* Botón de reintento cuando falla la carga de catálogos. */
+        .aviso .aviso-btn{margin-left:8px;padding:4px 10px;border:1px solid var(--primary);border-radius:6px;background:var(--primary-glow);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:800;cursor:pointer}
         /* Estilos de impresión */
         @media print {
             @page{size:A4;margin:10mm 12mm}
@@ -192,15 +211,16 @@
             <div class="sep"></div>
             <!-- Selección de alumno y equipo -->
             <div class="section-title">Datos del préstamo</div>
+            <div class="aviso" id="aviso-carga" role="alert">No se pudieron cargar alumnos y equipos.<button type="button" class="aviso-btn" onclick="cargar()">Reintentar</button></div>
             <div class="g2">
                 <div class="ig">
-                    <label>Alumno</label>
+                    <label for="alumno">Alumno</label>
                     <select id="alumno" onchange="onAlumno()"><option value="">Seleccionar alumno...</option></select>
                     <div class="aviso" id="aviso-alumno">No hay alumnos disponibles. Todos tienen un préstamo activo o no hay alumnos registrados.</div>
                     <div class="ferr" id="ferr-alumno">Selecciona un alumno</div>
                 </div>
                 <div class="ig">
-                    <label>Equipo disponible</label>
+                    <label for="equipo">Equipo disponible</label>
                     <select id="equipo" onchange="clearF('equipo');actualizarResumen();checkFormComplete()"><option value="">Seleccionar equipo...</option></select>
                     <div class="aviso" id="aviso-equipo">No hay equipos disponibles en este momento.</div>
                     <div class="ferr" id="ferr-equipo">Selecciona un equipo</div>
@@ -212,19 +232,51 @@
             <!-- Fecha del préstamo, devolución y estado del equipo -->
             <div class="section-title">Fechas y condición</div>
             <div class="g3">
-                <div class="ig"><label>Fecha y hora del préstamo</label><input type="datetime-local" id="fecha_prestamo" onchange="clearF('fecha_prestamo');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_prestamo">Selecciona la fecha y hora</div></div>
-                <div class="ig"><label>Fecha de devolución estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
-                <div class="ig"><label>Estado inicial del equipo</label>
-                    <select id="estado_ini"><option value="1">Excelente</option><option value="2">Bueno</option><option value="3">Dañado</option></select>
+                <div class="ig"><label for="fecha_prestamo">Fecha y hora del préstamo</label><input type="datetime-local" id="fecha_prestamo" onchange="clearF('fecha_prestamo');syncFechaMin();actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-fecha_prestamo">Selecciona la fecha y hora</div></div>
+                <div class="ig"><label for="fecha_dev">Fecha de devolución estimada</label><input type="datetime-local" id="fecha_dev" onchange="clearF('fecha_dev');actualizarResumen();checkFormComplete()"><div class="date-presets"><button type="button" onclick="setDevolucion(1)">+24 h</button><button type="button" onclick="setDevolucion(2)">+48 h</button><button type="button" onclick="setDevolucion(7)">+1 semana</button></div><div class="ferr" id="ferr-fecha_dev">Selecciona la fecha</div></div>
+                <div class="ig"><label for="estado_ini">Estado inicial del equipo</label>
+                    <select id="estado_ini" onchange="clearF('estado_ini');actualizarResumen();checkFormComplete()">
+                        <option value="">Seleccionar...</option>
+                        <option value="1">Excelente</option>
+                        <option value="2">Bueno</option>
+                        <option value="3">Dañado</option>
+                    </select>
+                    <div class="ferr" id="ferr-estado_ini">Selecciona el estado del equipo</div>
                 </div>
             </div>
             <div class="sep"></div>
             <!-- Motivo, accesorios y observaciones -->
             <div class="section-title">Detalles</div>
-            <div class="g1 ig"><label>Motivo del préstamo</label><input id="motivo" placeholder="Ej: Trabajo de grado, Presentación, Tarea..." maxlength="300" oninput="clearF('motivo');actualizarResumen();checkFormComplete()"><div class="ferr" id="ferr-motivo">Ingresa el motivo del préstamo</div></div>
             <div class="g2">
-                <div class="ig"><label>Accesorios entregados</label><input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." maxlength="300" oninput="checkFormComplete()"></div>
-                <div class="ig"><label>Observaciones</label><input id="obs" placeholder="Notas adicionales..." maxlength="300" oninput="checkFormComplete()"></div>
+                <div class="ig">
+                    <label for="motivo_tipo">Motivo del préstamo</label>
+                    <select id="motivo_tipo" onchange="onMotivoTipo()">
+                        <option value="">Seleccionar motivo...</option>
+                        <option>Trabajo de grado</option>
+                        <option>Exposición</option>
+                        <option>Tarea</option>
+                        <option>Clase</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <div class="ferr" id="ferr-motivo_tipo">Selecciona el motivo</div>
+                </div>
+                <div class="ig" id="motivo-otro-wrap" style="display:none">
+                    <label for="motivo">Especifica el motivo</label>
+                    <input id="motivo" placeholder="Describe el motivo..." maxlength="300" oninput="clearF('motivo');actualizarResumen();checkFormComplete()">
+                    <div class="ferr" id="ferr-motivo">Ingresa el motivo</div>
+                </div>
+            </div>
+            <div class="g2">
+                <div class="ig">
+                    <label for="accesorios">Accesorios entregados <span class="opt-tag">(opcional)</span></label>
+                    <div class="acc-chips">
+                        <button type="button" class="acc-chip" data-acc="Cargador" onclick="toggleAccesorio(this)">Cargador</button>
+                        <button type="button" class="acc-chip" data-acc="Mouse" onclick="toggleAccesorio(this)">Mouse</button>
+                        <button type="button" class="acc-chip" data-acc="Funda" onclick="toggleAccesorio(this)">Funda</button>
+                    </div>
+                    <input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." maxlength="300" oninput="checkFormComplete()">
+                </div>
+                <div class="ig"><label for="obs">Observaciones <span class="opt-tag">(opcional)</span></label><input id="obs" placeholder="Notas adicionales..." maxlength="300" oninput="checkFormComplete()"></div>
             </div>
             <!-- Resumen del préstamo en vivo -->
             <div class="resumen" id="resumen">
@@ -234,20 +286,13 @@
             <div class="sep"></div>
             <!-- Contrato de uso que el alumno debe aceptar -->
             <div class="section-title">Contrato de uso</div>
-            <div class="contract-box">
-                <h4>Términos y Condiciones de Uso de Equipo Tecnológico</h4>
-                El alumno solicitante se compromete a:<br><br>
-                1. Usar el equipo solo para fines académicos autorizados y no retirarlo del colegio sin permiso.<br>
-                2. El préstamo es personal e intransferible: no cederlo, alquilarlo ni venderlo.<br>
-                3. Revisar el equipo y sus accesorios al recibirlo y reportar daños previos.<br>
-                4. Devolverlo en la fecha, hora y lugar acordados, con todos sus accesorios y en el mismo estado (salvo desgaste normal).<br>
-                5. No instalar software ni modificar configuración, cuentas o etiquetas sin autorización.<br>
-                6. Reportar de inmediato cualquier daño, falla, pérdida o robo.<br>
-                7. Asumir la reparación por mal uso y el valor de reposición en caso de pérdida, robo o destrucción.<br>
-                8. Aceptar la multa diaria por retraso desde el día siguiente al vencimiento, según la tarifa informada al prestar.<br>
-                9. La aceptación digital equivale a la firma manuscrita.<br>
-                10. El incumplimiento permite suspender futuros préstamos y el acceso al sistema, sin perjuicio de las medidas disciplinarias.
-            </div>
+            <details class="contract-details">
+                <summary>Leer términos y condiciones del contrato</summary>
+                <div class="contract-box">
+                    <h4>Términos y Condiciones de Uso de Equipo Tecnológico</h4>
+                    <div id="contrato-form"></div>
+                </div>
+            </details>
             <label class="check-row"><input type="checkbox" id="contrato" onchange="clearF('contrato');checkFormComplete()"><span>El alumno acepta los términos y condiciones del contrato de uso del equipo</span></label>
             <div class="ferr" id="ferr-contrato">El alumno debe aceptar el contrato para continuar</div>
             <button type="button" class="btn btn-primary btn-full" id="btn" onclick="registrar()">Confirmar y registrar préstamo</button>
@@ -327,19 +372,8 @@
                 <div class="rsec">
                     <div class="rsec-title">Términos y condiciones</div>
                     <div class="rsec-contract">
-                        <strong>El alumno se compromete a:</strong>
-                        <ol>
-                            <li>Usar el equipo solo para fines académicos autorizados y no retirarlo del colegio sin permiso.</li>
-                            <li>El préstamo es personal e intransferible: no cederlo, alquilarlo ni venderlo.</li>
-                            <li>Revisar el equipo y sus accesorios al recibirlo y reportar daños previos.</li>
-                            <li>Devolverlo en la fecha, hora y lugar acordados, con todos sus accesorios y en el mismo estado (salvo desgaste normal).</li>
-                            <li>No instalar software ni modificar configuración, cuentas o etiquetas sin autorización.</li>
-                            <li>Reportar de inmediato cualquier daño, falla, pérdida o robo.</li>
-                            <li>Asumir la reparación por mal uso y el valor de reposición en caso de pérdida, robo o destrucción.</li>
-                            <li>Aceptar la multa diaria por retraso desde el día siguiente al vencimiento, según la tarifa informada al prestar.</li>
-                            <li>La aceptación digital equivale a la firma manuscrita.</li>
-                            <li>El incumplimiento permite suspender futuros préstamos y el acceso al sistema, sin perjuicio de las medidas disciplinarias.</li>
-                        </ol>
+                        <strong>El alumno se compromete a: <span id="r-contrato-ver"></span></strong>
+                        <ol id="contrato-recibo"></ol>
                     </div>
                 </div>
                 <!-- Observaciones adicionales -->
@@ -380,45 +414,82 @@ if(!localStorage.getItem('encargado')) window.location.href = '/';
 let alumnos = [], equipos = [], enc = null;
 // Guardián que advierte si hay cambios sin guardar al salir.
 var formGuard = null;
+// Estados posibles del equipo al entregarlo.
+const ESTADOS_EQUIPO = {'1':'Excelente','2':'Bueno','3':'Dañado'};
+// Versión y fuente única del contrato, compartida por formulario y comprobante.
+const CONTRATO_VERSION = '1.0';
+const CONTRATO = [
+    'Usar el equipo solo para fines académicos autorizados y no retirarlo del colegio sin permiso.',
+    'El préstamo es personal e intransferible: no cederlo, alquilarlo ni venderlo.',
+    'Revisar el equipo y sus accesorios al recibirlo y reportar daños previos.',
+    'Devolverlo en la fecha, hora y lugar acordados, con todos sus accesorios y en el mismo estado (salvo desgaste normal).',
+    'No instalar software ni modificar configuración, cuentas o etiquetas sin autorización.',
+    'Reportar de inmediato cualquier daño, falla, pérdida o robo.',
+    'Asumir la reparación por mal uso y el valor de reposición en caso de pérdida, robo o destrucción.',
+    'Aceptar la multa diaria por retraso desde el día siguiente al vencimiento, según la tarifa informada al prestar.',
+    'La aceptación digital equivale a la firma manuscrita.',
+    'El incumplimiento permite suspender futuros préstamos y el acceso al sistema, sin perjuicio de las medidas disciplinarias.'
+];
+
+/** Renderiza el contrato en el formulario y en el comprobante desde una sola fuente. */
+function renderContrato(){
+    document.getElementById('contrato-form').innerHTML = CONTRATO.map((t,i)=>`${i+1}. ${esc(t)}`).join('<br>');
+    document.getElementById('contrato-recibo').innerHTML = CONTRATO.map(t=>'<li>'+esc(t)+'</li>').join('');
+    document.getElementById('r-contrato-ver').textContent = 'v'+CONTRATO_VERSION;
+    const resumen = document.querySelector('.contract-details summary');
+    if(resumen) resumen.textContent = 'Leer términos y condiciones del contrato (v'+CONTRATO_VERSION+')';
+}
 
 /** Carga alumnos y equipos disponibles y completa los selectores. */
 async function cargar(){
+    const avisoCarga = document.getElementById('aviso-carga');
+    const avisoAlu = document.getElementById('aviso-alumno');
+    const avisoEq = document.getElementById('aviso-equipo');
     document.getElementById('alumno').innerHTML = '<option value="">Cargando alumnos...</option>';
     document.getElementById('equipo').innerHTML = '<option value="">Cargando equipos...</option>';
+    avisoCarga.classList.remove('show');
     // Recupera al encargado que está registrando el préstamo.
     enc = JSON.parse(localStorage.getItem('encargado')||'{}');
     if(enc.id_encargado){
         document.getElementById('enc-nombre').textContent = `${enc.nombre} ${enc.apellido}`;
         document.getElementById('enc-codigo').textContent = `Código: ${enc.codigo} · ${enc.cargo||'Encargado'}`;
     }
-    // Consulta ambas fuentes en paralelo para reducir la espera.
-    const [ar,er] = await Promise.all([apiFetch('/alumnos/disponibles'),apiFetch('/equipos/disponibles')]);
-    if(!ar.ok||!er.ok){st('Error al cargar datos','t-err');return;}
-    alumnos = await safeJson(ar);
-    equipos = await safeJson(er);
-    const as = document.getElementById('alumno');
-    const avisoAlu = document.getElementById('aviso-alumno');
-    if(!alumnos.length){
-        avisoAlu.classList.add('show');
-    } else {
+    try{
+        // Consulta ambas fuentes en paralelo para reducir la espera.
+        const [ar,er] = await Promise.all([apiFetch('/alumnos/disponibles'),apiFetch('/equipos/disponibles')]);
+        if(!ar.ok||!er.ok) throw new Error('carga');
+        alumnos = await safeJson(ar);
+        equipos = await safeJson(er);
+        const as = document.getElementById('alumno');
+        if(!alumnos.length){
+            avisoAlu.classList.add('show');
+        } else {
+            avisoAlu.classList.remove('show');
+            alumnos.forEach(a=>{const o=document.createElement('option');o.value=a.id_alumno;o.textContent=`${a.codigo_alumno} — ${a.nombre} ${a.apellido}`;as.appendChild(o);});
+        }
+        const es = document.getElementById('equipo');
+        if(!equipos.length){
+            avisoEq.classList.add('show');
+        } else {
+            avisoEq.classList.remove('show');
+            equipos.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+        }
+        try{crearSelectBusqueda('alumno')}catch(e){}
+        try{crearSelectBusqueda('equipo')}catch(e){}
+        checkFormComplete();
+    }catch(e){
+        alumnos = [];
+        equipos = [];
+        document.getElementById('alumno').innerHTML = '<option value="">Error al cargar</option>';
+        document.getElementById('equipo').innerHTML = '<option value="">Error al cargar</option>';
         avisoAlu.classList.remove('show');
-        alumnos.forEach(a=>{const o=document.createElement('option');o.value=a.id_alumno;o.textContent=`${a.codigo_alumno} — ${a.nombre} ${a.apellido}`;as.appendChild(o);});
-    }
-    const es = document.getElementById('equipo');
-    const avisoEq = document.getElementById('aviso-equipo');
-    if(!equipos.length){
-        avisoEq.classList.add('show');
-    } else {
         avisoEq.classList.remove('show');
-        equipos.forEach(e=>{const o=document.createElement('option');o.value=e.id_equipo;o.textContent=`${e.nombre} · ${e.tipo} · ${e.marca}`;es.appendChild(o);});
+        avisoCarga.classList.add('show');
+        st('Error al cargar datos','t-err');
     }
-    try{crearSelectBusqueda('alumno')}catch(e){console.warn('ss alumno',e)}
-    try{crearSelectBusqueda('equipo')}catch(e){console.warn('ss equipo',e)}
-    console.log('ss: alumno=',!!document.querySelector('#alumno+.ss-wrap'),'equipo=',!!document.querySelector('#equipo+.ss-wrap'));
-    checkFormComplete();
 }
 
-/** Convierte un select nativo en un desplegable con búsqueda y teclado. */
+/** Convierte un select nativo en un desplegable con búsqueda, teclado y ARIA. */
 function crearSelectBusqueda(id){
   const sel=document.getElementById(id);
   if(!sel||sel._ssInit)return;
@@ -428,20 +499,38 @@ function crearSelectBusqueda(id){
   const trigger=document.createElement('button');
   trigger.type='button';
   trigger.className='ss-trigger';
+  trigger.id='ss-'+id;
+  trigger.setAttribute('aria-haspopup','listbox');
+  trigger.setAttribute('aria-expanded','false');
   trigger.innerHTML='<span>'+sel.options[sel.selectedIndex].text+'</span><svg class="ss-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4.5l3 3 3-3"/></svg>';
   const drop=document.createElement('div');
   drop.className='ss-drop';
   drop.innerHTML='<div class="ss-search"><input type="text" placeholder="Buscar..." autocomplete="off"></div><div class="ss-options"></div>';
+  const list=drop.querySelector('.ss-options');
+  list.id='ss-list-'+id;
+  list.setAttribute('role','listbox');
+  trigger.setAttribute('aria-controls',list.id);
+  // Asocia la etiqueta visible con el disparador accesible.
+  const etiqueta=sel.closest('.ig')?.querySelector('label');
+  if(etiqueta){etiqueta.htmlFor=trigger.id;trigger.setAttribute('aria-label',etiqueta.textContent.trim());}
   sel.parentNode.insertBefore(wrap,sel);
   wrap.appendChild(trigger);
   wrap.appendChild(drop);
   wrap.appendChild(sel);
   sel.style.display='none';
   const input=drop.querySelector('.ss-search input');
-  const list=drop.querySelector('.ss-options');
+  let hi=-1;
+  function items(){return Array.prototype.slice.call(list.querySelectorAll('.ss-opt'));}
+  function setHi(i){
+    const opts=items();
+    opts.forEach(function(el,j){el.classList.toggle('highlight',j===i);});
+    if(opts[i])opts[i].scrollIntoView({block:'nearest'});
+    hi=i;
+  }
   // Filtra las opciones por texto normalizado y muestra el código cuando existe.
   function render(f){
     var q=normalizeText(f||'');
+    hi=-1;
     list.innerHTML='';
     var opts=sel.querySelectorAll('option');
     var found=false;
@@ -452,48 +541,53 @@ function crearSelectBusqueda(id){
       found=true;
       var d=document.createElement('div');
       d.className='ss-opt'+(o.selected?' sel':'');
+      d.setAttribute('role','option');
+      d.setAttribute('aria-selected',o.selected?'true':'false');
       var code='';
-      var m=o.textContent.match(/^([\w-]+)\s*(—|·)\s*/);
-      if(m)code='<span class="ss-code">'+esc(m[1])+'</span>';
-      d.innerHTML=code+'<span>'+esc(o.textContent)+'</span>';
+      var label=o.textContent;
+      var m=label.match(/^([\w-]+)\s*(—|·)\s*/);
+      if(m){code='<span class="ss-code">'+esc(m[1])+'</span>';label=label.slice(m[0].length);}
+      d.innerHTML=code+'<span>'+esc(label)+'</span>';
       d.dataset.value=o.value;
       d.addEventListener('click',function(e){
         e.stopPropagation();
         sel.value=this.dataset.value;
         sel.dispatchEvent(new Event('change',{bubbles:true}));
         closeDrop();
+        trigger.focus();
       });
       list.appendChild(d);
     });
     if(!found)list.innerHTML='<div class="ss-empty">Sin resultados</div>';
   }
+  function openDrop(){
+    wrap.classList.add('ss-open');
+    trigger.setAttribute('aria-expanded','true');
+    input.value='';
+    render('');
+    input.focus();
+    document.addEventListener('click',docClose);
+  }
   function closeDrop(){
     wrap.classList.remove('ss-open');
+    trigger.setAttribute('aria-expanded','false');
     document.removeEventListener('click',docClose);
   }
   function docClose(e){
     if(!wrap.contains(e.target))closeDrop();
   }
   input.addEventListener('input',function(){render(this.value);});
-  // Enter selecciona la primera coincidencia; Escape cierra el desplegable.
+  // Flechas para recorrer opciones, Enter para elegir y Escape para cerrar.
   input.addEventListener('keydown',function(e){
-    if(e.key==='Enter'){
-      var first=list.querySelector('.ss-opt:not(.sel)');
-      if(first)first.click();
-    }
-    if(e.key==='Escape')closeDrop();
+    var opts=items();
+    if(e.key==='ArrowDown'){e.preventDefault();if(opts.length)setHi((hi+1)%opts.length);}
+    else if(e.key==='ArrowUp'){e.preventDefault();if(opts.length)setHi((hi-1+opts.length)%opts.length);}
+    else if(e.key==='Enter'){e.preventDefault();var target=hi>=0?opts[hi]:opts[0];if(target)target.click();}
+    else if(e.key==='Escape'){closeDrop();trigger.focus();}
   });
   trigger.addEventListener('click',function(e){
     e.stopPropagation();
-    if(wrap.classList.contains('ss-open')){
-      closeDrop();
-    }else{
-      wrap.classList.add('ss-open');
-      input.value='';
-      render('');
-      input.focus();
-      document.addEventListener('click',docClose);
-    }
+    if(wrap.classList.contains('ss-open')) closeDrop(); else openDrop();
   });
   sel.addEventListener('change',function(){
     trigger.querySelector('span').textContent=sel.options[sel.selectedIndex].text;
@@ -503,7 +597,12 @@ function crearSelectBusqueda(id){
    wrap.classList.toggle('ss-selected',!!sel.value);
   // Si no hay opciones reales, deshabilitar
   var realOpts=sel.querySelectorAll('option[value!=""]');
-  if(!realOpts.length){trigger.disabled=true;trigger.style.opacity='0.45';trigger.style.cursor='not-allowed';}
+  if(!realOpts.length){
+    trigger.disabled=true;
+    trigger.style.opacity='0.45';
+    trigger.style.cursor='not-allowed';
+    trigger.setAttribute('aria-disabled','true');
+  }
 }
 
 /** Muestra los datos del alumno seleccionado y refresca el resumen. */
@@ -518,42 +617,118 @@ function onAlumno(){
     checkFormComplete();
 }
 
+/** Formatea una fecha local como valor de input datetime-local. */
+function toDatetimeLocal(d){
+    const pad=n=>String(n).padStart(2,'0');
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+
+/** Ajusta la devolución mínima al mayor entre la fecha del préstamo y ahora. */
+function syncFechaMin(){
+    const fp=document.getElementById('fecha_prestamo').value;
+    const ahora=toDatetimeLocal(new Date());
+    document.getElementById('fecha_dev').min=(fp&&fp>ahora)?fp:ahora;
+}
+
+/** Fija la devolución a N días desde ahora o desde el préstamo si es posterior. */
+function setDevolucion(dias){
+    const fp=document.getElementById('fecha_prestamo').value;
+    const ahora=new Date();
+    const base=(fp&&new Date(fp)>ahora)?new Date(fp):ahora;
+    if(isNaN(base.getTime())) return;
+    document.getElementById('fecha_dev').value=toDatetimeLocal(new Date(base.getTime()+dias*24*60*60*1000));
+    clearF('fecha_dev');
+    actualizarResumen();
+    checkFormComplete();
+}
+
+/** Devuelve la duración legible entre dos fechas. */
+function duracionTexto(fp,fd){
+    const ini=new Date(fp),fin=new Date(fd);
+    if(!fp||!fd||isNaN(ini.getTime())||isNaN(fin.getTime())||fin<=ini) return '';
+    const horas=Math.round((fin-ini)/(60*60*1000));
+    if(horas<24) return horas+' h';
+    const dias=Math.round(horas/24*10)/10;
+    return dias+' día'+(dias!==1?'s':'');
+}
+
+/** Alterna un accesorio frecuente dentro del campo de accesorios. */
+function toggleAccesorio(btn){
+    const acc=btn.dataset.acc;
+    const input=document.getElementById('accesorios');
+    const items=input.value.split(',').map(s=>s.trim()).filter(Boolean);
+    const pos=items.findIndex(x=>normalizeText(x)===normalizeText(acc));
+    if(pos>=0){items.splice(pos,1);btn.classList.remove('active');}
+    else{items.push(acc);btn.classList.add('active');}
+    input.value=items.join(', ');
+    checkFormComplete();
+}
+
+/** Muestra u oculta el campo libre según el motivo elegido. */
+function onMotivoTipo(){
+    clearF('motivo_tipo');
+    clearF('motivo');
+    const tipo=document.getElementById('motivo_tipo').value;
+    const wrap=document.getElementById('motivo-otro-wrap');
+    const input=document.getElementById('motivo');
+    if(tipo==='Otro'){
+        wrap.style.display='';
+        input.value='';
+        input.focus();
+    }else{
+        wrap.style.display='none';
+        input.value=tipo;
+    }
+    actualizarResumen();
+    checkFormComplete();
+}
+
 /** Reconstruye el resumen en vivo con los datos ya elegidos. */
 function actualizarResumen(){
-    const id_a=document.getElementById('alumno').value,id_e=document.getElementById('equipo').value,fechaPrestamo=document.getElementById('fecha_prestamo').value,fecha=document.getElementById('fecha_dev').value,motivo=document.getElementById('motivo').value.trim();
+    const id_a=document.getElementById('alumno').value,id_e=document.getElementById('equipo').value,fechaPrestamo=document.getElementById('fecha_prestamo').value,fecha=document.getElementById('fecha_dev').value,motivo=document.getElementById('motivo').value.trim(),estado=document.getElementById('estado_ini').value;
     if(!id_a||!id_e||!fecha){document.getElementById('resumen').classList.remove('show');return;}
     const a=alumnos.find(x=>x.id_alumno==id_a),e=equipos.find(x=>x.id_equipo==id_e);
     if(!a||!e)return;
+    const duracion=duracionTexto(fechaPrestamo,fecha);
     document.getElementById('resumen-grid').innerHTML=`
         <div class="res-field"><span>Alumno</span><strong>${esc(a.codigo_alumno)} — ${esc(a.nombre)} ${esc(a.apellido)}</strong></div>
         <div class="res-field"><span>Equipo</span><strong>${esc(e.nombre)} · ${esc(e.tipo)}</strong></div>
+        ${estado?'<div class="res-field"><span>Estado inicial</span><strong>'+esc(ESTADOS_EQUIPO[estado]||'—')+'</strong></div>':''}
         ${fechaPrestamo?'<div class="res-field"><span>Fecha del préstamo</span><strong>'+ff(fechaPrestamo)+'</strong></div>':''}
         <div class="res-field"><span>Devolución estimada</span><strong>${ff(fecha)}</strong></div>
+        ${duracion?'<div class="res-field"><span>Duración estimada</span><strong>'+esc(duracion)+'</strong></div>':''}
         ${motivo?'<div class="res-field"><span>Motivo</span><strong>'+esc(motivo)+'</strong></div>':''}`;
     document.getElementById('resumen').classList.add('show');
 }
 
-/** Habilita el botón solo con alumno, equipo, fechas, motivo y contrato. */
+/** Habilita el botón solo con alumno, equipo, fechas, estado, motivo y contrato. */
 function checkFormComplete(){
     const alumno=document.getElementById('alumno').value;
     const equipo=document.getElementById('equipo').value;
     const fechaPrestamo=document.getElementById('fecha_prestamo').value;
     const fecha=document.getElementById('fecha_dev').value;
+    const estado=document.getElementById('estado_ini').value;
+    const motivoTipo=document.getElementById('motivo_tipo').value;
     const motivo=document.getElementById('motivo').value.trim();
-    const accesorios=document.getElementById('accesorios').value.trim();
-    const obs=document.getElementById('obs').value.trim();
     const contrato=document.getElementById('contrato').checked;
-    const completo=alumno&&equipo&&fechaPrestamo&&fecha&&motivo&&contrato;
+    const motivoOk=motivoTipo&&(motivoTipo!=='Otro'||motivo);
+    const completo=alumno&&equipo&&fechaPrestamo&&fecha&&estado&&motivoOk&&contrato;
     document.getElementById('btn').disabled=!completo;
 }
 
 /** Valida campos obligatorios y coherencia de las fechas antes de enviar. */
 function validar(){
     let ok=true;
-    [{id:'alumno'},{id:'equipo'},{id:'fecha_prestamo'},{id:'fecha_dev'},{id:'motivo'}].forEach(c=>{
+    [{id:'alumno'},{id:'equipo'},{id:'fecha_prestamo'},{id:'fecha_dev'},{id:'estado_ini'},{id:'motivo_tipo'}].forEach(c=>{
         const el=document.getElementById(c.id);
         if(!el.value.trim()){el.classList.add('err');document.getElementById('ferr-'+c.id).classList.add('show');ok=false;}
     });
+    // El motivo libre solo es obligatorio cuando se elige "Otro".
+    if(document.getElementById('motivo_tipo').value==='Otro'&&!document.getElementById('motivo').value.trim()){
+        document.getElementById('motivo').classList.add('err');
+        document.getElementById('ferr-motivo').classList.add('show');
+        ok=false;
+    }
     const fechaPrestamo=document.getElementById('fecha_prestamo').value;
     const fechaDev=document.getElementById('fecha_dev').value;
     // El préstamo no puede registrarse en el futuro ni devolverse antes de salir.
@@ -592,7 +767,7 @@ async function registrar(){
     (async()=>{
     // Enviamos los datos del préstamo al servidor
     try{
-        const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,fecha_prestamo:fechaPrestamo,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:true})});
+        const r=await apiFetch('/prestamos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id_alumno:id_a,id_equipo:id_e,fecha_prestamo:fechaPrestamo,fecha_devolucion_estimada:fecha,estado_inicial_equipo:estado_ini,motivo,accesorios,observaciones:obs,acepto_contrato:document.getElementById('contrato').checked})});
         const d = await safeJson(r);
         // Si el registro fue exitoso
         if(r.ok){
@@ -607,7 +782,6 @@ async function registrar(){
             const ahora=new Date();
             const hoy=ahora.toLocaleDateString('es-PY',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
             const numRec=String(d.id_prestamo).padStart(4,'0');
-            const estMap={'1':'Excelente','2':'Bueno','3':'Dañado'};
             document.getElementById('r-recibo').textContent=d.codigo_prestamo||`PRE-${numRec}`;
             document.getElementById('r-alu').textContent=`${a.nombre} ${a.apellido}`;
             document.getElementById('r-cod').textContent=a.codigo_alumno;
@@ -617,7 +791,7 @@ async function registrar(){
             document.getElementById('r-eq').textContent=e.nombre;
             document.getElementById('r-tipo').textContent=e.tipo;
             document.getElementById('r-marca').textContent=e.marca;
-            document.getElementById('r-est').textContent=estMap[estado_ini]||'—';
+            document.getElementById('r-est').textContent=ESTADOS_EQUIPO[estado_ini]||'—';
             document.getElementById('r-acc').textContent=accesorios||'Ninguno';
             document.getElementById('r-mot').textContent=motivo;
             document.getElementById('r-fp').textContent=ff(d.fecha_prestamo);
@@ -661,13 +835,14 @@ window.onload=function(){
     initPage({
         spotlight: [{label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Historial',sub:'Trazabilidad completa',url:'/historial/historial.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
         onReady: function(){
+            renderContrato();
             formGuard = initUnsavedChangesGuard('.form-card input, .form-card select, .form-card textarea');
-            // Precarga la fecha actual y limita la devolución a partir de ese momento.
-            const now=new Date(),pad=n=>String(n).padStart(2,'0');
-            const fechaActual=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
-            const fechaPrestamo=document.getElementById('fecha_prestamo');
-            fechaPrestamo.value=fechaActual;
+            // Precarga la fecha actual y propone devolución a 24 horas.
+            const now=new Date();
+            const fechaActual=toDatetimeLocal(now);
+            document.getElementById('fecha_prestamo').value=fechaActual;
             document.getElementById('fecha_dev').min=fechaActual;
+            document.getElementById('fecha_dev').value=toDatetimeLocal(new Date(now.getTime()+24*60*60*1000));
             cargar();
             checkFormComplete();
         }

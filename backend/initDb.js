@@ -283,7 +283,9 @@ async function initDatabase() {
     { n: 27, tipo: 'columna', tabla: 'devoluciones', nombre: 'motivo_anulacion', sql: 'ALTER TABLE devoluciones ADD COLUMN motivo_anulacion VARCHAR(300) DEFAULT NULL AFTER anulado' },
     { n: 28, tipo: 'columna', tabla: 'devoluciones', nombre: 'fecha_anulacion', sql: 'ALTER TABLE devoluciones ADD COLUMN fecha_anulacion DATETIME DEFAULT NULL AFTER motivo_anulacion' },
     { n: 29, tipo: 'indice', tabla: 'prestamos', nombre: 'idx_prestamos_anulado', sql: 'CREATE INDEX idx_prestamos_anulado ON prestamos(anulado)' },
-    { n: 30, tipo: 'indice', tabla: 'devoluciones', nombre: 'idx_devoluciones_anulado', sql: 'CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado)' }
+    { n: 30, tipo: 'indice', tabla: 'devoluciones', nombre: 'idx_devoluciones_anulado', sql: 'CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado)' },
+    { n: 31, tipo: 'columna', tabla: 'prestamos', nombre: 'contrato_version', sql: 'ALTER TABLE prestamos ADD COLUMN contrato_version VARCHAR(10) DEFAULT NULL AFTER multa_base' },
+    { n: 32, tipo: 'columna', tabla: 'prestamos', nombre: 'fecha_aceptacion', sql: 'ALTER TABLE prestamos ADD COLUMN fecha_aceptacion DATETIME DEFAULT NULL AFTER contrato_version' }
   ];
 
   for (const m of migraciones) {
