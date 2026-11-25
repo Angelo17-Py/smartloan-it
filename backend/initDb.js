@@ -285,7 +285,17 @@ async function initDatabase() {
     { n: 29, tipo: 'indice', tabla: 'prestamos', nombre: 'idx_prestamos_anulado', sql: 'CREATE INDEX idx_prestamos_anulado ON prestamos(anulado)' },
     { n: 30, tipo: 'indice', tabla: 'devoluciones', nombre: 'idx_devoluciones_anulado', sql: 'CREATE INDEX idx_devoluciones_anulado ON devoluciones(anulado)' },
     { n: 31, tipo: 'columna', tabla: 'prestamos', nombre: 'contrato_version', sql: 'ALTER TABLE prestamos ADD COLUMN contrato_version VARCHAR(10) DEFAULT NULL AFTER multa_base' },
-    { n: 32, tipo: 'columna', tabla: 'prestamos', nombre: 'fecha_aceptacion', sql: 'ALTER TABLE prestamos ADD COLUMN fecha_aceptacion DATETIME DEFAULT NULL AFTER contrato_version' }
+    { n: 32, tipo: 'columna', tabla: 'prestamos', nombre: 'fecha_aceptacion', sql: 'ALTER TABLE prestamos ADD COLUMN fecha_aceptacion DATETIME DEFAULT NULL AFTER contrato_version' },
+    { n: 33, tipo: 'columna', tabla: 'devoluciones', nombre: 'monto_accesorios', sql: 'ALTER TABLE devoluciones ADD COLUMN monto_accesorios DECIMAL(12,2) NOT NULL DEFAULT 0 AFTER monto_dano' },
+    { n: 34, tipo: 'columna', tabla: 'devoluciones', nombre: 'danos_detalle', sql: 'ALTER TABLE devoluciones ADD COLUMN danos_detalle TEXT DEFAULT NULL AFTER observacion_dano' },
+    { n: 35, tipo: 'columna', tabla: 'devoluciones', nombre: 'accesorios_devueltos', sql: 'ALTER TABLE devoluciones ADD COLUMN accesorios_devueltos VARCHAR(300) DEFAULT NULL' },
+    { n: 36, tipo: 'columna', tabla: 'devoluciones', nombre: 'accesorios_faltantes', sql: 'ALTER TABLE devoluciones ADD COLUMN accesorios_faltantes VARCHAR(300) DEFAULT NULL' },
+    { n: 37, tipo: 'columna', tabla: 'devoluciones', nombre: 'estado_pago', sql: "ALTER TABLE devoluciones ADD COLUMN estado_pago ENUM('Pendiente','Pagado','Parcial','Condonado') NOT NULL DEFAULT 'Pendiente'" },
+    { n: 38, tipo: 'columna', tabla: 'devoluciones', nombre: 'monto_pagado', sql: 'ALTER TABLE devoluciones ADD COLUMN monto_pagado DECIMAL(12,2) NOT NULL DEFAULT 0' },
+    { n: 39, tipo: 'columna', tabla: 'devoluciones', nombre: 'metodo_pago', sql: 'ALTER TABLE devoluciones ADD COLUMN metodo_pago VARCHAR(30) DEFAULT NULL' },
+    { n: 40, tipo: 'columna', tabla: 'devoluciones', nombre: 'fecha_pago', sql: 'ALTER TABLE devoluciones ADD COLUMN fecha_pago DATETIME DEFAULT NULL' },
+    { n: 41, tipo: 'columna', tabla: 'devoluciones', nombre: 'motivo_condonacion', sql: 'ALTER TABLE devoluciones ADD COLUMN motivo_condonacion VARCHAR(300) DEFAULT NULL' },
+    { n: 42, sql: "UPDATE devoluciones SET estado_pago='Pagado' WHERE total_cobro=0 AND estado_pago='Pendiente'" }
   ];
 
   for (const m of migraciones) {
