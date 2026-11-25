@@ -35,11 +35,10 @@
         .em{text-align:center;color:var(--dim);padding:16px;font-size:var(--text-sm);}
 
         /* Barra de búsqueda */
-        .search-row{display:flex;gap:10px;}
+        .search-row{display:flex;gap:10px;margin-bottom:12px;}
         .si{flex:1;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:var(--text-sm);outline:none;transition:border-color var(--duration-fast) var(--ease-out);}
         .si:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);}
-        .btn-buscar{background:var(--primary);color:var(--on-primary);border:none;padding:0 18px;border-radius:10px;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all var(--duration-fast) var(--ease-out);white-space:nowrap;}
-        .btn-buscar:hover{opacity:0.9;}
+        .search-meta{font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px;}
 
         /* Banner informativo del préstamo */
         #ps{display:none;}#ps.show{display:block;animation:slideUp 0.35s var(--ease-out) both;}
@@ -168,7 +167,6 @@
             .pres-item{flex-direction:column;align-items:flex-start;gap:8px}
             .pi-badge{align-self:flex-start}
             .search-row{flex-direction:column}
-            .btn-buscar{width:100%;padding:10px}
             .info-grid{grid-template-columns:1fr 1fr}
             .info-banner{padding:12px 14px}
             .info-banner-header h3{font-size:0.82rem}
@@ -229,15 +227,12 @@
     <div id="p1">
         <div class="card reveal">
             <div class="section-title">Préstamos activos - selecciona uno para procesar</div>
-            <div id="lista"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div></div></div>
-        </div>
-        <div class="card reveal">
-            <!-- Búsqueda por nombre de alumno -->
-            <div class="section-title">O busca por nombre del alumno</div>
+            <!-- Búsqueda en vivo por alumno, código o equipo -->
             <div class="search-row">
-                <input type="text" class="si" id="idp" placeholder="Nombre, apellido o codigo...">
-                <button class="btn-buscar" id="btnBuscar" onclick="buscar()">Buscar</button>
+                <input type="text" class="si" id="idp" placeholder="Buscar por nombre, apellido, código o equipo..." autocomplete="off" oninput="filtrarActivos()">
             </div>
+            <div class="search-meta" id="meta"></div>
+            <div id="lista"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div></div></div>
         </div>
     </div>
 
@@ -430,29 +425,59 @@ let pActual=null;
 /** Quita el estado de error de un campo y su mensaje. */
 function clearFD(f){document.getElementById(f)?.classList.remove('err');document.getElementById('ferr-'+f)?.classList.remove('show');}
 
-/** Carga los préstamos activos y marca cuáles están vencidos. */
+/** Carga los préstamos activos y los guarda para el filtro local. */
+let activosCache=[];
+let activosListos=false;
 async function cargarActivos(){
     const lista=document.getElementById('lista');
     try{
         const r=await apiFetch('/prestamos');
         if(!r.ok){lista.innerHTML='<p class="em">Error al cargar préstamos</p>';return;}
-        const activos=(await r.json()).filter(p=>p.estado==='ACTIVO');
-        if(!activos.length){lista.innerHTML='<p class="em">No hay préstamos activos pendientes de devolución</p>';return;}
-        // Calcula el retraso en días completos para cada préstamo.
-        const ahora=new Date();
-        lista.innerHTML=activos.map((p,i)=>{
-            const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
-            const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
-            var sc='animate-fi-'+Math.min(i+1,10);
-            return `<div class="pres-item ${sc}" id="item-${p.id_prestamo}" onclick="selec(${p.id_prestamo})">
-                <div class="pi-left">
-                    <h4>${p.codigo_prestamo||'#'+p.id_prestamo} &mdash; ${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)} <span style="font-size:var(--text-xs);color:var(--dim)">(${esc(p.codigo_alumno)})</span></h4>
-                    <p>${esc(p.equipo)} &middot; ${esc(p.tipo)} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
-                </div>
-                <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al día'}</span>
-            </div>`;
-        }).join('');
+        activosCache=(await r.json()).filter(p=>p.estado==='ACTIVO');
+        activosListos=true;
+        filtrarActivos();
     }catch(e){lista.innerHTML='<p class="em">Error al conectar con el servidor</p>';}
+}
+
+/** Filtra en vivo la lista de préstamos activos por alumno, código o equipo. */
+function filtrarActivos(){
+    if(!activosListos) return;
+    const lista=document.getElementById('lista'),meta=document.getElementById('meta');
+    const q=normalizeText(document.getElementById('idp').value).trim();
+    if(!activosCache.length){
+        meta.textContent='';
+        lista.innerHTML='<p class="em">No hay préstamos activos pendientes de devolución</p>';
+        return;
+    }
+    const activos=q?activosCache.filter(p=>
+        normalizeText(p.codigo_prestamo||'').includes(q) ||
+        normalizeText((p.alumno_nombre||'')+' '+(p.alumno_apellido||'')).includes(q) ||
+        normalizeText((p.alumno_apellido||'')+' '+(p.alumno_nombre||'')).includes(q) ||
+        normalizeText(p.codigo_alumno||'').includes(q) ||
+        normalizeText(p.equipo||'').includes(q) ||
+        normalizeText(p.tipo||'').includes(q)
+    ):activosCache;
+    meta.textContent=q
+        ? `${activos.length} de ${activosCache.length} préstamos activos`
+        : `${activosCache.length} préstamo${activosCache.length!==1?'s':''} activo${activosCache.length!==1?'s':''}`;
+    if(!activos.length){
+        lista.innerHTML='<p class="em">No hay préstamos activos que coincidan con la búsqueda</p>';
+        return;
+    }
+    // Calcula el retraso en días completos para cada préstamo.
+    const ahora=new Date();
+    lista.innerHTML=activos.map((p,i)=>{
+        const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
+        const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
+        var sc='animate-fi-'+Math.min(i+1,10);
+        return `<div class="pres-item ${sc}" id="item-${p.id_prestamo}" onclick="selec(${p.id_prestamo})">
+            <div class="pi-left">
+                <h4>${p.codigo_prestamo||'#'+p.id_prestamo} &mdash; ${esc(p.alumno_nombre)} ${esc(p.alumno_apellido)} <span style="font-size:var(--text-xs);color:var(--dim)">(${esc(p.codigo_alumno)})</span></h4>
+                <p>${esc(p.equipo)} &middot; ${esc(p.tipo)} &middot; Vence: ${ff(p.fecha_devolucion_estimada)}</p>
+            </div>
+            <span class="pi-badge ${tard?'pi-late':'pi-ok'}">${tard?`${dias}d retraso`:'Al día'}</span>
+        </div>`;
+    }).join('');
 }
 
 /** Marca visualmente el préstamo elegido y carga su detalle. */
@@ -460,49 +485,6 @@ async function selec(id){
     document.querySelectorAll('.pres-item').forEach(el=>el.classList.remove('sel'));
     document.getElementById(`item-${id}`)?.classList.add('sel');
     await cargarPres(id);
-}
-/** Busca préstamos activos por nombre, apellido o código del alumno. */
-async function buscar(){
-    const q=normalizeText(document.getElementById('idp').value).trim();
-    if(!q){st('Ingresa un nombre, apellido o codigo de alumno');return;}
-    const btn=document.getElementById('btnBuscar');btn.disabled=true;btn.textContent='Buscando...';
-    try{
-        const r=await apiFetch('/prestamos');
-        if(!r.ok){st('Error al buscar');return;}
-        const todos=await r.json();
-        // Acepta nombre y apellido en cualquier orden, además del código.
-        const activos=todos.filter(function(p){
-            var nombreCompleto = normalizeText((p.alumno_nombre||'') + ' ' + (p.alumno_apellido||''));
-            var nombreInverso  = normalizeText((p.alumno_apellido||'') + ' ' + (p.alumno_nombre||''));
-            return p.estado==='ACTIVO' && (
-                nombreCompleto.includes(q) ||
-                nombreInverso.includes(q) ||
-                normalizeText(p.codigo_alumno||'').includes(q)
-            );
-        });
-        if(!activos.length){st('No se encontró ningún préstamo activo para ese alumno');return;}
-        // Si la búsqueda encuentra un solo resultado, lo seleccionamos directo
-        if(activos.length===1){
-            await cargarPres(activos[0].id_prestamo);
-        } else {
-            const lista=document.getElementById('lista');
-            const ahora=new Date();
-            lista.innerHTML='<div style="font-size:0.75rem;color:var(--dim);font-weight:700;margin-bottom:10px">'+activos.length+' préstamos encontrados — selecciona uno:</div>'+
-            activos.map(function(p,i){
-                const v=new Date(p.fecha_devolucion_estimada),tard=ahora>v;
-                const dias=tard?Math.ceil((ahora-v)/(1000*60*60*24)):0;
-                var sc='animate-fi-'+Math.min(i+1,10);
-                return '<div class="pres-item '+sc+'" id="item-'+p.id_prestamo+'" onclick="selec('+p.id_prestamo+')">'+
-                    '<div class="pi-left">'+
-                    '<h4>'+(p.codigo_prestamo||'#'+p.id_prestamo)+' &mdash; '+esc(p.alumno_nombre)+' '+esc(p.alumno_apellido)+' <span style="font-size:var(--text-xs);color:var(--dim)">('+esc(p.codigo_alumno)+')</span></h4>'+
-                    '<p>'+esc(p.equipo)+' &middot; '+esc(p.tipo)+' &middot; Vence: '+ff(p.fecha_devolucion_estimada)+'</p>'+
-                    '</div>'+
-                    '<span class="pi-badge '+(tard?'pi-late':'pi-ok')+'">'+(tard?dias+'d retraso':'Al día')+'</span>'+
-                    '</div>';
-            }).join('');
-        }
-    }catch(e){st('Error de conexión');}
-    finally{btn.disabled=false;btn.textContent='Buscar';}
 }
 /** Obtiene el detalle actualizado del préstamo y abre el paso 2. */
 async function cargarPres(id){
@@ -553,6 +535,7 @@ function volver(){
     document.getElementById('ps').classList.remove('show');
     document.getElementById('fd').classList.remove('show');
     document.getElementById('idp').value='';
+    filtrarActivos();
     document.querySelectorAll('.pres-item').forEach(el=>el.classList.remove('sel'));
     setStep(1);resetForm();
 }
@@ -712,8 +695,6 @@ function setStep(n){
     document.getElementById('l12').classList.toggle('done',n>1);
     document.getElementById('l23').classList.toggle('done',n>2);
 }
-// Atajo de teclado para buscar al presionar Enter
-document.getElementById('idp').addEventListener('keypress',e=>{if(e.key==='Enter')buscar();});
 // Inicialización: carga la multa y, si llega ?prestamo=, selecciona ese préstamo.
 window.onload=function(){
     initPage({

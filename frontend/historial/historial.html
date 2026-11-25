@@ -30,6 +30,14 @@
         .sub-text{font-size:var(--text-xs);color:var(--dim);margin-top:2px;}
         .em{text-align:center;padding:40px;color:var(--dim);font-size:var(--text-sm);}
         .highlight{background:var(--primary-glow);border-radius:3px;padding:0 2px;}
+        /* Auditoría: ancho automático para no dejar columnas vacías y texto
+           alineado a la izquierda (la última columna hereda nowrap global y
+           recortaría el detalle). */
+        #ta table{table-layout:auto;}
+        #ta th,#ta td{text-align:left;}
+        #ta th:nth-child(3),#ta td[data-label="Acción"]{text-align:center;}
+        #ta td[data-label="Fecha"]{white-space:nowrap;}
+        .table-wrap table tbody td.td-detalle{white-space:normal;overflow-wrap:anywhere;line-height:1.45;}
 
         /* Ajustes responsive de la barra de herramientas y las tablas. */
         @media(max-width:900px){main{padding:20px 16px}}
@@ -328,7 +336,7 @@ function renderA(){
         html+='<td data-label="Usuario"><strong>'+resaltar(usuario,q)+'</strong>'+(a.codigo_encargado?'<div class="sub-text">Código: '+esc(a.codigo_encargado)+'</div>':'')+'</td>';
         html+='<td data-label="Acción"><span class="badge '+cls+'">'+esc(a.accion)+'</span></td>';
         html+='<td data-label="Módulo">'+resaltar(modulos[a.entidad]||a.entidad||'—',q)+'</td>';
-        html+='<td data-label="Detalle" style="color:var(--dim);font-size:0.82rem">'+resaltar(a.detalle||'—',q)+'</td>';
+        html+='<td class="td-detalle" data-label="Detalle" style="color:var(--dim);font-size:0.82rem">'+resaltar(a.detalle||'—',q)+'</td>';
         html+='</tr>';
     });
     html+='</tbody></table>';
