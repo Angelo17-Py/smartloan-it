@@ -62,11 +62,10 @@
         .contract-details[open] summary::before{transform:rotate(90deg)}
         .contract-details .contract-box{margin-bottom:0}
         /* Accesorios frecuentes como chips que completan el campo. */
-        .acc-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+        .acc-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
         .acc-chip{padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--dim);font-family:var(--font);font-size:0.72rem;font-weight:700;cursor:pointer;transition:all var(--duration-fast) var(--ease-out)}
         .acc-chip:hover{border-color:var(--primary);color:var(--primary)}
         .acc-chip.active{background:var(--primary-glow);border-color:var(--primary);color:var(--primary)}
-        .opt-tag{font-weight:600;color:var(--muted);letter-spacing:0}
         /* Botón de reintento cuando falla la carga de catálogos. */
         .aviso .aviso-btn{margin-left:8px;padding:4px 10px;border:1px solid var(--primary);border-radius:6px;background:var(--primary-glow);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:800;cursor:pointer}
         /* Estilos de impresión */
@@ -239,7 +238,6 @@
                         <option value="">Seleccionar...</option>
                         <option value="1">Excelente</option>
                         <option value="2">Bueno</option>
-                        <option value="3">Dañado</option>
                     </select>
                     <div class="ferr" id="ferr-estado_ini">Selecciona el estado del equipo</div>
                 </div>
@@ -268,15 +266,15 @@
             </div>
             <div class="g2">
                 <div class="ig">
-                    <label for="accesorios">Accesorios entregados <span class="opt-tag">(opcional)</span></label>
+                    <label for="accesorios">Accesorios entregados</label>
+                    <input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." maxlength="300" oninput="checkFormComplete()">
                     <div class="acc-chips">
                         <button type="button" class="acc-chip" data-acc="Cargador" onclick="toggleAccesorio(this)">Cargador</button>
                         <button type="button" class="acc-chip" data-acc="Mouse" onclick="toggleAccesorio(this)">Mouse</button>
                         <button type="button" class="acc-chip" data-acc="Funda" onclick="toggleAccesorio(this)">Funda</button>
                     </div>
-                    <input id="accesorios" placeholder="Ej: Cargador, Mouse, Funda..." maxlength="300" oninput="checkFormComplete()">
                 </div>
-                <div class="ig"><label for="obs">Observaciones <span class="opt-tag">(opcional)</span></label><input id="obs" placeholder="Notas adicionales..." maxlength="300" oninput="checkFormComplete()"></div>
+                <div class="ig"><label for="obs">Observaciones</label><input id="obs" placeholder="Notas adicionales..." maxlength="300" oninput="checkFormComplete()"></div>
             </div>
             <!-- Resumen del préstamo en vivo -->
             <div class="resumen" id="resumen">
@@ -372,7 +370,7 @@
                 <div class="rsec">
                     <div class="rsec-title">Términos y condiciones</div>
                     <div class="rsec-contract">
-                        <strong>El alumno se compromete a: <span id="r-contrato-ver"></span></strong>
+                        <strong>El alumno se compromete a:</strong>
                         <ol id="contrato-recibo"></ol>
                     </div>
                 </div>
@@ -415,9 +413,8 @@ let alumnos = [], equipos = [], enc = null;
 // Guardián que advierte si hay cambios sin guardar al salir.
 var formGuard = null;
 // Estados posibles del equipo al entregarlo.
-const ESTADOS_EQUIPO = {'1':'Excelente','2':'Bueno','3':'Dañado'};
-// Versión y fuente única del contrato, compartida por formulario y comprobante.
-const CONTRATO_VERSION = '1.0';
+const ESTADOS_EQUIPO = {'1':'Excelente','2':'Bueno'};
+// Fuente única del contrato, compartida por formulario y comprobante.
 const CONTRATO = [
     'Usar el equipo solo para fines académicos autorizados y no retirarlo del colegio sin permiso.',
     'El préstamo es personal e intransferible: no cederlo, alquilarlo ni venderlo.',
@@ -435,9 +432,6 @@ const CONTRATO = [
 function renderContrato(){
     document.getElementById('contrato-form').innerHTML = CONTRATO.map((t,i)=>`${i+1}. ${esc(t)}`).join('<br>');
     document.getElementById('contrato-recibo').innerHTML = CONTRATO.map(t=>'<li>'+esc(t)+'</li>').join('');
-    document.getElementById('r-contrato-ver').textContent = 'v'+CONTRATO_VERSION;
-    const resumen = document.querySelector('.contract-details summary');
-    if(resumen) resumen.textContent = 'Leer términos y condiciones del contrato (v'+CONTRATO_VERSION+')';
 }
 
 /** Carga alumnos y equipos disponibles y completa los selectores. */

@@ -25,7 +25,7 @@ const CONTRATO_VERSION = '1.0';
 exports.crear = async (req, res) => {
   const { id_alumno, id_equipo, fecha_prestamo, fecha_devolucion_estimada,
           estado_inicial_equipo, accesorios, motivo, observaciones, acepto_contrato } = req.body;
-  const estadoIniMap = { 1: 'Excelente', 2: 'Bueno', 3: 'Dañado' };
+  const estadoIniMap = { 1: 'Excelente', 2: 'Bueno' };
   const estadoIni = estadoIniMap[estado_inicial_equipo];
   if (!estadoIni) return res.status(400).json({ mensaje: 'Estado inicial inválido' });
   if (!id_alumno || !id_equipo || !fecha_devolucion_estimada) {
