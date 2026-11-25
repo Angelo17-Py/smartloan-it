@@ -91,6 +91,7 @@
                     </button>
                     <div class="dash-user">
                         <span class="dash-avatar" id="s-avatar" aria-hidden="true">A</span>
+                        <button class="dash-logout" onclick="abrirCambioClave()" type="button" aria-label="Cambiar contraseña">Clave</button>
                         <button class="dash-logout" onclick="logout()" type="button" aria-label="Cerrar sesión">Salir</button>
                     </div>
                 </div>
@@ -250,6 +251,35 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Modal para cambiar la contraseña del usuario actual -->
+<div class="mo" id="mo-clave" role="dialog" aria-modal="true" aria-labelledby="clave-title">
+    <div class="md">
+        <div class="mh"><h3 id="clave-title">Cambiar contraseña</h3><button class="mc" type="button" onclick="cerrarCambioClave()" aria-label="Cerrar">&times;</button></div>
+        <div class="mform">
+            <p class="sub-text" style="margin-bottom:12px">Usá una contraseña de al menos 6 caracteres. La sesión actual se mantiene activa.</p>
+            <div class="ig">
+                <label for="clave-actual">Contraseña actual</label>
+                <input type="password" id="clave-actual" autocomplete="current-password" maxlength="100">
+                <div class="ferr" id="ferr-clave-actual">Ingresá tu contraseña actual</div>
+            </div>
+            <div class="ig">
+                <label for="clave-nueva">Nueva contraseña</label>
+                <input type="password" id="clave-nueva" autocomplete="new-password" maxlength="100">
+                <div class="ferr" id="ferr-clave-nueva">Mínimo 6 caracteres</div>
+            </div>
+            <div class="ig">
+                <label for="clave-nueva2">Confirmar nueva contraseña</label>
+                <input type="password" id="clave-nueva2" autocomplete="new-password" maxlength="100">
+                <div class="ferr" id="ferr-clave-nueva2">Las contraseñas no coinciden</div>
+            </div>
+            <div class="res-btns" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+                <button type="button" class="btn btn-secondary" onclick="cerrarCambioClave()">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnClave" onclick="guardarCambioClave()">Guardar contraseña</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Volver arriba" aria-label="Volver arriba">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>

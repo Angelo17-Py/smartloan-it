@@ -551,11 +551,12 @@ function buildReturnsSheet(wb, returns, meta) {
  * Construye el libro completo a partir de las filas de la consulta.
  * @param {Array<object>} rows Filas de préstamos con su devolución.
  * @param {object} meta Datos de generación (texto y fecha).
+ * @param {object} [filtros] IDs opcionales para exportar solo registros filtrados.
  * @returns {ExcelJS.Workbook}
  */
-function buildWorkbook(rows, meta) {
+function buildWorkbook(rows, meta, filtros) {
   const ahora = ahoraDePared();
-  const loans = rows.map((r) => {
+  const loansTodos = rows.map((r) => {
     const devuelto = !!r.id_devolucion;
     const vencimiento = parseFecha(r.fecha_devolucion_estimada);
     const dias = devuelto
@@ -571,7 +572,13 @@ function buildWorkbook(rows, meta) {
       estado: devuelto ? 'Devuelto' : (dias > 0 ? 'Atrasado' : 'Activo')
     };
   });
-  const returns = loans.filter((l) => l.devuelto);
+  const loans = filtros && filtros.prestamoIds
+    ? loansTodos.filter((l) => filtros.prestamoIds.has(Number(l.id_prestamo)))
+    : loansTodos;
+  const returnsTodos = loansTodos.filter((l) => l.devuelto);
+  const returns = filtros && filtros.devolucionIds
+    ? returnsTodos.filter((l) => filtros.devolucionIds.has(Number(l.id_devolucion)))
+    : returnsTodos;
 
   const wb = new ExcelJS.Workbook();
   wb.creator = 'SmartLoanIT';

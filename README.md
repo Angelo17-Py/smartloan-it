@@ -53,14 +53,14 @@ Está pensado para encargados de equipos institucionales de colegios e instituci
 
 | Módulo | Qué permite |
 |---|---|
-| **Acceso y sesiones** | Inicio de sesión con código de encargado y contraseña. La sesión se transporta en una cookie `HttpOnly`; el cierre de sesión revoca los tokens emitidos. |
+| **Acceso y sesiones** | Inicio de sesión con código de encargado y contraseña. La sesión se transporta en una cookie `HttpOnly`; el cierre de sesión revoca los tokens emitidos. Cada usuario puede cambiar su propia contraseña desde el dashboard. |
 | **Dashboard** | Métricas de inventario y préstamos activos, gráfico donut de distribución de equipos, actividad reciente, reloj y actualización automática cada 30 segundos. |
 | **Alertas de vencimiento** | Campana en el dashboard con préstamos vencidos o por vencer en las próximas 48 horas. Se actualiza cada 60 segundos y al volver a la pestaña. |
 | **Alumnos** | Alta con código automático (`ALU001`, `ALU002`, …), edición, búsqueda sin acentos y baja lógica que conserva el historial. |
 | **Equipos** | Registro y edición de activos; estados `Disponible`, `Prestado` y `En mantenimiento`. El cambio manual solo se permite entre `Disponible` y `En mantenimiento`; la baja solo procede si no hay historial de préstamos. |
-| **Préstamos** | Selección de alumnos sin préstamo activo y equipos disponibles; aceptación del contrato, validación de fechas, código correlativo (`PRE-001`, `PRE-002`, …) y comprobante imprimible con firmas. |
-| **Devoluciones** | Búsqueda de préstamos activos, registro del estado del equipo y de daños, cálculo automático de días de retraso, multa y total aplicado; comprobante imprimible con folio propio (`REC-001`). |
-| **Historial** | Tablas de préstamos y devoluciones con filtros, búsqueda, anulaciones con motivo y reimpresión de comprobantes desde cada movimiento. Incluye una pestaña de auditoría visible solo para administradores. |
+| **Préstamos** | Selección de alumnos sin préstamo activo y equipos disponibles; aceptación del contrato, validación de fechas, código correlativo (`PRE-001`, `PRE-002`, …) y comprobante imprimible con firmas. Los préstamos activos admiten prórroga del vencimiento. |
+| **Devoluciones** | Búsqueda de préstamos activos, registro del estado del equipo y de daños, cálculo automático de días de retraso, multa y total aplicado; comprobante imprimible con folio propio (`REC-001`). Los cobros pendientes o parciales admiten pagos posteriores. |
+| **Historial** | Tablas de préstamos y devoluciones con filtros por estado, texto y rango de fechas; acciones para devolver, prorrogar, registrar pagos, anular con motivo y reimprimir comprobantes. Incluye historial por alumno/equipo, exportación filtrada y una pestaña de auditoría visible solo para administradores. |
 | **Usuarios** | Solo administradores: alta, edición, cambio de rol y contraseña, activación y desactivación de encargados. |
 | **Configuración** | Solo administradores: edición de la multa diaria desde el dashboard. El cambio queda registrado en la auditoría. |
 | **Exportación** | Descarga de un archivo Excel (`.xlsx`) con hojas `Resumen`, `Préstamos` y `Devoluciones`, indicadores, filtros, totales y formato institucional. |
@@ -307,6 +307,7 @@ En la columna **Acceso**, `Autenticado` incluye a administradores y operadores; 
 | GET | `/health` | Estado del servicio | Público |
 | POST | `/encargados/login` | Inicio de sesión; devuelve token y datos del usuario | Público |
 | POST | `/encargados/logout` | Cierra la sesión y revoca los tokens del usuario | Autenticado |
+| PATCH | `/encargados/password` | Cambia la contraseña del usuario actual y renueva su sesión | Autenticado |
 | GET | `/encargados` | Lista usuarios activos e inactivos | Admin |
 | POST | `/encargados` | Crea un usuario | Admin |
 | PUT | `/encargados/:id` | Edita datos, rol y/o contraseña | Admin |
@@ -328,22 +329,27 @@ En la columna **Acceso**, `Autenticado` incluye a administradores y operadores; 
 | GET | `/prestamos/alertas` | Préstamos vencidos o por vencer en 48 h | Autenticado |
 | GET | `/prestamos/:id` | Busca un préstamo activo por ID | Autenticado |
 | POST | `/prestamos` | Registra un préstamo | Autenticado |
+| PATCH | `/prestamos/:id/plazo` | Extiende la fecha de devolución de un préstamo activo | Autenticado |
 | PATCH | `/prestamos/:id/anular` | Anula un préstamo con motivo, sin borrar el registro | Admin |
 | GET | `/devoluciones` | Lista devoluciones vigentes; con `?incluir_anulados=1` incluye las anuladas | Autenticado |
 | POST | `/devoluciones` | Registra una devolución y calcula la multa | Autenticado |
+| PATCH | `/devoluciones/:id/pago` | Registra un pago parcial o total del saldo pendiente | Autenticado |
 | PATCH | `/devoluciones/:id/anular` | Anula una devolución y reactiva el préstamo | Admin |
 | GET | `/configuracion` | Lista los parámetros del sistema | Autenticado |
 | PUT | `/configuracion/:clave` | Actualiza un parámetro | Admin |
 | GET | `/auditoria?limit=` | Lista acciones registradas (máximo 500) | Admin |
 | GET | `/exportar` | Descarga el Excel con préstamos y devoluciones | Autenticado |
+| POST | `/exportar` | Exporta solo los préstamos y devoluciones indicados por el Historial | Autenticado |
 
 Notas de uso:
 
 - `POST /prestamos` exige `acepto_contrato: true` y una fecha de devolución posterior a la fecha actual y a la del préstamo.
 - `PATCH /equipos/:id/estado` recibe `1` (Disponible), `2` (Prestado) o `3` (En mantenimiento). Solo permite alternar manualmente entre `1` y `3`.
 - `POST /devoluciones` calcula en el servidor los días de retraso y la multa. El monto de daño y los accesorios faltantes se registran como datos de la devolución y el total aplicado surge de multa + daño + accesorios.
+- `PATCH /devoluciones/:id/pago` permite cobrar el saldo pendiente de devoluciones en estado `Pendiente` o `Parcial`.
+- `PATCH /prestamos/:id/plazo` solo aplica a préstamos activos y exige una fecha posterior al vencimiento actual.
 - La anulación de préstamos y devoluciones exige un motivo de al menos 5 caracteres y conserva el registro. Para anular un préstamo con devolución vigente, primero debe anularse la devolución.
-- `GET /exportar` genera las hojas `Resumen`, `Préstamos` y `Devoluciones` sin registros anulados, devuelve contadores en las cabeceras y registra la exportación en la auditoría.
+- `GET /exportar` genera las hojas `Resumen`, `Préstamos` y `Devoluciones` sin registros anulados, devuelve contadores en las cabeceras y registra la exportación en la auditoría. `POST /exportar` acepta `prestamo_ids` y `devolucion_ids` para exportar solo lo filtrado.
 
 ## Base de datos
 

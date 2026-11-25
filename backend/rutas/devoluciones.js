@@ -12,6 +12,8 @@ const { apiLimiter } = require('../middleware/rateLimiters');
 router.post('/',    verificarToken, apiLimiter, c.crear);
 // Lista todas las devoluciones.
 router.get('/',     verificarToken, c.listar);
+// Registra un pago posterior sobre una devolución pendiente.
+router.patch('/:id/pago', verificarToken, apiLimiter, c.registrarPago);
 // Anula una devolución y revierte el préstamo: solo admin.
 router.patch('/:id/anular', verificarToken, requireAdmin, apiLimiter, c.anular);
 

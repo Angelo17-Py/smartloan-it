@@ -17,6 +17,8 @@ router.get('/',     verificarToken, c.listar);
 router.get('/alertas', verificarToken, c.alertas);
 // Comprobante de un préstamo activo.
 router.get('/:id',  verificarToken, c.buscar);
+// Extiende el vencimiento de un préstamo activo: cualquier usuario autenticado.
+router.patch('/:id/plazo', verificarToken, apiLimiter, c.extender);
 // Anulación lógica con motivo: solo admin. No borra el registro.
 router.patch('/:id/anular', verificarToken, requireAdmin, apiLimiter, c.anular);
 

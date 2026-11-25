@@ -46,6 +46,13 @@
         #tp,#td{overflow-x:auto;}
         #tp table,#td table{table-layout:auto;}
 
+        /* Filtros por fecha y acciones de exportación. */
+        .date-bar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px}
+        .date-bar label{display:flex;flex-direction:column;gap:4px;color:var(--dim);font-size:var(--text-xs);font-weight:700}
+        .date-bar input{height:34px;padding:0 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-family:var(--font);font-size:var(--text-sm)}
+        .date-bar .date-actions{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+        .date-bar .date-actions .btn-sm{height:34px}
+
         /* Ajustes responsive de la barra de herramientas y las tablas. */
         @media(max-width:900px){main{padding:20px 16px}}
         @media(max-width:600px){
@@ -57,6 +64,10 @@
             .fb{flex:1;text-align:center;padding:var(--space-2) var(--space-2);font-size:var(--text-xs)}
             .search-bar{padding:var(--space-2) var(--space-3);gap:var(--space-2)}
             .search-bar input{font-size:16px!important}
+            .date-bar{align-items:stretch}
+            .date-bar label{flex:1;min-width:130px}
+            .date-bar .date-actions{width:100%;margin-left:0}
+            .date-bar .date-actions .btn-sm{flex:1}
             .page-header{gap:var(--space-3);padding-bottom:var(--space-3)}
             .page-header h1{font-size:var(--text-lg)}
             .page-header p{font-size:var(--text-xs)}
@@ -97,6 +108,15 @@
         <input id="busq" placeholder="Buscar por alumno, equipo, código, motivo..." oninput="buscar()">
         <span class="search-count" id="search-count"></span>
     </div>
+    <!-- Rango de fechas y exportación filtrada -->
+    <div class="date-bar reveal">
+        <label>Desde<input type="date" id="f-desde" onchange="buscar()"></label>
+        <label>Hasta<input type="date" id="f-hasta" onchange="buscar()"></label>
+        <div class="date-actions">
+            <button type="button" class="btn-sm" onclick="limpiarFechas()">Limpiar fechas</button>
+            <button type="button" class="btn-sm btn-avail" id="btn-export-hist" onclick="exportarFiltrado()">Exportar filtrado</button>
+        </div>
+    </div>
     <!-- Tabla de préstamos -->
     <div id="tp" class="table-wrap reveal"><div class="skeleton-card"><div class="skeleton skeleton-line w80"></div><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-line w40"></div><div class="skeleton skeleton-line w70"></div><div class="skeleton skeleton-line w50"></div></div></div>
     <!-- Tabla de devoluciones -->
@@ -122,6 +142,47 @@
         </div>
     </div>
 </div>
+<!-- Modal para extender el plazo de un préstamo activo -->
+<div class="mo" id="mo-plazo" role="dialog" aria-modal="true" aria-labelledby="plazo-title">
+    <div class="md">
+        <div class="mh"><h3 id="plazo-title">Extender plazo</h3><button class="mc" type="button" onclick="cerrarPlazo()" aria-label="Cerrar">&times;</button></div>
+        <div class="mform">
+            <p class="sub-text" id="plazo-desc" style="margin-bottom:12px"></p>
+            <div class="ig">
+                <label for="plazo-fecha">Nueva fecha y hora de devolución</label>
+                <input type="datetime-local" id="plazo-fecha">
+                <div class="ferr" id="ferr-plazo">Indicá una fecha posterior al vencimiento actual</div>
+            </div>
+            <div class="res-btns" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+                <button type="button" class="btn btn-secondary" onclick="cerrarPlazo()">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnPlazo" onclick="confirmarPlazo()">Guardar plazo</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para registrar un pago pendiente -->
+<div class="mo" id="mo-pago" role="dialog" aria-modal="true" aria-labelledby="pago-title">
+    <div class="md">
+        <div class="mh"><h3 id="pago-title">Registrar pago</h3><button class="mc" type="button" onclick="cerrarPago()" aria-label="Cerrar">&times;</button></div>
+        <div class="mform">
+            <p class="sub-text" id="pago-desc" style="margin-bottom:12px"></p>
+            <div class="ig">
+                <label for="pago-monto">Monto a pagar (Gs.)</label>
+                <input type="number" id="pago-monto" min="1" step="1000" inputmode="numeric">
+                <div class="ferr" id="ferr-pago-monto">Ingresá un monto mayor a 0 y menor o igual al saldo</div>
+            </div>
+            <div class="ig">
+                <label for="pago-metodo">Método de pago</label>
+                <select id="pago-metodo"><option value="">Seleccionar...</option><option>Efectivo</option><option>Transferencia</option></select>
+                <div class="ferr" id="ferr-pago-metodo">Seleccioná el método de pago</div>
+            </div>
+            <div class="res-btns" style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+                <button type="button" class="btn btn-secondary" onclick="cerrarPago()">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnPago" onclick="confirmarPago()">Guardar pago</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Notificación toast para mensajes -->
 <div class="toast" id="toast"></div>
 <!-- Script de funciones de API -->
@@ -133,9 +194,37 @@ if(!localStorage.getItem('encargado')) window.location.href='/';
 let prestamos=[],devs=[],auditoria=[];
 // Pestaña y filtro seleccionados por el usuario.
 let tabAct='p',filtAct='todos';
-// Rol actual y estado del modal de anulación.
+// Rol actual y estado de los modales de anulación, plazo y pago.
 var admin=localStorage.getItem('rol')==='admin';
-var anularTipo=null,anularId=null;
+var anularTipo=null,anularId=null,plazoId=null,pagoId=null;
+
+/** Devuelve el rango de fechas seleccionado en el Historial. */
+function rangoFechas(){
+    var d=document.getElementById('f-desde').value;
+    var h=document.getElementById('f-hasta').value;
+    return {
+        desde: d ? new Date(d+'T00:00:00') : null,
+        hasta: h ? new Date(h+'T23:59:59') : null
+    };
+}
+
+/** Indica si una fecha cae dentro del rango elegido. */
+function enRango(fecha,rango){
+    if(!rango.desde && !rango.hasta) return true;
+    if(!fecha) return false;
+    var f=new Date(String(fecha).replace(' ','T'));
+    if(isNaN(f.getTime())) return true;
+    if(rango.desde && f<rango.desde) return false;
+    if(rango.hasta && f>rango.hasta) return false;
+    return true;
+}
+
+/** Limpia el rango de fechas y vuelve a filtrar. */
+function limpiarFechas(){
+    document.getElementById('f-desde').value='';
+    document.getElementById('f-hasta').value='';
+    buscar();
+}
 
 /** Escapa el texto y resalta de forma segura las coincidencias de la búsqueda. */
 function resaltar(texto,q){
@@ -171,6 +260,8 @@ function getPrestFiltrados(){
     if(filtAct==='anulados')  d=d.filter(function(p){return !!p.anulado;});
     // La búsqueda ignora mayúsculas y tildes mediante normalizeText.
     var q=normalizeText(document.getElementById('busq').value).trim();
+    var rango=rangoFechas();
+    if(rango.desde||rango.hasta) d=d.filter(function(p){return enRango(p.fecha_prestamo,rango);});
     if(q){
         d=d.filter(function(p){
             return normalizeText(p.alumno_nombre||'').includes(q)||
@@ -193,11 +284,14 @@ function getPrestFiltrados(){
     return d;
 }
 
-/** Filtra las devoluciones por alumno, equipo, daño o intervinientes. */
+/** Filtra las devoluciones por fecha, alumno, equipo, daño o intervinientes. */
 function getDevFiltrados(){
+    var base=devs.slice();
+    var rango=rangoFechas();
+    if(rango.desde||rango.hasta) base=base.filter(function(d){return enRango(d.fecha_devolucion,rango);});
     var q=normalizeText(document.getElementById('busq').value).trim();
-    if(!q) return devs.slice();
-    return devs.filter(function(d){
+    if(!q) return base;
+    return base.filter(function(d){
         return normalizeText(d.alumno_nombre||'').includes(q)||
                normalizeText(d.alumno_apellido||'').includes(q)||
                normalizeText(d.codigo_alumno||'').includes(q)||
@@ -239,7 +333,11 @@ function renderP(){
         var acciones='';
         if(!p.anulado){
             acciones+='<a class="btn-ver" href="/prestamos/prestamos.html?comprobante='+encodeURIComponent(p.codigo_prestamo||p.id_prestamo)+'">Ver comprobante</a>';
-            if(admin&&p.estado==='ACTIVO') acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'prestamo\','+p.id_prestamo+')">Anular</button>';
+            if(p.estado==='ACTIVO'){
+                acciones+='<a class="btn-sm btn-avail" href="/devoluciones/devoluciones.html?prestamo='+p.id_prestamo+'">Devolver</a>';
+                acciones+='<button class="btn-sm" onclick="abrirPlazo('+p.id_prestamo+')">Prórroga</button>';
+                if(admin) acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'prestamo\','+p.id_prestamo+')">Anular</button>';
+            }
         }else{
             acciones='<span class="sub-text">Anulado</span>';
         }
@@ -273,18 +371,19 @@ function renderD(){
         var danoCell=dv.tiene_dano?'<span style="color:var(--danger);font-weight:700">'+(dv.tipo_dano||'Si')+'</span>':'<span style="color:var(--success)">Sin daños</span>';
         var multaStyle=dv.monto_multa>0?'color:var(--warn);font-weight:700':'color:var(--dim)';
         var estadoRegistro=dv.anulado?'<div class="sub-text"><span class="badge badge-danger">Anulada</span>'+(dv.motivo_anulacion?' · '+resaltar(dv.motivo_anulacion,q):'')+'</div>':'';
-        var acciones='';
-        if(!dv.anulado){
-            acciones+='<a class="btn-ver" href="/devoluciones/devoluciones.html?comprobante='+encodeURIComponent(dv.codigo_devolucion||dv.id_devolucion)+'">Ver comprobante</a>';
-            if(admin) acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'devolucion\','+dv.id_devolucion+')">Anular</button>';
-        }else{
-            acciones='<span class="sub-text">Anulada</span>';
-        }
         var total=Number(dv.total_cobro)||0;
         var pagado=Number(dv.monto_pagado)||0;
         var saldo=dv.estado_pago==='Condonado'?0:Math.max(total-pagado,0);
         var estadoCobro=total===0?'Sin cobro':(dv.estado_pago||'Pendiente');
         var badgeCobro=estadoCobro==='Pagado'?'badge-success':estadoCobro==='Pendiente'?'badge-danger':estadoCobro==='Parcial'?'badge-warn':estadoCobro==='Condonado'?'badge-info':'badge-primary';
+        var acciones='';
+        if(!dv.anulado){
+            acciones+='<a class="btn-ver" href="/devoluciones/devoluciones.html?comprobante='+encodeURIComponent(dv.codigo_devolucion||dv.id_devolucion)+'">Ver comprobante</a>';
+            if(saldo>0) acciones+='<button class="btn-sm btn-avail" onclick="abrirPago('+dv.id_devolucion+')">Registrar pago</button>';
+            if(admin) acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'devolucion\','+dv.id_devolucion+')">Anular</button>';
+        }else{
+            acciones='<span class="sub-text">Anulada</span>';
+        }
         var sc='animate-fi-'+Math.min(i+1,10);
         html+='<tr class="'+sc+'">';
         html+='<td data-label="Devolución"><span class="code">'+(dv.codigo_devolucion||('REC-'+String(dv.id_devolucion).padStart(3,'0')))+'</span>'+estadoRegistro+'</td>';
@@ -338,7 +437,7 @@ function renderA(){
     if(tabAct==='a') document.getElementById('search-count').textContent=d.length+' resultado'+(d.length!==1?'s':'');
     if(!d.length){w.innerHTML=header+'<div class="em">Sin registros con este criterio</div>';return;}
     // Color del badge por acción y nombre legible del módulo.
-    var map={'CREAR':'badge-success','ELIMINAR':'badge-danger','ANULAR':'badge-danger','EDITAR':'badge-warn','ESTADO':'badge-warn','DESACTIVAR':'badge-danger','ACTIVAR':'badge-success','LOGIN':'badge-info','EXPORTAR':'badge-info'};
+    var map={'CREAR':'badge-success','ELIMINAR':'badge-danger','ANULAR':'badge-danger','EDITAR':'badge-warn','ESTADO':'badge-warn','PAGO':'badge-success','DESACTIVAR':'badge-danger','ACTIVAR':'badge-success','LOGIN':'badge-info','EXPORTAR':'badge-info'};
     var modulos={'sesion':'Sesión','alumno':'Alumno','equipo':'Equipo','prestamo':'Préstamo','devolucion':'Devolución','usuario':'Usuario','configuracion':'Configuración','sistema':'Sistema'};
     var html=header+'<table style="width:100%"><thead><tr><th scope="col">Fecha y hora</th><th scope="col">Usuario</th><th scope="col">Acción</th><th scope="col">Módulo</th><th scope="col">Detalle</th></tr></thead><tbody>';
     d.forEach(function(a,i){
@@ -364,6 +463,35 @@ function buscar(){
     else renderA();
 }
 
+/** Exporta a Excel solo los registros visibles con los filtros actuales. */
+async function exportarFiltrado(){
+    var btn=document.getElementById('btn-export-hist');
+    var original=btn.textContent;
+    btn.disabled=true;btn.textContent='Exportando...';
+    try{
+        var prestamo_ids=getPrestFiltrados().map(function(p){return Number(p.id_prestamo);}).filter(Number.isInteger);
+        var devolucion_ids=getDevFiltrados().map(function(d){return Number(d.id_devolucion);}).filter(Number.isInteger);
+        var r=await apiFetch('/exportar',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({prestamo_ids:prestamo_ids,devolucion_ids:devolucion_ids})
+        });
+        if(!r.ok){st('Error al exportar','t-err');return;}
+        var blob=await r.blob();
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=url;
+        a.download='SmartLoanIT_Historial_'+new Date().toISOString().slice(0,10)+'.xlsx';
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        st('Exportación filtrada generada');
+    }catch(e){
+        st('Error de conexión','t-err');
+    }finally{
+        btn.disabled=false;btn.textContent=original;
+    }
+}
+
 /** Cambia de pestaña, adapta el buscador y anima la tabla visible. */
 function setTab(t,el){
     tabAct=t;
@@ -379,6 +507,7 @@ function setTab(t,el){
     else if(t==='d'){td.style.animation='none';void td.offsetWidth;td.style.animation='fi 0.35s var(--ease-out) both';}
     else{ta.style.animation='none';void ta.offsetWidth;ta.style.animation='fi 0.35s var(--ease-out) both';}
     document.getElementById('filtros').style.display=t==='p'?'flex':'none';
+    var dateBar=document.querySelector('.date-bar'); if(dateBar) dateBar.style.display=t==='a'?'none':'flex';
     var busq=document.getElementById('busq');
     if(t==='a') busq.placeholder='Buscar por usuario, acción, módulo o detalle...';
     else if(t==='d') busq.placeholder='Buscar por alumno, equipo, código o daño...';
@@ -460,12 +589,142 @@ async function confirmarAnular(){
     }
 }
 
+/** Convierte una fecha al formato de un input datetime-local. */
+function fechaParaInput(fecha){
+    var d=new Date(String(fecha).replace(' ','T'));
+    if(isNaN(d.getTime())) return '';
+    var p=function(n){return String(n).padStart(2,'0');};
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
+}
+
+/** Abre el modal para extender el vencimiento de un préstamo activo. */
+function abrirPlazo(id){
+    var p=prestamos.find(function(x){return String(x.id_prestamo)===String(id);});
+    if(!p) return;
+    plazoId=id;
+    document.getElementById('plazo-desc').textContent='Préstamo '+(p.codigo_prestamo||'#'+p.id_prestamo)+' · '+(p.equipo||'')+' · vence '+ff(p.fecha_devolucion_estimada);
+    var input=document.getElementById('plazo-fecha');
+    input.value=fechaParaInput(p.fecha_devolucion_estimada);
+    input.classList.remove('err');
+    document.getElementById('ferr-plazo').classList.remove('show');
+    document.getElementById('mo-plazo').classList.add('show');
+    setTimeout(function(){input.focus();},100);
+}
+
+/** Cierra el modal de prórroga. */
+function cerrarPlazo(){
+    document.getElementById('mo-plazo').classList.remove('show');
+    plazoId=null;
+}
+
+/** Guarda la nueva fecha de devolución del préstamo. */
+async function confirmarPlazo(){
+    if(!plazoId) return;
+    var input=document.getElementById('plazo-fecha');
+    var ferr=document.getElementById('ferr-plazo');
+    if(!input.value){
+        input.classList.add('err');ferr.classList.add('show');input.focus();return;
+    }
+    var btn=document.getElementById('btnPlazo');
+    btn.disabled=true;btn.textContent='Guardando...';
+    try{
+        var r=await apiFetch('/prestamos/'+plazoId+'/plazo',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({fecha_devolucion_estimada:input.value})
+        });
+        var d=await safeJson(r);
+        if(r.ok){
+            st('Plazo actualizado correctamente');
+            cerrarPlazo();
+            await cargar();
+        }else{
+            st(d.mensaje||'No se pudo actualizar el plazo','t-err');
+        }
+    }catch(e){
+        st('Error de conexión','t-err');
+    }finally{
+        btn.disabled=false;btn.textContent='Guardar plazo';
+    }
+}
+
+/** Abre el modal para cobrar el saldo pendiente de una devolución. */
+function abrirPago(id){
+    var dv=devs.find(function(x){return String(x.id_devolucion)===String(id);});
+    if(!dv) return;
+    var total=Number(dv.total_cobro)||0;
+    var pagado=Number(dv.monto_pagado)||0;
+    var saldo=dv.estado_pago==='Condonado'?0:Math.max(total-pagado,0);
+    if(saldo<=0) return;
+    pagoId=id;
+    document.getElementById('pago-desc').textContent='Devolución '+(dv.codigo_devolucion||('REC-'+String(dv.id_devolucion).padStart(3,'0')))+' · '+(dv.alumno_nombre||'')+' '+(dv.alumno_apellido||'')+' · Total Gs. '+fn(total)+' · Pagado Gs. '+fn(pagado)+' · Saldo Gs. '+fn(saldo);
+    var monto=document.getElementById('pago-monto');
+    monto.value=saldo;
+    monto.max=saldo;
+    monto.classList.remove('err');
+    document.getElementById('pago-metodo').value='';
+    document.getElementById('ferr-pago-monto').classList.remove('show');
+    document.getElementById('ferr-pago-metodo').classList.remove('show');
+    document.getElementById('mo-pago').classList.add('show');
+    setTimeout(function(){monto.focus();monto.select();},100);
+}
+
+/** Cierra el modal de pago. */
+function cerrarPago(){
+    document.getElementById('mo-pago').classList.remove('show');
+    pagoId=null;
+}
+
+/** Registra el pago parcial o total del saldo. */
+async function confirmarPago(){
+    if(!pagoId) return;
+    var dv=devs.find(function(x){return String(x.id_devolucion)===String(pagoId);});
+    if(!dv) return;
+    var total=Number(dv.total_cobro)||0;
+    var pagado=Number(dv.monto_pagado)||0;
+    var saldo=dv.estado_pago==='Condonado'?0:Math.max(total-pagado,0);
+    var monto=Number(document.getElementById('pago-monto').value)||0;
+    var metodo=document.getElementById('pago-metodo').value;
+    var ok=true;
+    var ferrMonto=document.getElementById('ferr-pago-monto');
+    var ferrMetodo=document.getElementById('ferr-pago-metodo');
+    if(!(monto>0&&monto<=saldo)){ferrMonto.classList.add('show');ok=false;}
+    else ferrMonto.classList.remove('show');
+    if(!metodo){ferrMetodo.classList.add('show');ok=false;}
+    else ferrMetodo.classList.remove('show');
+    if(!ok) return;
+
+    var btn=document.getElementById('btnPago');
+    btn.disabled=true;btn.textContent='Guardando...';
+    try{
+        var r=await apiFetch('/devoluciones/'+pagoId+'/pago',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({monto:monto,metodo:metodo})
+        });
+        var d=await safeJson(r);
+        if(r.ok){
+            st('Pago registrado correctamente');
+            cerrarPago();
+            await cargar();
+        }else{
+            st(d.mensaje||'No se pudo registrar el pago','t-err');
+        }
+    }catch(e){
+        st('Error de conexión','t-err');
+    }finally{
+        btn.disabled=false;btn.textContent='Guardar pago';
+    }
+}
+
 // Inicialización: muestra auditoría solo a administradores y carga las tablas.
 window.onload=function(){
     initPage({
         spotlight: [{label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
         onReady: function(){
             if(admin) document.getElementById('tab-aud').style.display='';
+            var buscarInicial=new URLSearchParams(location.search).get('buscar');
+            if(buscarInicial) document.getElementById('busq').value=buscarInicial;
             cargar();
             if(admin) cargarAuditoria();
         }

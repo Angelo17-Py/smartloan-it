@@ -83,12 +83,26 @@ module.exports = async function exportarExcel(req, res) {
       generadoPor
     };
 
-    const wb = buildWorkbook(rows, meta);
+    const filtros = req.method === 'POST' && req.body ? req.body : {};
+    const prestamoIds = Array.isArray(filtros.prestamo_ids)
+      ? new Set(filtros.prestamo_ids.map(Number).filter(Number.isInteger))
+      : null;
+    const devolucionIds = Array.isArray(filtros.devolucion_ids)
+      ? new Set(filtros.devolucion_ids.map(Number).filter(Number.isInteger))
+      : null;
+
+    const wb = buildWorkbook(rows, meta, { prestamoIds, devolucionIds });
 
     // Totales expuestos como cabeceras para que el cliente muestre el resumen de la exportación.
-    const loanCount = rows.length;
-    const returnCount = rows.filter((r) => r.id_devolucion).length;
-    const studentSet = new Set(rows.map((r) => r.codigo_alumno));
+    const loanRows = prestamoIds
+      ? rows.filter((r) => prestamoIds.has(Number(r.id_prestamo)))
+      : rows;
+    const returnRows = devolucionIds
+      ? rows.filter((r) => r.id_devolucion && devolucionIds.has(Number(r.id_devolucion)))
+      : rows.filter((r) => r.id_devolucion);
+    const loanCount = loanRows.length;
+    const returnCount = returnRows.length;
+    const studentSet = new Set(loanRows.map((r) => r.codigo_alumno));
     const studentCount = studentSet.size;
 
     res.setHeader('X-Export-Loans', loanCount);

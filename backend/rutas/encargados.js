@@ -13,6 +13,8 @@ const { loginLimiter, apiLimiter } = require('../middleware/rateLimiters');
 router.post('/login', loginLimiter, c.login);
 // Cierre de sesión: requiere sesión válida para revocar los tokens del usuario.
 router.post('/logout', verificarToken, c.logout);
+// Cambio de contraseña propio: cualquier usuario autenticado.
+router.patch('/password', verificarToken, apiLimiter, c.cambiarPassword);
 // Listado de usuarios: solo admin.
 router.get('/',              verificarToken, requireAdmin, c.listar);
 // Alta de usuario: solo admin, con límite de tasa.

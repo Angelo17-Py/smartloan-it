@@ -178,6 +178,66 @@ exports.crear = async (req, res) => {
 };
 
 /**
+ * Registra un pago parcial o total sobre una devolución pendiente.
+ * @param {import('express').Request} req Body: monto y metodo; parámetro :id.
+ * @param {import('express').Response} res Cobro actualizado o error de negocio.
+ * @returns {Promise<void>}
+ */
+exports.registrarPago = async (req, res) => {
+  const id = req.params.id;
+  const monto = montoValido(req.body && req.body.monto);
+  const metodo = s(req.body && req.body.metodo, 30);
+  if (!monto) return res.status(400).json({ mensaje: 'Ingresá un monto mayor a 0' });
+  if (!METODOS_PAGO.includes(metodo)) {
+    return res.status(400).json({ mensaje: 'Seleccioná un método de pago válido' });
+  }
+
+  const resultado = await withTransaction(async (tx) => {
+    const [rows] = await tx.query(
+      `SELECT id_devolucion, codigo_devolucion, total_cobro, monto_pagado, estado_pago, anulado
+       FROM devoluciones WHERE id_devolucion = ? FOR UPDATE`,
+      [id]
+    );
+    if (!rows.length) throw httpError(404, 'Devolución no encontrada');
+    const d = rows[0];
+    if (d.anulado) throw httpError(400, 'La devolución está anulada');
+    if (d.estado_pago === 'Pagado') throw httpError(400, 'La devolución ya está pagada');
+    if (d.estado_pago === 'Condonado') throw httpError(400, 'El cobro está condonado');
+
+    const total = Number(d.total_cobro) || 0;
+    const pagado = Number(d.monto_pagado) || 0;
+    const saldo = Math.max(total - pagado, 0);
+    if (saldo <= 0) throw httpError(400, 'No hay saldo pendiente');
+    if (monto > saldo) throw httpError(400, 'El monto supera el saldo pendiente');
+
+    const nuevoPagado = Math.round((pagado + monto) * 100) / 100;
+    const nuevoEstado = nuevoPagado >= total ? 'Pagado' : 'Parcial';
+    const fecha = fmt(new Date());
+    await tx.query(
+      'UPDATE devoluciones SET monto_pagado = ?, estado_pago = ?, metodo_pago = ?, fecha_pago = ? WHERE id_devolucion = ?',
+      [nuevoPagado, nuevoEstado, metodo, fecha, id]
+    );
+
+    return {
+      id: Number(id),
+      codigo: d.codigo_devolucion,
+      total,
+      pagado: nuevoPagado,
+      saldo: Math.max(total - nuevoPagado, 0),
+      estado: nuevoEstado
+    };
+  });
+
+  auditoria.registrar(req, {
+    accion: 'PAGO',
+    entidad: 'devolucion',
+    id_entidad: resultado.id,
+    detalle: `${resultado.codigo || 'Devolución'} · pago Gs. ${monto} · ${metodo} · saldo Gs. ${resultado.saldo}`
+  });
+  res.json({ mensaje: 'Pago registrado correctamente', ...resultado });
+};
+
+/**
  * Anula lógicamente una devolución y reactiva el préstamo asociado.
  * @param {import('express').Request} req Body: motivo; parámetro :id de la devolución.
  * @param {import('express').Response} res Confirmación o error de regla de negocio.

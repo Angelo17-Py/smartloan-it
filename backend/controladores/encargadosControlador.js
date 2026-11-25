@@ -80,6 +80,71 @@ exports.login = async (req, res) => {
 exports.logout = crearLogout(async function () { return db; });
 
 /**
+ * Cambia la contraseña del encargado autenticado y renueva su sesión.
+ * @param {import('express').Request} req Body: actual y nueva.
+ * @param {import('express').Response} res Confirmación o error de validación.
+ * @returns {Promise<void>}
+ */
+exports.cambiarPassword = async (req, res) => {
+  if (!req.encargado || !req.encargado.id) {
+    return res.status(401).json({ mensaje: 'Sesión no válida' });
+  }
+  const actual = typeof req.body.actual === 'string' ? req.body.actual : '';
+  const nueva = typeof req.body.nueva === 'string' ? req.body.nueva : '';
+  if (!actual || !nueva) {
+    return res.status(400).json({ mensaje: 'Completá la contraseña actual y la nueva' });
+  }
+  if (nueva.length < 6) {
+    return res.status(400).json({ mensaje: 'La nueva contraseña debe tener al menos 6 caracteres' });
+  }
+  if (nueva === actual) {
+    return res.status(400).json({ mensaje: 'La nueva contraseña debe ser diferente' });
+  }
+
+  const conn = await db;
+  const [rows] = await conn.query(
+    'SELECT * FROM encargados WHERE id_encargado = ? AND estado = 1',
+    [req.encargado.id]
+  );
+  if (!rows.length) return res.status(401).json({ mensaje: 'Sesión no válida' });
+  const encargado = rows[0];
+
+  let valida = false;
+  if (encargado.password && encargado.password.startsWith('$2')) {
+    valida = await bcrypt.compare(actual, encargado.password);
+  } else {
+    valida = actual === encargado.password;
+  }
+  if (!valida) {
+    return res.status(400).json({ mensaje: 'La contraseña actual no es correcta' });
+  }
+
+  const hash = await bcrypt.hash(nueva, 10);
+  await conn.query(
+    'UPDATE encargados SET password = ?, token_version = token_version + 1 WHERE id_encargado = ?',
+    [hash, encargado.id_encargado]
+  );
+
+  const actualizado = {
+    ...encargado,
+    password: hash,
+    token_version: Number(encargado.token_version) + 1
+  };
+  const token = generarToken(actualizado);
+  res.set('Cache-Control', 'no-store');
+  res.cookie('sl_token', token, Object.assign({}, opcionesCookieToken(), {
+    maxAge: 12 * 60 * 60 * 1000
+  }));
+  auditoria.registrar(req, {
+    accion: 'EDITAR',
+    entidad: 'usuario',
+    id_entidad: encargado.codigo,
+    detalle: 'Cambio de contraseña propio'
+  });
+  res.json({ mensaje: 'Contraseña actualizada correctamente' });
+};
+
+/**
  * Lista todos los encargados, activos e inactivos, sin exponer la contraseña.
  * @param {import('express').Request} req Petición HTTP autenticada como admin.
  * @param {import('express').Response} res Arreglo de usuarios.

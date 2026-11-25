@@ -90,6 +90,53 @@ exports.crear = async (req, res) => {
 };
 
 /**
+ * Extiende la fecha de devolución de un préstamo activo.
+ * @param {import('express').Request} req Body: fecha_devolucion_estimada; parámetro :id.
+ * @param {import('express').Response} res Confirmación o error de negocio.
+ * @returns {Promise<void>}
+ */
+exports.extender = async (req, res) => {
+  const id = req.params.id;
+  const fecha = req.body && req.body.fecha_devolucion_estimada;
+  const nueva = fecha ? fmt(fecha) : null;
+  if (!fecha || !nueva || isNaN(new Date(fecha).getTime())) {
+    return res.status(400).json({ mensaje: 'Fecha de devolución inválida' });
+  }
+  const ahoraStr = fmt(new Date());
+  if (nueva <= ahoraStr) {
+    return res.status(400).json({ mensaje: 'La nueva fecha debe ser posterior a la actual' });
+  }
+
+  const resultado = await withTransaction(async (conn) => {
+    const [rows] = await conn.query(
+      'SELECT id_prestamo, codigo_prestamo, estado, anulado, fecha_devolucion_estimada FROM prestamos WHERE id_prestamo = ? FOR UPDATE',
+      [id]
+    );
+    if (!rows.length) throw httpError(404, 'Préstamo no encontrado');
+    const p = rows[0];
+    if (p.anulado) throw httpError(400, 'El préstamo está anulado');
+    if (p.estado !== 'ACTIVO') throw httpError(400, 'Solo se puede extender un préstamo activo');
+    const actual = fmt(p.fecha_devolucion_estimada);
+    if (nueva <= actual) {
+      throw httpError(400, 'La nueva fecha debe ser posterior al vencimiento actual');
+    }
+    await conn.query(
+      'UPDATE prestamos SET fecha_devolucion_estimada = ? WHERE id_prestamo = ?',
+      [nueva, id]
+    );
+    return { id: p.id_prestamo, codigo: p.codigo_prestamo, anterior: actual, nueva };
+  });
+
+  auditoria.registrar(req, {
+    accion: 'EDITAR',
+    entidad: 'prestamo',
+    id_entidad: resultado.codigo,
+    detalle: `Plazo extendido de ${resultado.anterior} a ${resultado.nueva}`
+  });
+  res.json({ mensaje: 'Plazo actualizado correctamente', ...resultado });
+};
+
+/**
  * Lista préstamos con datos del alumno, equipo y encargado.
  * @param {import('express').Request} req Petición HTTP autenticada.
  * @param {import('express').Response} res Arreglo de préstamos.

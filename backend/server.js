@@ -8,6 +8,7 @@ const path    = require('path');
 const db      = require('./db');
 const errorHandler = require('./middleware/errorHandler');
 const { verificarToken } = require('./middleware/auth');
+const { apiLimiter } = require('./middleware/rateLimiters');
 const initDatabase = require('./initDb');
 const exportarExcel = require('./controladores/exportarControlador');
 
@@ -89,6 +90,8 @@ app.use('/auditoria',    require('./rutas/auditoria'));
  */
 // Exportación de préstamos y devoluciones a Excel.
 app.get('/exportar', verificarToken, exportarExcel);
+// Exportación filtrada desde el Historial: recibe los IDs visibles.
+app.post('/exportar', verificarToken, apiLimiter, exportarExcel);
 
 // Ruta comodín para endpoints inexistentes: responde JSON antes del manejador de errores.
 app.use((req, res) => {

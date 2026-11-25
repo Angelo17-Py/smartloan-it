@@ -185,7 +185,7 @@ function render(data){
                 <td data-label="Equipo"><strong>${esc(e.nombre)}</strong>${e.descripcion?'<span class="eq-desc">'+esc(e.descripcion)+'</span>':''}</td>
                 <td data-label="Tipo / Marca" style="color:var(--dim);font-size:var(--text-sm)">${esc(e.tipo)} &middot; ${esc(e.marca)}</td>
                 <td data-label="Estado">${bE(e.estado)}</td>
-                <td data-label=""><div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar(${e.id_equipo})">Editar</button>${btn}${admin && e.estado!=='Prestado' ? '<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>' : ''}</div></td>
+                <td data-label=""><div class="ac"><a class="btn-sm" href="/historial/historial.html?buscar=${encodeURIComponent(e.nombre)}">Historial</a><button class="btn-sm btn-edit" onclick="abrirEditar(${e.id_equipo})">Editar</button>${btn}${admin && e.estado!=='Prestado' ? '<button class="btn-del" onclick="confirmarEliminar('+e.id_equipo+')">&#215;</button>' : ''}</div></td>
             </tr>`;
         }).join('');
 }

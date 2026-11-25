@@ -133,6 +133,7 @@ h1,h2,.page-header h1,.cfg-display-value,.mh h3,.confirm-box h3,.empty-state h3,
   transition:all var(--duration-fast) var(--ease-out);
 }
 .btn-mini{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+a.btn-sm{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .btn-mini svg{width:14px;height:14px}
 .btn-sm:hover,.btn-edit:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-glow)}
 .btn-sm:disabled{opacity:0.45;cursor:not-allowed;border-color:var(--border);color:var(--muted);background:transparent}

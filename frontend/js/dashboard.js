@@ -530,6 +530,63 @@ if(dashScrollState){
     });
 }
 
+/** Abre el modal para cambiar la contraseña del usuario actual. */
+function abrirCambioClave(){
+    ['clave-actual','clave-nueva','clave-nueva2'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){el.value='';el.classList.remove('err');}
+    });
+    ['ferr-clave-actual','ferr-clave-nueva','ferr-clave-nueva2'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el) el.classList.remove('show');
+    });
+    var modal=document.getElementById('mo-clave');
+    if(modal) modal.classList.add('show');
+    setTimeout(function(){var el=document.getElementById('clave-actual');if(el)el.focus();},100);
+}
+
+/** Cierra el modal de cambio de contraseña. */
+function cerrarCambioClave(){
+    var modal=document.getElementById('mo-clave');
+    if(modal) modal.classList.remove('show');
+}
+
+/** Valida y guarda la nueva contraseña del usuario actual. */
+async function guardarCambioClave(){
+    var actual=document.getElementById('clave-actual');
+    var nueva=document.getElementById('clave-nueva');
+    var nueva2=document.getElementById('clave-nueva2');
+    var ok=true;
+    if(!actual.value){actual.classList.add('err');document.getElementById('ferr-clave-actual').classList.add('show');ok=false;}
+    else{actual.classList.remove('err');document.getElementById('ferr-clave-actual').classList.remove('show');}
+    if(nueva.value.length<6){nueva.classList.add('err');document.getElementById('ferr-clave-nueva').classList.add('show');ok=false;}
+    else{nueva.classList.remove('err');document.getElementById('ferr-clave-nueva').classList.remove('show');}
+    if(nueva.value!==nueva2.value){nueva2.classList.add('err');document.getElementById('ferr-clave-nueva2').classList.add('show');ok=false;}
+    else{nueva2.classList.remove('err');document.getElementById('ferr-clave-nueva2').classList.remove('show');}
+    if(!ok) return;
+
+    var btn=document.getElementById('btnClave');
+    btn.disabled=true;btn.textContent='Guardando...';
+    try{
+        var r=await apiFetch('/encargados/password',{
+            method:'PATCH',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({actual:actual.value,nueva:nueva.value})
+        });
+        var d=await safeJson(r);
+        if(r.ok){
+            st('Contraseña actualizada correctamente');
+            cerrarCambioClave();
+        }else{
+            st(d.mensaje||'No se pudo cambiar la contraseña','t-err');
+        }
+    }catch(e){
+        st('Error de conexión','t-err');
+    }finally{
+        btn.disabled=false;btn.textContent='Guardar contraseña';
+    }
+}
+
 // Inicialización del panel.
 window.onload = function(){
     var enc = JSON.parse(localStorage.getItem('encargado') || '{}');

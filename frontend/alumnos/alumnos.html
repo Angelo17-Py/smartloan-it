@@ -168,7 +168,7 @@ function render(data){
             <td data-label="Bachillerato" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.carrera||'—')}</td>
             <td data-label="Curso" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.curso||'—')}</td>
             <td data-label="Turno" style="color:var(--dim);font-size:var(--text-sm)">${esc(a.turno||'—')}</td>
-            <td data-label=""><div class="ac"><button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>${admin ? '<button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button>' : ''}</div></td>
+            <td data-label=""><div class="ac"><a class="btn-sm" href="/historial/historial.html?buscar=${encodeURIComponent(a.codigo_alumno)}">Historial</a><button class="btn-sm btn-edit" onclick="abrirEditar(${a.id_alumno})">Editar</button>${admin ? '<button class="btn-del" onclick="confirmarEliminar('+a.id_alumno+')">&#215;</button>' : ''}</div></td>
         </tr>`;}).join('');
 }
 
