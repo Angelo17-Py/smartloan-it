@@ -15,6 +15,8 @@
         td:nth-child(2){text-align:left}
         .empty-row td{text-align:center;color:var(--dim);padding:30px!important;}
         .eq-desc{display:block;font-size:var(--text-xs);color:var(--dim);line-height:1.3;margin-top:1px}
+        /* El tipo es fijo: se muestra como dato, no como campo editable. */
+        .fixed-value{padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--dim);font-family:var(--font);font-size:var(--text-sm);line-height:normal;cursor:default;}
         .form-row-desc{margin-top:0;}.form-row-desc .ig-desc{flex:1 1 100%;min-width:100%;}.form-row-desc textarea{resize:none;min-height:44px;overflow:hidden;}
         /* Adaptación responsive del formulario y de la tabla. */
         @media(max-width:900px){.form-row{flex-direction:column;}.form-row .ig{min-width:100%;}main{padding:20px 16px;}}
@@ -36,7 +38,8 @@
         <div class="form-row">
             <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoEquipo()"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
             <div class="ig"><label>Tipo</label>
-                <select id="tipo" onchange="clearF('tipo');checkNuevoEquipo()"><option>Laptop</option></select>
+                <div class="fixed-value">Laptop</div>
+                <input type="hidden" id="tipo" value="Laptop">
                 <div class="ferr" id="ferr-tipo">Selecciona el tipo</div>
             </div>
             <div class="ig"><label>Marca</label>
@@ -75,7 +78,8 @@
             <div class="g2m">
                 <div class="ig">
                     <label>Tipo</label>
-                    <select id="edit-tipo" onchange="clearFE('tipo','edit-');checkEditEquipo()"><option>Laptop</option></select>
+                    <div class="fixed-value">Laptop</div>
+                    <input type="hidden" id="edit-tipo" value="Laptop">
                     <div class="ferr" id="ferr-edit-tipo">Selecciona el tipo</div>
                 </div>
                 <div class="ig">
@@ -220,7 +224,6 @@ async function crear(){
             formGuard.markClean();
             document.getElementById('nombre').value = '';
             document.getElementById('desc').value = '';
-            document.getElementById('tipo').value = '';
             document.getElementById('marca').value = '';
             st('Equipo registrado correctamente');
             cargar();
@@ -230,7 +233,7 @@ async function crear(){
     } catch(e){
         st('Error de conexión con el servidor','t-err');
     }
-    btn.disabled = false; btn.textContent = '+ Agregar equipo';
+    btn.textContent = '+ Agregar equipo'; checkNuevoEquipo();
 }
 
 /** Pide confirmación antes de eliminar definitivamente un equipo. */
@@ -284,8 +287,6 @@ function abrirEditar(id){
     if(!eq) return;
     equipoEditandoId = id;
     document.getElementById('edit-nombre').value = eq.nombre;
-    document.getElementById('edit-tipo').value = eq.tipo;
-    document.getElementById('edit-marca').value = eq.marca;
     document.getElementById('edit-desc').value = eq.descripcion || '';
     ['nombre','tipo','marca'].forEach(f => {
         document.getElementById('edit-'+f).classList.remove('err');
