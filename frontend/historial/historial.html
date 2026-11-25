@@ -40,7 +40,7 @@
         .table-wrap table tbody td.td-detalle{white-space:normal;overflow-wrap:anywhere;line-height:1.45;}
         /* Acciones de cada movimiento: comprobante y anulación. */
         .actions-cell{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-        .btn-ver{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:700;cursor:pointer;transition:border-color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out);}
+        .btn-ver{display:inline-flex;align-items:center;padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--primary);font-family:var(--font);font-size:0.72rem;font-weight:700;text-decoration:none;cursor:pointer;transition:border-color var(--duration-fast) var(--ease-out),background var(--duration-fast) var(--ease-out);}
         .btn-ver:hover{border-color:var(--primary);background:var(--primary-glow);}
         /* Desplazamiento horizontal para tablas con muchas columnas. */
         #tp,#td{overflow-x:auto;}
@@ -241,7 +241,7 @@ function renderP(){
         if(p.anulado&&p.motivo_anulacion) badge+='<div class="sub-text">Motivo: '+resaltar(p.motivo_anulacion,q)+'</div>';
         var acciones='';
         if(!p.anulado){
-            acciones+='<button class="btn-ver" onclick="verComprobantePrestamo(\''+(p.codigo_prestamo||p.id_prestamo)+'\')">Ver comprobante</button>';
+            acciones+='<a class="btn-ver" href="/prestamos/prestamos.html?comprobante='+encodeURIComponent(p.codigo_prestamo||p.id_prestamo)+'">Ver comprobante</a>';
             if(admin&&p.estado==='ACTIVO') acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'prestamo\','+p.id_prestamo+')">Anular</button>';
         }else{
             acciones='<span class="sub-text">Anulado</span>';
@@ -278,7 +278,7 @@ function renderD(){
         var estadoRegistro=dv.anulado?'<div class="sub-text"><span class="badge badge-danger">Anulada</span>'+(dv.motivo_anulacion?' · '+resaltar(dv.motivo_anulacion,q):'')+'</div>':'';
         var acciones='';
         if(!dv.anulado){
-            acciones+='<button class="btn-ver" onclick="verComprobanteDevolucion(\''+(dv.codigo_devolucion||dv.id_devolucion)+'\')">Ver comprobante</button>';
+            acciones+='<a class="btn-ver" href="/devoluciones/devoluciones.html?comprobante='+encodeURIComponent(dv.codigo_devolucion||dv.id_devolucion)+'">Ver comprobante</a>';
             if(admin) acciones+='<button class="btn-sm btn-mant" onclick="abrirAnular(\'devolucion\','+dv.id_devolucion+')">Anular</button>';
         }else{
             acciones='<span class="sub-text">Anulada</span>';
@@ -306,16 +306,6 @@ function renderD(){
     });
     html+='</tbody></table>';
     w.innerHTML=html;
-}
-
-/** Abre el comprobante de un préstamo en su módulo. */
-function verComprobantePrestamo(codigo){
-    window.location.href='/prestamos/prestamos.html?comprobante='+encodeURIComponent(codigo);
-}
-
-/** Abre el comprobante de una devolución en su módulo. */
-function verComprobanteDevolucion(codigo){
-    window.location.href='/devoluciones/devoluciones.html?comprobante='+encodeURIComponent(codigo);
 }
 
 /** Carga el registro de auditoría; solo se invoca para administradores. */

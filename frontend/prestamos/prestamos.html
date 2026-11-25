@@ -773,6 +773,26 @@ function mostrarModalComprobante(){
     document.querySelector('.receipt-modal-close').focus();
 }
 
+/** Vuelve al Historial conservando filtros y búsqueda si se llegó desde allí. */
+function volverAlHistorial(){
+    if(document.referrer && document.referrer.indexOf('/historial/')!==-1) history.back();
+    else window.location.href='/historial/historial.html';
+}
+
+/** Ajusta las acciones del modal cuando el comprobante viene del Historial. */
+function configurarAccionesReimpresion(){
+    const volver=document.querySelector('.receipt-modal-actions .btn-secondary');
+    if(volver){
+        volver.textContent='Volver al historial';
+        volver.onclick=volverAlHistorial;
+    }
+    const cerrar=document.querySelector('.receipt-modal-close');
+    if(cerrar){
+        cerrar.setAttribute('aria-label','Volver al historial');
+        cerrar.onclick=volverAlHistorial;
+    }
+}
+
 /** Reimprime un comprobante cuando se llega desde el Historial con ?comprobante=... */
 async function abrirComprobanteDesdeURL(){
     const codigo=new URLSearchParams(location.search).get('comprobante');
@@ -791,6 +811,7 @@ async function abrirComprobanteDesdeURL(){
         document.getElementById('receipt-modal-title').textContent='Comprobante de préstamo';
         document.getElementById('receipt-modal-subtitle').textContent='Reimpresión del comprobante';
         mostrarModalComprobante();
+        configurarAccionesReimpresion();
     }catch(e){
         st('Error de conexión','t-err');
     }

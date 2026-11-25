@@ -1067,6 +1067,26 @@ function marcarReimpresion(){
     document.getElementById('receipt-modal-subtitle').textContent='Reimpresión del comprobante';
 }
 
+/** Vuelve al Historial conservando filtros y búsqueda si se llegó desde allí. */
+function volverAlHistorial(){
+    if(document.referrer && document.referrer.indexOf('/historial/')!==-1) history.back();
+    else window.location.href='/historial/historial.html';
+}
+
+/** Ajusta las acciones del modal cuando el comprobante viene del Historial. */
+function configurarAccionesReimpresion(){
+    const volver=document.querySelector('.receipt-modal-actions .btn-secondary');
+    if(volver){
+        volver.textContent='Volver al historial';
+        volver.onclick=volverAlHistorial;
+    }
+    const cerrar=document.querySelector('.receipt-modal-close');
+    if(cerrar){
+        cerrar.setAttribute('aria-label','Volver al historial');
+        cerrar.onclick=volverAlHistorial;
+    }
+}
+
 /** Abre el comprobante pedido desde el Historial con ?comprobante=... */
 function abrirComprobanteDesdeURL(codigo){
     const clave=codigo||new URLSearchParams(location.search).get('comprobante');
@@ -1077,6 +1097,7 @@ function abrirComprobanteDesdeURL(codigo){
     if(!d){st('Comprobante no encontrado','t-err');return false;}
     mostrarComprobante(normalizarDevolucionLista(d));
     marcarReimpresion();
+    configurarAccionesReimpresion();
     return true;
 }
 
