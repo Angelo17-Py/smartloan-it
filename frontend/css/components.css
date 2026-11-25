@@ -314,11 +314,6 @@ body.page-loaded .dash-right .rc-card:nth-child(2){animation-delay:0.14s}
 .badge{transition:all var(--duration-fast) var(--ease-out)}
 .badge:hover{transform:translateY(-1px);filter:brightness(1.1)}
 
-/* Subrayado animado de las migas de pan. */
-.breadcrumbs a{position:relative}
-.breadcrumbs a::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:1px;background:var(--primary);transition:width var(--duration-normal) var(--ease-out)}
-.breadcrumbs a:hover::after{width:100%}
-
 /* Transición de opacidad de los canvas de gráficos. */
 canvas{transition:opacity var(--duration-normal) var(--ease-out)}
 
@@ -347,13 +342,6 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
 
 /* Salida de página antes de navegar; se desactivan los clics durante la transición. */
 .page-exit{opacity:0;transition:opacity var(--duration-normal) var(--ease-out);will-change:opacity;pointer-events:none}
-
-/* Migas de pan con separador y elemento actual resaltado. */
-.breadcrumbs{display:flex;align-items:center;gap:6px;margin-bottom:var(--space-4);font-size:var(--text-xs);color:var(--muted);font-weight:600}
-.breadcrumbs a{color:var(--dim);text-decoration:none;transition:color var(--duration-fast)}
-.breadcrumbs a:hover{color:var(--primary)}
-.breadcrumbs .sep{color:var(--muted);font-size:10px}
-.breadcrumbs .current{color:var(--text)}
 
 /* Impresión: oculta controles comunes. Los comprobantes definen sus propias
    reglas de impresión en cada módulo para conservar el diseño del documento. */
@@ -460,8 +448,6 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .section-title{padding:var(--space-3)!important;font-size:var(--text-xs)!important}
   .filters{flex-wrap:wrap;gap:var(--space-2)}
   .filters .btn,.filters button{flex:1;min-width:0;text-align:center;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)}
-  .breadcrumbs{font-size:var(--text-xs);padding:var(--space-2) 0;gap:var(--space-1)}
-  .breadcrumbs .sep{margin:0 var(--space-1)}
 }
 
 @media(max-width:600px){
@@ -503,7 +489,6 @@ input.err,select.err,textarea.err{border-color:var(--danger)!important;box-shado
   .page-header h1{font-size:var(--text-base)!important}
   .page-header p{display:none}
   .page-header .page-icon{width:30px;height:30px}
-  .breadcrumbs{padding:var(--space-1) 0!important}
   main{padding-top:var(--space-2)!important}
   .table-wrap table tbody tr{padding:var(--space-2)!important}
   .form-card{padding:var(--space-3)!important}

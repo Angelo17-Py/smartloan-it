@@ -167,7 +167,7 @@ body.role-user .session-only,body.role-admin .session-only{display:revert!import
     @page{size:A4;margin:10mm 12mm;}
     *{margin:0;padding:0;box-sizing:border-box;background:transparent!important;}
     html,body{background:white!important;color:black!important;font-size:9pt;}
-    nav,.form-card,.page-header,.breadcrumbs,.ds,#p1,#ps,.toast,.receipt-modal-head,.receipt-modal-actions,.btn-wrap,.btn-change,
+    nav,.form-card,.page-header,.ds,#p1,#ps,.toast,.receipt-modal-head,.receipt-modal-actions,.btn-wrap,.btn-change,
     .receipt-modal-close,.receipt-modal-status{display:none!important;}
     main{max-width:100%!important;padding:0!important;margin:0!important;}
     #resultado{position:static!important;display:block!important;max-width:100%!important;padding:0!important;background:none!important;backdrop-filter:none!important;z-index:auto!important;box-shadow:none!important;}
