@@ -67,6 +67,7 @@ function initUnsavedChangesGuard(selector) {
   });
   document.querySelectorAll(selector).forEach(function (el) {
     el.addEventListener('input', function () { dirty = true; });
+    el.addEventListener('change', function () { dirty = true; });
   });
   return {
     markClean: function () { dirty = false; },
