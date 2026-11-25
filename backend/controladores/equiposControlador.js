@@ -6,6 +6,17 @@ const { describirCambios } = require('../utils/diffCampos');
 const httpError = require('../utils/httpError');
 const { withTransaction } = require('../utils/transaccion');
 
+// Catálogo permitido de equipos: solo laptops de estas marcas.
+const TIPOS_EQUIPO = ['Laptop'];
+const MARCAS_EQUIPO = ['Acer', 'Dell', 'Lenovo'];
+
+/** Valida que el tipo y la marca pertenezcan al catálogo permitido. */
+function validarCatalogo(tipo, marca) {
+  if (!TIPOS_EQUIPO.includes(tipo)) return 'Tipo inválido';
+  if (!MARCAS_EQUIPO.includes(marca)) return 'Marca inválida';
+  return null;
+}
+
 /**
  * Lista todos los equipos ordenados por ID.
  * @param {import('express').Request} req Petición HTTP autenticada.
@@ -41,6 +52,8 @@ exports.crear = async (req, res) => {
   if (!nombre || !tipo || !marca || !descripcion) {
     return res.status(400).json({ mensaje: 'Datos incompletos' });
   }
+  const errorCatalogo = validarCatalogo(tipo, marca);
+  if (errorCatalogo) return res.status(400).json({ mensaje: errorCatalogo });
   const conn = await db;
   const [result] = await conn.query(
     'INSERT INTO equipos (nombre,tipo,marca,descripcion) VALUES (?,?,?,?)',
@@ -156,6 +169,8 @@ exports.editar = async (req, res) => {
   if (!nombre || !tipo || !marca || !descripcion) {
     return res.status(400).json({ mensaje: 'Datos incompletos' });
   }
+  const errorCatalogo = validarCatalogo(tipo, marca);
+  if (errorCatalogo) return res.status(400).json({ mensaje: errorCatalogo });
 
   const conn = await db;
   const [prevRows] = await conn.query(

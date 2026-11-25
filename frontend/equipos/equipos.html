@@ -36,11 +36,11 @@
         <div class="form-row">
             <div class="ig"><label>Nombre / Modelo</label><input id="nombre" placeholder="" maxlength="100" oninput="clearF('nombre');checkNuevoEquipo()"><div class="ferr" id="ferr-nombre">Ingresa el nombre del equipo</div></div>
             <div class="ig"><label>Tipo</label>
-                <select id="tipo" onchange="clearF('tipo');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
+                <select id="tipo" onchange="clearF('tipo');checkNuevoEquipo()"><option>Laptop</option></select>
                 <div class="ferr" id="ferr-tipo">Selecciona el tipo</div>
             </div>
             <div class="ig"><label>Marca</label>
-                <select id="marca" onchange="clearF('marca');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
+                <select id="marca" onchange="clearF('marca');checkNuevoEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Dell</option><option>Lenovo</option></select>
                 <div class="ferr" id="ferr-marca">Selecciona la marca</div>
             </div>
             <div class="ig"><label>&nbsp;</label><button type="button" class="btn btn-primary" id="btnAdd" onclick="crear()">+ Agregar equipo</button></div>
@@ -75,12 +75,12 @@
             <div class="g2m">
                 <div class="ig">
                     <label>Tipo</label>
-                    <select id="edit-tipo" onchange="clearFE('tipo','edit-');checkEditEquipo()"><option value="">Seleccionar</option><option>Laptop</option><option>PC</option></select>
+                    <select id="edit-tipo" onchange="clearFE('tipo','edit-');checkEditEquipo()"><option>Laptop</option></select>
                     <div class="ferr" id="ferr-edit-tipo">Selecciona el tipo</div>
                 </div>
                 <div class="ig">
                     <label>Marca</label>
-                    <select id="edit-marca" onchange="clearFE('marca','edit-');checkEditEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Apple</option><option>ASUS</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>MSI</option></select>
+                    <select id="edit-marca" onchange="clearFE('marca','edit-');checkEditEquipo()"><option value="">Seleccionar</option><option>Acer</option><option>Dell</option><option>Lenovo</option></select>
                     <div class="ferr" id="ferr-edit-marca">Selecciona la marca</div>
                 </div>
             </div>
