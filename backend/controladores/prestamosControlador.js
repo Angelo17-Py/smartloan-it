@@ -162,9 +162,9 @@ exports.listar = async (req, res) => {
 };
 
 /**
- * Lista préstamos activos vencidos o por vencer en 48 horas.
+ * Lista préstamos activos vencidos o por vencer en 48 horas y devoluciones con saldo pendiente.
  * @param {import('express').Request} req Petición HTTP autenticada.
- * @param {import('express').Response} res Objeto { alertas, total, vencidos }.
+ * @param {import('express').Response} res Objeto { alertas, cobros, total, vencidos }.
  * @returns {Promise<void>}
  */
 exports.alertas = async (req, res) => {
@@ -182,10 +182,30 @@ exports.alertas = async (req, res) => {
     WHERE p.estado = 'ACTIVO' AND p.anulado = 0 AND p.fecha_devolucion_estimada <= ?
     ORDER BY p.fecha_devolucion_estimada ASC
   `, [ahoraStr, umbralStr]);
+
+  const [cobros] = await conn.query(`
+    SELECT d.id_devolucion, d.codigo_devolucion, d.estado_pago, d.fecha_devolucion,
+      d.total_cobro, d.monto_pagado, (d.total_cobro - d.monto_pagado) AS saldo,
+      p.id_prestamo, p.codigo_prestamo,
+      a.codigo_alumno, a.nombre AS alumno_nombre, a.apellido AS alumno_apellido,
+      e.nombre AS equipo
+    FROM devoluciones d
+    JOIN prestamos p ON d.id_prestamo = p.id_prestamo
+    JOIN alumnos a ON p.id_alumno = a.id_alumno
+    JOIN equipos e ON p.id_equipo = e.id_equipo
+    WHERE d.anulado = 0
+      AND p.anulado = 0
+      AND d.estado_pago IN ('Pendiente', 'Parcial')
+      AND d.total_cobro > d.monto_pagado
+    ORDER BY d.fecha_devolucion ASC
+  `);
+
   res.json({
     alertas: rows,
+    cobros,
     total: rows.length,
-    vencidos: rows.filter(r => Number(r.minutos_restantes) < 0).length
+    vencidos: rows.filter(r => Number(r.minutos_restantes) < 0).length,
+    cobrosPendientes: cobros.length
   });
 };
 

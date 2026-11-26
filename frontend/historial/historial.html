@@ -651,11 +651,11 @@ async function confirmarPlazo(){
 /** Abre el modal para cobrar el saldo pendiente de una devolución. */
 function abrirPago(id){
     var dv=devs.find(function(x){return String(x.id_devolucion)===String(id);});
-    if(!dv) return;
+    if(!dv){st('No se encontró la devolución','t-err');return;}
     var total=Number(dv.total_cobro)||0;
     var pagado=Number(dv.monto_pagado)||0;
     var saldo=dv.estado_pago==='Condonado'?0:Math.max(total-pagado,0);
-    if(saldo<=0) return;
+    if(saldo<=0){st('El cobro ya no tiene saldo pendiente');return;}
     pagoId=id;
     document.getElementById('pago-desc').textContent='Devolución '+(dv.codigo_devolucion||('REC-'+String(dv.id_devolucion).padStart(3,'0')))+' · '+(dv.alumno_nombre||'')+' '+(dv.alumno_apellido||'')+' · Total Gs. '+fn(total)+' · Pagado Gs. '+fn(pagado)+' · Saldo Gs. '+fn(saldo);
     var monto=document.getElementById('pago-monto');
@@ -723,9 +723,17 @@ window.onload=function(){
         spotlight: [{label:'Equipos',sub:'Gestión de activos',url:'/equipos/equipos.html'},{label:'Alumnos',sub:'Registro de alumnos',url:'/alumnos/alumnos.html'},{label:'Préstamos',sub:'Registrar préstamo',url:'/prestamos/prestamos.html'},{label:'Devoluciones',sub:'Recibir devolución',url:'/devoluciones/devoluciones.html'},{label:'Dashboard',sub:'Panel de control',url:'/home/dashboard.html'}],
         onReady: function(){
             if(admin) document.getElementById('tab-aud').style.display='';
-            var buscarInicial=new URLSearchParams(location.search).get('buscar');
+            var params=new URLSearchParams(location.search);
+            var buscarInicial=params.get('buscar');
+            var pagoInicial=params.get('pago');
             if(buscarInicial) document.getElementById('busq').value=buscarInicial;
-            cargar();
+            cargar().then(function(){
+                if(pagoInicial){
+                    var tabDev=document.querySelectorAll('.tab')[1];
+                    if(tabDev) setTab('d',tabDev);
+                    abrirPago(Number(pagoInicial));
+                }
+            });
             if(admin) cargarAuditoria();
         }
     });

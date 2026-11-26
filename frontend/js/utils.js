@@ -523,10 +523,9 @@ function initPageEntrance(){
   });
 }
 
-// Panel de vencimientos: solo se monta en el dashboard con sesión activa.
+// Panel de notificaciones: vencimientos y cobros pendientes en todos los módulos.
 function initNotificaciones(){
   if(!localStorage.getItem('encargado')) return;
-  if(!/\/home\/dashboard(\.html)?$/.test(window.location.pathname)) return;
   if(/\/login\//.test(window.location.pathname)) return;
   if(document.getElementById('notif-wrap')) return;
   var target=document.querySelector('.dash-header-right')||document.querySelector('.page-header');
@@ -536,7 +535,7 @@ function initNotificaciones(){
   wrap.className='notif-wrap';
   wrap.id='notif-wrap';
   wrap.innerHTML=
-    '<button type="button" class="notif-btn" id="notif-btn" aria-label="Notificaciones de vencimiento" aria-expanded="false" aria-controls="notif-panel">'+
+    '<button type="button" class="notif-btn" id="notif-btn" aria-label="Notificaciones de vencimientos y cobros" aria-expanded="false" aria-controls="notif-panel">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>'+
       '<span class="notif-badge" id="notif-badge" hidden>0</span>'+
     '</button>';
@@ -547,11 +546,11 @@ function initNotificaciones(){
   panel.className='notif-panel';
   panel.id='notif-panel';
   panel.setAttribute('role','region');
-  panel.setAttribute('aria-label','Notificaciones de vencimiento');
+  panel.setAttribute('aria-label','Notificaciones de vencimientos y cobros');
   panel.innerHTML=
-    '<div class="notif-head"><div><h3>Vencimientos</h3><span id="notif-sub">Préstamos vencidos o por vencer</span></div></div>'+
+    '<div class="notif-head"><div><h3>Notificaciones</h3><span id="notif-sub">Vencimientos y cobros pendientes</span></div></div>'+
     '<div class="notif-list" id="notif-list"><div class="notif-empty">Cargando…</div></div>'+
-    '<div class="notif-foot"><a href="/devoluciones/devoluciones.html">Ir a devoluciones</a></div>';
+    '<div class="notif-foot"><a href="/devoluciones/devoluciones.html">Devoluciones</a><a href="/historial/historial.html">Historial</a></div>';
   document.body.appendChild(panel);
 
   var btn=document.getElementById('notif-btn');
@@ -559,6 +558,7 @@ function initNotificaciones(){
   var badge=document.getElementById('notif-badge');
   var sub=document.getElementById('notif-sub');
   var alertas=[];
+  var cobros=[];
   var abierto=false;
   var READ_KEY='sl_notif_leidas';
 
@@ -572,8 +572,11 @@ function initNotificaciones(){
     panel.style.right=Math.max(12,window.innerWidth-r.right)+'px';
   }
 
-  function firma(a){
-    return a.id_prestamo+':'+(Number(a.minutos_restantes)<0?'v':'p')+':'+a.fecha_devolucion_estimada;
+  function firmaVencimiento(a){
+    return 'v:'+a.id_prestamo+':'+(Number(a.minutos_restantes)<0?'v':'p')+':'+a.fecha_devolucion_estimada;
+  }
+  function firmaCobro(c){
+    return 'c:'+c.id_devolucion+':'+c.estado_pago+':'+c.total_cobro+':'+c.monto_pagado;
   }
   function leerLeidas(){
     try{ var v=JSON.parse(localStorage.getItem(READ_KEY)||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; }
@@ -583,7 +586,8 @@ function initNotificaciones(){
   }
   function actualizarBadge(){
     var leidas=leerLeidas();
-    var pendientes=alertas.filter(function(a){return leidas.indexOf(firma(a))===-1;}).length;
+    var pendientes=alertas.filter(function(a){return leidas.indexOf(firmaVencimiento(a))===-1;}).length
+      + cobros.filter(function(c){return leidas.indexOf(firmaCobro(c))===-1;}).length;
     if(pendientes>0){
       badge.hidden=false;
       badge.textContent=pendientes>9?'9+':String(pendientes);
@@ -594,7 +598,11 @@ function initNotificaciones(){
   function marcarLeidas(){
     var leidas=leerLeidas();
     alertas.forEach(function(a){
-      var f=firma(a);
+      var f=firmaVencimiento(a);
+      if(leidas.indexOf(f)===-1) leidas.push(f);
+    });
+    cobros.forEach(function(c){
+      var f=firmaCobro(c);
       if(leidas.indexOf(f)===-1) leidas.push(f);
     });
     guardarLeidas(leidas);
@@ -612,31 +620,60 @@ function initNotificaciones(){
   function render(){
     var vencidos=alertas.filter(function(a){return Number(a.minutos_restantes)<0;}).length;
     var porVencer=alertas.length-vencidos;
-    if(!alertas.length) sub.textContent='Sin vencimientos próximos';
-    else if(vencidos && !porVencer) sub.textContent=vencidos+' vencido'+(vencidos!==1?'s':'');
-    else if(vencidos) sub.textContent=vencidos+' vencido'+(vencidos!==1?'s':'')+' · '+porVencer+' por vencer';
-    else sub.textContent=porVencer+' por vencer';
-    if(!alertas.length){
+    if(!alertas.length && !cobros.length){
+      sub.textContent='Sin alertas pendientes';
+    }else{
+      var partes=[];
+      if(alertas.length){
+        if(vencidos && !porVencer) partes.push(vencidos+' vencido'+(vencidos!==1?'s':''));
+        else if(vencidos) partes.push(vencidos+' vencido'+(vencidos!==1?'s':'')+' · '+porVencer+' por vencer');
+        else partes.push(porVencer+' por vencer');
+      }
+      if(cobros.length) partes.push(cobros.length+' cobro'+(cobros.length!==1?'s':'')+' pendiente'+(cobros.length!==1?'s':''));
+      sub.textContent=partes.join(' · ');
+    }
+    if(!alertas.length && !cobros.length){
       list.innerHTML='<div class="notif-empty">'+
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>'+
-        '<span>No hay préstamos vencidos ni por vencer en las próximas 48 horas.</span></div>';
+        '<span>No hay vencimientos ni cobros pendientes.</span></div>';
       return;
     }
     var lateIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
     var soonIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-    list.innerHTML=alertas.map(function(a){
-      var late=Number(a.minutos_restantes)<0;
-      var txt=textoRestante(a.minutos_restantes);
-      var due=late?'Vencido hace '+txt:'Vence en '+txt;
-      return '<a class="notif-item '+(late?'late':'soon')+'" href="/devoluciones/devoluciones.html?prestamo='+encodeURIComponent(a.id_prestamo)+'">'+
-        '<span class="ni-icon">'+(late?lateIcon:soonIcon)+'</span>'+
-        '<span class="ni-body">'+
-          '<span class="ni-title">'+esc(a.equipo)+(a.codigo_prestamo?' <span class="ni-code">'+esc(a.codigo_prestamo)+'</span>':'')+'</span>'+
-          '<span class="ni-sub">'+esc(a.alumno_nombre)+' '+esc(a.alumno_apellido)+' · '+esc(a.codigo_alumno)+'</span>'+
-          '<span class="ni-due">'+due+' · '+ff(a.fecha_devolucion_estimada)+'</span>'+
-        '</span>'+
-      '</a>';
-    }).join('');
+    var moneyIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>';
+    var html='';
+    if(alertas.length){
+      html+='<div class="notif-group">Vencimientos</div>';
+      html+=alertas.map(function(a){
+        var late=Number(a.minutos_restantes)<0;
+        var txt=textoRestante(a.minutos_restantes);
+        var due=late?'Vencido hace '+txt:'Vence en '+txt;
+        return '<a class="notif-item '+(late?'late':'soon')+'" href="/devoluciones/devoluciones.html?prestamo='+encodeURIComponent(a.id_prestamo)+'">'+
+          '<span class="ni-icon">'+(late?lateIcon:soonIcon)+'</span>'+
+          '<span class="ni-body">'+
+            '<span class="ni-title">'+esc(a.equipo)+(a.codigo_prestamo?' <span class="ni-code">'+esc(a.codigo_prestamo)+'</span>':'')+'</span>'+
+            '<span class="ni-sub">'+esc(a.alumno_nombre)+' '+esc(a.alumno_apellido)+' · '+esc(a.codigo_alumno)+'</span>'+
+            '<span class="ni-due">'+due+' · '+ff(a.fecha_devolucion_estimada)+'</span>'+
+            '<span class="ni-action">Devolver →</span>'+
+          '</span>'+
+        '</a>';
+      }).join('');
+    }
+    if(cobros.length){
+      html+='<div class="notif-group">Cobros pendientes</div>';
+      html+=cobros.map(function(c){
+        return '<a class="notif-item cobro" href="/historial/historial.html?pago='+encodeURIComponent(c.id_devolucion)+'">'+
+          '<span class="ni-icon">'+moneyIcon+'</span>'+
+          '<span class="ni-body">'+
+            '<span class="ni-title">'+esc(c.equipo)+(c.codigo_devolucion?' <span class="ni-code">'+esc(c.codigo_devolucion)+'</span>':'')+'</span>'+
+            '<span class="ni-sub">'+esc(c.alumno_nombre)+' '+esc(c.alumno_apellido)+' · '+esc(c.codigo_alumno)+'</span>'+
+            '<span class="ni-due">Saldo Gs. '+fn(c.saldo)+' · '+esc(c.estado_pago)+'</span>'+
+            '<span class="ni-action">Registrar pago →</span>'+
+          '</span>'+
+        '</a>';
+      }).join('');
+    }
+    list.innerHTML=html;
   }
   function toggle(open){
     abierto=(typeof open==='boolean')?open:!abierto;
@@ -651,6 +688,7 @@ function initNotificaciones(){
       if(!r.ok){ mostrarError(); return; }
       var d=await safeJson(r);
       alertas=Array.isArray(d.alertas)?d.alertas:[];
+      cobros=Array.isArray(d.cobros)?d.cobros:[];
       render();
       if(abierto) marcarLeidas(); else actualizarBadge();
     }catch(e){ mostrarError(); }

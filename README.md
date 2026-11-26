@@ -55,7 +55,7 @@ Está pensado para encargados de equipos institucionales de colegios e instituci
 |---|---|
 | **Acceso y sesiones** | Inicio de sesión con código de encargado y contraseña. La sesión se transporta en una cookie `HttpOnly`; el cierre de sesión revoca los tokens emitidos. Cada usuario puede cambiar su propia contraseña desde el dashboard. |
 | **Dashboard** | Métricas de inventario y préstamos activos, gráfico donut de distribución de equipos, actividad reciente, reloj y actualización automática cada 30 segundos. |
-| **Alertas de vencimiento** | Campana en el dashboard con préstamos vencidos o por vencer en las próximas 48 horas. Se actualiza cada 60 segundos y al volver a la pestaña. |
+| **Notificaciones** | Campana disponible en todos los módulos con préstamos vencidos o por vencer en las próximas 48 horas y devoluciones con saldo pendiente. Incluye acciones para devolver o registrar el pago y se actualiza cada 60 segundos. |
 | **Alumnos** | Alta con código automático (`ALU001`, `ALU002`, …), edición, búsqueda sin acentos y baja lógica que conserva el historial. |
 | **Equipos** | Registro y edición de activos; estados `Disponible`, `Prestado` y `En mantenimiento`. El cambio manual solo se permite entre `Disponible` y `En mantenimiento`; la baja solo procede si no hay historial de préstamos. |
 | **Préstamos** | Selección de alumnos sin préstamo activo y equipos disponibles; aceptación del contrato, validación de fechas, código correlativo (`PRE-001`, `PRE-002`, …) y comprobante imprimible con firmas. Los préstamos activos admiten prórroga del vencimiento. |
@@ -326,7 +326,7 @@ En la columna **Acceso**, `Autenticado` incluye a administradores y operadores; 
 | PATCH | `/equipos/:id/estado` | Cambia el estado del equipo | Autenticado |
 | DELETE | `/equipos/:id` | Elimina un equipo sin historial | Admin |
 | GET | `/prestamos` | Lista préstamos vigentes; con `?incluir_anulados=1` incluye los anulados | Autenticado |
-| GET | `/prestamos/alertas` | Préstamos vencidos o por vencer en 48 h | Autenticado |
+| GET | `/prestamos/alertas` | Vencimientos de préstamos en 48 h y devoluciones con saldo pendiente | Autenticado |
 | GET | `/prestamos/:id` | Busca un préstamo activo por ID | Autenticado |
 | POST | `/prestamos` | Registra un préstamo | Autenticado |
 | PATCH | `/prestamos/:id/plazo` | Extiende la fecha de devolución de un préstamo activo | Autenticado |
